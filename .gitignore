@@ -1,6 +1,11 @@
+.classpath
+.project
+/.idea
+edu.hawaii.its.iml
+.DS_Store
+output.txt
+/.settings
 /bin
 /target
-/.svn
 *-overrides.properties
-/.classpath
-/.project
+/.mvn/
