@@ -69,6 +69,20 @@ public class LdapServiceTest {
         assertTrue(people.get(0).getCn().contains(name));
         assertTrue(people.get(1).getCn().contains(name));
         assertNotEquals(people.get(0).getCn(), people.get(1).getCn());
+
+        assertThat(people.get(0).getGivenName(), equalTo("Keith"));
+        assertThat(people.get(0).getSn(), equalTo("Richards"));
+
+        assertThat(people.get(1).getGivenName(), equalTo("Richard"));
+        assertThat(people.get(1).getSn(), equalTo("Thompson"));
+    }
+
+    @Test
+    public void findByCnConstainsEmptyResult() {
+        String name = "-not-found-";
+        List<LdapPerson> people = ldapService.findByCnConstains(name);
+
+        assertTrue(people.isEmpty());
     }
 
     @Test
