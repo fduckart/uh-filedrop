@@ -20,6 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -42,9 +43,9 @@ public class UserBuilderTest {
 
         // Granted Authorities.
         assertTrue(user.getAuthorities().size() > 0);
-        assertFalse(user.hasRole(Role.ANONYMOUS));
-        assertTrue(user.hasRole(Role.USER));
-        assertTrue(user.hasRole(Role.ADMIN));
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertTrue(user.hasRole(SecurityRole.UH));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR));
 
         map = new HashMap<>();
         map.put("uid", "someuser");
@@ -56,11 +57,26 @@ public class UserBuilderTest {
         assertEquals("10000001", user.getUhuuid());
 
         assertTrue(user.getAuthorities().size() > 0);
-        assertFalse(user.hasRole(Role.ANONYMOUS));
-        assertTrue(user.hasRole(Role.USER));
-        assertTrue(user.hasRole(Role.ADMIN));
-        assertFalse(user.hasRole(Role.STAFF));
-        assertFalse(user.hasRole(Role.FACULTY));
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertTrue(user.hasRole(SecurityRole.UH));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR));
+
+        // Granted Authorities, string version.
+        assertFalse(user.hasRole((String) null));
+        assertFalse(user.hasRole(""));
+
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS.longName()));
+        assertTrue(user.hasRole(SecurityRole.UH.longName()));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT.longName()));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR.longName()));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR.longName()));
+
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS.name()));
+        assertTrue(user.hasRole(SecurityRole.UH.name()));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT.name()));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR.name()));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR.name()));
     }
 
     @Test
@@ -76,13 +92,24 @@ public class UserBuilderTest {
         assertEquals("10000004", user.getUhuuid());
 
         // Granted Authorities.
-        assertEquals(2, user.getAuthorities().size());
-        assertFalse(user.hasRole(Role.ANONYMOUS));
-        assertTrue(user.hasRole(Role.USER));
-        assertTrue(user.hasRole(Role.ADMIN));
-        assertFalse(user.hasRole(Role.STAFF));
+        assertEquals(1, user.getAuthorities().size());
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertTrue(user.hasRole(SecurityRole.UH));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR));
+        assertFalse(user.hasRole(SecurityRole.ADMINISTRATOR));
 
-        assertTrue(user.hasRole(Role.ADMIN));
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS.name()));
+        assertTrue(user.hasRole(SecurityRole.UH.name()));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT.name()));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR.name()));
+        assertFalse(user.hasRole(SecurityRole.ADMINISTRATOR.name()));
+
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS.longName()));
+        assertTrue(user.hasRole(SecurityRole.UH.longName()));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT.longName()));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR.longName()));
+        assertFalse(user.hasRole(SecurityRole.ADMINISTRATOR.longName()));
     }
 
     @Test
@@ -102,11 +129,23 @@ public class UserBuilderTest {
 
         // Granted Authorities.
         assertEquals(2, user.getAuthorities().size());
-        assertFalse(user.hasRole(Role.ANONYMOUS));
-        assertTrue(user.hasRole(Role.USER));
-        assertTrue(user.hasRole(Role.ADMIN));
-        assertFalse(user.hasRole(Role.STAFF));
-        assertFalse(user.hasRole(Role.FACULTY));
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT));
+        assertTrue(user.hasRole(SecurityRole.UH));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR));
+
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS.name()));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT.name()));
+        assertTrue(user.hasRole(SecurityRole.UH.name()));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR.name()));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR.name()));
+
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS.longName()));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT.longName()));
+        assertTrue(user.hasRole(SecurityRole.UH.longName()));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR.longName()));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR.longName()));
     }
 
     @Test
@@ -122,12 +161,19 @@ public class UserBuilderTest {
         assertEquals("10000009", user.getUhuuid());
 
         // Granted Authorities.
-        assertEquals(2, user.getAuthorities().size());
-        assertFalse(user.hasRole(Role.ANONYMOUS));
-        assertTrue(user.hasRole(Role.USER));
-        assertTrue(user.hasRole(Role.ADMIN));
-        assertFalse(user.hasRole(Role.STAFF));
-        assertFalse(user.hasRole(Role.FACULTY));
+        assertEquals(1, user.getAuthorities().size());
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT));
+        assertTrue(user.hasRole(SecurityRole.UH));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR));
+        assertFalse(user.hasRole(SecurityRole.ADMINISTRATOR));
+
+        // Granted Authorities, string version.
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS.longName()));
+        assertFalse(user.hasRole(SecurityRole.APPLICANT));
+        assertTrue(user.hasRole(SecurityRole.UH.longName()));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR.longName()));
+        assertFalse(user.hasRole(SecurityRole.ADMINISTRATOR.longName()));
     }
 
     @Test

@@ -6,6 +6,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
 @Service
 public class UserContextServiceImpl implements UserContextService {
 
@@ -35,7 +37,7 @@ public class UserContextServiceImpl implements UserContextService {
     @Override
     public void setCurrentUhuuid(String uhuuid) {
         User user = getCurrentUser();
-        if (user.hasRole(Role.ADMIN)) {
+        if (user.hasRole(SecurityRole.ADMINISTRATOR)) {
             user.setUhuuid(uhuuid);
         }
     }

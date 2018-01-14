@@ -29,6 +29,8 @@ public class CachingConfig {
                 new ConcurrentMapCache("holidaysById"),
                 new ConcurrentMapCache("holidayTypes"),
                 new ConcurrentMapCache("holidayTypesById"),
+                new ConcurrentMapCache("offices"),
+                new ConcurrentMapCache("officesById"),
                 new ConcurrentMapCache("personCache"),
                 new ConcurrentMapCache("personByIdCache"),
                 new ConcurrentMapCache("roles"),

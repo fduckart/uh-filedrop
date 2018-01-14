@@ -23,7 +23,7 @@ import edu.hawaii.its.filedrop.type.Campus;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
-@DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
+@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class CampusServiceTest {
 
     @Autowired

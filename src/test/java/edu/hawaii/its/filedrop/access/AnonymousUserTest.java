@@ -9,6 +9,8 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
 public class AnonymousUserTest {
 
     private User user;
@@ -26,6 +28,6 @@ public class AnonymousUserTest {
         assertThat(user.getUhuuid(), equalTo(""));
         assertEquals("", user.getPassword());
         assertEquals(1, user.getAuthorities().size());
-        assertTrue(user.hasRole(Role.ANONYMOUS));
+        assertTrue(user.hasRole(SecurityRole.ANONYMOUS));
     }
 }

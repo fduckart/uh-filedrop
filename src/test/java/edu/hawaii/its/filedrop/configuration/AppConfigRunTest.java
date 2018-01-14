@@ -16,6 +16,7 @@ public class AppConfigRunTest {
         AppConfigRun appConfig = new AppConfigRun();
         assertNotNull(appConfig);
         appConfig.init();
+        assertNotNull(appConfig.ldapContextSource());
     }
 
 }

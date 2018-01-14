@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import edu.hawaii.its.filedrop.type.Role;
 
 public interface RoleRepository extends JpaRepository<Role, Integer> {
+
     @Override
     @Cacheable(value = "rolesCache")
     List<Role> findAll();
@@ -16,4 +17,8 @@ public interface RoleRepository extends JpaRepository<Role, Integer> {
     Role findById(Integer id);
 
     Role findByRole(String role);
+
+    List<Role> findBySecurityRole(String securityRole);
+
+    public boolean existsBySecurityRole(String securityRole);
 }

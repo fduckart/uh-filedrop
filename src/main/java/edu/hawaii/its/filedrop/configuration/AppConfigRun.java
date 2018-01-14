@@ -12,7 +12,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.core.support.LdapContextSource;
 
 @Profile(value = { "localhost", "test" })
@@ -31,11 +30,6 @@ public class AppConfigRun {
     @PostConstruct
     public void init() {
         logger.info("AppConfigRun init");
-    }
-
-    @Bean
-    public LdapTemplate ldapTemplate(LdapContextSource ldapContextSource) {
-        return new LdapTemplate(ldapContextSource);
     }
 
     @Bean

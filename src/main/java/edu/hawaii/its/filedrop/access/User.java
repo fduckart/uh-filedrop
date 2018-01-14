@@ -5,6 +5,8 @@ import java.util.Collection;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
 public class User extends org.springframework.security.core.userdetails.User {
 
     private static final long serialVersionUID = 5L;
@@ -50,8 +52,18 @@ public class User extends org.springframework.security.core.userdetails.User {
         return attributes.getValue("cn");
     }
 
-    public boolean hasRole(Role role) {
+    public boolean hasRole(SecurityRole role) {
         return getAuthorities().contains(new SimpleGrantedAuthority(role.longName()));
+    }
+
+    public boolean hasRole(String roleLongName) {
+        if (roleLongName != null) {
+            if (!roleLongName.startsWith("ROLE_")) {
+                roleLongName = "ROLE_" + roleLongName;
+            }
+            return getAuthorities().contains(new SimpleGrantedAuthority(roleLongName));
+        }
+        return false;
     }
 
     @Override

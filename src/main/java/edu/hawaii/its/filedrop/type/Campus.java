@@ -29,6 +29,17 @@ public class Campus implements Serializable {
     @Column(name = "actual", columnDefinition = "char", nullable = false)
     private String actual;
 
+    // Constructor.
+    public Campus() {
+        // Empty.
+    }
+
+    // Constructor.
+    public Campus(Integer id) {
+        this();
+        this.id = id;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -106,10 +117,8 @@ public class Campus implements Serializable {
 
     @Override
     public String toString() {
-        return "Campus [id=" + id
-                + ", code=" + code
+        return "Campus [code=" + code
                 + ", description=" + description
-                + ", actual=" + actual
                 + "]";
     }
 

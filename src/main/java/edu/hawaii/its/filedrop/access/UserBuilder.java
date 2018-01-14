@@ -32,7 +32,7 @@ public final class UserBuilder {
 
         logger.debug("Lookup roles for user via service.");
         String uhuuid = attributes.getUhUuid();
-        RoleHolder roleHolder = authorizationService.fetchRoles(uhuuid);
+        SecurityRoleHolder roleHolder = authorizationService.fetchRoles(uhuuid);
 
         logger.info("Adding roles. uid: " + uid + "; roles: " + roleHolder.getAuthorites());
         User user = new User(uid, uhuuid, roleHolder.getAuthorites());

@@ -22,10 +22,107 @@ insert into campus (id, code, actual, description) values (9,  'WI', 'Y', 'Windw
 insert into campus (id, code, actual, description) values (10, 'WO', 'Y', 'UH West Oahu');
 insert into campus (id, code, actual, description) values (11, 'SW', 'N', 'UH System');
 
+-- Campus offices.
+insert into office (id, campus_id, sort_id, description) values (1,   1, 1,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (2,   2, 7,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (3,   3, 2,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (4,   4, 3,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (5,   5, 4,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (6,   6, 5,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (7,   7, 8,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (8,   8, 9,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (9,   9, 6,  'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (10, 10, 10, 'Chancellors Office');
+insert into office (id, campus_id, sort_id, description) values (11, 11, 11, 'Information Technology Services');
+insert into office (id, campus_id, sort_id, description) values (12, 11, 12, 'Vice President for Community Colleges');
+
+insert into role (id, role, security_role, description) values (1,  'APPLICANT',      'APPLICANT',     'Applicant');
+insert into role (id, role, security_role, description) values (2,  'CHANCELLOR',     'COORDINATOR',   'Chancellor');
+insert into role (id, role, security_role, description) values (3,  'COORDINATOR',    'COORDINATOR',   'Coordinator');
+insert into role (id, role, security_role, description) values (4,  'DPC_REVIEWER',   'REVIEWER',      'DPC Reviewer');
+insert into role (id, role, security_role, description) values (5,  'DPC_CHAIR',      'REVIEWER',      'DPC Chair');
+insert into role (id, role, security_role, description) values (6,  'DC_REVIEWER',    'REVIEWER',      'DC Reviewer');
+insert into role (id, role, security_role, description) values (7,  'DC_CHAIR',       'REVIEWER',      'DC Chair');
+insert into role (id, role, security_role, description) values (8,  'DEAN_REVIEWER',  'REVIEWER',      'Dean Reviewer');
+insert into role (id, role, security_role, description) values (9,  'DEAN_CHAIR',     'REVIEWER',      'Dean Chair');
+insert into role (id, role, security_role, description) values (10, 'TPRC_REVIEWER',  'REVIEWER',      'TPRC Reviewer');
+insert into role (id, role, security_role, description) values (11, 'TPRC_CHAIR',     'REVIEWER',      'TPRC Chair');
+insert into role (id, role, security_role, description) values (12, 'EXCLUDED',       'EXCLUDED',      'Excluded');
+insert into role (id, role, security_role, description) values (13, 'ADMINISTRATOR',  'ADMINISTRATOR', 'Administrator');
+insert into role (id, role, security_role, description) values (14, 'SUPER_USER',     'SUPERUSER',     'Superuser');
+
 insert into type (id, description) values(1, 'Bank');
 insert into type (id, description) values(2, 'Federal');
 insert into type (id, description) values(3, 'State');
 insert into type (id, description) values(4, 'UH');
+
+-- Developers.
+insert into person (id, uhuuid, name, email, username) values (1, '10967714', 'Cameron Ahana','cahana@hawaii.edu','cahana');
+insert into person (id, uhuuid, name, email, username) values (2, '17958670', 'Frank Duckart','duckart@hawaii.edu','duckart');
+insert into person (id, uhuuid, name, email, username) values (3, '24229307', 'Eric Meade','em21@hawaii.edu','em21');
+insert into person (id, uhuuid, name, email, username) values (4, '19407388', 'Magdalena Kaleleiki','amek@hawaii.edu','amek');
+
+-- Administrators.
+insert into person (id, uhuuid, name, email, username) values (5, '10336801', 'Sandra Uyeno','uyeno@hawaii.edu','uyeno');
+
+-- Chancellors.
+insert into person (id, uhuuid, name, email, username) values (6,  '10319116', 'Louise Pagotto','pagotto@hawaii.edu','pagotto');
+insert into person (id, uhuuid, name, email, username) values (7,  '10981252', 'Erica Lacro','lacro@hawaii.edu','lacro');
+insert into person (id, uhuuid, name, email, username) values (8,  '10285914', 'Manuel Cabral','mcabral@hawaii.edu','mcabral');
+insert into person (id, uhuuid, name, email, username) values (9,  '10280762', 'Douglas Dykstra','dykstra@hawaii.edu','dykstra');
+insert into person (id, uhuuid, name, email, username) values (10, '24739833', 'Rachel Solemsaas','rsolems@hawaii.edu','rsolems');
+insert into person (id, uhuuid, name, email, username) values (11, '10367351', 'Lui Hokoana','lhokoana@hawaii.edu','lhokoana');
+insert into person (id, uhuuid, name, email, username) values (12, '19250581', 'Helen Cox','helencox@hawaii.edu','helencox');
+
+-- Chancellors secretaries.
+insert into person (id, uhuuid, name, email, username) values (13, '17327248', 'Janice Yamada','jnyamada@hawaii.edu','jnyamada');
+insert into person (id, uhuuid, name, email, username) values (14, '10313504', 'Clara Bantolina','bantolin@hawaii.edu','bantolin');
+insert into person (id, uhuuid, name, email, username) values (15, '11160741', 'Patti Kimokeo','kimokeo@hawaii.edu','kimokeo');
+insert into person (id, uhuuid, name, email, username) values (16, '10723828', 'Dorene Niibu','dniibu@hawaii.edu','dniibu');
+insert into person (id, uhuuid, name, email, username) values (17, '24846670', 'Patricia Freeman','freemanp@hawaii.edu','freemanp');
+insert into person (id, uhuuid, name, email, username) values (18, '10331229', 'Colleen Teixeira','cdteixei@hawaii.edu','cdteixei');
+insert into person (id, uhuuid, name, email, username) values (19, '22210695', 'Lana Spencer','lanaspen@hawaii.edu','lanaspen');
+
+insert into person (id, uhuuid, name, email, username) values (20, '11668132', 'Staff M Teststaff',  'teststaf@hawaii.edu',  'teststaf');
+insert into person (id, uhuuid, name, email, username) values (21, '11668133', 'Test Staff2', 'test2@hawaii.edu',  'test21');
+insert into person (id, uhuuid, name, email, username) values (22, '12345678', 'Test Staff3', 'test3@hawaii.edu',  'test22');
+insert into person (id, uhuuid, name, email, username) values (23, '89999999', 'Test Admin',  'admin@example.com', 'test23');
+insert into person (id, uhuuid, name, email, username) values (24, '10000001', 'Test Tester', 'tester@example.com', 'test24');
+insert into person (id, uhuuid, name, email, username) values (25, '10000004', 'Test Admin',  'admin4@example.com', 'test25');
+insert into person (id, uhuuid, name, email, username) values (26, '10000003', 'Test Admin',  'admin3@example.com', 'test26');
+insert into person (id, uhuuid, name, email, username) values (27, '11668149', 'testfacu',  'faculty.testfaculty@hawaii.edu', 'test');
+
+insert into system_role (id, person_id, role_id, office_id) values ( 1,  1, 14, 11);
+insert into system_role (id, person_id, role_id, office_id) values ( 2,  2, 14, 11);
+insert into system_role (id, person_id, role_id, office_id) values ( 3,  3, 14, 11);
+insert into system_role (id, person_id, role_id, office_id) values ( 4,  4, 14, 11);
+insert into system_role (id, person_id, role_id, office_id) values (24,  4,  2,  6);
+insert into system_role (id, person_id, role_id, office_id) values ( 5,  5, 13, 11);
+insert into system_role (id, person_id, role_id, office_id) values ( 6,  6,  2,  4);
+insert into system_role (id, person_id, role_id, office_id) values ( 7,  7,  2,  3);
+insert into system_role (id, person_id, role_id, office_id) values ( 8,  8,  2,  6);
+insert into system_role (id, person_id, role_id, office_id) values ( 9,  9,  2,  9);
+insert into system_role (id, person_id, role_id, office_id) values (10, 10,  2,  1);
+insert into system_role (id, person_id, role_id, office_id) values (11, 11,  2,  8);
+insert into system_role (id, person_id, role_id, office_id) values (12, 12,  2,  5);
+insert into system_role (id, person_id, role_id, office_id) values (13, 13,  3,  4);
+insert into system_role (id, person_id, role_id, office_id) values (14, 14,  3,  3);
+insert into system_role (id, person_id, role_id, office_id) values (15, 15,  3,  6);
+insert into system_role (id, person_id, role_id, office_id) values (16, 16,  3,  9);
+insert into system_role (id, person_id, role_id, office_id) values (17, 17,  3,  1);
+insert into system_role (id, person_id, role_id, office_id) values (18, 18,  3,  8);
+insert into system_role (id, person_id, role_id, office_id) values (19, 19,  3,  5);
+insert into system_role (id, person_id, role_id, office_id) values (20, 20,  3,  6);
+insert into system_role (id, person_id, role_id, office_id) values (21,  1,  2,  6);
+insert into system_role (id, person_id, role_id, office_id) values (22,  2,  2,  6);
+insert into system_role (id, person_id, role_id, office_id) values (23,  3,  2,  6);
+insert into system_role (id, person_id, role_id, office_id) values (25, 23, 13, 11);
+insert into system_role (id, person_id, role_id, office_id) values (26, 24, 13, 11);
+insert into system_role (id, person_id, role_id, office_id) values (27, 24,  3, 11);
+insert into system_role (id, person_id, role_id, office_id) values (28, 25,  3, 11);
+insert into system_role (id, person_id, role_id, office_id) values (29, 26,  3, 11);
+insert into system_role (id, person_id, role_id, office_id) values (30, 26, 13, 11);
+insert into system_role (id, person_id, role_id, office_id) values (31,  2, 13, 11);
 
 insert into holiday (id, description, observed_date, official_date) values(1,  'New Year''s Day','2013-01-01','2013-01-01');
 insert into holiday (id, description, observed_date, official_date) values(2,  'Martin Luther King Jr. Day','2013-01-21','2013-01-21');
@@ -427,8 +524,3 @@ insert into holiday_type (type_id, holiday_id) values(3, 101);
 insert into holiday_type (type_id, holiday_id) values(1, 115);
 insert into holiday_type (type_id, holiday_id) values(2, 115);
 insert into holiday_type (type_id, holiday_id) values(3, 115);
-
-insert into role (id, role, short_description, description) values (1,  'USER',    'User',          'User');
-insert into role (id, role, short_description, description) values (2,  'FACULTY', 'Faculty',       'Faculty');
-insert into role (id, role, short_description, description) values (3,  'STAFF',   'Staff',         'Staff');
-insert into role (id, role, short_description, description) values (99, 'ADMIN',   'Administrator', 'Administrator');

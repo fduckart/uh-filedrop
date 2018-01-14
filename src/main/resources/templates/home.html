@@ -8,13 +8,79 @@
     <!--  Content container -->
     <div class="container">
         <div class="jumbotron">
-            <h1 class="dropshadow">University of Hawaii FileDrop</h1>
-            <p class="lead" th:text="${jumbotron}"></p>
-            <div sec:authorize="isAnonymous()">
-                <p><a class="btn btn-lg btn-success" href="/filedrop/login"  th:href="@{/login}"  role="button">UH Login Here</a></p>
+            <div class="row">
+                <div class="col-xs-12">
+                    <p id="login-lead">
+                        This tool is provided by the University of Hawai'i to allow a limited
+                        form of file sharing between UH faculty and staff.  It
+                        also allows users affiliated with the University to share files with
+                        non-UH users. <br/>
+                        There is a limit of <span th:text="${maxSize}"></span>MB on total upload size.
+                        You may use the service multiple times to upload a collection of files
+                        whose total size exceeds this amount.
+                    </p>
+                </div>
+            </div>
+            <div class="row" sec:authorize="isAnonymous()">
+                <div id="login-forms">
+                    <div class="col-xs-12 col-sm-6" id="login-form-row">
+                        <table id="login-table" class="table table-condensed">
+                            <tr>
+                                <td id="uh-login">
+                                    <fieldset>
+                                        <legend class="h4">UH Users</legend>
+                                        <p style="padding-top: 0.4em;">
+                                            <a class="btn btn-lg btn-success btn-block" th:href="@{/prepare}" style="min-width: 201px;">
+                                                UH Login Here
+                                            </a>
+                                        </p>
+                                    </fieldset>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="col-xs-12 col-sm-6" id="login-form-row">
+                        <table id="login-table" class="table login-center-table">
+                            <tr>
+                                <td id="nonuh-login">
+                                    <form action="#" th:action="@{/validate}" method="post">
+                                        <fieldset>
+                                            <legend class="h4">Non-UH Users</legend>
+                                            <table>
+                                                <tr>
+                                                    <td colspan="2">
+                                                        If you do not have a UH Username, please provide your
+                                                        name and email address below:
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Name:</td>
+                                                    <td><input type="text" id="name" name="name" size="20"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Email:</td>
+                                                    <td><input type="text" id="email" name="email" size="20"/></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>&nbsp;</td>
+                                                    <td>
+                                                        <button type="button" class="btn btn-xs btn-default">Continue</button>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </fieldset>
+                                    </form>
+                                </td>
+                            </tr>
+                        </table>
+                    
+                    </div>
+                    
+                </div>
             </div>
             <div sec:authorize="isAuthenticated()">
-                <form action="/filedrop/logout" th:action="@{/logout}" method="post" id="logout_form">
+                <form action="logout" th:action="@{/logout}" method="post">
                     <button class="btn btn-lg btn-default" type="submit">Logout</button>
                 </form>
             </div>

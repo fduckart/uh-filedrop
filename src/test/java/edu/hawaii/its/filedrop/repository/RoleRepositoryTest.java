@@ -28,7 +28,7 @@ public class RoleRepositoryTest {
         assertNotNull(roleRepository);
 
         long count = roleRepository.count();
-        assertThat(count, equalTo(4L));
+        assertThat(count, equalTo(14L));
 
         final int id = 1;
         Role r0 = roleRepository.findById(id);
@@ -47,7 +47,8 @@ public class RoleRepositoryTest {
         assertSame(r0, r2);
 
         Role r3 = roleRepository.findByRole("STAFF");
-        assertThat(r3.getRole(), equalTo("STAFF"));
+        assertThat(r3, equalTo(null));
+        ///assertThat(r3.getRole(), equalTo("STAFF"));
 
         Role rn = roleRepository.findById(666);
         assertNull(rn);

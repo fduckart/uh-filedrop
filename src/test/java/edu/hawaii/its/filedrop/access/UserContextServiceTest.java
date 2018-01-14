@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.controller.WithMockUhUser;
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -25,7 +26,7 @@ public class UserContextServiceTest {
     private UserContextService userContextService;
 
     @Test
-    @WithMockUhUser(username = "admin", roles = { "ROLE_ADMIN" })
+    @WithMockUhUser(username = "admin", roles = { "ROLE_ADMINISTRATOR" })
     public void basics() {
         assertThat(userContextService.getCurrentUhuuid(), equalTo("12345678"));
         assertThat(userContextService.getCurrentUsername(), equalTo("admin"));
@@ -35,7 +36,7 @@ public class UserContextServiceTest {
         assertNotNull(user);
         assertThat(user.getUhuuid(), equalTo("12345678"));
         assertThat(user.getUsername(), equalTo("admin"));
-        assertTrue(user.hasRole(Role.ADMIN));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR));
 
         userContextService.setCurrentUhuuid("87654321");
         assertThat(userContextService.getCurrentUhuuid(), equalTo("87654321"));
@@ -51,7 +52,7 @@ public class UserContextServiceTest {
         assertNotNull(user);
         assertThat(user.getUhuuid(), equalTo("12345678"));
         assertThat(user.getUsername(), equalTo("user"));
-        assertFalse(user.hasRole(Role.ADMIN));
+        assertFalse(user.hasRole(SecurityRole.ADMINISTRATOR));
 
         // UhUuid should not change.
         userContextService.setCurrentUhuuid("87654321");
@@ -65,8 +66,8 @@ public class UserContextServiceTest {
         assertNotNull(user);
         assertThat(user.getUhuuid(), equalTo(""));
         assertThat(user.getUsername(), equalTo("anonymous"));
-        assertTrue(user.hasRole(Role.ANONYMOUS));
-        assertFalse(user.hasRole(Role.USER));
+        assertTrue(user.hasRole(SecurityRole.ANONYMOUS));
+        assertFalse(user.hasRole(SecurityRole.UH));
     }
 
     @Test
@@ -76,6 +77,6 @@ public class UserContextServiceTest {
         assertThat(user.getUhuuid(), equalTo(""));
         assertThat(user.getUsername(), equalTo("anonymous"));
         assertThat(user.getAuthorities().size(), equalTo(1));
-        assertTrue(user.hasRole(Role.ANONYMOUS));
+        assertTrue(user.hasRole(SecurityRole.ANONYMOUS));
     }
 }

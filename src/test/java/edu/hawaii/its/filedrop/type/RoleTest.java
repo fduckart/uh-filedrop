@@ -5,12 +5,28 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Before;
 import org.junit.Test;
 
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
 public class RoleTest {
+
+    private Role role;
+
+    @Before
+    public void setUp() {
+        role = new Role();
+    }
+
+    @Test
+    public void construction() {
+        assertNotNull(role);
+    }
 
     @Test
     public void accessors() {
@@ -37,21 +53,6 @@ public class RoleTest {
         assertThat(r1, equalTo(r2));
         assertThat(r1.hashCode(), equalTo(r2.hashCode()));
 
-        r1.setShortDescription("shortDescription");
-        assertThat(r1, not(equalTo(r2)));
-        assertThat(r2, not(equalTo(r1)));
-        r2.setShortDescription("shortDescription");
-        assertThat(r1, equalTo(r2));
-        assertThat(r2, equalTo(r1));
-        assertThat(r1.hashCode(), equalTo(r2.hashCode()));
-
-        r1.setShortDescription(null);
-        assertThat(r1, not(equalTo(r2)));
-        assertThat(r2, not(equalTo(r1)));
-        r2.setShortDescription(null);
-        assertThat(r1, equalTo(r2));
-        assertThat(r2, equalTo(r1));
-
         r1.setDescription(null);
         assertThat(r1, not(equalTo(r2)));
         assertThat(r2, not(equalTo(r1)));
@@ -75,6 +76,46 @@ public class RoleTest {
         r2.setId(2);
         assertThat(r1, not(equalTo(r2)));
         assertThat(r2, not(equalTo(r1)));
+
+        assertThat(r1.getSecurityRole(), equalTo(""));
+        assertThat(r2.getSecurityRole(), equalTo(""));
+
+        r1.setSecurityRole("r1-security-role");
+        assertThat(r1.getSecurityRole(), equalTo("r1-security-role"));
+        assertThat(r2.getSecurityRole(), equalTo(""));
+
+        r2.setSecurityRole("r2-security-role");
+        assertThat(r1.getSecurityRole(), equalTo("r1-security-role"));
+        assertThat(r2.getSecurityRole(), equalTo("r2-security-role"));
+
+        r1 = new Role(1, SecurityRole.ADMINISTRATOR);
+        assertThat(r1.getSecurityRole(), equalTo(SecurityRole.ADMINISTRATOR.name()));
+        r2 = new Role(2, SecurityRole.ANONYMOUS);
+        assertThat(r2.getSecurityRole(), equalTo(SecurityRole.ANONYMOUS.name()));
+
+        r1 = new Role(1, SecurityRole.ADMINISTRATOR);
+        assertThat(r1.isAdministrator(), equalTo(true));
+        assertThat(r1.isApplicant(), equalTo(false));
+        assertThat(r1.isCoordinator(), equalTo(false));
+        assertThat(r1.isExcluded(), equalTo(false));
+        assertThat(r1.isReviewer(), equalTo(false));
+        assertThat(r1.isSuperuser(), equalTo(false));
+
+        r1 = new Role(1, SecurityRole.SUPERUSER);
+        assertThat(r1.isAdministrator(), equalTo(true));
+        assertThat(r1.isApplicant(), equalTo(false));
+        assertThat(r1.isCoordinator(), equalTo(false));
+        assertThat(r1.isExcluded(), equalTo(false));
+        assertThat(r1.isReviewer(), equalTo(false));
+        assertThat(r1.isSuperuser(), equalTo(true));
+
+        r1 = new Role(1, SecurityRole.APPLICANT);
+        assertThat(r1.isAdministrator(), equalTo(false));
+        assertThat(r1.isApplicant(), equalTo(true));
+        assertThat(r1.isCoordinator(), equalTo(false));
+        assertThat(r1.isExcluded(), equalTo(false));
+        assertThat(r1.isReviewer(), equalTo(false));
+        assertThat(r1.isSuperuser(), equalTo(false));
     }
 
     @Test
@@ -82,6 +123,22 @@ public class RoleTest {
         Role r1 = new Role();
         Role r2 = new Role();
         assertThat(r1.hashCode(), equalTo(r2.hashCode()));
+        assertTrue(r1.equals(r2));
+
+        r1 = new Role(1, SecurityRole.UH);
+        r2 = new Role(1, SecurityRole.SUPERUSER);
+        assertThat(r1.hashCode(), not(equalTo(r2.hashCode())));
+        assertFalse(r1.equals(r2));
+
+        r1 = new Role(1);
+        r2 = new Role(1, SecurityRole.SUPERUSER);
+        assertThat(r1.hashCode(), not(equalTo(r2.hashCode())));
+        assertFalse(r1.equals(r2));
+
+        r1 = new Role(1, SecurityRole.SUPERUSER);
+        r2 = new Role(1, SecurityRole.SUPERUSER);
+        assertThat(r1.hashCode(), equalTo(r2.hashCode()));
+        assertTrue(r1.equals(r2));
     }
 
     @Test
@@ -94,14 +151,34 @@ public class RoleTest {
 
         Role r2 = new Role();
         assertThat(r1, equalTo(r2));
+
+    }
+
+    @Test
+    public void compareTo() {
+        Role c0 = new Role(1);
+        Role c1 = new Role(1);
+        assertThat(c0.compareTo(c1), equalTo(0));
+
+        c1 = new Role(2);
+        assertThat(c0.compareTo(c1), equalTo(-1));
+
+        c1 = new Role(0);
+        assertThat(c0.compareTo(c1), equalTo(1));
+    }
+
+    @Test
+    public void testIds() {
+        assertThat(Role.ID.APPLICANT.value(), equalTo(1));
+        assertThat(Role.ID.APPLICANT.intValue(), equalTo(1));
     }
 
     @Test
     public void testToString() {
-        Role role = new Role();
-        assertThat(role.toString(), containsString("role=null, description=null"));
-        role.setId(123);
-        assertThat(role.toString(), containsString("Role [id=123,"));
+        assertThat(role.toString(), containsString("id=null, role=null"));
+
+        role.setId(12345);
+        assertThat(role.toString(), containsString("Role [id=12345,"));
     }
 
 }

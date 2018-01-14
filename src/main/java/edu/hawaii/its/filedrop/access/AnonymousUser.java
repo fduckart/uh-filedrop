@@ -1,5 +1,7 @@
 package edu.hawaii.its.filedrop.access;
 
+import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ANONYMOUS;
+
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -18,7 +20,7 @@ public class AnonymousUser extends User {
 
     private static Collection<GrantedAuthority> authorities() {
         Set<GrantedAuthority> authorities = new LinkedHashSet<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(Role.ANONYMOUS.longName()));
+        authorities.add(new SimpleGrantedAuthority(ANONYMOUS.longName()));
         return authorities;
     }
 }

@@ -6,25 +6,27 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-public class RoleHolder {
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
-    private Set<GrantedAuthority> authorities = new LinkedHashSet<GrantedAuthority>();
+public class SecurityRoleHolder {
+
+    private Set<GrantedAuthority> authorities = new LinkedHashSet<>();
 
     // Constructor.
-    public RoleHolder() {
+    public SecurityRoleHolder() {
         this(null);
     }
 
     // Constructor.
-    public RoleHolder(Set<Role> roles) {
+    public SecurityRoleHolder(Set<SecurityRole> roles) {
         if (roles != null) {
-            for (Role role : roles) {
+            for (SecurityRole role : roles) {
                 add(role);
             }
         }
     }
 
-    public void add(Role role) {
+    public void add(SecurityRole role) {
         authorities.add(new SimpleGrantedAuthority(role.longName()));
     }
 
@@ -36,12 +38,12 @@ public class RoleHolder {
         return authorities.size();
     }
 
-    public boolean contains(Role role) {
+    public boolean contains(SecurityRole role) {
         return authorities.contains(new SimpleGrantedAuthority(role.longName()));
     }
 
     @Override
     public String toString() {
-        return "RoleHolder [authorities=" + authorities + "]";
+        return "SecurityRoleHolder [authorities=" + authorities + "]";
     }
 }

@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.access;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
@@ -22,6 +23,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -46,10 +48,11 @@ public class UserDetailsServiceTest {
         assertEquals("89999999", user.getUhuuid());
 
         // Granted Authorities.
-        assertTrue(user.getAuthorities().size() > 0);
-        assertFalse(user.hasRole(Role.ANONYMOUS));
-        assertTrue(user.hasRole(Role.USER));
-        assertTrue(user.hasRole(Role.ADMIN));
+        assertThat(user.getAuthorities().size(), equalTo(2));
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertTrue(user.hasRole(SecurityRole.UH));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR));
 
         // Check a made-up junky role name.
 
@@ -65,11 +68,11 @@ public class UserDetailsServiceTest {
         assertEquals("10000001", user.getUhuuid());
 
         assertTrue(user.getAuthorities().size() > 0);
-        assertFalse(user.hasRole(Role.ANONYMOUS));
-        assertTrue(user.hasRole(Role.USER));
-        assertTrue(user.hasRole(Role.ADMIN));
-        assertFalse(user.hasRole(Role.STAFF));
-        assertFalse(user.hasRole(Role.FACULTY));
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertTrue(user.hasRole(SecurityRole.UH));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR));
+        assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR));
     }
 
     @Test
@@ -89,12 +92,11 @@ public class UserDetailsServiceTest {
         assertEquals("10000004", user.getUhuuid());
 
         // Granted Authorities.
-        assertEquals(2, user.getAuthorities().size());
-        assertFalse(user.hasRole(Role.ANONYMOUS));
-        assertTrue(user.hasRole(Role.USER));
-        assertTrue(user.hasRole(Role.ADMIN));
-        assertFalse(user.hasRole(Role.STAFF));
-        assertFalse(user.hasRole(Role.FACULTY));
+        assertEquals(1, user.getAuthorities().size());
+        assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
+        assertTrue(user.hasRole(SecurityRole.UH));
+        assertFalse(user.hasRole(SecurityRole.COORDINATOR));
+        assertFalse(user.hasRole(SecurityRole.ADMINISTRATOR));
     }
 
     @Test

@@ -218,6 +218,11 @@
             <artifactId>angular-mocks</artifactId>
             <version>${angular-mocks-version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.webjars.npm</groupId>
+            <artifactId>vue</artifactId>
+            <version>2.5.13</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

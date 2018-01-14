@@ -16,21 +16,146 @@
                             <td colspan="2" align="left" valign="top"><b>General Questions</b></td>
                         </tr>
                         <tr>
-                            <td align="left" valign="top">Q: Who can  answer some basic questions about the application?</td>
-                            <td align="left" valign="top">A: Send an email to <a href="mailto:its-iam-help@lists.hawaii.edu">ITS Identity &amp; Access Management Group</a></td>
+                            <td align="left" valign="top" class="faq-question">Q: How does it work?</td>
+                            <td align="left" valign="top"> 
+                                <p>
+                                    A: The basic idea behind this service is simple: we allow people to upload
+                                    potentially large files (although not <a href="#size">too large</a>) to our
+                                    servers, where they will be stored for a limited period. Once the files
+                                    have been completely uploaded, we send an email containing a download
+                                    URL to the address or UH username you have specified as the recipient.
+                                    That's it, in a nutshell.
+                                </p>
+                                <p>
+                                    There are, of course, a few additional complications.  First,
+                                    this service is provided to the UH community, and is not meant to be
+                                    open to the general public.  However, we do wish to provide the ability
+                                    for people unaffiliated with the University to use the service to share
+                                    files with people within UH.  In all cases, we require at least one end
+                                    of the transaction (sender or receiver, that is) to be UH staff or faculty.
+                                    The only practical consequence of this is that for a UH person to send
+                                    files to a non-UH person, the UH person <strong>must</strong> use the
+                                    link on the service home page to login prior to uploading files.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="faq-question">Q: I am having problems logging in.</td>
+                            <td align="left" valign="top">
+                                <p>
+                                    A: Please try closing and re-opening your browser, which usually
+                                    corrects a number of problems with how your browser stores login
+                                    information.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="faq-question">Q: Can I send files to multiple recipients?</td>
+                            <td align="left" valign="top">
+                                <p>
+                                    A: You cannot directly use the service to send files to multiple
+                                    recipients.  When filling in the recipient form, you must provide
+                                    only a single email address or UH Username.
+                                </p>
+                                <p>
+                                    However, if you are a UH user using the service to upload files, you can
+                                    effectively send the files to multiple recipients.  Once the upload
+                                    has completed, the resulting page will contain the link to download
+                                    the files.  You can copy that link and share any way you like.
+                                    For example, you can email the link to multiple recipients.  In fact
+                                    (here is a little secret), if you are UH staff or faculty you don't even need
+                                    to provide a recipient in the form: you can leave the recipient blank,
+                                    in which case no email will be sent and it will be up to you to send
+                                    then download URL to your intended recipients.
+                                </p>
+                                <p>
+                                    Here is a <a href="helpv" target="_multrec">short movie</a>
+                                    showing how to send to multiple recipients.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="faq-question"><a id="size" class="faq-anchor-link"></a>Q: Are there any restrictions?</td>
+                            <td align="left" valign="top">A: 
+                                <p>
+                                    There are a few restrictions on the service. The total size of the
+                                    upload must not exceed <span th:text="${maxSize}"></span>MB. 
+                                    You can use the service as many times as you like, but any 
+                                    single upload cannot exceed that size. Also, we provide
+                                    the files for download for a limited time only.  Finally, the use of
+                                    the service must comply with all relevant University policies,
+                                    including
+                                    <a href="https://www.hawaii.edu/policy/?action=viewPolicy&amp;policySection=ep&amp;policyChapter=2&amp;policyNumber=210" target="_e2210">E2.210</a>.
+                                </p>
+                                <p>
+                                    For obvious reasons, it's important to be aware of these restrictions,
+                                    particularly the limited download time window.  If you are using the
+                                    service to upload files, you must clearly inform the recipients that
+                                    they must download the files prior to the closure of this window.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="faq-question">Q: How long will the files remain on the server?</td>
+                            <td align="left" valign="top">A: 
+                                <p>
+                                    Currently, the files will be available for 1 to 7 days.  A
+                                    notice containing the date and time at which the files will be
+                                    expired will be displayed once the upload is completed.  Also,
+                                    both the confirmation email sent to you (the uploader) and
+                                    the email sent by the system to your recipient will contain
+                                    the expiration date and time.
+                                </p>
+                                <p>
+                                    Once the period has run, the files are irretrievably deleted.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="faq-question">Q: How can I securely transfer files?<a id="auth"></a></td>
+                            <td align="left" valign="top">A: 
+                                <p>
+                                    Even in the basic operation described above, the file transfer (both
+                                    in uploading and downloading) is secure, in the sense that "SSL"
+                                    is used to encrypt the traffic.  This should provide sufficient security
+                                    for most users.  However, it's true that in the basic mode of operation
+                                    the security of the system depends entirely on the obscurity of the
+                                    randomly generated URLs used to download the files.  It is extremely
+                                    unlikely that anyone would be able to guess one of these URLs.   But
+                                    there may be other ways for an attacker to learn the download URL,
+                                    and since in the basic mode of operation that's all we require to
+                                    download the files, the attacker would gain access to the files.
+                                </p>
+                                <p>
+                                    We do offer an additional level of protection, for users exchanging files
+                                    containing sensitive information.  When uploading files, you can
+                                    check off the <span style="font-style: italic">"Require Authentication"</span>
+                                    checkbox.  If this checkbox is selected, the UH user who is the recipient
+                                    of the transfer will have to login before retrieving the files. That is,
+                                    the recipient must know both the secret URL and the recipient's UH Username
+                                    and password.  The recipient must correspond to a UH user. If you would
+                                    like your departmental email address to be included in those that can
+                                    require authentication, please use the Feedback form to send a message to
+                                    the FileDrop team.
+                                </p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="left" valign="top" class="faq-question">Q: Who can  answer some basic questions about the application?</td>
+                            <td align="left" valign="top">A: Send an email to <a href="mailto:filedrop-l@lists.hawaii.edu">ITS Enterprise Systems</a></td>
                         </tr>
                         <tr>
                             <td colspan="2" align="left" valign="top"><b>Resources</b></td>
                         </tr>
                         <tr>
-                            <td align="left" valign="top">Q: Can I get the source code for this project?</td>
+                            <td align="left" valign="top" class="faq-question">Q: Can I get the source code for this project?</td>
                             <td align="left" valign="top">A: Sure thing. It is available at this <a href="https://github.com/fduckart/uh-filedrop" target="_git_repo">github repository.</a></td>
                         </tr>
                         <tr>
                             <td colspan="2" align="left" valign="top"><b>Technologies</b></td>
                         </tr>
                         <tr>
-                            <td align="left" valign="top">Q: What did you use to create the site?</td>
+                            <td align="left" valign="top" class="faq-question">Q: What did you use to create the site?</td>
                             <td align="left" valign="top">
                                 <ul  class="list-unstyled">
                                     <li>Apache Maven</li>
@@ -38,22 +163,27 @@
                                     <li>Java</li>
                                     <li>
                                         Spring Framework
-                                        <a href="http://docs.spring.io/spring/docs/4.3.5.RELEASE/spring-framework-reference/htmlsingle/" target="_sprgu">(Guide)</a>
-                                        <a href="http://docs.spring.io/spring/docs/4.3.5.RELEASE/javadoc-api/" target="_sprapi">(API)</a>
+                                        <a href="http://docs.spring.io/spring/docs/4.3.13.RELEASE/spring-framework-reference/htmlsingle/" target="_sprgu">(Guide)</a>
+                                        <a href="http://docs.spring.io/spring/docs/4.3.13.RELEASE/javadoc-api/" target="_sprapi">(API)</a>
                                     </li>
                                     <li>
                                         Spring Security
-                                        <a href="http://docs.spring.io/spring-security/site/docs/4.2.2.RELEASE/reference/htmlsingle/" target="_sprsecgu">(Guide)</a>
+                                        <a href="http://docs.spring.io/spring-security/site/docs/4.3.13.RELEASE/reference/htmlsingle/" target="_sprsecgu">(Guide)</a>
                                     </li>
                                     <li>
                                         Spring Data JPA
-                                        <a href="https://docs.spring.io/spring-data/jpa/docs/1.11.1.RELEASE/reference/html/" target="_sprdatgu">(Guide)</a>
-                                        <a href="https://docs.spring.io/spring-data/jpa/docs/1.11.1.RELEASE/api/" target="_sprdatapi">(API)</a>
+                                        <a href="https://docs.spring.io/spring-data/jpa/docs/1.11.9.RELEASE/reference/html/" target="_sprdatgu">(Guide)</a>
+                                        <a href="https://docs.spring.io/spring-data/jpa/docs/1.11.9.RELEASE/api/" target="_sprdatapi">(API)</a>
                                     </li>
                                     <li>
                                         Spring Data Commons
-                                        <a href="https://docs.spring.io/spring-data/commons/docs/1.13.1.RELEASE/reference/html/" target="_sprdatcogu">(Guide)</a>
-                                        <a href="https://docs.spring.io/spring-data/commons/docs/1.13.1.RELEASE/api/">(API)</a>
+                                        <a href="https://docs.spring.io/spring-data/commons/docs/1.13.9.RELEASE/reference/html/" target="_sprdatcogu">(Guide)</a>
+                                        <a href="https://docs.spring.io/spring-data/commons/docs/1.13.9.RELEASE/api/">(API)</a>
+                                    </li>
+                                    <li>
+                                        Spring LDAP
+                                        <a href="https://docs.spring.io/spring-ldap/docs/2.3.2.RELEASE/reference/" target="_sprldapgu">(Guide)</a>
+                                        <a href="https://docs.spring.io/spring-ldap/docs/2.3.2.RELEASE/apidocs/" target="_sprldapapi">(API)</a>
                                     </li>
                                     <li>
                                         Thymeleaf

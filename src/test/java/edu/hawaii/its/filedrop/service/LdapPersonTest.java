@@ -42,6 +42,8 @@ public class LdapPersonTest {
         assertThat(ldapPerson.getUhUuid(), equalTo(""));
         ldapPerson.setUhUuid("12345678");
         assertThat(ldapPerson.getUhUuid(), equalTo("12345678"));
+
+        assertThat(ldapPerson.isValid(), equalTo(true));
     }
 
     @Test

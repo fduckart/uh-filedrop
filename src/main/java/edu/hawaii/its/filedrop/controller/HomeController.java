@@ -3,6 +3,7 @@ package edu.hawaii.its.filedrop.controller;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -20,6 +21,18 @@ public class HomeController {
 
     private static final Log logger = LogFactory.getLog(HomeController.class);
 
+    @Value("${app.max.size:999}")
+    private Integer maxSize;
+
+    @Value("${cas.login.url}")
+    private String casUrlLogin;
+
+    @Value("${cas.send.renew:true}")
+    private Boolean isCasSendRenew;
+
+    @Value("${url.base}")
+    private String urlBase;
+
     @Autowired
     private EmailService emailService;
 
@@ -33,11 +46,22 @@ public class HomeController {
     public String home(Model model) {
         logger.debug("User at home. ");
 
+        model.addAttribute("maxSize", maxSize);
+        model.addAttribute("urlBase", urlBase);
+        model.addAttribute("casUrlLogin", casUrlLogin);
+        model.addAttribute("isCasRenew", isCasSendRenew);
         int messageId = Message.JUMBOTRON_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("jumbotron", message.getText());
 
         return "home";
+    }
+
+    @PreAuthorize("hasRole('UH')")
+    @GetMapping(value = { "/prepare" })
+    public String prepare() {
+        logger.debug("User at prepare. ");
+        return "redirect:/user";
     }
 
     @PreAuthorize("isAuthenticated()")
@@ -80,8 +104,9 @@ public class HomeController {
     }
 
     @GetMapping(value = { "/help/faq", "/help/faqs" })
-    public String faq() {
+    public String faq(Model model) {
         logger.debug("User at faq.");
+        model.addAttribute("maxSize", maxSize);
         return "help/faq";
     }
 
@@ -91,7 +116,7 @@ public class HomeController {
         return "help/fonts";
     }
 
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('UH')")
     @GetMapping("/user")
     public String adminUser(Model model) {
         logger.debug("User at /user.");

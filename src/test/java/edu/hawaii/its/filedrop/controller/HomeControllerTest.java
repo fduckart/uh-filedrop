@@ -147,8 +147,25 @@ public class HomeControllerTest {
 
     @Test
     @WithAnonymousUser
+    public void prepareViaAnonymous() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+    }
+
+    @Test
+    @WithMockUhUser
+    public void prepareViaUh() throws Exception {
+        // Logged in already, URL redirects back to home page.
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/user"));
+    }
+
+    @Test
+    @WithAnonymousUser
     public void userViaAnonymous() throws Exception {
-        mockMvc.perform(get("/login"))
+        mockMvc.perform(get("/user"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }

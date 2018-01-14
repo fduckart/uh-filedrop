@@ -1,12 +1,23 @@
 package edu.hawaii.its.filedrop.controller;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasProperty;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,9 +25,11 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
@@ -49,7 +62,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    @WithMockUhUser(username = "admin", roles = { "ROLE_USER", "ROLE_ADMIN" })
+    @WithMockUhUser(username = "admin", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void admin() throws Exception {
         mockMvc.perform(get("/admin"))
                 .andExpect(status().isOk())
@@ -80,6 +93,78 @@ public class AdminControllerTest {
         mockMvc.perform(get("/admin/application/role"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/application-role"));
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void adminLookup() throws Exception {
+        mockMvc.perform(get("/admin/lookup"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/lookup"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void adminLookupLdapViaAnonymous() throws Exception {
+        mockMvc.perform(post("/admin/lookup/ldap").with(csrf()))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @WithMockUhUser
+    public void adminLookupLdapViaUh() throws Exception {
+        // Access forbidden due to insufficient role.
+        mockMvc.perform(post("/admin/lookup/ldap").with(csrf()))
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithMockUhAdmin(username = "beno")
+    public void adminLookupLdapViaAdmin() throws Exception {
+        mockMvc.perform(post("/admin/lookup/ldap")
+                .param("search", "rthompson"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/lookup"))
+                .andExpect(model().attributeExists("person"))
+                .andExpect(model().attribute("person",
+                        hasProperty("givenName", equalTo("Richard"))))
+                .andExpect(model().attribute("person",
+                        hasProperty("sn", equalTo("Thompson"))));
+    }
+
+    @Test
+    @WithMockUhAdmin(username = "duckart")
+    public void adminLookupLdapViaAdminAgain() throws Exception {
+        MvcResult result = mockMvc.perform(post("/admin/lookup/ldap")
+                .param("search", "rthompson")
+                .with(csrf()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/lookup"))
+                .andExpect(model().attributeExists("person"))
+                .andExpect(model().attribute("person",
+                        hasProperty("givenName", equalTo("Richard"))))
+                .andExpect(model().attribute("person",
+                        hasProperty("sn", equalTo("Thompson"))))
+                .andReturn();
+
+        MockHttpServletResponse mockResponse = result.getResponse();
+        assertThat(mockResponse.getContentType(), equalTo("text/html;charset=UTF-8"));
+
+        Collection<String> responseHeaders = mockResponse.getHeaderNames();
+        assertNotNull(responseHeaders);
+        assertThat(responseHeaders.size(), equalTo(7));
+
+        List<String> headers = new ArrayList<>(responseHeaders);
+        Collections.sort(headers);
+
+        assertThat(headers.get(0), equalTo("Cache-Control"));
+        assertThat(headers.get(1), equalTo("Content-Type"));
+        assertThat(headers.get(2), equalTo("Expires"));
+        assertThat(headers.get(3), equalTo("Pragma"));
+        assertThat(headers.get(4), equalTo("X-Content-Type-Options"));
+        assertThat(headers.get(5), equalTo("X-Frame-Options"));
+        assertThat(headers.get(6), equalTo("X-XSS-Protection"));
     }
 
 }

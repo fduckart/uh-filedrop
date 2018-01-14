@@ -113,6 +113,6 @@ public class CampusTest {
         assertThat(campus.toString(), containsString("code=null, description=null"));
 
         campus.setCode("EX");
-        assertThat(campus.toString(), containsString("Campus [id=null, code=EX,"));
+        assertThat(campus.toString(), containsString("Campus [code=EX, description=null]"));
     }
 }

@@ -1,5 +1,6 @@
 package edu.hawaii.its.filedrop.access;
 
+import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ANONYMOUS;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
@@ -33,7 +34,7 @@ public class UserTest {
         assertNull(user.getAttributes());
 
         authorities = new LinkedHashSet<GrantedAuthority>();
-        authorities.add(new SimpleGrantedAuthority(Role.ANONYMOUS.longName()));
+        authorities.add(new SimpleGrantedAuthority(ANONYMOUS.longName()));
         user = new User("b", "12345", authorities);
 
         assertEquals("b", user.getUsername());
