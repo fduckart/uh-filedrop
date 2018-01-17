@@ -242,7 +242,6 @@ public class Role implements Serializable {
     public static enum ID {
 
         APPLICANT(1),
-        CHANCELLOR(2),
         COORDINATOR(3),
         DPC_REVIEWER(4),
         DPC_CHAIR(5),

@@ -45,7 +45,7 @@ public class AuthorizationServiceTest {
 
     @Test
     public void fetch() {
-        SecurityRoleHolder roleHolder = authorizationService.fetchRoles("19407388");
+        SecurityRoleHolder roleHolder = authorizationService.fetchRoles("17958670");
         assertThat(roleHolder.size(), equalTo(3));
         assertFalse(roleHolder.contains(ANONYMOUS));
         assertTrue(roleHolder.contains(UH));
@@ -54,7 +54,21 @@ public class AuthorizationServiceTest {
         assertFalse(roleHolder.contains(APPLICANT));
         assertFalse(roleHolder.contains(REVIEWER));
 
-        roleHolder = authorizationService.fetchRoles("10336801");
+        roleHolder = new SecurityRoleHolder();
+        Set<SecurityRole> roles = applicationService.findSystemRoles("17958670");
+        for (SecurityRole r : roles) {
+            roleHolder.add(r);
+        }
+        assertThat(roleHolder.size(), equalTo(2));
+        assertFalse(roleHolder.contains(ANONYMOUS));
+        assertFalse(roleHolder.contains(UH));
+        assertFalse(roleHolder.contains(COORDINATOR));
+        assertFalse(roleHolder.contains(APPLICANT));
+        assertFalse(roleHolder.contains(REVIEWER));
+        assertTrue(roleHolder.contains(ADMINISTRATOR));
+        assertTrue(roleHolder.contains(SUPERUSER));
+
+        roleHolder = authorizationService.fetchRoles("10000002");
         assertThat(roleHolder.size(), equalTo(2));
         assertFalse(roleHolder.contains(ANONYMOUS));
         assertTrue(roleHolder.contains(UH));
@@ -86,52 +100,8 @@ public class AuthorizationServiceTest {
         assertFalse(roleHolder.contains(COORDINATOR));
         assertFalse(roleHolder.contains(ADMINISTRATOR));
 
-        roleHolder = authorizationService.fetchRoles("11668149");
-        assertThat(roleHolder.size(), equalTo(1));
-        assertFalse(roleHolder.contains(ANONYMOUS));
-        assertTrue(roleHolder.contains(UH));
-        assertFalse(roleHolder.contains(COORDINATOR));
-        assertFalse(roleHolder.contains(APPLICANT));
-        assertFalse(roleHolder.contains(REVIEWER));
-        assertFalse(roleHolder.contains(ADMINISTRATOR));
-        assertFalse(roleHolder.contains(SUPERUSER));
-
-        roleHolder = authorizationService.fetchRoles("19407388");
-        assertThat(roleHolder.size(), equalTo(3));
-        assertFalse(roleHolder.contains(ANONYMOUS));
-        assertTrue(roleHolder.contains(UH));
-        assertFalse(roleHolder.contains(COORDINATOR));
-        assertFalse(roleHolder.contains(APPLICANT));
-        assertFalse(roleHolder.contains(REVIEWER));
-        assertTrue(roleHolder.contains(ADMINISTRATOR));
-        assertTrue(roleHolder.contains(SUPERUSER));
-
-        roleHolder = authorizationService.fetchRoles("24739833");
-        assertThat(roleHolder.size(), equalTo(1));
-        assertFalse(roleHolder.contains(ANONYMOUS));
-        assertTrue(roleHolder.contains(UH));
-        assertFalse(roleHolder.contains(COORDINATOR));
-        assertFalse(roleHolder.contains(APPLICANT));
-        assertFalse(roleHolder.contains(REVIEWER));
-        assertFalse(roleHolder.contains(ADMINISTRATOR));
-        assertFalse(roleHolder.contains(SUPERUSER));
-
         roleHolder = new SecurityRoleHolder();
-        Set<SecurityRole> roles = applicationService.findSystemRoles("19407388");
-        for (SecurityRole r : roles) {
-            roleHolder.add(r);
-        }
-        assertThat(roleHolder.size(), equalTo(1));
-        assertFalse(roleHolder.contains(ANONYMOUS));
-        assertFalse(roleHolder.contains(UH));
-        assertFalse(roleHolder.contains(COORDINATOR));
-        assertFalse(roleHolder.contains(APPLICANT));
-        assertFalse(roleHolder.contains(REVIEWER));
-        assertFalse(roleHolder.contains(ADMINISTRATOR));
-        assertTrue(roleHolder.contains(SUPERUSER));
-
-        roleHolder = new SecurityRoleHolder();
-        roles = applicationService.findSystemRoles("10336801");
+        roles = applicationService.findSystemRoles("10000002");
         for (SecurityRole r : roles) {
             roleHolder.add(r);
         }
@@ -142,34 +112,6 @@ public class AuthorizationServiceTest {
         assertFalse(roleHolder.contains(APPLICANT));
         assertFalse(roleHolder.contains(REVIEWER));
         assertTrue(roleHolder.contains(ADMINISTRATOR));
-        assertFalse(roleHolder.contains(SUPERUSER));
-
-        roleHolder = new SecurityRoleHolder();
-        roles = applicationService.findSystemRoles("10319116");
-        for (SecurityRole r : roles) {
-            roleHolder.add(r);
-        }
-        assertThat(roleHolder.size(), equalTo(0));
-        assertFalse(roleHolder.contains(ANONYMOUS));
-        assertFalse(roleHolder.contains(UH));
-        assertFalse(roleHolder.contains(COORDINATOR));
-        assertFalse(roleHolder.contains(APPLICANT));
-        assertFalse(roleHolder.contains(REVIEWER));
-        assertFalse(roleHolder.contains(ADMINISTRATOR));
-        assertFalse(roleHolder.contains(SUPERUSER));
-
-        roleHolder = new SecurityRoleHolder();
-        roles = applicationService.findSystemRoles("17327248");
-        for (SecurityRole r : roles) {
-            roleHolder.add(r);
-        }
-        assertThat(roleHolder.size(), equalTo(0));
-        assertFalse(roleHolder.contains(ANONYMOUS));
-        assertFalse(roleHolder.contains(UH));
-        assertFalse(roleHolder.contains(COORDINATOR));
-        assertFalse(roleHolder.contains(APPLICANT));
-        assertFalse(roleHolder.contains(REVIEWER));
-        assertFalse(roleHolder.contains(ADMINISTRATOR));
         assertFalse(roleHolder.contains(SUPERUSER));
 
         roleHolder = new SecurityRoleHolder();
@@ -199,20 +141,6 @@ public class AuthorizationServiceTest {
         assertFalse(roleHolder.contains(REVIEWER));
         assertTrue(roleHolder.contains(ADMINISTRATOR));
         assertTrue(roleHolder.contains(SUPERUSER));
-
-        roleHolder = new SecurityRoleHolder();
-        roles = applicationService.findSystemRoles("24739833");
-        for (SecurityRole r : roles) {
-            roleHolder.add(r);
-        }
-        assertThat(roleHolder.size(), equalTo(0));
-        assertFalse(roleHolder.contains(ANONYMOUS));
-        assertFalse(roleHolder.contains(UH));
-        assertFalse(roleHolder.contains(COORDINATOR));
-        assertFalse(roleHolder.contains(APPLICANT));
-        assertFalse(roleHolder.contains(REVIEWER));
-        assertFalse(roleHolder.contains(ADMINISTRATOR));
-        assertFalse(roleHolder.contains(SUPERUSER));
 
         // Non-existent uhuuid.
         roles = applicationService.findSystemRoles("ABCDEFGH");

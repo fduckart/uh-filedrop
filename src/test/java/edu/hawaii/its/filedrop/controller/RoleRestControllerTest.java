@@ -46,21 +46,20 @@ public class RoleRestControllerTest {
     public void httpGetRoles() throws Exception {
         mockMvc.perform(get("/api/roles"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(14)))
+                .andExpect(jsonPath("$", hasSize(13)))
                 .andExpect(jsonPath("$[0].role").value("APPLICANT"))
-                .andExpect(jsonPath("$[1].role").value("CHANCELLOR"))
-                .andExpect(jsonPath("$[2].role").value("COORDINATOR"))
-                .andExpect(jsonPath("$[3].role").value("DPC_REVIEWER"))
-                .andExpect(jsonPath("$[4].role").value("DPC_CHAIR"))
-                .andExpect(jsonPath("$[5].role").value("DC_REVIEWER"))
-                .andExpect(jsonPath("$[6].role").value("DC_CHAIR"))
-                .andExpect(jsonPath("$[7].role").value("DEAN_REVIEWER"))
-                .andExpect(jsonPath("$[8].role").value("DEAN_CHAIR"))
-                .andExpect(jsonPath("$[9].role").value("TPRC_REVIEWER"))
-                .andExpect(jsonPath("$[10].role").value("TPRC_CHAIR"))
-                .andExpect(jsonPath("$[11].role").value("EXCLUDED"))
-                .andExpect(jsonPath("$[12].role").value("ADMINISTRATOR"))
-                .andExpect(jsonPath("$[13].role").value("SUPER_USER"));
+                .andExpect(jsonPath("$[1].role").value("COORDINATOR"))
+                .andExpect(jsonPath("$[2].role").value("DPC_REVIEWER"))
+                .andExpect(jsonPath("$[3].role").value("DPC_CHAIR"))
+                .andExpect(jsonPath("$[4].role").value("DC_REVIEWER"))
+                .andExpect(jsonPath("$[5].role").value("DC_CHAIR"))
+                .andExpect(jsonPath("$[6].role").value("DEAN_REVIEWER"))
+                .andExpect(jsonPath("$[7].role").value("DEAN_CHAIR"))
+                .andExpect(jsonPath("$[8].role").value("TPRC_REVIEWER"))
+                .andExpect(jsonPath("$[9].role").value("TPRC_CHAIR"))
+                .andExpect(jsonPath("$[10].role").value("EXCLUDED"))
+                .andExpect(jsonPath("$[11].role").value("ADMINISTRATOR"))
+                .andExpect(jsonPath("$[12].role").value("SUPER_USER"));
     }
 
 }

@@ -42,7 +42,7 @@ public class PersonServiceTest {
         assertNotNull(personService);
 
         long count = personRepository.count();
-        assertThat(count, equalTo(27L));
+        assertThat(count, equalTo(7L));
 
         final Integer id = 1;
         Person p0 = personService.findById(id);

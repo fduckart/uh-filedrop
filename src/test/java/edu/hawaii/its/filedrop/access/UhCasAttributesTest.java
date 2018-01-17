@@ -75,22 +75,22 @@ public class UhCasAttributesTest {
     @Test
     public void loadMapWithArrayList() {
         Map<Object, Object> map = new HashMap<>();
-        map.put("uHuuid", "10967714");
+        map.put("uHuuid", "17958670");
         List<Object> uids = new ArrayList<Object>();
-        uids.add("cahana");
+        uids.add("fduckart");
         uids.add("mjrules");
         map.put("uid", uids);
         UhCasAttributes attributes = new UhCasAttributes(map);
         assertEquals("", attributes.getUsername());
-        assertEquals("10967714", attributes.getUhUuid());
-        assertEquals("10967714", attributes.getUhUuid());
-        assertEquals("cahana", attributes.getUid());
+        assertEquals("17958670", attributes.getUhUuid());
+        assertEquals("17958670", attributes.getUhUuid());
+        assertEquals("fduckart", attributes.getUid());
     }
 
     @Test
     public void loadMapWithArrayListWithNullEntries() {
         Map<Object, Object> map = new HashMap<>();
-        map.put("uHuuid", "10967714");
+        map.put("uHuuid", "17958670");
         List<Object> uids = new ArrayList<Object>();
         uids.add(null);
         uids.add(null);
@@ -98,13 +98,13 @@ public class UhCasAttributesTest {
         UhCasAttributes attributes = new UhCasAttributes(map);
         assertEquals("", attributes.getUsername());
         assertEquals("", attributes.getUid());
-        assertEquals("10967714", attributes.getUhUuid());
+        assertEquals("17958670", attributes.getUhUuid());
     }
 
     @Test
     public void loadMapWithArrayListWithEmptyEntries() {
         Map<Object, Object> map = new HashMap<>();
-        map.put("uHuuid", "10967714");
+        map.put("uHuuid", "17958670");
         List<Object> uids = new ArrayList<Object>();
         uids.add("");
         uids.add("");
@@ -112,23 +112,23 @@ public class UhCasAttributesTest {
         UhCasAttributes attributes = new UhCasAttributes(map);
         assertEquals("", attributes.getUsername());
         assertEquals("", attributes.getUid());
-        assertEquals("10967714", attributes.getUhUuid());
+        assertEquals("17958670", attributes.getUhUuid());
     }
 
     @Test
     public void loadMapWithArrayListWithManyEntries() {
         Map<Object, Object> map = new HashMap<>();
-        map.put("uHuuid", "10967714");
+        map.put("uHuuid", "17958670");
         List<Object> uids = new ArrayList<Object>();
         for (int i = 0; i < 50; i++) {
             uids.add("");
         }
-        uids.add("cahana");
+        uids.add("fduckart");
         map.put("uid", uids);
         UhCasAttributes attributes = new UhCasAttributes(map);
         assertEquals("", attributes.getUsername());
         assertEquals("", attributes.getUid()); // Note this result.
-        assertEquals("10967714", attributes.getUhUuid());
+        assertEquals("17958670", attributes.getUhUuid());
     }
 
     @Test
@@ -165,11 +165,11 @@ public class UhCasAttributesTest {
     @Test
     public void loadMapWithNullKey() {
         Map<Object, Object> map = new HashMap<>();
-        map.put("uhuuid", "10967714");
-        map.put(null, "cahana");
+        map.put("uhuuid", "17958670");
+        map.put(null, "fduckart");
         UhCasAttributes attributes = new UhCasAttributes(map);
         assertEquals("", attributes.getUsername());
-        assertEquals("10967714", attributes.getUhUuid());
+        assertEquals("17958670", attributes.getUhUuid());
         assertEquals("", attributes.getUid()); // Note this result.
     }
 

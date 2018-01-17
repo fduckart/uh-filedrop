@@ -3,6 +3,7 @@ package edu.hawaii.its.filedrop.controller;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -81,10 +82,14 @@ public class HolidayRestControllerTest {
 
     @Test
     @WithMockUhUser
-    public void httpGetHolidaysWithWrongIdType() throws Exception {
-        mockMvc.perform(get("/api/holidays/xxx"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+    public void httpGetHolidaysWithWrongIdType() {
+        try {
+            mockMvc.perform(get("/api/holidays/xxx"))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(view().name("redirect:/"));
+        } catch (Exception e) {
+            fail("Should not reach here. Exception: " + e);
+        }
     }
 
     @Test

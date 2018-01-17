@@ -63,7 +63,7 @@ public class RoleServiceTest {
         assertNotNull(roleService);
 
         long count = roleService.count();
-        assertThat(count, equalTo(14L));
+        assertThat(count, equalTo(13L));
 
         final int id = 1;
         Role r0 = roleService.findById(id);
@@ -97,7 +97,7 @@ public class RoleServiceTest {
         assertThat(roles.size(), equalTo(8));
 
         roles = roleService.findBySecurityRole("COORDINATOR");
-        assertThat(roles.size(), equalTo(2));
+        assertThat(roles.size(), equalTo(1));
 
         roles = roleService.findAll();
         for (Role r : roles) {

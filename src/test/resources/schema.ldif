@@ -89,35 +89,17 @@ ou: University of Hawaii System
 uhOrgAffiliation: eduPersonOrgDN=uhm,eduPersonAffiliation=faculty
 eduPersonAffiliation: faculty
 
-dn: cn=Test Staff2,ou=People,dc=hawaii,dc=edu
+dn: cn=Frank Duckart,ou=People,dc=hawaii,dc=edu
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
 objectClass: top
-cn: Test Staff2
-sn: Staff2
-givenname: Test
-uid: test21
-mail: test2@hawaii.edu
-uhUuid: 11668133
-title: Testy Tester
-telephoneNumber: (555) 555-1215
-facsimileTelephoneNumber: (555) 555-1216
-ou: University of Hawaii System
-uhOrgAffiliation: eduPersonOrgDN=uhm,eduPersonAffiliation=staff
-eduPersonAffiliation: staff
-
-dn: cn=Magdalena Kaleleiki,ou=People,dc=hawaii,dc=edu
-objectClass: inetOrgPerson
-objectClass: organizationalPerson
-objectClass: person
-objectClass: top
-cn: Magdalena Kaleleiki
-sn: Kaleleiki
-givenname: Magdalena
-uid: amek
-mail: amek@hawaii.edu
-uhUuid: 19407388
+cn: Frank Duckart
+sn: Duckart
+givenname: Frank
+uid: fduckart
+mail: fduckart@hawaii.edu
+uhUuid: 17958670
 title: Info Tech Spec
 telephoneNumber: (555) 555-1215
 facsimileTelephoneNumber: (555) 555-1216
