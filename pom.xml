@@ -285,7 +285,7 @@
                                 <echo>$ mvn clean package</echo>
                                 <echo>$ mvn -Dmaven.test.skip=true clean package</echo>
                                 <echo>$ mvn jasmine:test</echo>
-                                <echo>$ mvn clean test cobertura:cobertura</echo>
+                                <echo>$ mvn clean test jacoco:report</echo>
                                 <echo>$ mvn clean spring-boot:run</echo>
                             </tasks>
                         </configuration>
