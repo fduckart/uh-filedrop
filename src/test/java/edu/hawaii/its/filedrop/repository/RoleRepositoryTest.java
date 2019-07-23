@@ -31,8 +31,8 @@ public class RoleRepositoryTest {
         assertThat(count, equalTo(13L));
 
         final int id = 1;
-        Role r0 = roleRepository.findById(id);
-        Role r1 = roleRepository.findById(id);
+        Role r0 = roleRepository.findById(id).get();
+        Role r1 = roleRepository.findById(id).get();
         assertEquals(r0, r1);
         assertSame(r0, r1);
 
@@ -42,7 +42,7 @@ public class RoleRepositoryTest {
         assertEquals(r0, r1);
         assertSame(r0, r1);
 
-        Role r2 = roleRepository.findById(id);
+        Role r2 = roleRepository.findById(id).get();
         assertEquals(r0, r2);
         assertSame(r0, r2);
 
@@ -50,7 +50,7 @@ public class RoleRepositoryTest {
         assertThat(r3, equalTo(null));
         ///assertThat(r3.getRole(), equalTo("STAFF"));
 
-        Role rn = roleRepository.findById(666);
+        Role rn = roleRepository.findById(666).get();
         assertNull(rn);
     }
 
