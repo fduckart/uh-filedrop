@@ -55,7 +55,7 @@ public class ApplicationService {
 
     @Cacheable(value = "officesById", key = "#id")
     public Office findOffice(Integer id) {
-        return officeRepository.findById(id).get();
+        return officeRepository.findById(id).orElse(null);
     }
 
     @CachePut(value = "officesById", key = "#result.id")

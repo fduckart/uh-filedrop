@@ -50,7 +50,7 @@ public class RoleRepositoryTest {
         assertThat(r3, equalTo(null));
         ///assertThat(r3.getRole(), equalTo("STAFF"));
 
-        Role rn = roleRepository.findById(666).get();
+        Role rn = roleRepository.findById(666).orElse(null);
         assertNull(rn);
     }
 
