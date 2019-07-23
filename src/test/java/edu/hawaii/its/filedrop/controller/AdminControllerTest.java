@@ -153,18 +153,19 @@ public class AdminControllerTest {
 
         Collection<String> responseHeaders = mockResponse.getHeaderNames();
         assertNotNull(responseHeaders);
-        assertThat(responseHeaders.size(), equalTo(7));
+        assertThat(responseHeaders.size(), equalTo(8));
 
         List<String> headers = new ArrayList<>(responseHeaders);
         Collections.sort(headers);
 
         assertThat(headers.get(0), equalTo("Cache-Control"));
-        assertThat(headers.get(1), equalTo("Content-Type"));
-        assertThat(headers.get(2), equalTo("Expires"));
-        assertThat(headers.get(3), equalTo("Pragma"));
-        assertThat(headers.get(4), equalTo("X-Content-Type-Options"));
-        assertThat(headers.get(5), equalTo("X-Frame-Options"));
-        assertThat(headers.get(6), equalTo("X-XSS-Protection"));
+        assertThat(headers.get(1), equalTo("Content-Language"));
+        assertThat(headers.get(2), equalTo("Content-Type"));
+        assertThat(headers.get(3), equalTo("Expires"));
+        assertThat(headers.get(4), equalTo("Pragma"));
+        assertThat(headers.get(5), equalTo("X-Content-Type-Options"));
+        assertThat(headers.get(6), equalTo("X-Frame-Options"));
+        assertThat(headers.get(7), equalTo("X-XSS-Protection"));
     }
 
 }

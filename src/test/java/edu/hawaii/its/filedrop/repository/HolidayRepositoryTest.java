@@ -45,7 +45,7 @@ public class HolidayRepositoryTest {
 
     @Test
     public void findById() {
-        Holiday h = holidayRepository.findById(115);
+        Holiday h = holidayRepository.findById(115).get();
         assertThat(h.getDescription(), equalTo("Christmas"));
         assertThat(h.getHolidayTypes().size(), equalTo(3));
         LocalDate localDate = Dates.newLocalDate(2018, Month.DECEMBER, 25);
@@ -99,7 +99,7 @@ public class HolidayRepositoryTest {
         h = holidayRepository.save(h);
 
         assertNotNull(h.getId());
-        Holiday h0 = holidayRepository.findById(h.getId());
+        Holiday h0 = holidayRepository.findById(h.getId()).get();
         assertEquals(h0, h);
         h = null;
         h0 = null;
@@ -116,7 +116,7 @@ public class HolidayRepositoryTest {
 
         h1 = holidayRepository.save(h1);
 
-        Holiday h2 = holidayRepository.findById(h1.getId());
+        Holiday h2 = holidayRepository.findById(h1.getId()).get();
         assertEquals(h1, h2);
         assertThat(h2.getDescription(), equalTo("New Year's Day, Woot!"));
     }

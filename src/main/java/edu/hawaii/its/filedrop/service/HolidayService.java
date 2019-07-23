@@ -32,13 +32,13 @@ public class HolidayService {
     @Transactional(readOnly = true)
     @Cacheable(value = "holidaysById", key = "#id")
     public Holiday findHoliday(Integer id) {
-        return holidayRepository.findById(id);
+        return holidayRepository.findById(id).get();
     }
 
     @Transactional(readOnly = true)
     @Cacheable(value = "holidayTypesById", key = "#id")
     public Type findType(Integer id) {
-        return holidayTypeRepository.findById(id);
+        return holidayTypeRepository.findById(id).get();
     }
 
     @Transactional(readOnly = true)

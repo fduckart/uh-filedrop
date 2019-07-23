@@ -50,7 +50,7 @@ public class RoleService {
 
     @Cacheable(value = "rolesByIdCache")
     public Role findById(Integer id) {
-        return roleRepository.findById(id);
+        return roleRepository.findById(id).orElse(null);
     }
 
     public Role findByRole(String role) {

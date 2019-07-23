@@ -2,6 +2,7 @@ package edu.hawaii.its.filedrop.repository;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -10,7 +11,8 @@ import edu.hawaii.its.filedrop.type.Administrator;
 
 public interface AdministratorRepository extends JpaRepository<Administrator, Integer> {
 
-    Administrator findById(Integer id);
+    @Override
+    Optional<Administrator> findById(Integer id);
 
     @Override
     @Query(value = "select a from Administrator a "
