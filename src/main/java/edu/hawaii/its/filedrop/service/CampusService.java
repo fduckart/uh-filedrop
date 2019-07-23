@@ -40,7 +40,7 @@ public class CampusService {
     @Transactional(readOnly = true)
     @Cacheable(value = "campusesById", key = "#id")
     public Campus find(Integer id) {
-        return campusRepository.findById(id);
+        return campusRepository.findById(id).get();
     }
 
     @Transactional

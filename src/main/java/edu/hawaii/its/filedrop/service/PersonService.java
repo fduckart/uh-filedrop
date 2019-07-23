@@ -31,7 +31,7 @@ public class PersonService {
     @Transactional(readOnly = true)
     @Cacheable(value = "personByIdCache", key = "#id")
     public Person findById(Integer id) {
-        return personRepository.findById(id);
+        return personRepository.findById(id).get();
     }
 
     public Person findPerson(PersonIdentifiable p) {
