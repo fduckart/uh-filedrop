@@ -3,9 +3,9 @@
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>edu.hawaii.its</artifactId>
+    <groupId>edu.hawaii.its</groupId>
     <packaging>war</packaging>
-    <name>filedrop</name>
+    <artifactId>filedrop</artifactId>
     <description>University of Hawaii FileDrop App.</description>
     <version>1.1</version>
 
@@ -126,14 +126,14 @@
             <artifactId>spring-security-cas</artifactId>
         </dependency>
         <dependency>
-           <groupId>org.jasig.cas.client</groupId>
-           <artifactId>cas-client-core</artifactId>
-           <version>${cas.client-version}</version>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-core</artifactId>
+            <version>${cas.client-version}</version>
         </dependency>
         <dependency>
-           <groupId>org.jasig.cas.client</groupId>
-           <artifactId>cas-client-support-saml</artifactId>
-           <version>${cas.client-version}</version>
+            <groupId>org.jasig.cas.client</groupId>
+            <artifactId>cas-client-support-saml</artifactId>
+            <version>${cas.client-version}</version>
         </dependency>
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
@@ -303,7 +303,7 @@
                                 <echo>Now that you have a clean project,</echo>
                                 <echo>here are some common goals for this project:</echo>
                                 <echo>$ ./mvnw clean test</echo>
-                                <echo>$ ./mvnw clean test -Dtest=*Test </echo>
+                                <echo>$ ./mvnw clean test -Dtest=*Test</echo>
                                 <echo>$ ./mvnw clean package</echo>
                                 <echo>$ ./mvnw -Dmaven.test.skip=true clean package</echo>
                                 <echo>$ ./mvnw jasmine:test</echo>
