@@ -33,7 +33,7 @@ public class AppConfigRun {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "app.ldap.contextSource")
+    @ConfigurationProperties(prefix = "app.ldap.context-source")
     public LdapContextSource ldapContextSource() {
         return new LdapContextSource();
     }

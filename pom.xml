@@ -16,11 +16,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <prerequisites>
-        <maven>3.2.1</maven>
-    </prerequisites>
     <properties>
         <maven-war-plugin.version>2.4</maven-war-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
+        <maven.version>3.2.1</maven.version>
         <java.version>1.8</java.version>
         <junit.version>4.12</junit.version>
         <commons-dbcp-version>2.1.1</commons-dbcp-version>
@@ -232,12 +231,31 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <warName>${project.name}</warName>
-                    <source>${java-version}</source>
-                    <target>${java-version}</target>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
                 </configuration>
             </plugin>
             <plugin>
@@ -284,13 +302,13 @@
                             <tasks>
                                 <echo>Now that you have a clean project,</echo>
                                 <echo>here are some common goals for this project:</echo>
-                                <echo>$ mvn clean test</echo>
-                                <echo>$ mvn clean test -Dtest=*Test </echo>
-                                <echo>$ mvn clean package</echo>
-                                <echo>$ mvn -Dmaven.test.skip=true clean package</echo>
-                                <echo>$ mvn jasmine:test</echo>
-                                <echo>$ mvn clean test jacoco:report</echo>
-                                <echo>$ mvn clean spring-boot:run</echo>
+                                <echo>$ ./mvnw clean test</echo>
+                                <echo>$ ./mvnw clean test -Dtest=*Test </echo>
+                                <echo>$ ./mvnw clean package</echo>
+                                <echo>$ ./mvnw -Dmaven.test.skip=true clean package</echo>
+                                <echo>$ ./mvnw jasmine:test</echo>
+                                <echo>$ ./mvnw clean test jacoco:report</echo>
+                                <echo>$ ./mvnw clean spring-boot:run</echo>
                             </tasks>
                         </configuration>
                     </execution>
