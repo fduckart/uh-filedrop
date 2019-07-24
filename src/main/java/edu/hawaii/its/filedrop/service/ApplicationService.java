@@ -3,7 +3,6 @@ package edu.hawaii.its.filedrop.service;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
-
 import javax.annotation.PostConstruct;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -15,7 +14,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +48,7 @@ public class ApplicationService {
 
     @Cacheable(value = "offices")
     public List<Office> findOffices() {
-        return officeRepository.findAll(new Sort("sortId"));
+        return officeRepository.findAllByOrderBySortId();
     }
 
     @Cacheable(value = "officesById", key = "#id")

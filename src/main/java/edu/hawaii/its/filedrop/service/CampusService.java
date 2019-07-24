@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,7 +33,7 @@ public class CampusService {
     @Transactional(readOnly = true)
     @Cacheable(value = "campusesActualAll")
     public List<Campus> findActualAll() {
-        return campusRepository.findAllByActual("Y", new Sort("id"));
+        return campusRepository.findAllByActualOrderById("Y");
     }
 
     @Transactional(readOnly = true)
