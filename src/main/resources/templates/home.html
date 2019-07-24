@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" lang="en">
 <head th:replace="header :: copy"></head>
 <body>
     <nav th:replace="menubar :: copy"></nav>
@@ -15,8 +15,8 @@
             </div>
             <div class="row" sec:authorize="isAnonymous()">
                 <div id="login-forms">
-                    <div class="col-xs-12 col-sm-6" id="login-form-row">
-                        <table id="login-table" class="table table-condensed">
+                    <div class="col-xs-12 col-sm-6 login-form-row">
+                        <table class="table table-condensed login-table">
                             <tr>
                                 <td id="uh-login">
                                     <fieldset>
@@ -32,8 +32,8 @@
                         </table>
                     </div>
 
-                    <div class="col-xs-12 col-sm-6" id="login-form-row">
-                        <table id="login-table" class="table login-center-table">
+                    <div class="col-xs-12 col-sm-6 login-form-row">
+                        <table class="table login-center-table login-table">
                             <tr>
                                 <td id="nonuh-login">
                                     <form action="#" th:action="@{/validate}" method="post">
