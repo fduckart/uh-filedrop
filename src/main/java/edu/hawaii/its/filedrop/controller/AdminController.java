@@ -32,6 +32,13 @@ public class AdminController {
         return "admin/admin";
     }
 
+    @GetMapping("/admin/technology")
+    public String technology() {
+        logger.debug("User at admin/technology.");
+
+        return "admin/technology";
+    }
+
     @GetMapping(value = { "/admin/application/role", "/admin/application/roles" })
     public String adminUserRole() {
         logger.debug("User at admin/application/role.");

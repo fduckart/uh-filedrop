@@ -38,6 +38,8 @@
                             <li class="divider"></li>
                             <li><a th:href="@{/user}">Login Attributes</a></li>
                             <li><a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')">Employee Lookup</a></li>
+                            <li class="divider"></li>
+                            <li><a th:href="@{/admin/technology}">Technology</a></li>
                         </ul>
                     </li>
                     <li sec:authorize="isAuthenticated()">
