@@ -16,11 +16,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <prerequisites>
-        <maven>3.2.1</maven>
-    </prerequisites>
     <properties>
         <maven-war-plugin.version>2.4</maven-war-plugin.version>
+        <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
+        <maven.version>3.2.1</maven.version>
         <java.version>1.8</java.version>
         <junit.version>4.12</junit.version>
         <commons-dbcp-version>2.1.1</commons-dbcp-version>
@@ -232,12 +231,30 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${maven-enforcer-plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>enforce-versions</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>${maven.version}</version>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>${maven-war-plugin.version}</version>
                 <configuration>
                     <warName>${project.name}</warName>
-                    <source>${java-version}</source>
-                    <target>${java-version}</target>
                 </configuration>
             </plugin>
             <plugin>
