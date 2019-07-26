@@ -79,18 +79,6 @@ public class HomeController {
         return "redirect:/user";
     }
 
-    @GetMapping(value = { "/holiday", "/holidays" })
-    public String holiday() {
-        logger.debug("User at holiday.");
-        return "holiday";
-    }
-
-    @GetMapping(value = { "/holidaygrid", "/holidaysgrid" })
-    public String holidaygrid() {
-        logger.debug("User at holidaygrid.");
-        return "holiday-grid";
-    }
-
     @GetMapping(value = { "/campus", "/campuses" })
     public String campus() {
         logger.debug("User at campus.");

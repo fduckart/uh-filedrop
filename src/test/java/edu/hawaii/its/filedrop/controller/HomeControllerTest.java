@@ -10,6 +10,7 @@ import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.access.User;
@@ -218,6 +219,13 @@ public class HomeControllerTest {
         // Anonymous users not allowed into admin area.
         mockMvc.perform(get("/user"))
                 .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void exceptionTest() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(homeController)
+            .setControllerAdvice(new ErrorControllerAdvice())
+            .build();
     }
 
 }
