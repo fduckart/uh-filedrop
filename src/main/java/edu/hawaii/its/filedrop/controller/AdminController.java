@@ -53,9 +53,10 @@ public class AdminController {
     }
 
     @PutMapping(value = "/admin/gate-message", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String setGateMessage(Message message) {
+    public String setGateMessage(Model model, Message message) {
         messageService.update(message);
         messageService.evictCache();
+        model.addAttribute("success", true);
         return "admin/gate-message";
     }
 

@@ -6,6 +6,11 @@
 <nav th:replace="menubar :: copy"></nav>
 <div class="container">
     <h3>Gate Message</h3>
+    <div class="alert alert-success alert-dismissable" th:if="${success}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        Gate message updated.
+    </div>
     <form action="" th:action="@{/admin/gate-message}" th:object="${message}" th:method="PUT">
         <div class="form-group">
             <input type="hidden" id="id" th:field="*{id}" th:value="${message.id}">
