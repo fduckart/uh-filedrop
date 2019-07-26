@@ -1,7 +1,7 @@
 (function() {
 
     function RoleJsController($scope, dataProvider) {
-        const URL_LOAD = '/filedrop/api/roles';
+        var URL_LOAD = "/filedrop/api/roles";
         $scope.roles = [];
 
         $scope.init = function() {
