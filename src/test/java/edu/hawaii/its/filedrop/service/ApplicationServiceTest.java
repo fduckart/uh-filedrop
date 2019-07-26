@@ -1,17 +1,5 @@
 package edu.hawaii.its.filedrop.service;
 
-import static org.hamcrest.CoreMatchers.anyOf;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,6 +14,18 @@ import edu.hawaii.its.filedrop.repository.AdministratorRepository;
 import edu.hawaii.its.filedrop.type.Administrator;
 import edu.hawaii.its.filedrop.type.Office;
 import edu.hawaii.its.filedrop.type.Role;
+
+import static org.hamcrest.CoreMatchers.anyOf;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -110,7 +110,7 @@ public class ApplicationServiceTest {
     public void isAdministrator() {
         List<Administrator> administratorsS = applicationService.findAdministrators();
         long administratorCount = administratorsS.size();
-        assertThat(administratorCount, equalTo(6L));
+        assertThat(administratorCount, equalTo(8L));
         for (Administrator c : administratorsS) {
             String uhUuid = c.getPerson().getUhUuid();
             assertTrue(applicationService.isAdministrator(uhUuid));

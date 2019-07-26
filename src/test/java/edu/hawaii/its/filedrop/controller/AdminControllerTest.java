@@ -200,4 +200,23 @@ public class AdminControllerTest {
             .andExpect(model().attribute("message", hasProperty("text", is("Testing"))));
     }
 
+    @Test
+    public void setGateMessageNonAdmin() throws Exception {
+        mockMvc.perform(put("/admin/gate-message")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("id", "1")
+            .param("text", "Testing"))
+            .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @WithMockUhUser(username = "user", roles = {"ROLE_UH", "ROLE_ADMINISTRATOR"})
+    public void setGateMessageWrongType() throws Exception {
+        mockMvc.perform(put("/admin/gate-message")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("id", "Test")
+            .param("text", "Testing"))
+            .andExpect(status().is3xxRedirection());
+    }
+
 }
