@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,12 +23,14 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -174,6 +177,27 @@ public class AdminControllerTest {
         mockMvc.perform(get("/admin/technology"))
             .andExpect(status().isOk())
             .andExpect(view().name("admin/technology"));
+    }
+
+    @Test
+    @WithMockUhUser(username = "user", roles = {"ROLE_UH", "ROLE_ADMINISTRATOR"})
+    public void adminGateMessage() throws Exception {
+        mockMvc.perform(get("/admin/gate-message"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("admin/gate-message"));
+    }
+
+    @Test
+    @WithMockUhUser(username = "user", roles = {"ROLE_UH", "ROLE_ADMINISTRATOR"})
+    public void setGateMessage() throws Exception {
+        mockMvc.perform(put("/admin/gate-message")
+            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+            .param("id", "1")
+            .param("text", "Testing"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("admin/gate-message"))
+            .andExpect(model().attribute("message", hasProperty("id", is(1))))
+            .andExpect(model().attribute("message", hasProperty("text", is("Testing"))));
     }
 
 }
