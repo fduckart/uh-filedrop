@@ -1,11 +1,5 @@
 package edu.hawaii.its.filedrop.repository;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Date;
@@ -30,6 +24,12 @@ import edu.hawaii.its.filedrop.type.Holiday;
 import edu.hawaii.its.filedrop.type.Type;
 import edu.hawaii.its.filedrop.util.Dates;
 import edu.hawaii.its.filedrop.util.Strings;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -59,8 +59,8 @@ public class HolidayRepositoryTest {
     @Test
     public void findAllPaged() {
         int size = 14;
-        Sort sort = new Sort(new Sort.Order(Direction.ASC, "observedDate"));
-        Pageable pageable = new PageRequest(0, size, sort);
+        Sort sort = Sort.by(new Sort.Order(Direction.ASC, "observedDate"));
+        Pageable pageable = PageRequest.of(0, size, sort);
         Page<Holiday> page = holidayRepository.findAll(pageable);
         int pages = page.getTotalPages();
 

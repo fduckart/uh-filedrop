@@ -24,7 +24,7 @@
         text-align: center; 
     }
 
-    .container .jumbotron .row div#login-forms div#login-form-row table#login-table {
+    .container .jumbotron .row div.login-forms div.login-form-row table.login-table {
         background-color:  transparent /* lavender */;
         margin: 0 auto; 
         width: 72%;
@@ -158,7 +158,7 @@
         font-weight: bold;
     }
 
-    table#login-table {
+    table.login-table {
         border-collapse: collapse;
         width: 100%;
     }
@@ -197,7 +197,7 @@
       clear: left;
     }
 
-    .jumbotron #login-table fieldset legend {
+    .jumbotron .login-table fieldset legend {
         border-bottom: 0px solid transparent;
         padding-left: 5px;
         width: 150px;
@@ -211,8 +211,8 @@
     .container .jumbotron {
         /* */
     }
-    
-    .container .jumbotron .row div#login-forms div#login-form-row table#login-table {
+
+    .container .jumbotron .row div.login-forms div.login-form-row table.login-table {
         background-color: /* yellow */ inherit ;
         margin: inherit; 
         width: 98%;
@@ -262,8 +262,8 @@
     .container-fluid {
         width: 992px;
     }
-    
-    .container .jumbotron .row div#login-forms div#login-form-row table#login-table {
+
+    .container .jumbotron .row div.login-forms div.login-form-row table.login-table {
         background-color: /* beige */ inherit ;
         margin: inherit; 
         width: 92%;

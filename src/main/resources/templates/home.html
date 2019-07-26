@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4" lang="en">
 <head th:replace="header :: copy"></head>
 <body>
     <nav th:replace="menubar :: copy"></nav>
@@ -10,21 +10,13 @@
         <div class="jumbotron">
             <div class="row">
                 <div class="col-xs-12">
-                    <p id="login-lead">
-                        This tool is provided by the University of Hawai'i to allow a limited
-                        form of file sharing between UH faculty and staff.  It
-                        also allows users affiliated with the University to share files with
-                        non-UH users. <br/>
-                        There is a limit of <span th:text="${maxSize}"></span>MB on total upload size.
-                        You may use the service multiple times to upload a collection of files
-                        whose total size exceeds this amount.
-                    </p>
+                    <p id="login-lead" th:text="${jumbotron}"></p>
                 </div>
             </div>
             <div class="row" sec:authorize="isAnonymous()">
                 <div id="login-forms">
-                    <div class="col-xs-12 col-sm-6" id="login-form-row">
-                        <table id="login-table" class="table table-condensed">
+                    <div class="col-xs-12 col-sm-6 login-form-row">
+                        <table class="table table-condensed login-table">
                             <tr>
                                 <td id="uh-login">
                                     <fieldset>
@@ -40,8 +32,8 @@
                         </table>
                     </div>
 
-                    <div class="col-xs-12 col-sm-6" id="login-form-row">
-                        <table id="login-table" class="table login-center-table">
+                    <div class="col-xs-12 col-sm-6 login-form-row">
+                        <table class="table login-center-table login-table">
                             <tr>
                                 <td id="nonuh-login">
                                     <form action="#" th:action="@{/validate}" method="post">
@@ -88,26 +80,17 @@
         <div class="row marketing">
             <div class="col-sm-6">
                 <p class="h4">
-                    Contact Information &nbsp;
+                    <span th:text="#{home.contact}"></span>&nbsp;
                     <a th:href="@{/help/contact}" type="button" class="btn btn-default btn-xs">View</a>
                 </p>
-                <p>
-                    A list of university website and email addresses
-                    to contact us with questions or comments. Please
-                    do not hesitate to contact us with any questions
-                    you might have about the application.
-                </p>
+                <p th:text="#{home.contact.message}"></p>
             </div>
             <div class="col-sm-6">
                 <p class="h4">
-                    Frequently Asked Questions &nbsp;
-                    <a th:href="@{/help/faq}" type="button" class="btn btn-default btn-xs">View</a>
+                    <span th:text="#{home.faq}"></span>
+                    <a th:href="@{/help/faq}" type="button" class="btn btn-default btn-xs" th:text="View">View</a>
                 </p>
-                <p>
-                    We have assembled responses to a number of common
-                    questions you might have about the process, including
-                    where you can find the source code for this application.
-                </p>
+                <p th:text="#{home.faq.message}"></p>
             </div>
         </div>
     </div>
