@@ -110,7 +110,7 @@ public class ApplicationServiceTest {
     public void isAdministrator() {
         List<Administrator> administratorsS = applicationService.findAdministrators();
         long administratorCount = administratorsS.size();
-        assertThat(administratorCount, equalTo(8L));
+        assertThat(administratorCount, equalTo(6L));
         for (Administrator c : administratorsS) {
             String uhUuid = c.getPerson().getUhUuid();
             assertTrue(applicationService.isAdministrator(uhUuid));
