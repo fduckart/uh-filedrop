@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+>
 <head th:replace="header :: copy"></head>
 <body>
     <nav th:replace="menubar :: copy"></nav>
@@ -18,10 +18,9 @@
             <div class="panel-body" >
                 <div class="row">
                     <div class="col-xs-12">
+                        <a class="text-left" th:href="@{/admin/gate-message}">Gate Message</a><br/>
                         <a class="text-left" th:href="@{/admin/application/role}">Application Roles</a><br/>
                         <a class="text-left" th:href="@{/campus}">Campuses</a><br/>
-                        <a class="text-left" th:href="@{/holiday}">Holidays (Year Selection)</a><br/>
-                        <a class="text-left" th:href="@{/holidaygrid}">Holidays (Paged)</a><br/>
                     </div>
                     <div class="col-xs-12">
                         <p></p>

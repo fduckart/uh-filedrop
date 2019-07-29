@@ -1,9 +1,35 @@
 <div th:fragment="copy" th:remove="tag">
     <footer  class="footer" th:fragment="copy">
-       <div class="container">
+        <div class="container">
            <span class='uh-branding-one'>University</span>
            <span class='uh-branding-two'>of&nbsp;</span>
-           <span class='uh-branding-one'>Hawai&#8216;i</span>
+            <span class='uh-branding-one'>Hawai&#8216;i</span>
        </div>
     </footer>
+
+    <script type="text/javascript" th:src="@{/webjars/angularjs/1.5.8/angular.min.js}"
+        src="webjars/angularjs/1.5.8/angular.min.js"></script>
+
+    <script type="text/javascript" th:src="@{/javascript/app.js}" src="javascript/app.js?ver=0.2"></script>
+    <script type="text/javascript" th:src="@{/javascript/app.service.js}"
+        src="javascript/app.service.js?ver=0.2"></script>
+    <script type="text/javascript" th:src="@{/javascript/filedrop.controller.campus.js}"
+        src="javascript/filedrop.controller.campus.js?ver=0.2"></script>
+    <script type="text/javascript" th:src="@{/javascript/filedrop.controller.role.js}"
+        src="javascript/filedrop.controller.role.js?ver=0.2"></script>
+
+    <script type="text/javascript" th:src="@{/webjars/jquery/3.2.0/jquery.min.js}"
+        src="webjars/jquery/3.2.0/jquery.min.js?ver=0.2"></script>
+    <script type="text/javascript" th:src="@{/webjars/bootstrap/3.3.7/js/bootstrap.min.js}"
+        src="webjars/bootstrap/3.3.7/js/bootstrap.min.js?ver=0.2"></script>
+
+    <script type="text/javascript" th:src="@{/javascript/app.util.js}" src="javascript/app.util.js?ver=0.2"></script>
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script type="text/javascript" th:src="@{/webjars/html5shiv/3.7.3/html5shiv.min.js}"
+        src="webjars/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script type="text/javascript" th:src="@{/webjars/respond/1.4.2/dest/respond.min.js}"
+        src="webjars/respond/1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
 </div>

@@ -1,5 +1,22 @@
 package edu.hawaii.its.filedrop.controller;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
+
+import edu.hawaii.its.filedrop.access.User;
+import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.service.EmailService;
+
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -13,22 +30,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.context.WebApplicationContext;
-
-import edu.hawaii.its.filedrop.access.User;
-import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.service.EmailService;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -101,22 +102,6 @@ public class HomeControllerTest {
         mockMvc.perform(get("/help/faq"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("help/faq"));
-    }
-
-    @Test
-    @WithMockUhAdmin
-    public void holidayViaUh() throws Exception {
-        mockMvc.perform(get("/holiday"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("holiday"));
-    }
-
-    @Test
-    @WithMockUhAdmin
-    public void holidayGridViaUh() throws Exception {
-        mockMvc.perform(get("/holidaygrid"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("holiday-grid"));
     }
 
     @Test
@@ -234,6 +219,13 @@ public class HomeControllerTest {
         // Anonymous users not allowed into admin area.
         mockMvc.perform(get("/user"))
                 .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    public void exceptionTest() throws Exception {
+        mockMvc = MockMvcBuilders.standaloneSetup(homeController)
+            .setControllerAdvice(new ErrorControllerAdvice())
+            .build();
     }
 
 }
