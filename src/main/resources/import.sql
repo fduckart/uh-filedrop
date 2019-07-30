@@ -46,11 +46,6 @@ insert into role (id, role, security_role, description) values (12, 'EXCLUDED', 
 insert into role (id, role, security_role, description) values (13, 'ADMINISTRATOR',  'ADMINISTRATOR', 'Administrator');
 insert into role (id, role, security_role, description) values (14, 'SUPER_USER',     'SUPERUSER',     'Superuser');
 
-insert into type (id, description) values(1, 'Bank');
-insert into type (id, description) values(2, 'Federal');
-insert into type (id, description) values(3, 'State');
-insert into type (id, description) values(4, 'UH');
-
 -- Developers.
 insert into person (id, uhuuid, name, email, username) values (2, '17958670', 'Frank Duckart','duckart@hawaii.edu','duckart');
 
