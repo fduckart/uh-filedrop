@@ -1,17 +1,17 @@
 package edu.hawaii.its.filedrop.access;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.util.LinkedHashSet;
 import java.util.Set;
 
 import org.junit.Test;
 
 import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 public class RoleHolderTest {
 
@@ -42,7 +42,7 @@ public class RoleHolderTest {
         roles = new LinkedHashSet<>();
         roles.add(SecurityRole.ANONYMOUS);
         roles.add(SecurityRole.UH);
-        roles.add(SecurityRole.COORDINATOR);
+        roles.add(SecurityRole.NON_UH);
         roleHolder = new SecurityRoleHolder(roles);
         assertThat(roleHolder.size(), equalTo(3));
     }
@@ -55,12 +55,12 @@ public class RoleHolderTest {
         assertThat(roleHolder.size(), equalTo(1));
         roleHolder.add(SecurityRole.UH);
         assertThat(roleHolder.size(), equalTo(2));
-        roleHolder.add(SecurityRole.COORDINATOR);
+        roleHolder.add(SecurityRole.NON_UH);
         assertThat(roleHolder.size(), equalTo(3));
 
         assertThat(roleHolder.toString(), containsString("ROLE_ANONYMOUS"));
         assertThat(roleHolder.toString(), containsString("ROLE_UH"));
-        assertThat(roleHolder.toString(), containsString("ROLE_COORDINATOR"));
+        assertThat(roleHolder.toString(), containsString("ROLE_NON_UH"));
     }
 
     @Test
@@ -75,8 +75,8 @@ public class RoleHolderTest {
         roleHolder.add(SecurityRole.UH);
         assertTrue(roleHolder.contains(SecurityRole.UH));
 
-        assertFalse(roleHolder.contains(SecurityRole.COORDINATOR));
-        roleHolder.add(SecurityRole.COORDINATOR);
-        assertTrue(roleHolder.contains(SecurityRole.COORDINATOR));
+        assertFalse(roleHolder.contains(SecurityRole.NON_UH));
+        roleHolder.add(SecurityRole.NON_UH);
+        assertTrue(roleHolder.contains(SecurityRole.NON_UH));
     }
 }

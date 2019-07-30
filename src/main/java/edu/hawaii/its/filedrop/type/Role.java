@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.io.Serializable;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -154,26 +153,8 @@ public class Role implements Serializable {
 
     @Transient
     @JsonIgnore
-    public boolean isApplicant() {
-        return Role.SecurityRole.APPLICANT.name().equals(securityRole);
-    }
-
-    @Transient
-    @JsonIgnore
-    public boolean isCoordinator() {
-        return Role.SecurityRole.COORDINATOR.name().equals(securityRole);
-    }
-
-    @Transient
-    @JsonIgnore
-    public boolean isExcluded() {
-        return Role.SecurityRole.EXCLUDED.name().equals(securityRole);
-    }
-
-    @Transient
-    @JsonIgnore
-    public boolean isReviewer() {
-        return Role.SecurityRole.REVIEWER.name().equals(securityRole);
+    public boolean isNonUH() {
+        return SecurityRole.NON_UH.name().equals(securityRole);
     }
 
     @Transient
@@ -199,10 +180,7 @@ public class Role implements Serializable {
     public static enum SecurityRole implements Authority {
 
         ANONYMOUS(0),
-        APPLICANT(1),
-        COORDINATOR(2),
-        REVIEWER(4),
-        EXCLUDED(12),
+        NON_UH(1),
         ADMINISTRATOR(13),
         SUPERUSER(14),
         UH(99);
@@ -237,37 +215,5 @@ public class Role implements Serializable {
             }
             return null;
         }
-    }
-
-    public static enum ID {
-
-        APPLICANT(1),
-        COORDINATOR(3),
-        DPC_REVIEWER(4),
-        DPC_CHAIR(5),
-        DC_REVIEWER(6),
-        DC_CHAIR(7),
-        DEAN_REVIEWER(8),
-        DEAN_CHAIR(9),
-        TPRC_REVIEWER(10),
-        TPRC_CHAIR(11),
-        ADMINISTRATOR(13),
-        SUPERUSER(14);
-
-        private final Integer value;
-
-        // Private constructor.
-        private ID(Integer value) {
-            this.value = value;
-        }
-
-        public Integer value() {
-            return value;
-        }
-
-        public int intValue() {
-            return value.intValue();
-        }
-
     }
 }

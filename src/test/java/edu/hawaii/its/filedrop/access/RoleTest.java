@@ -1,17 +1,17 @@
 package edu.hawaii.its.filedrop.access;
 
+import org.junit.Test;
+
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ADMINISTRATOR;
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ANONYMOUS;
-import static edu.hawaii.its.filedrop.type.Role.SecurityRole.APPLICANT;
+import static edu.hawaii.its.filedrop.type.Role.SecurityRole.NON_UH;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
-
-import org.junit.Test;
-
-import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
 public class RoleTest {
 
@@ -38,7 +38,7 @@ public class RoleTest {
         SecurityRole anonymous = ANONYMOUS;
         assertThat(anonymous.value(), equalTo(0));
 
-        SecurityRole applicant = APPLICANT;
+        SecurityRole applicant = NON_UH;
         assertThat(applicant.value(), equalTo(1));
 
         SecurityRole administator = ADMINISTRATOR;

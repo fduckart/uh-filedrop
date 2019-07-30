@@ -32,17 +32,7 @@ insert into office (id, campus_id, sort_id, description) values (10, 10, 10, 'Ch
 insert into office (id, campus_id, sort_id, description) values (11, 11, 11, 'Information Technology Services');
 insert into office (id, campus_id, sort_id, description) values (12, 11, 12, 'Vice President for Community Colleges');
 
-insert into role (id, role, security_role, description) values (1,  'APPLICANT',      'APPLICANT',     'Applicant');
-insert into role (id, role, security_role, description) values (3,  'COORDINATOR',    'COORDINATOR',   'Coordinator');
-insert into role (id, role, security_role, description) values (4,  'DPC_REVIEWER',   'REVIEWER',      'DPC Reviewer');
-insert into role (id, role, security_role, description) values (5,  'DPC_CHAIR',      'REVIEWER',      'DPC Chair');
-insert into role (id, role, security_role, description) values (6,  'DC_REVIEWER',    'REVIEWER',      'DC Reviewer');
-insert into role (id, role, security_role, description) values (7,  'DC_CHAIR',       'REVIEWER',      'DC Chair');
-insert into role (id, role, security_role, description) values (8,  'DEAN_REVIEWER',  'REVIEWER',      'Dean Reviewer');
-insert into role (id, role, security_role, description) values (9,  'DEAN_CHAIR',     'REVIEWER',      'Dean Chair');
-insert into role (id, role, security_role, description) values (10, 'TPRC_REVIEWER',  'REVIEWER',      'TPRC Reviewer');
-insert into role (id, role, security_role, description) values (11, 'TPRC_CHAIR',     'REVIEWER',      'TPRC Chair');
-insert into role (id, role, security_role, description) values (12, 'EXCLUDED',       'EXCLUDED',      'Excluded');
+insert into role (id, role, security_role, description) values (1, 'NON_UH',  'NON_UH', 'NonUH');
 insert into role (id, role, security_role, description) values (13, 'ADMINISTRATOR',  'ADMINISTRATOR', 'Administrator');
 insert into role (id, role, security_role, description) values (14, 'SUPER_USER',     'SUPERUSER',     'Superuser');
 
@@ -62,7 +52,7 @@ insert into system_role (id, person_id, role_id, office_id) values ( 2,  2, 14, 
 insert into system_role (id, person_id, role_id, office_id) values ( 5,  5, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (25, 23, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (26, 24, 13, 11);
-insert into system_role (id, person_id, role_id, office_id) values (28, 25,  3, 11);
-insert into system_role (id, person_id, role_id, office_id) values (29, 26,  3, 11);
+insert into system_role (id, person_id, role_id, office_id) values (28, 25, 13, 11);
+insert into system_role (id, person_id, role_id, office_id) values (29, 26, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (30, 26, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (31,  2, 13, 11);
