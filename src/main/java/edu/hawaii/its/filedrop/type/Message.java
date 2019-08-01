@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -16,6 +15,7 @@ public class Message implements Serializable {
     public static final int JUMBOTRON_MESSAGE = 1;
     public static final int GATE_MESSAGE = 2;
     public static final int ACCESS_DENIED_MESSAGE = 3;
+    public static final int SPACE_FULL_MESSAGE = 4;
     public static final int STAFF_GATE_MESSAGE = 5;
     public static final int FACULTY_GATE_MESSAGE = 6;
     public static final int DUAL_USER_MESSAGE = 7;
