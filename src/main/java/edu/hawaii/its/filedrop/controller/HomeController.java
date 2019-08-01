@@ -14,6 +14,7 @@ import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.EmailService;
 import edu.hawaii.its.filedrop.service.MessageService;
+import edu.hawaii.its.filedrop.service.SpaceCheckService;
 import edu.hawaii.its.filedrop.type.Message;
 
 @Controller
@@ -42,6 +43,9 @@ public class HomeController {
     @Autowired
     private UserContextService userContextService;
 
+    @Autowired
+    private SpaceCheckService spaceCheckService;
+
     @GetMapping(value = { "/", "/home" })
     public String home(Model model) {
         logger.debug("User at home. ");
@@ -50,7 +54,11 @@ public class HomeController {
         model.addAttribute("urlBase", urlBase);
         model.addAttribute("casUrlLogin", casUrlLogin);
         model.addAttribute("isCasRenew", isCasSendRenew);
-        int messageId = Message.JUMBOTRON_MESSAGE;
+
+        boolean spaceFull = spaceCheckService.isFreeSpaceAvailable();
+        model.addAttribute("spaceFull", spaceFull);
+
+        int messageId = spaceFull ? Message.SPACE_FULL_MESSAGE : Message.JUMBOTRON_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("jumbotron", message.getText());
 
