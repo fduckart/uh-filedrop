@@ -47,8 +47,7 @@ public class SpaceCheckService {
         logger.info("init; root: " + root);
         Assert.notNull(root, "property 'root' is required");
 
-        logger.info("init; root: " + root);
-        Assert.isTrue(root.exists(), "'root' directory must exist");
+        logger.info("init; root exists?: " + root.exists());
 
         logger.info("init; bytesFree: " + bytesFree);
         logger.info("init; bytesUsed: " + bytesUsed);
