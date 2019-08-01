@@ -9,3 +9,4 @@ edu.hawaii.its.iml
 /target
 *-overrides.properties
 data.sql
+*.iml
