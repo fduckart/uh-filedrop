@@ -326,6 +326,8 @@
                 <configuration>
                     <excludes>
                         <exclude>edu/hawaii/its/filedrop/configuration/SpringBootWebApplication.class</exclude>
+                        <exclude>edu/hawaii/its/filedrop/service/SpaceCheckService.class</exclude>
+                        <exclude>edu/hawaii/its/filedrop/job/SpaceCheckJob.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>
