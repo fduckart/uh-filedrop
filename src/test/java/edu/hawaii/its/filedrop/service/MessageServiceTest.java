@@ -38,7 +38,7 @@ public class MessageServiceTest {
         Message message = messageService.findMessage(Message.GATE_MESSAGE);
         assertThat(message.getId(), equalTo(Message.GATE_MESSAGE));
         assertEquals("Y", message.getEnabled());
-        assertTrue(message.getText().startsWith("University of Hawaii Information"));
+        assertTrue(message.getText().contains("University of Hawai'i"));
 
         // Turn down logging just for a second, just
         // to reduce the Exception noise a little bit.
@@ -65,7 +65,7 @@ public class MessageServiceTest {
         messageService.setEntityManager(em);
         message = messageService.findMessage(Message.UNAVAILABLE_MESSAGE);
         assertThat(message.getId(), equalTo(Message.UNAVAILABLE_MESSAGE));
-        assertThat(message.getText(), containsString("system is restricted"));
+        assertThat(message.getText(), containsString("unavailable"));
 
         // Put original logging level back.
         logger.setLevel(level);
@@ -76,7 +76,7 @@ public class MessageServiceTest {
         Message message = messageService.findMessage(Message.GATE_MESSAGE);
         assertEquals("Y", message.getEnabled());
         assertEquals(Integer.valueOf(1), message.getTypeId());
-        assertTrue(message.getText().startsWith("University of Hawaii Information"));
+        assertTrue(message.getText().contains("University of Hawai'i"));
         assertTrue(message.getText().endsWith("."));
 
         final String text = message.getText();
@@ -92,7 +92,7 @@ public class MessageServiceTest {
         // Put the original text back.
         message.setText(text);
         messageService.update(message);
-        assertTrue(message.getText().startsWith("University of Hawaii Information"));
+        assertTrue(message.getText().contains("University of Hawai'i"));
         assertTrue(message.getText().endsWith("."));
     }
 
