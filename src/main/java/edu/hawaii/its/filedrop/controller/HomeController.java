@@ -55,10 +55,10 @@ public class HomeController {
         model.addAttribute("casUrlLogin", casUrlLogin);
         model.addAttribute("isCasRenew", isCasSendRenew);
 
-        boolean spaceFull = spaceCheckService.isFreeSpaceAvailable();
+        boolean spaceFull = !spaceCheckService.isFreeSpaceAvailable();
         model.addAttribute("spaceFull", spaceFull);
 
-        int messageId = spaceFull ? Message.SPACE_FULL_MESSAGE : Message.JUMBOTRON_MESSAGE;
+        int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.JUMBOTRON_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("jumbotron", message.getText());
 

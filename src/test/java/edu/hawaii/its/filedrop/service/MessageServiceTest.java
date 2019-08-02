@@ -1,14 +1,5 @@
 package edu.hawaii.its.filedrop.service;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import javax.persistence.EntityManager;
 
 import org.junit.Test;
@@ -20,10 +11,19 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.type.Message;
+
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.Logger;
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -57,14 +57,14 @@ public class MessageServiceTest {
         // Cause an internal exception to happen.
         EntityManager em = messageService.getEntityManager();
         messageService.setEntityManager(null);
-        message = messageService.findMessage(Message.ACCESS_DENIED_MESSAGE);
+        message = messageService.findMessage(Message.UNAVAILABLE_MESSAGE);
         assertNull(message);
 
         // Make sure the denied access message actually exists.
         messageService.evictCache();
         messageService.setEntityManager(em);
-        message = messageService.findMessage(Message.ACCESS_DENIED_MESSAGE);
-        assertThat(message.getId(), equalTo(Message.ACCESS_DENIED_MESSAGE));
+        message = messageService.findMessage(Message.UNAVAILABLE_MESSAGE);
+        assertThat(message.getId(), equalTo(Message.UNAVAILABLE_MESSAGE));
         assertThat(message.getText(), containsString("system is restricted"));
 
         // Put original logging level back.
