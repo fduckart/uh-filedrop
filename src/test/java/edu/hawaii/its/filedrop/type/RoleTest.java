@@ -1,5 +1,10 @@
 package edu.hawaii.its.filedrop.type;
 
+import org.junit.Before;
+import org.junit.Test;
+
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -8,11 +13,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
-
-import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
 public class RoleTest {
 
@@ -95,26 +95,17 @@ public class RoleTest {
 
         r1 = new Role(1, SecurityRole.ADMINISTRATOR);
         assertThat(r1.isAdministrator(), equalTo(true));
-        assertThat(r1.isApplicant(), equalTo(false));
-        assertThat(r1.isCoordinator(), equalTo(false));
-        assertThat(r1.isExcluded(), equalTo(false));
-        assertThat(r1.isReviewer(), equalTo(false));
+        assertThat(r1.isNonUH(), equalTo(false));
         assertThat(r1.isSuperuser(), equalTo(false));
 
         r1 = new Role(1, SecurityRole.SUPERUSER);
         assertThat(r1.isAdministrator(), equalTo(true));
-        assertThat(r1.isApplicant(), equalTo(false));
-        assertThat(r1.isCoordinator(), equalTo(false));
-        assertThat(r1.isExcluded(), equalTo(false));
-        assertThat(r1.isReviewer(), equalTo(false));
+        assertThat(r1.isNonUH(), equalTo(false));
         assertThat(r1.isSuperuser(), equalTo(true));
 
-        r1 = new Role(1, SecurityRole.APPLICANT);
+        r1 = new Role(1, SecurityRole.NON_UH);
         assertThat(r1.isAdministrator(), equalTo(false));
-        assertThat(r1.isApplicant(), equalTo(true));
-        assertThat(r1.isCoordinator(), equalTo(false));
-        assertThat(r1.isExcluded(), equalTo(false));
-        assertThat(r1.isReviewer(), equalTo(false));
+        assertThat(r1.isNonUH(), equalTo(true));
         assertThat(r1.isSuperuser(), equalTo(false));
     }
 
@@ -169,8 +160,7 @@ public class RoleTest {
 
     @Test
     public void testIds() {
-        assertThat(Role.ID.APPLICANT.value(), equalTo(1));
-        assertThat(Role.ID.APPLICANT.intValue(), equalTo(1));
+        assertThat(SecurityRole.NON_UH.value(), equalTo(1));
     }
 
     @Test

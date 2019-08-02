@@ -1,11 +1,5 @@
 package edu.hawaii.its.filedrop.controller;
 
-import static org.hamcrest.Matchers.hasSize;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
 import java.nio.charset.Charset;
 
 import org.junit.Before;
@@ -21,6 +15,12 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+
+import static org.hamcrest.Matchers.hasSize;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -46,20 +46,10 @@ public class RoleRestControllerTest {
     public void httpGetRoles() throws Exception {
         mockMvc.perform(get("/api/roles"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(13)))
-                .andExpect(jsonPath("$[0].role").value("APPLICANT"))
-                .andExpect(jsonPath("$[1].role").value("COORDINATOR"))
-                .andExpect(jsonPath("$[2].role").value("DPC_REVIEWER"))
-                .andExpect(jsonPath("$[3].role").value("DPC_CHAIR"))
-                .andExpect(jsonPath("$[4].role").value("DC_REVIEWER"))
-                .andExpect(jsonPath("$[5].role").value("DC_CHAIR"))
-                .andExpect(jsonPath("$[6].role").value("DEAN_REVIEWER"))
-                .andExpect(jsonPath("$[7].role").value("DEAN_CHAIR"))
-                .andExpect(jsonPath("$[8].role").value("TPRC_REVIEWER"))
-                .andExpect(jsonPath("$[9].role").value("TPRC_CHAIR"))
-                .andExpect(jsonPath("$[10].role").value("EXCLUDED"))
-                .andExpect(jsonPath("$[11].role").value("ADMINISTRATOR"))
-                .andExpect(jsonPath("$[12].role").value("SUPER_USER"));
+            .andExpect(jsonPath("$", hasSize(3)))
+            .andExpect(jsonPath("$[0].role").value("NON_UH"))
+            .andExpect(jsonPath("$[1].role").value("ADMINISTRATOR"))
+            .andExpect(jsonPath("$[2].role").value("SUPER_USER"));
     }
 
 }

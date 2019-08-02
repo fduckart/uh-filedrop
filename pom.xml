@@ -140,6 +140,14 @@
             <artifactId>thymeleaf-extras-springsecurity5</artifactId>
         </dependency>
 
+        <!-- Quartz -->
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.3.0</version>
+        </dependency>
+
+
         <!-- Test -->
         <dependency>
             <groupId>org.springframework</groupId>
@@ -318,6 +326,8 @@
                 <configuration>
                     <excludes>
                         <exclude>edu/hawaii/its/filedrop/configuration/SpringBootWebApplication.class</exclude>
+                        <exclude>edu/hawaii/its/filedrop/service/SpaceCheckService.class</exclude>
+                        <exclude>edu/hawaii/its/filedrop/job/SpaceCheckJob.class</exclude>
                     </excludes>
                 </configuration>
                 <executions>

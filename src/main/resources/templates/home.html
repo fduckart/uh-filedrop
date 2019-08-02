@@ -10,7 +10,7 @@
         <div class="jumbotron">
             <div class="row">
                 <div class="col-xs-12">
-                    <p id="login-lead" th:text="${jumbotron}"></p>
+                    <p id="login-lead" th:utext="${jumbotron}"></p>
                 </div>
             </div>
             <div class="row" sec:authorize="isAnonymous()">
@@ -22,7 +22,12 @@
                                     <fieldset>
                                         <legend class="h4">UH Users</legend>
                                         <p style="padding-top: 0.4em;">
-                                            <a class="btn btn-lg btn-success btn-block" th:href="@{/prepare}" style="min-width: 201px;">
+                                            <a th:if="${spaceFull}" class="btn btn-lg btn-success btn-block"
+                                                th:disabled="${spaceFull}" style="min-width: 201px;">
+                                                UH Login Here
+                                            </a>
+                                            <a th:if="!${spaceFull}" class="btn btn-lg btn-success btn-block"
+                                                th:href="@{/prepare}" style="min-width: 201px;">
                                                 UH Login Here
                                             </a>
                                         </p>
@@ -48,16 +53,20 @@
                                                 </tr>
                                                 <tr>
                                                     <td>Name:</td>
-                                                    <td><input type="text" id="name" name="name" size="20"/></td>
+                                                    <td><input type="text" id="name" name="name" size="20"
+                                                        th:disabled="${spaceFull}"/></td>
                                                 </tr>
                                                 <tr>
                                                     <td>Email:</td>
-                                                    <td><input type="text" id="email" name="email" size="20"/></td>
+                                                    <td><input type="text" id="email" name="email" size="20"
+                                                        th:disabled="${spaceFull}"/></td>
                                                 </tr>
                                                 <tr>
                                                     <td>&nbsp;</td>
                                                     <td>
-                                                        <button type="button" class="btn btn-xs btn-default">Continue</button>
+                                                        <button type="button" class="btn btn-xs btn-default"
+                                                            th:disabled="${spaceFull}">Continue
+                                                        </button>
                                                     </td>
                                                 </tr>
                                             </table>

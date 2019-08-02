@@ -1,9 +1,8 @@
 
 insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (1, 'Y', 1, 'Welcome to the University of Hawai''i FileDrop application.');
-insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (2, 'Y', 1, 'University of Hawaii Information Technology Services resides in a state-of-the-art, six-story, 74,000-square-foot facility located on the Manoa campus.');
-insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (3, 'Y', 1, 'The access to this system is restricted.<br/>If you believe you should have access, <br/> please send an email to <a href=''mailto:duckart@hawaii.edu''>duckart@hawaii.edu</a>.');
-insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (4, 'N', 1, 'For Future Use.');
-insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (5, 'Y', 1, 'Cras justo odio, dapibus ac facilisis in, egestas eget quam. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.');
+insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (2, 'Y', 1, 'Welcome to the University of Hawai''i FileDrop application.');
+insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (3, 'Y', 1, 'FileDrop is currently unavailable.');
+insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (4, 'N', 1, 'University of Hawaii Information Technology Services resides in a state-of-the-art, six-story, 74,000-square-foot facility located on the Manoa campus.')
 
 -- Campus codes and names.
 insert into campus (id, code, actual, description) values (1,  'HA', 'Y', 'Hawaii Community College');
@@ -32,24 +31,9 @@ insert into office (id, campus_id, sort_id, description) values (10, 10, 10, 'Ch
 insert into office (id, campus_id, sort_id, description) values (11, 11, 11, 'Information Technology Services');
 insert into office (id, campus_id, sort_id, description) values (12, 11, 12, 'Vice President for Community Colleges');
 
-insert into role (id, role, security_role, description) values (1,  'APPLICANT',      'APPLICANT',     'Applicant');
-insert into role (id, role, security_role, description) values (3,  'COORDINATOR',    'COORDINATOR',   'Coordinator');
-insert into role (id, role, security_role, description) values (4,  'DPC_REVIEWER',   'REVIEWER',      'DPC Reviewer');
-insert into role (id, role, security_role, description) values (5,  'DPC_CHAIR',      'REVIEWER',      'DPC Chair');
-insert into role (id, role, security_role, description) values (6,  'DC_REVIEWER',    'REVIEWER',      'DC Reviewer');
-insert into role (id, role, security_role, description) values (7,  'DC_CHAIR',       'REVIEWER',      'DC Chair');
-insert into role (id, role, security_role, description) values (8,  'DEAN_REVIEWER',  'REVIEWER',      'Dean Reviewer');
-insert into role (id, role, security_role, description) values (9,  'DEAN_CHAIR',     'REVIEWER',      'Dean Chair');
-insert into role (id, role, security_role, description) values (10, 'TPRC_REVIEWER',  'REVIEWER',      'TPRC Reviewer');
-insert into role (id, role, security_role, description) values (11, 'TPRC_CHAIR',     'REVIEWER',      'TPRC Chair');
-insert into role (id, role, security_role, description) values (12, 'EXCLUDED',       'EXCLUDED',      'Excluded');
+insert into role (id, role, security_role, description) values (1, 'NON_UH',  'NON_UH', 'NonUH');
 insert into role (id, role, security_role, description) values (13, 'ADMINISTRATOR',  'ADMINISTRATOR', 'Administrator');
 insert into role (id, role, security_role, description) values (14, 'SUPER_USER',     'SUPERUSER',     'Superuser');
-
-insert into type (id, description) values(1, 'Bank');
-insert into type (id, description) values(2, 'Federal');
-insert into type (id, description) values(3, 'State');
-insert into type (id, description) values(4, 'UH');
 
 -- Developers.
 insert into person (id, uhuuid, name, email, username) values (2, '17958670', 'Frank Duckart','duckart@hawaii.edu','duckart');
@@ -67,7 +51,7 @@ insert into system_role (id, person_id, role_id, office_id) values ( 2,  2, 14, 
 insert into system_role (id, person_id, role_id, office_id) values ( 5,  5, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (25, 23, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (26, 24, 13, 11);
-insert into system_role (id, person_id, role_id, office_id) values (28, 25,  3, 11);
-insert into system_role (id, person_id, role_id, office_id) values (29, 26,  3, 11);
+insert into system_role (id, person_id, role_id, office_id) values (28, 25, 13, 11);
+insert into system_role (id, person_id, role_id, office_id) values (29, 26, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (30, 26, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (31,  2, 13, 11);

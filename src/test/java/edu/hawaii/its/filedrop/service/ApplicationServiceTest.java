@@ -110,14 +110,14 @@ public class ApplicationServiceTest {
     public void isAdministrator() {
         List<Administrator> administratorsS = applicationService.findAdministrators();
         long administratorCount = administratorsS.size();
-        assertThat(administratorCount, equalTo(6L));
+        assertThat(administratorCount, equalTo(8L));
         for (Administrator c : administratorsS) {
             String uhUuid = c.getPerson().getUhUuid();
             assertTrue(applicationService.isAdministrator(uhUuid));
             assertEquals(c.getRoleId(), c.getRole().getId());
             assertThat(c.getRoleId(), anyOf(
-                    equalTo(Role.ID.ADMINISTRATOR.value()),
-                    equalTo(Role.ID.SUPERUSER.value())));
+                equalTo(Role.SecurityRole.ADMINISTRATOR.value()),
+                equalTo(Role.SecurityRole.SUPERUSER.value())));
         }
 
         List<Administrator> administratorsR = administratorRepository.findAll();
@@ -126,8 +126,8 @@ public class ApplicationServiceTest {
             assertTrue(applicationService.isAdministrator(uhUuid));
             assertEquals(c.getRoleId(), c.getRole().getId());
             assertThat(c.getRoleId(), anyOf(
-                    equalTo(Role.ID.ADMINISTRATOR.value()),
-                    equalTo(Role.ID.SUPERUSER.value())));
+                equalTo(Role.SecurityRole.ADMINISTRATOR.value()),
+                equalTo(Role.SecurityRole.SUPERUSER.value())));
         }
 
         long repoSize = administratorRepository.findAll().size();
