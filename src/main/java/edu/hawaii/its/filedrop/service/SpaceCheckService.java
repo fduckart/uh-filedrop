@@ -42,6 +42,9 @@ public class SpaceCheckService {
     // The number of bytes which we require to remain available in the filesystem.
     private long reservedSpace = DEFAULT_RESERVED_SPACE;
 
+    @Value("${app.scheduler.spacecheck.interval}")
+    private int interval;
+
     @PostConstruct
     public void init() {
         logger.info("init; root: " + root);
@@ -65,14 +68,14 @@ public class SpaceCheckService {
             .withIdentity("spaceCheckTrigger")
             .startNow()
             .withSchedule(simpleSchedule()
-                .withIntervalInSeconds(5)
+                .withIntervalInSeconds(interval)
                 .repeatForever())
             .build();
 
         try {
             scheduler.scheduleJob(spaceCheckJob, spaceCheckTrigger);
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            logger.error("Error: ", e);
         }
     }
 

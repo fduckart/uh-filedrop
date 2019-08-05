@@ -8,81 +8,75 @@
     <!--  Content container -->
     <div class="container">
         <div class="jumbotron">
-            <div class="row">
-                <div class="col-xs-12">
-                    <p id="login-lead" th:utext="${jumbotron}"></p>
-                </div>
-            </div>
+            <p class="lead" th:utext="${jumbotron}"></p>
             <div class="row" sec:authorize="isAnonymous()">
-                <div id="login-forms">
-                    <div class="col-xs-12 col-sm-6 login-form-row">
-                        <table class="table table-condensed login-table">
-                            <tr>
-                                <td id="uh-login">
-                                    <fieldset>
-                                        <legend class="h4">UH Users</legend>
-                                        <p style="padding-top: 0.4em;">
-                                            <a th:if="${spaceFull}" class="btn btn-lg btn-success btn-block"
-                                                th:disabled="${spaceFull}" style="min-width: 201px;">
-                                                UH Login Here
-                                            </a>
-                                            <a th:if="!${spaceFull}" class="btn btn-lg btn-success btn-block"
-                                                th:href="@{/prepare}" style="min-width: 201px;">
-                                                UH Login Here
-                                            </a>
-                                        </p>
-                                    </fieldset>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
+                <div class="col-xs-12 col-sm-6 login-form-row">
+                    <table class="table table-condensed login-table">
+                        <tr>
+                            <td id="uh-login">
+                                <fieldset>
+                                    <legend class="h5">UH Users</legend>
+                                    <p style="padding-top: 0.4em;">
+                                        <a th:if="${spaceFull}" class="btn btn-lg btn-success btn-block"
+                                            th:disabled="${spaceFull}" style="min-width: 201px;">
+                                            UH Login Here
+                                        </a>
+                                        <a th:if="!${spaceFull}" class="btn btn-lg btn-success btn-block"
+                                            th:href="@{/prepare}" style="min-width: 201px;">
+                                            UH Login Here
+                                        </a>
+                                    </p>
+                                </fieldset>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
 
-                    <div class="col-xs-12 col-sm-6 login-form-row">
-                        <table class="table login-center-table login-table">
-                            <tr>
-                                <td id="nonuh-login">
-                                    <form action="#" th:action="@{/validate}" method="post">
-                                        <fieldset>
-                                            <legend class="h4">Non-UH Users</legend>
-                                            <table>
-                                                <tr>
-                                                    <td colspan="2">
-                                                        If you do not have a UH Username, please provide your
-                                                        name and email address below:
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Name:</td>
-                                                    <td><input type="text" id="name" name="name" size="20"
-                                                        th:disabled="${spaceFull}"/></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>Email:</td>
-                                                    <td><input type="text" id="email" name="email" size="20"
-                                                        th:disabled="${spaceFull}"/></td>
-                                                </tr>
-                                                <tr>
-                                                    <td>&nbsp;</td>
-                                                    <td>
-                                                        <button type="button" class="btn btn-xs btn-default"
-                                                            th:disabled="${spaceFull}">Continue
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                            </table>
-                                        </fieldset>
-                                    </form>
-                                </td>
-                            </tr>
-                        </table>
-                    
-                    </div>
-                    
+                <div class="col-xs-12 col-sm-6">
+                    <table class="table table-sm table-borderless login-center-table login-table">
+                        <tr>
+                            <td id="nonuh-login">
+                                <form action="#" th:action="@{/validate}" method="post">
+                                    <fieldset>
+                                        <legend class="h5">Non-UH Users</legend>
+                                        <table>
+                                            <tr>
+                                                <td colspan="2">
+                                                    If you do not have a UH Username, please provide your name and email
+                                                    address below:
+                                                    name and email address below:
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Name:</td>
+                                                <td><input type="text" id="name" name="name" size="20"
+                                                    th:disabled="${spaceFull}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Email:</td>
+                                                <td><input type="text" id="email" name="email" size="20"
+                                                    th:disabled="${spaceFull}"/></td>
+                                            </tr>
+                                            <tr>
+                                                <td>&nbsp;</td>
+                                                <td>
+                                                    <button type="button" class="btn btn-xs btn-light"
+                                                        th:disabled="${spaceFull}">Continue
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </fieldset>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+
                 </div>
             </div>
             <div sec:authorize="isAuthenticated()">
                 <form action="logout" th:action="@{/logout}" method="post">
-                    <button class="btn btn-lg btn-default" type="submit">Logout</button>
+                    <button class="btn btn-lg btn-light" type="submit">Logout</button>
                 </form>
             </div>
         </div>
@@ -90,14 +84,14 @@
             <div class="col-sm-6">
                 <p class="h4">
                     <span th:text="#{home.contact}"></span>&nbsp;
-                    <a th:href="@{/help/contact}" type="button" class="btn btn-default btn-xs">View</a>
+                    <a th:href="@{/help/contact}" class="btn btn-outline-dark btn-xs">View</a>
                 </p>
                 <p th:text="#{home.contact.message}"></p>
             </div>
             <div class="col-sm-6">
                 <p class="h4">
                     <span th:text="#{home.faq}"></span>
-                    <a th:href="@{/help/faq}" type="button" class="btn btn-default btn-xs" th:text="View">View</a>
+                    <a th:href="@{/help/faq}" class="btn btn-outline-dark btn-xs" th:text="View">View</a>
                 </p>
                 <p th:text="#{home.faq.message}"></p>
             </div>
