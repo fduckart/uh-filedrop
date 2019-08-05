@@ -96,12 +96,7 @@
         background-color: transparent;
     }
     .navbar-brand.uh-nav-app-name {
-        height: 30px;
-        width: auto;
-        padding-left: 5px;
-        padding-top: 20px;
         color: #BD9319;
-        background-color: transparent;
 
         font-family: alegreyasans-regular, opensans-regular, serif;
         font-weight: normal;
@@ -159,6 +154,7 @@
     }
 
     table.login-table {
+        border: none;
         border-collapse: collapse;
         width: 100%;
     }
@@ -198,7 +194,7 @@
     }
 
     .jumbotron .login-table fieldset legend {
-        border-bottom: 0px solid transparent;
+        border-bottom: none;
         padding-left: 5px;
         width: 150px;
     }
@@ -234,13 +230,6 @@
     }
     .navbar-brand.uh-nav-app-name {
         position: inherit;
-        top: 0px;
-        left: 115px;
-        height: 90px;
-        padding-left: 18px;
-        padding-top: 52px;
-        white-space: nowrap;
-        /* text-align: left; */
         font-size: 28px;
 
         background-color: transparent;
