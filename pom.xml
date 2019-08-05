@@ -229,6 +229,11 @@
             <artifactId>vue</artifactId>
             <version>2.5.13</version>
         </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>popper.js</artifactId>
+            <version>1.15.0</version>
+        </dependency>
     </dependencies>
     <build>
         <plugins>
@@ -278,6 +283,7 @@
                     <preloadSources>
                         <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.min.js"></source>
                         <source>classpath/META-INF/resources/webjars/jquery/${jquery-version}/jquery.min.js</source>
+                        <source>classpath/META-INF/resources/webjars/popper.js/1.15.0/popper.min.js</source>
                         <source>classpath/META-INF/resources/webjars/bootstrap/3.3.7/js/bootstrap.min.js</source>
                         <source>classpath/META-INF/resources/webjars/angular-mocks/${angular-mocks-version}/angular-mocks.js</source>
                         <source>${basedir}/src/main/resources/static/javascript/app.js</source>

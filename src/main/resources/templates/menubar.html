@@ -1,52 +1,55 @@
-    <nav class="navbar navbar-default navbar-fixed-top" role="navigation" th:fragment="copy">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#filedrop-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="/filedrop/" th:href="@{/}">
-                    <img class="img-responsive" th:src="@{/images/seal.jpg}" src="images/seal.jpg" alt="">
-                </a>
-                <a class="navbar-brand uh-nav-app-name" href="/filedrop/" th:href="@{/}">
-                    UH FileDrop
-                </a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="filedrop-navbar-collapse-1">
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a th:href="@{/}">Home</a></li>
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Help <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a th:href="@{/help/contact}">Contact</a></li>
-                            <li><a th:href="@{/help/faq}">FAQ</a></li>
-                        </ul>
-                    </li>
-                    <li class="dropdown"  sec:authorize="hasRole('ROLE_ADMINISTRATOR')">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">Admin <span class="caret"></span></a>
-                        <ul class="dropdown-menu" role="menu">
-                            <li><a th:href="@{/admin}">Administration</a></li>
-                            <li class="divider"></li>
-                            <li><a th:href="@{/admin/application/role}">Application Roles</a></li>
-                            <li><a th:href="@{/campus}">Campuses</a></li>
-                            <li class="divider"></li>
-                            <li><a th:href="@{/admin/gate-message}">Gate Message</a>
-                            <li><a th:href="@{/user}">Login Attributes</a></li>
-                            <li><a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')">Employee Lookup</a></li>
-                            <li class="divider"></li>
-                            <li><a th:href="@{/admin/technology}">Technology</a></li>
-                        </ul>
-                    </li>
-                    <li sec:authorize="isAuthenticated()">
-                        <a th:href="@{/logout}">Logout</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top" role="navigation" th:fragment="copy">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <button class="navbar-toggler" type="button" data-toggle="collapse"
+        data-target="#filedrop-navbar-collapse-1" aria-controls="navbarText" aria-expanded="false"
+        aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="container">
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="filedrop-navbar-collapse-1">
+            <a class="navbar-brand" href="/filedrop/" th:href="@{/}">
+                <img class="d-inline-block" width="50px" height="50px" th:src="@{/images/seal.jpg}"
+                    src="images/seal.jpg" alt="">
+                <span class="uh-nav-app-name">UH FileDrop</span>
+            </a>
+            <ul class="navbar-nav ml-auto align-items-end">
+                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button"
+                        aria-expanded="false">Help
+                        <span class="caret"></span></a>
+                    <div class="dropdown-menu" role="menu">
+                        <a class="dropdown-item" th:href="@{/help/contact}">Contact</a>
+                        <a class="dropdown-item" th:href="@{/help/faq}">FAQ</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMINISTRATOR')">
+                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button"
+                        aria-expanded="false">Admin
+                        <span class="caret"></span></a>
+                    <div class="dropdown-menu">
+                        <a th:href="@{/admin}" class="nav-link">Administration</a>
+                        <div class="dropdown-divider"></div>
+                        <a th:href="@{/admin/application/role}" class="nav-link">Application Roles</a>
+                        <a th:href="@{/campus}" class="nav-link">Campuses</a>
+                        <div class="dropdown-divider"></div>
+                        <a th:href="@{/admin/gate-message}" class="nav-link">Gate Message</a>
+                        <a th:href="@{/user}" class="nav-link">Login Attributes</a>
+                        <a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')" class="nav-link">Employee
+                            Lookup</a>
+                        <div class="dropdown-divider"></div>
+                        <a th:href="@{/admin/technology}" class="nav-link">Technology</a>
+                    </div>
+                </li>
+                <li class="nav-item" sec:authorize="isAuthenticated()">
+                    <a class="nav-link" th:href="@{/logout}">Logout</a>
+                </li>
+            </ul>
         </div>
-        <!-- /.container -->
-    </nav>
+    </div>
+    <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
