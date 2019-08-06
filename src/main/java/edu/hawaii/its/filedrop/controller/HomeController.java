@@ -58,9 +58,9 @@ public class HomeController {
         boolean spaceFull = !spaceCheckService.isFreeSpaceAvailable();
         model.addAttribute("spaceFull", spaceFull);
 
-        int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.JUMBOTRON_MESSAGE;
+        int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.GATE_MESSAGE;
         Message message = messageService.findMessage(messageId);
-        model.addAttribute("jumbotron", message.getText());
+        model.addAttribute("gatemessage", message.getText());
 
         return "home";
     }

@@ -30,17 +30,17 @@
                         aria-expanded="false">Admin
                         <span class="caret"></span></a>
                     <div class="dropdown-menu">
-                        <a th:href="@{/admin}" class="nav-link">Administration</a>
+                        <a th:href="@{/admin}" class="dropdown-item">Administration</a>
                         <div class="dropdown-divider"></div>
-                        <a th:href="@{/admin/application/role}" class="nav-link">Application Roles</a>
-                        <a th:href="@{/campus}" class="nav-link">Campuses</a>
+                        <a th:href="@{/admin/application/role}" class="dropdown-item">Application Roles</a>
+                        <a th:href="@{/campus}" class="dropdown-item">Campuses</a>
                         <div class="dropdown-divider"></div>
-                        <a th:href="@{/admin/gate-message}" class="nav-link">Gate Message</a>
-                        <a th:href="@{/user}" class="nav-link">Login Attributes</a>
-                        <a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')" class="nav-link">Employee
+                        <a th:href="@{/admin/gate-message}" class="dropdown-item">Gate Message</a>
+                        <a th:href="@{/user}" class="dropdown-item">Login Attributes</a>
+                        <a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')" class="dropdown-item">Employee
                             Lookup</a>
                         <div class="dropdown-divider"></div>
-                        <a th:href="@{/admin/technology}" class="nav-link">Technology</a>
+                        <a th:href="@{/admin/technology}" class="dropdown-item">Technology</a>
                     </div>
                 </li>
                 <li class="nav-item" sec:authorize="isAuthenticated()">
