@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions
+    xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+    xmlns:flowable="http://flowable.org/bpmn"
+    targetNamespace="http://www.flowable.org/processdef">
+    <process id="fileUpload" name="Process to upload a file">
+        <startEvent id="start" flowable:initiator="initiator"/>
+
+        <sequenceFlow sourceRef="start" targetRef="recipientsTask"/>
+
+        <userTask id="recipientsTask" name="addRecipients" flowable:assignee="${sender}"/>
+
+        <sequenceFlow sourceRef="recipientsTask" targetRef="filesTask"/>
+
+        <userTask id="filesTask" name="addFiles" flowable:assignee="${sender}"/>
+
+        <sequenceFlow sourceRef="recipientsTask" targetRef="end"/>
+
+        <endEvent id="end"/>
+    </process>
+</definitions>

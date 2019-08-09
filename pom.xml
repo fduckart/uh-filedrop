@@ -27,6 +27,7 @@
         <h2.version>1.4.192</h2.version>
         <cas.client-version>3.4.1</cas.client-version>
 
+        <bootstrap-version>4.3.1</bootstrap-version>
         <jquery-version>3.2.0</jquery-version>
         <angularjs-version>1.5.8</angularjs-version>
         <angular-mocks-version>1.5.8</angular-mocks-version>
@@ -147,6 +148,17 @@
             <version>2.3.0</version>
         </dependency>
 
+        <!-- Flowable -->
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-spring-boot-starter-process</artifactId>
+            <version>6.4.2</version>
+        </dependency>
+        <dependency>
+            <groupId>org.flowable</groupId>
+            <artifactId>flowable-spring-boot-starter-security</artifactId>
+            <version>6.4.2</version>
+        </dependency>
 
         <!-- Test -->
         <dependency>
@@ -186,7 +198,7 @@
         <dependency>
             <groupId>org.webjars</groupId>
             <artifactId>bootstrap</artifactId>
-            <version>4.3.1</version>
+            <version>${bootstrap-version}</version>
         </dependency>
         <dependency>
             <groupId>org.webjars</groupId>
@@ -233,6 +245,11 @@
             <groupId>org.webjars</groupId>
             <artifactId>popper.js</artifactId>
             <version>1.15.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars.bower</groupId>
+            <artifactId>ng-file-upload</artifactId>
+            <version>12.2.13</version>
         </dependency>
     </dependencies>
     <build>

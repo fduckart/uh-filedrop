@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.EmailService;
+import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 import edu.hawaii.its.filedrop.type.Message;
@@ -46,9 +47,12 @@ public class HomeController {
     @Autowired
     private SpaceCheckService spaceCheckService;
 
+    @Autowired
+    private FileDropService fileDropService;
+
     @GetMapping(value = { "/", "/home" })
     public String home(Model model) {
-        logger.debug("User at home. ");
+        logger.debug("User at home.");
 
         model.addAttribute("maxSize", maxSize);
         model.addAttribute("urlBase", urlBase);
@@ -68,8 +72,9 @@ public class HomeController {
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = { "/prepare" })
     public String prepare() {
-        logger.debug("User at prepare. ");
-        return "redirect:/user";
+        logger.debug("User at prepare.");
+        fileDropService.startUploadProcess(userContextService.getCurrentUser());
+        return "user/prepare";
     }
 
     @PreAuthorize("isAuthenticated()")
