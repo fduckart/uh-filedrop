@@ -1,2 +1,2 @@
 'use strict';
-var filedropApp = angular.module("filedropApp", []);
+var filedropApp = angular.module("filedropApp", ["ngFileUpload"]);

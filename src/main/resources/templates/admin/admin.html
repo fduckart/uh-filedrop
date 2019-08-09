@@ -7,34 +7,28 @@
 
     <!--  Content container -->
     <div class="container">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <div class="row">
-                    <div class="col-xs-12 panel-title app-types">
-                        Administration
-                    </div>
-                </div>
+        <div class="card panel-default">
+            <div class="card-header bg-transparent">
+                Administration
             </div>
-            <div class="panel-body" >
-                <div class="row">
-                    <div class="col-xs-12">
-                        <a class="text-left" th:href="@{/admin/gate-message}">Gate Message</a><br/>
-                        <a class="text-left" th:href="@{/admin/application/role}">Application Roles</a><br/>
-                        <a class="text-left" th:href="@{/campus}">Campuses</a><br/>
-                    </div>
-                    <div class="col-xs-12">
-                        <p></p>
-                    </div>
-                    <div class="col-xs-12">
-                        <a class="text-left" th:href="@{/user}">Login Attributes</a><br/>
-                        <a class="text-left" th:href="@{/admin/lookup}">LDAP User Lookup</a><br/>
-                    </div>
-                    <div class="col-xs-12">
-                        <p></p>
-                    </div>
-                    <div class="col-xs-12">
-                        <a class="text-left" th:href="@{/help/fonts}">Font Experiments</a><br/>
-                    </div>
+            <div class="card-body">
+                <div class="col-xs-12">
+                    <a class="card-link" th:href="@{/admin/gate-message}">Gate Message</a><br/>
+                    <a class="card-link" th:href="@{/admin/application/role}">Application Roles</a><br/>
+                    <a class="card-link" th:href="@{/campus}">Campuses</a><br/>
+                </div>
+                <div class="col-xs-12">
+                    <p></p>
+                </div>
+                <div class="col-xs-12">
+                    <a class="text-left" th:href="@{/user}">Login Attributes</a><br/>
+                    <a class="text-left" th:href="@{/admin/lookup}">LDAP User Lookup</a><br/>
+                </div>
+                <div class="col-xs-12">
+                    <p></p>
+                </div>
+                <div class="col-xs-12">
+                    <a class="text-left" th:href="@{/help/fonts}">Font Experiments</a><br/>
                 </div>
             </div>
         </div>

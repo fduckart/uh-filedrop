@@ -46,7 +46,7 @@ public class AdminController {
 
     @GetMapping("/admin/gate-message")
     public String gateMessage(Model model) {
-        int messageId = Message.JUMBOTRON_MESSAGE;
+        int messageId = Message.GATE_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("message", message);
         return "admin/gate-message";
