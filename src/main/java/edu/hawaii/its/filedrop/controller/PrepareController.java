@@ -1,5 +1,8 @@
 package edu.hawaii.its.filedrop.controller;
 
+import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.LdapService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.service.FileDropService;
-import edu.hawaii.its.filedrop.service.LdapService;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 public class PrepareController {
@@ -31,10 +31,12 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
-    public String addRecipient(Model model, @RequestParam("recipient") String recipient) {
+    public String addRecipient(Model model, @RequestParam("recipients") String recipients, RedirectAttributes redirectAttributes) {
         logger.debug("User added recipient.");
-        fileDropService.addRecipient(userContextService.getCurrentUser(), recipient);
+//        fileDropService.addRecipient(userContextService.getCurrentUser(), recipient);
 //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
+        String[] recipientsArray = recipients.split(",");
+        redirectAttributes.addFlashAttribute("recipients", recipientsArray);
         return "redirect:/prepare/files";
     }
 

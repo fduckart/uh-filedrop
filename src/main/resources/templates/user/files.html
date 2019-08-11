@@ -2,12 +2,50 @@
 <html xmlns:th="http://www.thymeleaf.org"
 >
 <head th:replace="header :: copy"></head>
-<body>
+<body ng-app="filedropApp">
     <nav th:replace="menubar :: copy"></nav>
 
-    <div class="container">
+    <div class="container" ng-controller="UploadJsController" ng-init="init()">
         <div class="row">
-            <h4 th:text="${recipient}"></h4>
+            <div class="col-sm-12">
+                <h4>Add Files</h4>
+                <div class="mb-2">
+                    <span>Recipients: </span>
+                    <ul style="display: inline" class="list-inline">
+                        <li th:each="recipient : ${recipients}" class="mx-1 my-1 list-inline-item">
+                            <button type="button" class="btn btn-outline-dark btn-sm" disabled th:text="${recipient}"></button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <form id="filesForm" ng-submit="submit()">
+                    <div class="card bg-light" style="height: 20rem;" ngf-drag-over-class="'border-success'" ngf-drop ngf-select ngf-change="addFiles($files)" ngf-multiple="true">
+                        <div class="card-body text-center">
+                            Drag Files or Click here
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="col-sm-12">
+                <ul class="list-inline">
+                    <li class="list-inline-item mt-3" ng-repeat="file in files">
+                        <button class="btn btn-outline-primary btn-sm" ng-click="removeFile(file)"> {{file.name}} | {{file.size | bytes}}</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <p ng-if="uploadSize > 0">Upload size: {{ uploadSize | bytes}}</p>
+                <button class="btn" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'" type="submit" ng-disabled="isUploadLarge()" form="filesForm">submit</button>
+                <p style="display: inline-block" class="text-danger" ng-if="isUploadLarge()">Upload size is too <strong>large</strong>.</p>
+            </div>
         </div>
     </div>
 

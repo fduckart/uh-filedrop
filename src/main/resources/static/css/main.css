@@ -65,6 +65,22 @@
         font-style: normal;
         color: #777;
     }
+
+    .dropbox {
+        border: 1px solid black;
+    }
+
+    .dragover {
+        border-width: .25rem;
+    }
+
+    .recipient-list {
+        display: inline-block;
+    }
+
+    .recipient-list li + li:before {
+        content: ", ";
+    }
 }
 
 /* -------------------------------------------------------- */

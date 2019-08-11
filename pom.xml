@@ -154,11 +154,6 @@
             <artifactId>flowable-spring-boot-starter-process</artifactId>
             <version>6.4.2</version>
         </dependency>
-        <dependency>
-            <groupId>org.flowable</groupId>
-            <artifactId>flowable-spring-boot-starter-security</artifactId>
-            <version>6.4.2</version>
-        </dependency>
 
         <!-- Test -->
         <dependency>
