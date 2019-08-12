@@ -39,7 +39,7 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
-    public String addRecipients(Model model, @RequestParam("recipients") String[] recipients) {
+    public String addRecipients(@RequestParam("recipients") String[] recipients) {
         logger.debug("User added recipient.");
 //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
         fileDropService.addRecipient(userContextService.getCurrentUser(), recipients);
@@ -54,7 +54,6 @@ public class PrepareController {
             return "redirect:/prepare";
         }
         logger.debug("User at addFiles.");
-//        logger.debug(recipient);
         model.addAttribute("recipients", fileDropService.getProcessVariables(currentTask.getProcessInstanceId()).get("recipients"));
         model.addAttribute("maxUploadSize", maxUploadSize);
         return "user/files";
@@ -64,6 +63,6 @@ public class PrepareController {
     @PostMapping(value = "/prepare/files")
     public String uploadFiles(@RequestParam("files") MultipartFile[] files) {
         logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + Arrays.toString(files));
-        return "redirect:/";
+        return "redirect:/home";
     }
 }
