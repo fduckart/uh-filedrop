@@ -1,6 +1,5 @@
 package edu.hawaii.its.filedrop.service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,10 +20,12 @@ import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserBuilder;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SpringBootWebApplication.class })
+@SpringBootTest(classes = {SpringBootWebApplication.class})
 public class FileDropServiceTest {
 
     @Autowired
@@ -156,10 +157,12 @@ public class FileDropServiceTest {
         assertNotNull(fileDropService.getCurrentTask(user));
 
         assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
-        fileDropService.addRecipient(user, "test");
+
+        String[] recipients = {"test"};
+        fileDropService.addRecipient(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
-        fileDropService.uploadFile(user);
+        fileDropService.uploadFile(user, null);
 
         assertNull(fileDropService.getCurrentTask(user));
     }
@@ -178,7 +181,9 @@ public class FileDropServiceTest {
         assertNotNull(fileDropService.getCurrentTask(user));
 
         assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
-        fileDropService.addRecipient(user, "test");
+
+        String[] recipients = {"test"};
+        fileDropService.addRecipient(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
 
@@ -186,12 +191,12 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
 
-        fileDropService.uploadFile(user); // Doesn't work since on recipientsTask.
+        fileDropService.uploadFile(user, null); // Doesn't work since on recipientsTask.
 
-        fileDropService.addRecipient(user, "test");
+        fileDropService.addRecipient(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
-        fileDropService.uploadFile(user);
+        fileDropService.uploadFile(user, null);
 
         assertNull(fileDropService.getCurrentTask(user));
     }
