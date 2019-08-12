@@ -6,6 +6,7 @@ import edu.hawaii.its.filedrop.service.LdapService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,6 +29,9 @@ public class PrepareController {
     @Autowired
     private LdapService ldapService;
 
+    @Value("${app.max.size}")
+    private String maxUploadSize;
+
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
@@ -45,7 +49,7 @@ public class PrepareController {
     public String addFiles(Model model) {
         logger.debug("User at addFiles.");
 //        logger.debug(recipient);
-//        model.addAttribute("recipient", recipient);
+        model.addAttribute("maxUploadSize", maxUploadSize);
         return "user/files";
     }
 }

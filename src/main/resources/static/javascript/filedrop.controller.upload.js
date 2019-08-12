@@ -1,13 +1,13 @@
 function UploadJsController($scope) {
-    $scope.init = function() {
+    $scope.init = function(maxUploadSize) {
         $scope.files = [];
         $scope.uploadSize = 0;
+        $scope.maxUploadSize = maxUploadSize;
     };
 
     $scope.submit = function() {
         if ($scope.files) {
             console.log($scope.files);
-            console.log(($scope.uploadSize / 1024) / 1024, " MB");
         }
     };
 
@@ -27,12 +27,12 @@ function UploadJsController($scope) {
     };
 
     $scope.isUploadLarge = function() {
-        return $scope.uploadSize > 100;
-    }
+        return $scope.uploadSize > $scope.maxUploadSize;
+    };
 
     $scope.toMegaByte = function(bytes) {
         return (bytes / 1024) / 1024;
-    }
+    };
 }
 
 filedropApp.controller("UploadJsController", UploadJsController);
