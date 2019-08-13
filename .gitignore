@@ -8,5 +8,5 @@ edu.hawaii.its.iml
 /bin
 /target
 *-overrides.properties
-data.sql
+not-data.sql
 *.iml

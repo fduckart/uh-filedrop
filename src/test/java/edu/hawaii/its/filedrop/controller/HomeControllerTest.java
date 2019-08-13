@@ -32,7 +32,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SpringBootWebApplication.class })
+@SpringBootTest(classes = {SpringBootWebApplication.class})
 public class HomeControllerTest {
 
     private static boolean sendRan = false;
@@ -63,8 +63,8 @@ public class HomeControllerTest {
         assertFalse(homeController.getEmailService().isEnabled());
 
         mockMvc = webAppContextSetup(context)
-                .apply(springSecurity())
-                .build();
+            .apply(springSecurity())
+            .build();
     }
 
     @Test
@@ -75,41 +75,41 @@ public class HomeControllerTest {
     @Test
     public void requestHome() throws Exception {
         mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("home"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("home"));
     }
 
     @Test
     public void requestCampus() throws Exception {
         mockMvc.perform(get("/campus"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("campus"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("campus"));
 
         mockMvc.perform(get("/campuses"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("campus"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("campus"));
     }
 
     @Test
     public void requestContact() throws Exception {
         mockMvc.perform(get("/help/contact"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("help/contact"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("help/contact"));
     }
 
     @Test
     public void requestFaq() throws Exception {
         mockMvc.perform(get("/help/faq"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("help/faq"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("help/faq"));
     }
 
     @Test
     @WithAnonymousUser
     public void loginViaAnonymous() throws Exception {
         mockMvc.perform(get("/login"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
 
     @Test
@@ -117,16 +117,16 @@ public class HomeControllerTest {
     public void loginViaUh() throws Exception {
         // Logged in already, URL redirects back to home page.
         mockMvc.perform(get("/login"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/user"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/user"));
     }
 
     @Test
     @WithMockUhUser
     public void logoutViaUh() throws Exception {
         MvcResult mvcResult = mockMvc.perform(post("/logout").with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andReturn();
+            .andExpect(status().is3xxRedirection())
+            .andReturn();
         assertThat(mvcResult.getResponse().getRedirectedUrl(), equalTo(homeUrl));
     }
 
@@ -134,8 +134,8 @@ public class HomeControllerTest {
     @WithAnonymousUser
     public void prepareViaAnonymous() throws Exception {
         mockMvc.perform(get("/prepare"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
 
     @Test
@@ -143,24 +143,24 @@ public class HomeControllerTest {
     public void prepareViaUh() throws Exception {
         // Logged in already, URL redirects back to home page.
         mockMvc.perform(get("/prepare"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/user"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("user/prepare"));
     }
 
     @Test
     @WithAnonymousUser
     public void userViaAnonymous() throws Exception {
         mockMvc.perform(get("/user"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
 
     @Test
     @WithMockUhUser
     public void userViaUh() throws Exception {
         mockMvc.perform(get("/user"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/user"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("user/user"));
     }
 
     @Test
@@ -168,7 +168,7 @@ public class HomeControllerTest {
     public void userData() throws Exception {
         // Anonymous users not allowed here.
         mockMvc.perform(post("/user/data").with(csrf()))
-                .andExpect(status().is3xxRedirection());
+            .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -187,8 +187,8 @@ public class HomeControllerTest {
 
         // Anonymous users not allowed here.
         mockMvc.perform(post("/user/data").with(csrf()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/user"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/user"));
 
         assertTrue(sendRan);
     }
@@ -196,21 +196,21 @@ public class HomeControllerTest {
     @Test
     public void fonts() throws Exception {
         mockMvc.perform(get("/help/fonts"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("help/fonts"));
+            .andExpect(status().isOk())
+            .andExpect(view().name("help/fonts"));
     }
 
     @Test
     public void requestUrl404() throws Exception {
         mockMvc.perform(get("/404"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/"));
     }
 
     @Test
     public void requestNonExistentUrl() throws Exception {
         mockMvc.perform(get("/not-a-url"))
-                .andExpect(status().is3xxRedirection());
+            .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -218,7 +218,7 @@ public class HomeControllerTest {
     public void adminUser() throws Exception {
         // Anonymous users not allowed into admin area.
         mockMvc.perform(get("/user"))
-                .andExpect(status().is3xxRedirection());
+            .andExpect(status().is3xxRedirection());
     }
 
     @Test

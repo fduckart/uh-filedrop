@@ -1,11 +1,9 @@
 package edu.hawaii.its.filedrop.service;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.flowable.engine.IdentityService;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
@@ -21,10 +19,12 @@ import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserBuilder;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SpringBootWebApplication.class })
+@SpringBootTest(classes = {SpringBootWebApplication.class})
 public class FileDropServiceTest {
 
     @Autowired
@@ -39,16 +39,13 @@ public class FileDropServiceTest {
     @Autowired
     private UserBuilder userBuilder;
 
-    @Autowired
-    private IdentityService identityService;
-
     @Test
     public void startProcessTest() {
         AnonymousUser user = new AnonymousUser();
         assertNotNull(user);
 
         Map<String, Object> args = new HashMap<>();
-        args.put("sender", user.getUsername());
+        args.put("initiator", user.getUsername());
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
         assertNotNull(process);
@@ -57,7 +54,7 @@ public class FileDropServiceTest {
 
         assertEquals(1, fileDropTasks.size());
 
-        assertEquals("Add Recipients", fileDropTasks.get(0).getName());
+        assertEquals("addRecipients", fileDropTasks.get(0).getName());
 
         assertEquals("anonymous", fileDropTasks.get(0).getAssignee());
 
@@ -67,7 +64,7 @@ public class FileDropServiceTest {
 
         assertEquals(1, fileDropTasks.size());
 
-        assertEquals("Add Files", fileDropTasks.get(0).getName());
+        assertEquals("addFiles", fileDropTasks.get(0).getName());
 
         taskService.complete(fileDropTasks.get(0).getId());
 
@@ -83,7 +80,7 @@ public class FileDropServiceTest {
         assertNotNull(user);
 
         Map<String, Object> args = new HashMap<>();
-        args.put("sender", user.getUsername());
+        args.put("initiator", user.getUsername());
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
         assertNotNull(process);
@@ -92,7 +89,7 @@ public class FileDropServiceTest {
         assertNotNull(anotherUser);
 
         Map<String, Object> args2 = new HashMap<>();
-        args2.put("sender", anotherUser.getUsername());
+        args2.put("initiator", anotherUser.getUsername());
 
         ProcessInstance process2 = runtimeService.startProcessInstanceByKey("fileUpload", args2);
         assertNotNull(process2);
@@ -116,7 +113,7 @@ public class FileDropServiceTest {
         assertNotNull(user);
 
         Map<String, Object> args = new HashMap<>();
-        args.put("sender", user.getUsername());
+        args.put("initiator", user.getUsername());
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
         assertNotNull(process);
@@ -127,13 +124,13 @@ public class FileDropServiceTest {
 
         userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
 
-        assertEquals("Add Recipients", userTasks.get(0).getName());
+        assertEquals("addRecipients", userTasks.get(0).getName());
 
         taskService.complete(userTasks.get(0).getId());
 
         userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
 
-        assertEquals("Add Files", userTasks.get(0).getName());
+        assertEquals("addFiles", userTasks.get(0).getName());
 
         taskService.complete(userTasks.get(0).getId());
 
@@ -156,10 +153,12 @@ public class FileDropServiceTest {
         assertNotNull(fileDropService.getCurrentTask(user));
 
         assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
-        fileDropService.addRecipient(user, "test");
+
+        String[] recipients = {"test"};
+        fileDropService.addRecipient(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
-        fileDropService.uploadFile(user);
+        fileDropService.uploadFile(user, null);
 
         assertNull(fileDropService.getCurrentTask(user));
     }
@@ -178,7 +177,9 @@ public class FileDropServiceTest {
         assertNotNull(fileDropService.getCurrentTask(user));
 
         assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
-        fileDropService.addRecipient(user, "test");
+
+        String[] recipients = {"test"};
+        fileDropService.addRecipient(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
 
@@ -186,12 +187,12 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
 
-        fileDropService.uploadFile(user); // Doesn't work since on recipientsTask.
+        fileDropService.uploadFile(user, null); // Doesn't work since on recipientsTask.
 
-        fileDropService.addRecipient(user, "test");
+        fileDropService.addRecipient(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
-        fileDropService.uploadFile(user);
+        fileDropService.uploadFile(user, null);
 
         assertNull(fileDropService.getCurrentTask(user));
     }

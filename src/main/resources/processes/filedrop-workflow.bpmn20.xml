@@ -8,11 +8,11 @@
 
         <sequenceFlow sourceRef="start" targetRef="recipientsTask"/>
 
-        <userTask id="recipientsTask" name="addRecipients" flowable:assignee="${sender}"/>
+        <userTask id="recipientsTask" name="addRecipients" flowable:assignee="${initiator}"/>
 
         <sequenceFlow sourceRef="recipientsTask" targetRef="filesTask"/>
 
-        <userTask id="filesTask" name="addFiles" flowable:assignee="${sender}"/>
+        <userTask id="filesTask" name="addFiles" flowable:assignee="${initiator}"/>
 
         <sequenceFlow sourceRef="recipientsTask" targetRef="end"/>
 

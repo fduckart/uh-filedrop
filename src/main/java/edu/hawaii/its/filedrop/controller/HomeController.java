@@ -1,5 +1,12 @@
 package edu.hawaii.its.filedrop.controller;
 
+import edu.hawaii.its.filedrop.access.User;
+import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.EmailService;
+import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.MessageService;
+import edu.hawaii.its.filedrop.service.SpaceCheckService;
+import edu.hawaii.its.filedrop.type.Message;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,14 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-
-import edu.hawaii.its.filedrop.access.User;
-import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.service.EmailService;
-import edu.hawaii.its.filedrop.service.FileDropService;
-import edu.hawaii.its.filedrop.service.MessageService;
-import edu.hawaii.its.filedrop.service.SpaceCheckService;
-import edu.hawaii.its.filedrop.type.Message;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class HomeController {
@@ -71,9 +71,11 @@ public class HomeController {
 
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = { "/prepare" })
-    public String prepare() {
+    public String prepare(Model model, @RequestParam(value = "helpdesk", required = false) Boolean helpdesk) {
         logger.debug("User at prepare.");
         fileDropService.startUploadProcess(userContextService.getCurrentUser());
+        model.addAttribute("user", userContextService.getCurrentUser().getUsername() + "@hawaii.edu");
+        model.addAttribute("helpdesk", helpdesk);
         return "user/prepare";
     }
 
