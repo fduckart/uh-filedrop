@@ -43,6 +43,10 @@ public class FileDropService {
     public void addRecipient(User user, String[] recipients) {
         if (getCurrentTask(user).getName().equalsIgnoreCase("addRecipients")) {
             Task recipientTask = taskService.createTaskQuery().taskAssignee(user.getUsername()).singleResult();
+            if (recipients.length == 0) {
+                recipients = new String[1];
+                recipients[0] = user.getUsername();
+            }
             logger.debug(user.getUsername() + " added recipients: " + Arrays.toString(recipients));
             runtimeService.setVariable(recipientTask.getProcessInstanceId(), "recipients", recipients);
             taskService.complete(recipientTask.getId());

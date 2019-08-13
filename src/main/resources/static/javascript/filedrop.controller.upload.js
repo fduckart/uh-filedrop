@@ -1,4 +1,4 @@
-function UploadJsController($scope, Upload) {
+function UploadJsController($scope, Upload, $window) {
     $scope.init = function (maxUploadSize) {
         $scope.files = [];
         $scope.uploadSize = 0;
@@ -13,7 +13,10 @@ function UploadJsController($scope, Upload) {
                     files: $scope.files
                 },
                 arrayKey: ""
-            });
+            })
+                  .then(function () {
+                      $window.location.href = "/filedrop";
+                  });
         }
     };
 

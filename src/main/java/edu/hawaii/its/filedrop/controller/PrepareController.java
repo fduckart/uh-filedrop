@@ -50,7 +50,7 @@ public class PrepareController {
     @GetMapping(value = "/prepare/files")
     public String addFiles(Model model) {
         Task currentTask = fileDropService.getCurrentTask(userContextService.getCurrentUser());
-        if (currentTask == null || currentTask.getName().equalsIgnoreCase("recipientsTask")) {
+        if (currentTask.getName().equalsIgnoreCase("addRecipients")) {
             return "redirect:/prepare";
         }
         logger.debug("User at addFiles.");
