@@ -1,13 +1,13 @@
 package edu.hawaii.its.filedrop.type;
 
-
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "filedrop")
@@ -25,12 +25,12 @@ public class FileDrop {
     private String uploaderFullName;
 
     @Column(name = "created", nullable = false)
-    private Date created;
+    private DateTime created;
 
-    @Column(name = "upload_key", nullable = false)
+    @Column(name = "upload_key", nullable = false, unique = true)
     private String uploadKey;
 
-    @Column(name = "download_key", nullable = false)
+    @Column(name = "download_key", nullable = false, unique = true)
     private String downloadKey;
 
     @Column(name = "recipient")
@@ -40,7 +40,7 @@ public class FileDrop {
     private String encryptionKey;
 
     @Column(name = "valid_until", nullable = false)
-    private Date expiration;
+    private DateTime expiration;
 
     @Column(name = "is_valid", nullable = false)
     private Boolean valid;
@@ -76,11 +76,11 @@ public class FileDrop {
         this.uploaderFullName = uploaderFullName;
     }
 
-    public Date getCreated() {
+    public DateTime getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(DateTime created) {
         this.created = created;
     }
 
@@ -116,11 +116,11 @@ public class FileDrop {
         this.encryptionKey = encryptionKey;
     }
 
-    public Date getExpiration() {
+    public DateTime getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(Date expiration) {
+    public void setExpiration(DateTime expiration) {
         this.expiration = expiration;
     }
 
