@@ -61,7 +61,7 @@ public class Download {
         return fileDrop;
     }
 
-    public void setFileDropId(FileDrop fileDrop) {
+    public void setFileDrop(FileDrop fileDrop) {
         this.fileDrop = fileDrop;
     }
 
