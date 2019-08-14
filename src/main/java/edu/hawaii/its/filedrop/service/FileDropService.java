@@ -9,7 +9,6 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
-import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,8 +34,7 @@ public class FileDropService {
         logger.debug(user.getUsername() + " started upload process.");
         Map<String, Object> args = new HashMap<>();
         args.put("initiator", user.getUsername());
-        ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
-        runtimeService.setVariables(process.getId(), args);
+        runtimeService.startProcessInstanceByKey("fileUpload", args);
         logger.debug("Created tasks for: " + user.getUsername());
     }
 

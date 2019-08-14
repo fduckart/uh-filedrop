@@ -1,15 +1,26 @@
 package edu.hawaii.its.filedrop.type;
 
+import java.io.Serializable;
 import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+@Entity
 @Table(name = "fileset")
-public class FileSet {
+public class FileSet implements Serializable {
 
-    @JoinColumn(name = "filedrop_id", nullable = false)
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @ManyToOne
+    @JoinColumn(name = "filedrop_id", nullable = false)
     private FileDrop fileDrop;
 
     @Column(name = "file_name", nullable = false)
@@ -23,6 +34,14 @@ public class FileSet {
 
     public FileSet() {
 
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public FileDrop getFileDrop() {

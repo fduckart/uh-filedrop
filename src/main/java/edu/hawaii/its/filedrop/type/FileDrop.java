@@ -1,13 +1,15 @@
 package edu.hawaii.its.filedrop.type;
 
+import java.util.Date;
+import java.util.Set;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
-import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "filedrop")
@@ -21,11 +23,11 @@ public class FileDrop {
     @Column(name = "uploader", nullable = false)
     private String uploader;
 
-    @Column(name = "uploaderFullName", nullable = false)
+    @Column(name = "uploader_fullname", nullable = false)
     private String uploaderFullName;
 
     @Column(name = "created", nullable = false)
-    private DateTime created;
+    private Date created;
 
     @Column(name = "upload_key", nullable = false, unique = true)
     private String uploadKey;
@@ -40,13 +42,18 @@ public class FileDrop {
     private String encryptionKey;
 
     @Column(name = "valid_until", nullable = false)
-    private DateTime expiration;
+    private Date expiration;
 
+    //Need to alter table from character to boolean
     @Column(name = "is_valid", nullable = false)
     private Boolean valid;
 
+    //Need to alter table from character to boolean
     @Column(name = "require_auth", nullable = false)
     private Boolean authenticationRequired;
+
+    @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL)
+    private Set<FileSet> fileSet;
 
     public FileDrop() {
 
@@ -76,11 +83,11 @@ public class FileDrop {
         this.uploaderFullName = uploaderFullName;
     }
 
-    public DateTime getCreated() {
+    public Date getCreated() {
         return created;
     }
 
-    public void setCreated(DateTime created) {
+    public void setCreated(Date created) {
         this.created = created;
     }
 
@@ -116,11 +123,11 @@ public class FileDrop {
         this.encryptionKey = encryptionKey;
     }
 
-    public DateTime getExpiration() {
+    public Date getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(DateTime expiration) {
+    public void setExpiration(Date expiration) {
         this.expiration = expiration;
     }
 
@@ -138,5 +145,13 @@ public class FileDrop {
 
     public void setAuthenticationRequired(Boolean authenticationRequired) {
         this.authenticationRequired = authenticationRequired;
+    }
+
+    public Set<FileSet> getFileSet() {
+        return fileSet;
+    }
+
+    public void setFileSet(Set<FileSet> fileSet) {
+        this.fileSet = fileSet;
     }
 }
