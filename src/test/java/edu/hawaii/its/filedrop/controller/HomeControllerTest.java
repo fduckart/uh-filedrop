@@ -16,7 +16,6 @@ import org.springframework.web.context.WebApplicationContext;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.EmailService;
-import edu.hawaii.its.filedrop.service.SpaceCheckService;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
@@ -54,9 +53,6 @@ public class HomeControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private SpaceCheckService spaceCheckService;
-
     private MockMvc mockMvc;
 
     @Before
@@ -79,23 +75,10 @@ public class HomeControllerTest {
 
     @Test
     public void requestHome() throws Exception {
-        spaceCheckService.update();
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(model().attribute("gatemessage",
                         equalTo("Welcome to the University of Hawai'i FileDrop application.")))
-                .andExpect(view().name("home"));
-    }
-
-    @Test
-    public void requestHomeSpaceFull() throws Exception {
-        spaceCheckService.setMaxUploadSize(1001);
-        spaceCheckService.setBytesUsed(100000000000L);
-        spaceCheckService.setBytesFree(0);
-        mockMvc.perform(get("/"))
-                .andExpect(status().isOk())
-                .andExpect(model().attribute("gatemessage",
-                        equalTo("FileDrop is currently unavailable.")))
                 .andExpect(view().name("home"));
     }
 
