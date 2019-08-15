@@ -12,6 +12,10 @@ import edu.hawaii.its.filedrop.type.FileSet;
 
 public class FileDropSpecification {
 
+    private FileDropSpecification() {
+        // Empty constructor
+    }
+
     public static Specification<FileDrop> withId(Integer id) {
         return (root, criteriaQuery, criteriaBuilder) -> {
             Path<Integer> path = root.get(FileDrop_.id);

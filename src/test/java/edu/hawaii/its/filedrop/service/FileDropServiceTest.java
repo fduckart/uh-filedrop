@@ -20,11 +20,13 @@ import edu.hawaii.its.filedrop.access.UserBuilder;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringBootWebApplication.class})
+@SpringBootTest(classes = { SpringBootWebApplication.class })
 public class FileDropServiceTest {
 
     @Autowired
@@ -154,8 +156,8 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
 
-        String[] recipients = {"test"};
-        fileDropService.addRecipient(user, recipients);
+        String[] recipients = { "test" };
+        fileDropService.addRecipients(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
         fileDropService.uploadFile(user, null);
@@ -178,8 +180,8 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
 
-        String[] recipients = {"test"};
-        fileDropService.addRecipient(user, recipients);
+        String[] recipients = { "test" };
+        fileDropService.addRecipients(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
 
@@ -189,11 +191,120 @@ public class FileDropServiceTest {
 
         fileDropService.uploadFile(user, null); // Doesn't work since on recipientsTask.
 
-        fileDropService.addRecipient(user, recipients);
+        fileDropService.addRecipients(user, recipients);
 
         assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
         fileDropService.uploadFile(user, null);
 
         assertNull(fileDropService.getCurrentTask(user));
+    }
+
+    @Test
+    public void addNoRecipients() {
+        Map<String, String> map = new HashMap<>();
+        map.put("uid", "anotherUser");
+        map.put("uhuuid", "910111213");
+
+        User user = userBuilder.make(map);
+        assertNotNull(user);
+
+        fileDropService.startUploadProcess(user);
+
+        String[] recipients = new String[0];
+        fileDropService.addRecipients(user, recipients);
+
+        Map<String, Object> processVariables =
+                fileDropService.getProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId());
+
+        assertFalse(processVariables.isEmpty());
+        assertEquals(2, processVariables.size());
+        assertTrue(processVariables.containsKey("recipients"));
+        assertEquals("anotherUser", ((String[]) processVariables.get("recipients"))[0]);
+    }
+
+    @Test
+    public void addRecipientsWithoutProcess() {
+        Map<String, String> map = new HashMap<>();
+        map.put("uid", "uhUser");
+        map.put("uhuuid", "9900992");
+
+        User user = userBuilder.make(map);
+        assertNotNull(user);
+
+        String[] recipients = new String[0];
+        fileDropService.addRecipients(user, recipients);
+
+        assertNull(fileDropService.getCurrentTask(user));
+    }
+
+    @Test
+    public void addRecipientsTwice() {
+        Map<String, String> map = new HashMap<>();
+        map.put("uid", "newestUser");
+        map.put("uhuuid", "9909992");
+
+        User user = userBuilder.make(map);
+        assertNotNull(user);
+
+        fileDropService.startUploadProcess(user);
+
+        String[] recipients = new String[0];
+
+        fileDropService.addRecipients(user, recipients);
+
+        assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
+
+        fileDropService.addRecipients(user, recipients);
+
+        assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
+
+    }
+
+    @Test
+    public void processVariablesTest() {
+        Map<String, String> map = new HashMap<>();
+        map.put("uid", "newUser");
+        map.put("uhuuid", "9999992");
+
+        User user = userBuilder.make(map);
+        assertNotNull(user);
+
+        fileDropService.startUploadProcess(user);
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("test", "123");
+        fileDropService
+                .addProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId(), variables);
+
+        Map<String, Object> processVariables =
+                fileDropService
+                        .getProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId());
+
+        assertFalse(processVariables.isEmpty());
+        assertEquals(2, processVariables.size());
+        assertEquals("123", processVariables.get("test"));
+    }
+
+    @Test
+    public void taskVariablesTest() {
+        Map<String, String> map = new HashMap<>();
+        map.put("uid", "testUser");
+        map.put("uhuuid", "9999999");
+
+        User user = userBuilder.make(map);
+        assertNotNull(user);
+
+        fileDropService.startUploadProcess(user);
+
+        Map<String, Object> variables = new HashMap<>();
+        variables.put("test", "123");
+        fileDropService.addTaskVariables(fileDropService.getCurrentTask(user).getId(), variables);
+
+        Map<String, Object> taskVariables =
+                fileDropService.getTaskVariables(fileDropService.getCurrentTask(user).getId());
+
+        assertFalse(taskVariables.isEmpty());
+        assertEquals(2, taskVariables.size());
+        assertEquals("123", taskVariables.get("test"));
     }
 }

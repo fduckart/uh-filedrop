@@ -39,14 +39,18 @@ public class FileDropRepositoryTest {
 
     @Test
     public void specificationWithIdTest() {
+        Date created = Date.from(Instant.now());
+        Date expiration = Date.from(created.toInstant().plus(10, ChronoUnit.DAYS));
         FileDrop fileDrop = new FileDrop();
         fileDrop.setId(1);
         fileDrop.setUploader("test");
         fileDrop.setUploaderFullName("Test 123");
-        fileDrop.setCreated(Date.from(Instant.now()));
-        fileDrop.setExpiration(Date.from(fileDrop.getCreated().toInstant().plus(10, ChronoUnit.DAYS)));
+        fileDrop.setRecipient("tester");
+        fileDrop.setCreated(created);
+        fileDrop.setExpiration(expiration);
         fileDrop.setDownloadKey("download-key");
         fileDrop.setUploadKey("upload-key");
+        fileDrop.setEncryptionKey("enc-key");
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);
 
@@ -55,7 +59,17 @@ public class FileDropRepositoryTest {
         Optional<FileDrop> foundFileDrop = fileDropRepository.findOne(withId(1));
 
         assertTrue(foundFileDrop.isPresent());
-        assertEquals("test", fileDrop.getUploader());
+        assertEquals("test", foundFileDrop.get().getUploader());
+        assertEquals(1L, (long) foundFileDrop.get().getId());
+        assertEquals("Test 123", foundFileDrop.get().getUploaderFullName());
+        assertEquals("tester", foundFileDrop.get().getRecipient());
+        assertEquals("download-key", foundFileDrop.get().getDownloadKey());
+        assertEquals("upload-key", foundFileDrop.get().getUploadKey());
+        assertEquals("enc-key", foundFileDrop.get().getEncryptionKey());
+        assertFalse(foundFileDrop.get().isAuthenticationRequired());
+        assertFalse(foundFileDrop.get().isValid());
+        assertEquals(created, foundFileDrop.get().getCreated());
+        assertEquals(expiration, foundFileDrop.get().getExpiration());
     }
 
     @Test
@@ -132,6 +146,10 @@ public class FileDropRepositoryTest {
         fileSet.setType("image/png");
 
         fileSetRepository.save(fileSet);
+
+        assertEquals(fileDrop, fileSet.getFileDrop());
+        assertEquals("image/png", fileSet.getType());
+        assertEquals("test fileset", fileSet.getComment());
 
         Set<FileSet> fileSets = new HashSet<>();
         fileSets.add(fileSet);
