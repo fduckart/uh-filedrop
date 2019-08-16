@@ -3,43 +3,39 @@
 >
 <head th:replace="header :: copy"></head>
 <body ng-app="filedropApp">
-    <nav th:replace="menubar :: copy"></nav>
+<nav th:replace="menubar :: copy"></nav>
 
-    <div class="container" ng-controller="PrepareJsController" ng-init="init();" ng-cloak>
-        <div class="card border-success">
-            <div class="card-body">
-                <div class="col-sm-12 mb-3">
-                    <h5>Sender:</h5>
-                    <div class="input-group">
-                        <input class="form-control" type="text" disabled th:value="${user}">
-                    </div>
-                </div>
-                <div class="col-sm-12">
-                    <h5>Recipients:</h5>
-                    <ul class="list-inline">
-                        <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
-                            <button type="button" class="btn btn-outline-dark btn-sm" th:disabled="${helpdesk}"
-                                ng-click="removeRecipient(r)">
-                                {{r}} <span th:if="!${helpdesk}" class="badge badge-danger">&times;</span>
-                            </button>
-                        </li>
-                    </ul>
-                    <form ng-submit="addRecipient()">
-                        <div hidden th:if="${helpdesk}" ng-init="recipients = ['helpdesk@hawaii.edu']"></div>
-                        <div class="input-group" th:if="!${helpdesk}">
-                            <label hidden for="recipient">Recipients: </label>
-                            <input class="form-control" id="recipient" type="text" name="recipient"
-                                ng-model="recipient">
-                            <button th:disabled="${helpdesk}" th:hidden="${helpdesk}" type="submit"
-                                style="display: inline-block;" class="btn btn-primary ml-2">Add Recipient
-                            </button>
-                        </div>
-                    </form>
+<div class="container" ng-controller="PrepareJsController" ng-init="init();" ng-cloak>
+    <div class="card border-success">
+        <div class="card-body">
+            <div class="col-sm-12 mb-3">
+                <h5>Sender:</h5>
+                <div class="input-group">
+                    <input class="form-control" type="text" disabled th:value="${user}">
                 </div>
             </div>
-        </div>
-
-        <div class="row my-3">
+            <div class="col-sm-12 mb-3">
+                <h5>Recipients:</h5>
+                <ul class="list-inline">
+                    <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
+                        <button type="button" class="btn btn-outline-dark btn-sm" th:disabled="${helpdesk}"
+                            ng-click="removeRecipient(r)">
+                            {{r}} <span th:if="!${helpdesk}" class="badge badge-danger">&times;</span>
+                        </button>
+                    </li>
+                </ul>
+                <form ng-submit="addRecipient()">
+                    <div hidden th:if="${helpdesk}" ng-init="recipients = ['helpdesk@hawaii.edu']"></div>
+                    <div class="input-group" th:if="!${helpdesk}">
+                        <label hidden for="recipient">Recipients: </label>
+                        <input class="form-control" id="recipient" type="text" name="recipient"
+                            ng-model="recipient">
+                        <button th:disabled="${helpdesk}" th:hidden="${helpdesk}" type="submit"
+                            style="display: inline-block;" class="btn btn-primary ml-2">Add Recipient
+                        </button>
+                    </div>
+                </form>
+            </div>
             <div class="col-sm-12">
                 <form th:action="@{/prepare/}" method="POST">
                     <input type="hidden" name="recipients" ng-value="getRecipients()">
@@ -48,7 +44,8 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div th:replace="footer :: copy"></div>
+<div th:replace="footer :: copy"></div>
 </body>
 </html>

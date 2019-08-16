@@ -1,7 +1,5 @@
 package edu.hawaii.its.filedrop.controller;
 
-import java.util.Arrays;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flowable.task.api.Task;
@@ -16,8 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapService;
+import edu.hawaii.its.filedrop.type.FileSet;
 
 @Controller
 public class PrepareController {
@@ -29,6 +29,9 @@ public class PrepareController {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @Autowired
+    private FileSetRepository fileSetRepository;
 
     @Autowired
     private LdapService ldapService;
@@ -61,8 +64,15 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare/files")
-    public String uploadFiles(@RequestParam("files") MultipartFile[] files) {
-        logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + Arrays.toString(files));
+    public String uploadFiles(@RequestParam("filedropId") String fileDropId, @RequestParam("file") MultipartFile file,
+            @RequestParam("comment") String comment) {
+        FileSet fileSet = new FileSet();
+        fileSet.setFileName(file.getOriginalFilename());
+        fileSet.setType(file.getContentType());
+        fileSet.setComment(comment);
+        //        fileSet.setFileDrop(fileDropService.getFileDrop(fileDropId));
+        fileSetRepository.save(fileSet);
+        logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + file.getOriginalFilename());
         return "redirect:/home";
     }
 }
