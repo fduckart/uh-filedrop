@@ -54,10 +54,6 @@ public class PrepareControllerTest {
                 .param("recipients", "test", "test2"))
                 .andExpect(status().is3xxRedirection())
                 .andReturn();
-
-        mockMvc.perform(get("/prepare/files"))
-                .andExpect(model().attribute("recipients", equalTo(Arrays.array("test", "test2"))))
-                .andReturn();
     }
 
     @Test
@@ -90,11 +86,12 @@ public class PrepareControllerTest {
                 .andExpect(model().attribute("recipients", equalTo(Arrays.array("test", "test2"))))
                 .andReturn();
 
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("user-file", "test",
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("user-file", "test.txt",
                 "text/plain", "test data".getBytes());
 
         mockMvc.perform(MockMvcRequestBuilders.multipart("/prepare/files")
-                .file("files", mockMultipartFile.getBytes())
+                .file("file", mockMultipartFile.getBytes())
+                .param("comment", "test comment")
                 .characterEncoding("UTF-8"))
                 .andExpect(status().is3xxRedirection())
                 .andReturn();

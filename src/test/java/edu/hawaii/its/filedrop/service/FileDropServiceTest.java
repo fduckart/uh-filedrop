@@ -1,5 +1,8 @@
 package edu.hawaii.its.filedrop.service;
 
+import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +21,9 @@ import edu.hawaii.its.filedrop.access.AnonymousUser;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserBuilder;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.repository.FileSetRepository;
+import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -40,6 +46,9 @@ public class FileDropServiceTest {
 
     @Autowired
     private UserBuilder userBuilder;
+
+    @Autowired
+    private FileSetRepository fileSetRepository;
 
     @Test
     public void startProcessTest() {
@@ -306,5 +315,73 @@ public class FileDropServiceTest {
         assertFalse(taskVariables.isEmpty());
         assertEquals(2, taskVariables.size());
         assertEquals("123", taskVariables.get("test"));
+    }
+
+    @Test
+    public void getFileDropTest() {
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setDownloadKey("test-key");
+
+        fileDropService.saveFileDrop(fileDrop);
+
+        assertEquals(fileDrop.getId(), fileDropService.getFileDrop("test-key").getId());
+    }
+
+    @Test
+    public void fileDropTest() {
+        Map<String, String> map = new HashMap<>();
+        map.put("uid", "aUhUser");
+        map.put("uhuuid", "1234567");
+
+        User user = userBuilder.make(map);
+        assertNotNull(user);
+
+        fileDropService.startUploadProcess(user);
+
+        String[] recipients = { "test", "lukemcd9" };
+
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setUploader(user.getUid());
+        fileDrop.setUploaderFullName("A Uh User");
+        fileDrop.setUploadKey("test-ul-key");
+        fileDrop.setDownloadKey("test-dl-key");
+        fileDrop.setEncryptionKey("test-enc-key");
+        fileDrop.setRecipient(Arrays.toString(recipients));
+        fileDrop.setValid(true);
+        fileDrop.setAuthenticationRequired(true);
+        fileDrop.setCreated(new Date());
+        fileDrop.setExpiration(Date.from(new Date().toInstant().plus(5, ChronoUnit.DAYS)));
+        fileDropService.saveFileDrop(fileDrop);
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileDropId", fileDrop.getId());
+        fileDropService.addProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId(), args);
+
+        fileDropService.addRecipients(user, recipients);
+
+        FileSet fileSet = new FileSet();
+        fileSet.setFileName("test.png");
+        fileSet.setType("image/png");
+        fileSet.setComment("Test image png");
+
+        Map<String, Object> vars =
+                fileDropService.getProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId());
+
+        fileSet.setFileDrop(fileDropService.getFileDrop((Integer) vars.get("fileDropId")));
+
+        fileSetRepository.save(fileSet);
+
+        fileSet = new FileSet();
+        fileSet.setFileName("test.jpg");
+        fileSet.setType("image/jpg");
+        fileSet.setComment("Test image jpg");
+
+        fileSet.setFileDrop(fileDropService.getFileDrop((Integer) vars.get("fileDropId")));
+
+        fileSetRepository.save(fileSet);
+
+        assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
+        assertEquals(2,
+                fileDropService.getFileSets(fileDropService.getFileDrop((Integer) vars.get("fileDropId"))).size());
     }
 }

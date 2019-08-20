@@ -1,5 +1,9 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flowable.task.api.Task;
@@ -17,6 +21,7 @@ import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapService;
+import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
 @Controller
@@ -44,7 +49,19 @@ public class PrepareController {
     public String addRecipients(@RequestParam("recipients") String[] recipients) {
         logger.debug("User added recipient.");
         //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setRecipient(Arrays.toString(recipients));
+        fileDrop.setEncryptionKey("test-enc-key-" + fileDrop.getId());
+        fileDrop.setDownloadKey("test-dl-key-" + fileDrop.getId());
+        fileDrop.setUploadKey("test-ul-key-" + fileDrop.getId());
+        fileDrop.setUploader(userContextService.getCurrentUhuuid());
+        fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
+        fileDropService.saveFileDrop(fileDrop);
         fileDropService.addRecipients(userContextService.getCurrentUser(), recipients);
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileDropId", fileDrop.getId());
+        fileDropService.addProcessVariables(
+                fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId(), args);
         return "redirect:/prepare/files";
     }
 
@@ -64,13 +81,15 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare/files")
-    public String uploadFiles(@RequestParam("filedropId") String fileDropId, @RequestParam("file") MultipartFile file,
+    public String uploadFiles(@RequestParam("file") MultipartFile file,
             @RequestParam("comment") String comment) {
         FileSet fileSet = new FileSet();
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());
         fileSet.setComment(comment);
-        //        fileSet.setFileDrop(fileDropService.getFileDrop(fileDropId));
+        Map<String, Object> args = fileDropService.getProcessVariables(
+                fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId());
+        fileSet.setFileDrop(fileDropService.getFileDrop((Integer) args.get("fileDropId")));
         fileSetRepository.save(fileSet);
         logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + file.getOriginalFilename());
         return "redirect:/home";

@@ -16,7 +16,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
+import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileSet;
 
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
@@ -34,6 +36,9 @@ public class FileDropService {
 
     @Autowired
     private FileDropRepository fileDropRepository;
+
+    @Autowired
+    private FileSetRepository fileSetRepository;
 
     public void startUploadProcess(User user) {
         if (getCurrentTask(user) != null) {
@@ -66,6 +71,14 @@ public class FileDropService {
             runtimeService.setVariable(filesTask.getProcessInstanceId(), "files", files);
             taskService.complete(filesTask.getId());
         }
+    }
+
+    public List<FileSet> getFileSets(FileDrop fileDrop) {
+        return fileSetRepository.findAllByFileDrop(fileDrop);
+    }
+
+    public void saveFileDrop(FileDrop fileDrop) {
+        fileDropRepository.save(fileDrop);
     }
 
     public FileDrop getFileDrop(Integer id) {
