@@ -1,21 +1,21 @@
-@import url('font.css'); 
+@import url('font.css');
 
 /* -------------------------------------------------------- */
 
-@media(min-width: 0px) {
+@media (min-width: 0px) {
     html {
         position: relative;
         min-height: 100%;
-        overflow-y:scroll;
+        overflow-y: scroll;
     }
 
     body {
-        padding-top: 5em;
+        padding-top: 6em;
         background-color: white;
     }
 
     h4 .uh-nav-app-name {
-       color: #BD9319;
+        color: #BD9319;
     }
 
     .navbar-brand.uh-nav-app-name:hover {
@@ -69,12 +69,12 @@
 
 /* -------------------------------------------------------- */
 
-@media(min-width:768px) {
+@media (min-width: 768px) {
 
 }
 /* -------------------------------------------------------- */
 
-@media(min-width: 992px) {
+@media (min-width: 992px) {
 
 }
 /* -------------------------------------------------------- */

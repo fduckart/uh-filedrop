@@ -75,4 +75,14 @@ public class FileSet implements Serializable {
     public void setComment(String comment) {
         this.comment = comment;
     }
+
+    @Override
+    public String toString() {
+        return "FileSet [id=" + id
+                + ", fileDropId=" + fileDrop.getId()
+                + ", fileName=" + fileName
+                + ", type=" + type
+                + ", comment=" + comment
+                + "]";
+    }
 }

@@ -2,76 +2,84 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
 <body ng-app="filedropApp">
-    <nav th:replace="menubar :: copy"></nav>
+<nav th:replace="menubar :: copy"></nav>
 
-    <div class="container" ng-controller="UploadJsController" th:attr="ng-init='init('+${maxUploadSize}+')'" ng-cloak>
-        <div class="row">
-            <div class="col-sm-12">
-                <h4>Add Files</h4>
-                <div class="mb-1">
-                    <span>Recipients: </span>
-                    <ul class="list-inline">
-                        <li th:each="recipient : ${recipients}" class="mx-1 my-1 list-inline-item">
-                            <button type="button" class="btn btn-outline-dark btn-sm" disabled
-                                th:text="${recipient}"></button>
-                        </li>
-                    </ul>
+<div class="container" ng-controller="UploadJsController" th:attr="ng-init='init('+${maxUploadSize}+')'" ng-cloak>
+    <div class="card border-success">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <h4>Add Files</h4>
+                    <div class="mb-1">
+                        <span>Recipients: </span>
+                        <ul class="list-inline">
+                            <li th:each="recipient : ${recipients}" class="mx-1 my-1 list-inline-item">
+                                <button type="button" class="btn btn-outline-dark btn-sm" disabled
+                                    th:text="${recipient}"></button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 mb-1">
+                    <form id="filesForm" ng-submit="submit()">
+                        <div class="card bg-light" ngf-drag-over-class="'border-success'" ngf-drop ngf-select
+                            ngf-change="addFiles($files)" ngf-multiple="true">
+                            <div class="card-body text-center m-auto">
+                                Drag Files or Click here
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="col-sm-12 my-2">
+                    <table ng-if="files.length > 0" class="table table-responsive-sm table-responsive-md">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Description</th>
+                            <th scope="col"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr ng-repeat="file in files">
+                            <th scope="row">{{ files.indexOf(file) + 1 }}</th>
+                            <td>{{ file.name }}</td>
+                            <td>{{ file.size | bytes}}</td>
+                            <td>{{ file.type ? file.type : 'unknown' }}</td>
+                            <td><input type="text" class="form-control" ng-model="file.comment"></td>
+                            <td>
+                                <button class="btn btn-danger btn-sm" ng-click="removeFile(file)"><i
+                                    class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <p ng-class="isUploadLarge() ? 'text-danger' : ''" ng-if="uploadSize > 0">Upload size: {{uploadSize
+                        |
+                        bytes}} / {{maxUploadSize | bytes}} </p>
+                    <button class="btn" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'" type="submit"
+                        ng-disabled="isUploadLarge()" form="filesForm">Submit
+                    </button>
+                    <p style="display: inline-block" class="text-danger" ng-if="isUploadLarge()">Upload size is too
+                        <strong>large</strong>.
+                    </p>
                 </div>
             </div>
         </div>
-
-        <div class="row">
-            <div class="col-sm-12 mb-1">
-                <form id="filesForm" ng-submit="submit()">
-                    <div class="card bg-light" ngf-drag-over-class="'border-success'" ngf-drop ngf-select
-                        ngf-change="addFiles($files)" ngf-multiple="true">
-                        <div class="card-body text-center m-auto">
-                            Drag Files or Click here
-                        </div>
-                    </div>
-                </form>
-            </div>
-
-            <div class="col-sm-12 my-2">
-                <table ng-if="files.length > 0" class="table table-responsive-sm table-responsive-md">
-                    <thead>
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Size</th>
-                        <th scope="col">Type</th>
-                        <th scope="col"></th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr ng-repeat="file in files">
-                        <th scope="row">{{ files.indexOf(file) + 1 }}</th>
-                        <td>{{ file.name }}</td>
-                        <td>{{ file.size | bytes}}</td>
-                        <td>{{ file.type ? file.type : 'unknown' }}</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm" ng-click="removeFile(file)"><i
-                                class="fa fa-trash"></i></button>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <div class="row">
-            <div class="col-sm-12">
-                <p ng-class="isUploadLarge() ? 'text-danger' : ''" ng-if="uploadSize > 0">Upload size: {{uploadSize |
-                    bytes}} / {{maxUploadSize | bytes}} </p>
-                <button class="btn" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'" type="submit"
-                    ng-disabled="isUploadLarge()" form="filesForm">Submit
-                </button>
-                <p style="display: inline-block" class="text-danger" ng-if="isUploadLarge()">Upload size is too <strong>large</strong>.
-                </p>
-            </div>
-        </div>
     </div>
+</div>
 
-    <div th:replace="footer :: copy"></div>
+<div th:replace="footer :: copy"></div>
 </body>
 </html>

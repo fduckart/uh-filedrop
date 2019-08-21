@@ -11,9 +11,9 @@ import edu.hawaii.its.filedrop.type.Role;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
 
 @RunWith(SpringRunner.class)
@@ -34,17 +34,14 @@ public class RoleRepositoryTest {
         Role r0 = roleRepository.findById(id).get();
         Role r1 = roleRepository.findById(id).get();
         assertEquals(r0, r1);
-        assertSame(r0, r1);
 
         r1.setDescription(r1.getDescription() + " (updated)");
         roleRepository.save(r1);
 
-        assertEquals(r0, r1);
-        assertSame(r0, r1);
+        assertNotEquals(r0, r1);
 
         Role r2 = roleRepository.findById(id).get();
-        assertEquals(r0, r2);
-        assertSame(r0, r2);
+        assertNotEquals(r0, r2);
 
         Role r3 = roleRepository.findByRole("STAFF");
         assertThat(r3, equalTo(null));
