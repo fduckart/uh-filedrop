@@ -9,12 +9,14 @@ import org.apache.commons.logging.LogFactory;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.UserContextService;
@@ -50,6 +52,7 @@ public class PrepareController {
         logger.debug("User added recipient.");
         //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
         FileDrop fileDrop = new FileDrop();
+        fileDropService.saveFileDrop(fileDrop);
         fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setEncryptionKey("test-enc-key-" + fileDrop.getId());
         fileDrop.setDownloadKey("test-dl-key-" + fileDrop.getId());
@@ -81,7 +84,8 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare/files")
-    public String uploadFiles(@RequestParam("file") MultipartFile file,
+    @ResponseStatus(value = HttpStatus.OK)
+    public void uploadFiles(@RequestParam("file") MultipartFile file,
             @RequestParam("comment") String comment) {
         FileSet fileSet = new FileSet();
         fileSet.setFileName(file.getOriginalFilename());
@@ -92,6 +96,5 @@ public class PrepareController {
         fileSet.setFileDrop(fileDropService.getFileDrop((Integer) args.get("fileDropId")));
         fileSetRepository.save(fileSet);
         logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + file.getOriginalFilename());
-        return "redirect:/home";
     }
 }

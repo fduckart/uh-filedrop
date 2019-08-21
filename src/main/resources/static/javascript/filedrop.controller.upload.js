@@ -12,13 +12,13 @@ function UploadJsController($scope, Upload, $window) {
                 Upload.upload({
                     url: "/filedrop/prepare/files",
                     data: {
-                        filedropId: "test123",
                         comment: $scope.files[i].comment,
                         file: $scope.files[i]
                     },
                     arrayKey: ""
                 });
             }
+            $window.location.href = "/filedrop";
         }
     };
 
