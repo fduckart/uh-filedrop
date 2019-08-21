@@ -37,7 +37,7 @@
                 </form>
             </div>
             <div class="col-sm-12">
-                <form th:action="@{/prepare/}" method="POST">
+                <form th:action="@{/prepare/}" method="POST" ng-submit="addRecipient()">
                     <input type="hidden" name="recipients" ng-value="getRecipients()">
                     <button class="btn btn-primary" type="submit">Next</button>
                 </form>
