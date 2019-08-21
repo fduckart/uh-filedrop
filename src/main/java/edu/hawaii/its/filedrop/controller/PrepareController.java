@@ -50,7 +50,9 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
-    public String addRecipients(@RequestParam("recipients") String[] recipients) {
+    public String addRecipients(@RequestParam("validation") Boolean validation,
+            @RequestParam("expiration") Integer expiration,
+            @RequestParam("recipients") String[] recipients) {
         logger.debug("User added recipient.");
         //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
         FileDrop fileDrop = new FileDrop();
@@ -62,7 +64,9 @@ public class PrepareController {
         fileDrop.setUploader(userContextService.getCurrentUhuuid());
         fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
         fileDrop.setCreated(new Date());
-        fileDrop.setExpiration(Date.from(fileDrop.getCreated().toInstant().plus(5, ChronoUnit.DAYS)));
+        fileDrop.setExpiration(Date.from(fileDrop.getCreated().toInstant().plus(expiration, ChronoUnit.DAYS)));
+        fileDrop.setValid(validation);
+        fileDrop.setAuthenticationRequired(validation);
         fileDropService.saveFileDrop(fileDrop);
         fileDropService.addRecipients(userContextService.getCurrentUser(), recipients);
         Map<String, Object> args = new HashMap<>();
