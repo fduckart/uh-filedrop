@@ -33,7 +33,6 @@ public class FileDrop {
     private String uploadKey;
 
     @Column(name = "download_key", nullable = false, unique = true)
-    @GeneratedValue(strategy = GenerationType.AUTO)
     private String downloadKey;
 
     @Column(name = "recipient")
