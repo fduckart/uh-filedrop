@@ -1,6 +1,8 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,12 +61,15 @@ public class PrepareController {
         fileDrop.setUploadKey("test-ul-key-" + fileDrop.getId());
         fileDrop.setUploader(userContextService.getCurrentUhuuid());
         fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
+        fileDrop.setCreated(new Date());
+        fileDrop.setExpiration(Date.from(fileDrop.getCreated().toInstant().plus(5, ChronoUnit.DAYS)));
         fileDropService.saveFileDrop(fileDrop);
         fileDropService.addRecipients(userContextService.getCurrentUser(), recipients);
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
         fileDropService.addProcessVariables(
                 fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId(), args);
+        logger.debug(userContextService.getCurrentUser().getUsername() + " created new " + fileDrop);
         return "redirect:/prepare/files";
     }
 
@@ -95,6 +100,6 @@ public class PrepareController {
                 fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId());
         fileSet.setFileDrop(fileDropService.getFileDrop((Integer) args.get("fileDropId")));
         fileSetRepository.save(fileSet);
-        logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + file.getOriginalFilename());
+        logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + fileSet);
     }
 }

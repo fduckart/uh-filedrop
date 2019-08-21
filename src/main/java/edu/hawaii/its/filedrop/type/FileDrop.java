@@ -154,4 +154,19 @@ public class FileDrop {
     public void setFileSet(Set<FileSet> fileSet) {
         this.fileSet = fileSet;
     }
+
+    @Override
+    public String toString() {
+        return "FileDrop [id=" + id
+                + ", uploader=" + uploader
+                + ", uploaderFullName=" + uploaderFullName
+                + ", uploadKey=" + uploadKey
+                + ", downloadKey=" + downloadKey
+                + ", encryptionKey=" + encryptionKey
+                + ", created=" + created.toString()
+                + ", expiration=" + expiration.toString()
+                + ", valid=" + valid
+                + ", authenticationRequired=" + authenticationRequired
+                + "]";
+    }
 }
