@@ -1,9 +1,9 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -22,11 +22,11 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
+import edu.hawaii.its.filedrop.util.Strings;
 
 @Controller
 public class PrepareController {
@@ -38,9 +38,6 @@ public class PrepareController {
 
     @Autowired
     private FileDropService fileDropService;
-
-    @Autowired
-    private FileSetRepository fileSetRepository;
 
     @Autowired
     private LdapService ldapService;
@@ -56,21 +53,19 @@ public class PrepareController {
         logger.debug("User added recipient.");
         //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
         FileDrop fileDrop = new FileDrop();
-        fileDropService.saveFileDrop(fileDrop);
         fileDrop.setRecipient(Arrays.toString(recipients));
-        fileDrop.setEncryptionKey("test-enc-key-" + fileDrop.getId());
-        fileDrop.setDownloadKey("test-dl-key-" + fileDrop.getId());
-        fileDrop.setUploadKey("test-ul-key-" + fileDrop.getId());
-        fileDrop.setUploader(userContextService.getCurrentUhuuid());
+        fileDrop.setEncryptionKey(Strings.generateRandomString());
+        fileDrop.setDownloadKey(Strings.generateRandomString());
+        fileDrop.setUploadKey(Strings.generateRandomString());
+        fileDrop.setUploader(userContextService.getCurrentUser().getUsername());
         fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
-        fileDrop.setCreated(new Date());
-        fileDrop.setExpiration(Date.from(fileDrop.getCreated().toInstant().plus(expiration, ChronoUnit.DAYS)));
+        fileDrop.setCreated(LocalDate.now());
+        fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
         fileDrop.setValid(validation);
         fileDrop.setAuthenticationRequired(validation);
-        fileDropService.saveFileDrop(fileDrop);
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
         fileDropService.addRecipients(userContextService.getCurrentUser(), recipients);
-        Map<String, Object> args = new HashMap<>();
-        args.put("fileDropId", fileDrop.getId());
+        Map<String, Object> args = Collections.singletonMap("fileDropId", fileDrop.getId());
         fileDropService.addProcessVariables(
                 fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId(), args);
         logger.debug(userContextService.getCurrentUser().getUsername() + " created new " + fileDrop);

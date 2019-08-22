@@ -42,7 +42,10 @@ public class FileDropService {
 
     public void startUploadProcess(User user) {
         if (getCurrentTask(user) != null) {
-            runtimeService.deleteProcessInstance(getCurrentTask(user).getProcessInstanceId(), "restart");
+            List<Task> tasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
+            for (Task task : tasks) {
+                runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "restart");
+            }
         }
         logger.debug(user.getUsername() + " started upload process.");
         Map<String, Object> args = new HashMap<>();
@@ -73,16 +76,16 @@ public class FileDropService {
         }
     }
 
-    public void saveFileSet(FileSet fileSet) {
-        fileSetRepository.save(fileSet);
+    public FileSet saveFileSet(FileSet fileSet) {
+        return fileSetRepository.save(fileSet);
     }
 
     public List<FileSet> getFileSets(FileDrop fileDrop) {
         return fileSetRepository.findAllByFileDrop(fileDrop);
     }
 
-    public void saveFileDrop(FileDrop fileDrop) {
-        fileDropRepository.save(fileDrop);
+    public FileDrop saveFileDrop(FileDrop fileDrop) {
+        return fileDropRepository.save(fileDrop);
     }
 
     public FileDrop getFileDrop(Integer id) {

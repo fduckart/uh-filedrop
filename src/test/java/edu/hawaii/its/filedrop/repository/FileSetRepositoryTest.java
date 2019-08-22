@@ -1,8 +1,7 @@
 package edu.hawaii.its.filedrop.repository;
 
-import java.time.Instant;
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
 import java.util.List;
 
 import org.junit.Test;
@@ -32,8 +31,8 @@ public class FileSetRepositoryTest {
 
     @Test
     public void findFileSetTest() {
-        Date created = Date.from(Instant.now());
-        Date expiration = Date.from(created.toInstant().plus(10, ChronoUnit.DAYS));
+        LocalDate created = LocalDate.now();
+        LocalDate expiration = created.plus(10, ChronoUnit.DAYS);
         FileDrop fileDrop = new FileDrop();
         fileDrop.setId(1);
         fileDrop.setUploader("test");

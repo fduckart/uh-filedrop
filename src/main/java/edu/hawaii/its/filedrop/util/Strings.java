@@ -1,5 +1,7 @@
 package edu.hawaii.its.filedrop.util;
 
+import org.apache.commons.lang3.RandomStringUtils;
+
 public final class Strings {
 
     // Private contructor to prevent instantiation.
@@ -54,6 +56,17 @@ public final class Strings {
             return value.substring(0, length);
         }
         return value;
+    }
+
+    public static String generateRandomString() {
+        String random = RandomStringUtils.randomAlphabetic(20);
+
+        String part1 = random.substring(0, 5);
+        String part2 = random.substring(5, 10);
+        String part3 = random.substring(10, 15);
+        String part4 = random.substring(15);
+
+        return part1 + "-" + part2 + "-" + part3 + "-" + part4;
     }
 
 }
