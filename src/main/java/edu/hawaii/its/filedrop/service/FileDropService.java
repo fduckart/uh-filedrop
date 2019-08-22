@@ -73,6 +73,10 @@ public class FileDropService {
         }
     }
 
+    public void saveFileSet(FileSet fileSet) {
+        fileSetRepository.save(fileSet);
+    }
+
     public List<FileSet> getFileSets(FileDrop fileDrop) {
         return fileSetRepository.findAllByFileDrop(fileDrop);
     }

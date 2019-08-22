@@ -103,7 +103,7 @@ public class PrepareController {
         Map<String, Object> args = fileDropService.getProcessVariables(
                 fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId());
         fileSet.setFileDrop(fileDropService.getFileDrop((Integer) args.get("fileDropId")));
-        fileSetRepository.save(fileSet);
+        fileDropService.saveFileSet(fileSet);
         logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + fileSet);
     }
 }
