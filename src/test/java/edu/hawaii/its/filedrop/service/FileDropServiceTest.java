@@ -109,10 +109,13 @@ public class FileDropServiceTest {
         List<Task> processTask = taskService.createTaskQuery().processInstanceId(process.getId()).list();
 
         assertEquals(1, processTask.size());
+
+        runtimeService.deleteProcessInstance(process.getId(), "test");
+        runtimeService.deleteProcessInstance(process2.getId(), "test");
     }
 
     @Test
-    @WithMockUhUser(username = "newUser", uhuuid = "8979678")
+    @WithMockUhUser
     public void startProcessUH() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
@@ -120,10 +123,14 @@ public class FileDropServiceTest {
         Map<String, Object> args = new HashMap<>();
         args.put("initiator", user.getUsername());
 
+        List<Task> userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
+
+        for (Task task : userTasks) {
+            runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "test");
+        }
+
         ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
         assertNotNull(process);
-
-        List<Task> userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
 
         assertEquals(1, userTasks.size());
 
@@ -145,7 +152,7 @@ public class FileDropServiceTest {
     }
 
     @Test
-    @WithMockUhUser(username = "someuser", uhuuid = "9876887")
+    @WithMockUhUser
     public void testWithService() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
@@ -166,12 +173,11 @@ public class FileDropServiceTest {
     }
 
     @Test
-    @WithMockUhUser(username = "newerUser", uhuuid = "3123212")
+    @WithMockUhUser
     public void testMultipleProcess() {
-
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
-
+        runtimeService.deleteProcessInstance(fileDropService.getCurrentTask(user).getProcessInstanceId(), "test");
         assertNull(fileDropService.getCurrentTask(user));
         fileDropService.startUploadProcess(user);
         assertNotNull(fileDropService.getCurrentTask(user));
@@ -198,7 +204,7 @@ public class FileDropServiceTest {
     }
 
     @Test
-    @WithMockUhUser(username = "newestUser", uhuuid = "3214563")
+    @WithMockUhUser
     public void addNoRecipients() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
@@ -214,11 +220,11 @@ public class FileDropServiceTest {
         assertFalse(processVariables.isEmpty());
         assertEquals(2, processVariables.size());
         assertTrue(processVariables.containsKey("recipients"));
-        assertEquals("newestUser", ((String[]) processVariables.get("recipients"))[0]);
+        assertEquals("user", ((String[]) processVariables.get("recipients"))[0]);
     }
 
     @Test
-    @WithMockUhUser(username = "anotherUser", uhuuid = "1222312")
+    @WithMockUhUser
     public void addRecipientsWithoutProcess() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
@@ -230,7 +236,7 @@ public class FileDropServiceTest {
     }
 
     @Test
-    @WithMockUhUser(username = "anotherNewUser", uhuuid = "3443323")
+    @WithMockUhUser
     public void addRecipientsTwice() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
@@ -250,7 +256,7 @@ public class FileDropServiceTest {
     }
 
     @Test
-    @WithMockUhUser(username = "jlennon", uhuuid = "2233322")
+    @WithMockUhUser
     public void processVariablesTest() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
@@ -302,7 +308,7 @@ public class FileDropServiceTest {
     }
 
     @Test
-    @WithMockUhUser(username = "lukemcd9", uhuuid = "0000022")
+    @WithMockUhUser
     public void fileDropTest() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
