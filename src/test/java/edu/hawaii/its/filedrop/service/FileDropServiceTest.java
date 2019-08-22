@@ -319,7 +319,7 @@ public class FileDropServiceTest {
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(user.getUid());
-        fileDrop.setUploaderFullName("A Uh User");
+        fileDrop.setUploaderFullName(user.getName());
         fileDrop.setUploadKey("test-ul-key");
         fileDrop.setDownloadKey("test-dl-key");
         fileDrop.setEncryptionKey("test-enc-key");
