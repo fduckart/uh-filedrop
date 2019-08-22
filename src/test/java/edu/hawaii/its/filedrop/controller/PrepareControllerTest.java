@@ -2,9 +2,6 @@ package edu.hawaii.its.filedrop.controller;
 
 import java.util.List;
 
-import org.flowable.engine.RuntimeService;
-import org.flowable.engine.TaskService;
-import org.flowable.task.api.Task;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,7 +12,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
@@ -44,15 +40,6 @@ public class PrepareControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private RuntimeService runtimeService;
-
-    @Autowired
-    private TaskService taskService;
-
-    @Autowired
-    private UserContextService userContextService;
-
     private MockMvc mockMvc;
 
     @Before
@@ -60,15 +47,6 @@ public class PrepareControllerTest {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-
-        if (fileDropService.getCurrentTask(userContextService.getCurrentUser()) != null) {
-            List<Task> tasks = taskService.createTaskQuery()
-                    .taskAssignee(userContextService.getCurrentUser().getUsername())
-                    .list();
-            for (Task task : tasks) {
-                runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "test");
-            }
-        }
     }
 
     @Test
@@ -82,7 +60,8 @@ public class PrepareControllerTest {
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare/files"));
 
         FileDrop fileDrop = fileDropService.getFileDrop(1);
         assertNotNull(fileDrop);
@@ -96,7 +75,7 @@ public class PrepareControllerTest {
 
     @Test
     @WithMockUhUser
-    public void addFiles() throws Exception {
+    public void addRecipients() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/prepare"));
@@ -105,7 +84,8 @@ public class PrepareControllerTest {
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare/files"));
     }
 
     @Test
@@ -116,7 +96,8 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(get("/prepare/files"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare"));
     }
 
     @Test
@@ -130,7 +111,8 @@ public class PrepareControllerTest {
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare/files"));
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())

@@ -42,7 +42,10 @@ public class FileDropService {
 
     public void startUploadProcess(User user) {
         if (getCurrentTask(user) != null) {
-            runtimeService.deleteProcessInstance(getCurrentTask(user).getProcessInstanceId(), "restart");
+            List<Task> tasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
+            for (Task task : tasks) {
+                runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "restart");
+            }
         }
         logger.debug(user.getUsername() + " started upload process.");
         Map<String, Object> args = new HashMap<>();
