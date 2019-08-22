@@ -17,7 +17,6 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -73,10 +72,6 @@ public class PrepareControllerTest {
                 .param("validation", "true")
                 .param("expiration", "5"))
                 .andExpect(status().is3xxRedirection())
-                .andReturn();
-
-        mockMvc.perform(get("/prepare/files"))
-                .andExpect(model().attribute("maxUploadSize", maxUploadSize))
                 .andReturn();
     }
 
