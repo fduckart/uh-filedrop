@@ -2,6 +2,9 @@ package edu.hawaii.its.filedrop.controller;
 
 import java.util.List;
 
+import org.flowable.engine.RuntimeService;
+import org.flowable.engine.TaskService;
+import org.flowable.task.api.Task;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -12,6 +15,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
+import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
@@ -40,6 +44,15 @@ public class PrepareControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private RuntimeService runtimeService;
+
+    @Autowired
+    private TaskService taskService;
+
+    @Autowired
+    private UserContextService userContextService;
+
     private MockMvc mockMvc;
 
     @Before
@@ -47,6 +60,15 @@ public class PrepareControllerTest {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+
+        if (fileDropService.getCurrentTask(userContextService.getCurrentUser()) != null) {
+            List<Task> tasks = taskService.createTaskQuery()
+                    .taskAssignee(userContextService.getCurrentUser().getUsername())
+                    .list();
+            for (Task task : tasks) {
+                runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "test");
+            }
+        }
     }
 
     @Test
