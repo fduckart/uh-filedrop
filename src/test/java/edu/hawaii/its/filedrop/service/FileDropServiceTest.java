@@ -118,7 +118,7 @@ public class FileDropServiceTest {
     public void startProcessUH() {
         Map<String, String> map = new HashMap<>();
         map.put("uid", "someuser");
-        map.put("uhuuid", "12345678");
+        map.put("uhuuid", "8979678");
 
         User user = userBuilder.make(map);
         assertNotNull(user);
@@ -154,7 +154,7 @@ public class FileDropServiceTest {
     public void testWithService() {
         Map<String, String> map = new HashMap<>();
         map.put("uid", "someuser");
-        map.put("uhuuid", "12345678");
+        map.put("uhuuid", "9876887");
 
         User user = userBuilder.make(map);
         assertNotNull(user);
@@ -178,7 +178,7 @@ public class FileDropServiceTest {
     public void testMultipleProcess() {
         Map<String, String> map = new HashMap<>();
         map.put("uid", "someuser");
-        map.put("uhuuid", "12345678");
+        map.put("uhuuid", "9042309");
 
         User user = userBuilder.make(map);
         assertNotNull(user);
@@ -331,7 +331,7 @@ public class FileDropServiceTest {
     public void fileDropTest() {
         Map<String, String> map = new HashMap<>();
         map.put("uid", "aUhUser");
-        map.put("uhuuid", "1234567");
+        map.put("uhuuid", "0000009");
 
         User user = userBuilder.make(map);
         assertNotNull(user);
