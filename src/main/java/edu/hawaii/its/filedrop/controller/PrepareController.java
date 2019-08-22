@@ -57,7 +57,7 @@ public class PrepareController {
         fileDrop.setEncryptionKey("test-enc-key-" + fileDrop.getId());
         fileDrop.setDownloadKey("test-dl-key-" + fileDrop.getId());
         fileDrop.setUploadKey("test-ul-key-" + fileDrop.getId());
-        fileDrop.setUploader(userContextService.getCurrentUhuuid());
+        fileDrop.setUploader(userContextService.getCurrentUser().getUsername());
         fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
         fileDrop.setCreated(LocalDate.now());
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
