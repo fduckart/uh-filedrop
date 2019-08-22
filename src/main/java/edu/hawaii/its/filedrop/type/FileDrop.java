@@ -1,6 +1,6 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -27,7 +27,7 @@ public class FileDrop {
     private String uploaderFullName;
 
     @Column(name = "created", nullable = false)
-    private Date created;
+    private LocalDate created;
 
     @Column(name = "upload_key", nullable = false, unique = true)
     private String uploadKey;
@@ -42,7 +42,7 @@ public class FileDrop {
     private String encryptionKey;
 
     @Column(name = "valid_until", nullable = false)
-    private Date expiration;
+    private LocalDate expiration;
 
     //Need to alter table from character to boolean
     @Column(name = "is_valid", nullable = false)
@@ -83,11 +83,11 @@ public class FileDrop {
         this.uploaderFullName = uploaderFullName;
     }
 
-    public Date getCreated() {
+    public LocalDate getCreated() {
         return created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDate created) {
         this.created = created;
     }
 
@@ -123,11 +123,11 @@ public class FileDrop {
         this.encryptionKey = encryptionKey;
     }
 
-    public Date getExpiration() {
+    public LocalDate getExpiration() {
         return expiration;
     }
 
-    public void setExpiration(Date expiration) {
+    public void setExpiration(LocalDate expiration) {
         this.expiration = expiration;
     }
 

@@ -1,8 +1,8 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.type.FileDrop;
@@ -38,9 +37,6 @@ public class PrepareController {
 
     @Autowired
     private FileDropService fileDropService;
-
-    @Autowired
-    private FileSetRepository fileSetRepository;
 
     @Autowired
     private LdapService ldapService;
@@ -63,8 +59,8 @@ public class PrepareController {
         fileDrop.setUploadKey("test-ul-key-" + fileDrop.getId());
         fileDrop.setUploader(userContextService.getCurrentUhuuid());
         fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
-        fileDrop.setCreated(new Date());
-        fileDrop.setExpiration(Date.from(fileDrop.getCreated().toInstant().plus(expiration, ChronoUnit.DAYS)));
+        fileDrop.setCreated(LocalDate.now());
+        fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
         fileDrop.setValid(validation);
         fileDrop.setAuthenticationRequired(validation);
         fileDropService.saveFileDrop(fileDrop);
