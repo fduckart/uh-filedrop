@@ -19,9 +19,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.access.AnonymousUser;
 import edu.hawaii.its.filedrop.access.User;
-import edu.hawaii.its.filedrop.access.UserBuilder;
+import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.repository.FileSetRepository;
+import edu.hawaii.its.filedrop.controller.WithMockUhUser;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
@@ -45,10 +45,7 @@ public class FileDropServiceTest {
     private TaskService taskService;
 
     @Autowired
-    private UserBuilder userBuilder;
-
-    @Autowired
-    private FileSetRepository fileSetRepository;
+    private UserContextService userContextService;
 
     @Test
     public void startProcessTest() {
@@ -115,12 +112,9 @@ public class FileDropServiceTest {
     }
 
     @Test
+    @WithMockUhUser(username = "newUser", uhuuid = "8979678")
     public void startProcessUH() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "someuser");
-        map.put("uhuuid", "8979678");
-
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         Map<String, Object> args = new HashMap<>();
@@ -151,12 +145,9 @@ public class FileDropServiceTest {
     }
 
     @Test
+    @WithMockUhUser(username = "someuser", uhuuid = "9876887")
     public void testWithService() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "someuser");
-        map.put("uhuuid", "9876887");
-
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         assertNull(fileDropService.getCurrentTask(user));
@@ -175,12 +166,10 @@ public class FileDropServiceTest {
     }
 
     @Test
+    @WithMockUhUser(username = "newerUser", uhuuid = "3123212")
     public void testMultipleProcess() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "someuser");
-        map.put("uhuuid", "9042309");
 
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         assertNull(fileDropService.getCurrentTask(user));
@@ -209,12 +198,9 @@ public class FileDropServiceTest {
     }
 
     @Test
+    @WithMockUhUser(username = "newestUser", uhuuid = "3214563")
     public void addNoRecipients() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "anotherUser");
-        map.put("uhuuid", "910111213");
-
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         fileDropService.startUploadProcess(user);
@@ -228,16 +214,13 @@ public class FileDropServiceTest {
         assertFalse(processVariables.isEmpty());
         assertEquals(2, processVariables.size());
         assertTrue(processVariables.containsKey("recipients"));
-        assertEquals("anotherUser", ((String[]) processVariables.get("recipients"))[0]);
+        assertEquals("newestUser", ((String[]) processVariables.get("recipients"))[0]);
     }
 
     @Test
+    @WithMockUhUser(username = "anotherUser", uhuuid = "1222312")
     public void addRecipientsWithoutProcess() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "uhUser");
-        map.put("uhuuid", "9900992");
-
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         String[] recipients = new String[0];
@@ -247,12 +230,9 @@ public class FileDropServiceTest {
     }
 
     @Test
+    @WithMockUhUser(username = "anotherNewUser", uhuuid = "3443323")
     public void addRecipientsTwice() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "newestUser");
-        map.put("uhuuid", "9909992");
-
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         fileDropService.startUploadProcess(user);
@@ -270,12 +250,9 @@ public class FileDropServiceTest {
     }
 
     @Test
+    @WithMockUhUser(username = "jlennon", uhuuid = "2233322")
     public void processVariablesTest() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "newUser");
-        map.put("uhuuid", "9999992");
-
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         fileDropService.startUploadProcess(user);
@@ -295,12 +272,9 @@ public class FileDropServiceTest {
     }
 
     @Test
+    @WithMockUhUser(username = "rstarr", uhuuid = "9887722")
     public void taskVariablesTest() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "testUser");
-        map.put("uhuuid", "9999999");
-
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         fileDropService.startUploadProcess(user);
@@ -328,12 +302,9 @@ public class FileDropServiceTest {
     }
 
     @Test
+    @WithMockUhUser(username = "lukemcd9", uhuuid = "0000022")
     public void fileDropTest() {
-        Map<String, String> map = new HashMap<>();
-        map.put("uid", "aUhUser");
-        map.put("uhuuid", "0000009");
-
-        User user = userBuilder.make(map);
+        User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
         fileDropService.startUploadProcess(user);
