@@ -328,7 +328,7 @@ public class FileDropServiceTest {
         fileDrop.setAuthenticationRequired(true);
         fileDrop.setCreated(LocalDate.now());
         fileDrop.setExpiration(LocalDate.now().plus(10, ChronoUnit.DAYS));
-        fileDropService.saveFileDrop(fileDrop);
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());

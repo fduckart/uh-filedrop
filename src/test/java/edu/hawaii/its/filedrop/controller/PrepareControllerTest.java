@@ -54,15 +54,13 @@ public class PrepareControllerTest {
     public void addRecipientsTest() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user/prepare"))
-                .andReturn();
+                .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))
-                .andExpect(status().is3xxRedirection())
-                .andReturn();
+                .andExpect(status().is3xxRedirection());
 
         FileDrop fileDrop = fileDropService.getFileDrop(1);
         assertNotNull(fileDrop);
@@ -79,15 +77,13 @@ public class PrepareControllerTest {
     public void addFiles() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user/prepare"))
-                .andReturn();
+                .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))
-                .andExpect(status().is3xxRedirection())
-                .andReturn();
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -95,12 +91,10 @@ public class PrepareControllerTest {
     public void taskRedirectTest() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user/prepare"))
-                .andReturn();
+                .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(get("/prepare/files"))
-                .andExpect(status().is3xxRedirection())
-                .andReturn();
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
@@ -108,20 +102,17 @@ public class PrepareControllerTest {
     public void addFilesTest() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user/prepare"))
-                .andReturn();
+                .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))
-                .andExpect(status().is3xxRedirection())
-                .andReturn();
+                .andExpect(status().is3xxRedirection());
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("recipients"))
-                .andReturn();
+                .andExpect(model().attributeExists("recipients"));
 
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "test data".getBytes());
