@@ -369,7 +369,7 @@ public class FileDropServiceTest {
 
         fileSet.setFileDrop(fileDropService.getFileDrop((Integer) vars.get("fileDropId")));
 
-        fileSetRepository.save(fileSet);
+        fileDropService.saveFileSet(fileSet);
 
         fileSet = new FileSet();
         fileSet.setFileName("test.jpg");
@@ -378,7 +378,9 @@ public class FileDropServiceTest {
 
         fileSet.setFileDrop(fileDropService.getFileDrop((Integer) vars.get("fileDropId")));
 
-        fileSetRepository.save(fileSet);
+        fileDropService.saveFileSet(fileSet);
+
+        assertEquals(2, fileSet.getId().intValue());
 
         assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
         assertEquals(2,

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -16,6 +17,7 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
@@ -26,6 +28,9 @@ public class PrepareControllerTest {
 
     @Autowired
     private PrepareController prepareController;
+
+    @Value("${app.max.size}")
+    private String maxUploadSize;
 
     @Autowired
     private WebApplicationContext context;
@@ -48,8 +53,30 @@ public class PrepareControllerTest {
                 .andReturn();
 
         mockMvc.perform(post("/prepare")
-                .param("recipients", "test", "test2"))
+                .param("recipients", "test", "test2")
+                .param("validation", "true")
+                .param("expiration", "5"))
                 .andExpect(status().is3xxRedirection())
+                .andReturn();
+    }
+
+    @Test
+    @WithMockUhUser
+    public void addFiles() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"))
+                .andReturn();
+
+        mockMvc.perform(post("/prepare")
+                .param("recipients", "test", "test2")
+                .param("validation", "true")
+                .param("expiration", "5"))
+                .andExpect(status().is3xxRedirection())
+                .andReturn();
+
+        mockMvc.perform(get("/prepare/files"))
+                .andExpect(model().attribute("maxUploadSize", maxUploadSize))
                 .andReturn();
     }
 
