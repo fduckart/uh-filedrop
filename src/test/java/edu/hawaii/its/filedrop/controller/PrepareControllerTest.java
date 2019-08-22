@@ -71,7 +71,7 @@ public class PrepareControllerTest {
         assertEquals(2019, fileDrop.getCreated().getYear());
         assertEquals(2019, fileDrop.getExpiration().getYear());
         assertEquals("12345678", fileDrop.getUploader());
-        assertEquals("User", fileDrop.getUploaderFullName());
+        assertEquals("user", fileDrop.getUploaderFullName());
     }
 
     @Test
@@ -104,7 +104,7 @@ public class PrepareControllerTest {
     }
 
     @Test
-    @WithMockUhUser
+    @WithMockUhUser(name = "user", uhuuid = "12345678")
     public void addFilesTest() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
