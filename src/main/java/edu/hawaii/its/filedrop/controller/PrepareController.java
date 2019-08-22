@@ -53,7 +53,6 @@ public class PrepareController {
         logger.debug("User added recipient.");
         //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
         FileDrop fileDrop = new FileDrop();
-        fileDrop = fileDropService.saveFileDrop(fileDrop);
         fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setEncryptionKey(Strings.generateRandomString());
         fileDrop.setDownloadKey(Strings.generateRandomString());
