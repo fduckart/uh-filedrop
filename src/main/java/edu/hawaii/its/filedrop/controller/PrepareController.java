@@ -3,7 +3,7 @@ package edu.hawaii.its.filedrop.controller;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -65,7 +65,9 @@ public class PrepareController {
         fileDrop.setAuthenticationRequired(validation);
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         fileDropService.addRecipients(userContextService.getCurrentUser(), recipients);
-        Map<String, Object> args = Collections.singletonMap("fileDropId", fileDrop.getId());
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileDropId", fileDrop.getId());
+        args.put("fileDropDownloadKey", fileDrop.getDownloadKey());
         fileDropService.addProcessVariables(
                 fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId(), args);
         logger.debug(userContextService.getCurrentUser().getUsername() + " created new " + fileDrop);
@@ -83,14 +85,15 @@ public class PrepareController {
         model.addAttribute("recipients",
                 fileDropService.getProcessVariables(currentTask.getProcessInstanceId()).get("recipients"));
         model.addAttribute("maxUploadSize", maxUploadSize);
+        model.addAttribute("downloadKey",
+                fileDropService.getProcessVariables(currentTask.getProcessInstanceId()).get("fileDropDownloadKey"));
         return "user/files";
     }
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare/files")
     @ResponseStatus(value = HttpStatus.OK)
-    public void uploadFiles(@RequestParam("file") MultipartFile file,
-            @RequestParam("comment") String comment) {
+    public void uploadFiles(@RequestParam("file") MultipartFile file, @RequestParam("comment") String comment) {
         FileSet fileSet = new FileSet();
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());

@@ -4,7 +4,8 @@
 <body ng-app="filedropApp">
 <nav th:replace="menubar :: copy"></nav>
 
-<div class="container" ng-controller="UploadJsController" th:attr="ng-init='init('+${maxUploadSize}+')'" ng-cloak>
+<div class="container" ng-controller="UploadJsController"
+    th:attr="ng-init='init('+${maxUploadSize}+', \''+ ${downloadKey} + '\')'" ng-cloak>
     <div class="card border-success">
         <div class="card-body">
             <div class="row">

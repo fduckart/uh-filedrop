@@ -160,6 +160,7 @@ public class FileDrop {
         return "FileDrop [id=" + id
                 + ", uploader=" + uploader
                 + ", uploaderFullName=" + uploaderFullName
+                + ", recipient=" + recipient
                 + ", uploadKey=" + uploadKey
                 + ", downloadKey=" + downloadKey
                 + ", encryptionKey=" + encryptionKey

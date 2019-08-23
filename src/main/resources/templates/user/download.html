@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="header :: copy"></head>
+<body>
+<nav th:replace="menubar :: copy"></nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <span th:text="${fileDrop.getUploader()}"></span>
+            <span th:text="${fileDrop.getUploaderFullName()}"></span>
+            <span th:text="${fileDrop.getCreated()}"></span>
+            <span th:text="${fileDrop.getExpiration()}"></span>
+            <span th:text="${fileDrop.getUploadKey()}"></span>
+            <span th:text="${fileDrop.getDownloadKey()}"></span>
+            <span th:text="${fileDrop.getEncryptionKey()}"></span>
+            <ul th:each="fileSet : ${fileDrop.getFileSet()}">
+                <li th:text="${fileSet.getFileName()}"></li>
+                <li th:text="${fileSet.getType()}"></li>
+                <li th:text="${fileSet.getComment()}"></li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div th:replace="footer :: copy"></div>
+</body>
+</html>

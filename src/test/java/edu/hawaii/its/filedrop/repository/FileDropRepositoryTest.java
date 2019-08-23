@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
+import edu.hawaii.its.filedrop.util.Strings;
 
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withEncryptionKey;
@@ -24,6 +25,7 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -69,6 +71,28 @@ public class FileDropRepositoryTest {
         assertFalse(foundFileDrop.get().isValid());
         assertEquals(created, foundFileDrop.get().getCreated());
         assertEquals(expiration, foundFileDrop.get().getExpiration());
+    }
+
+    @Test
+    public void testRandomDownloadKey() {
+        String downloadKey = Strings.generateRandomString();
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setId(1);
+        fileDrop.setUploader("test");
+        fileDrop.setUploaderFullName("Test 123");
+        fileDrop.setCreated(LocalDate.now());
+        fileDrop.setExpiration(LocalDate.now().plus(10, ChronoUnit.DAYS));
+        fileDrop.setDownloadKey(downloadKey);
+        fileDrop.setUploadKey("upload-key");
+        fileDrop.setEncryptionKey("encrypted");
+        fileDrop.setAuthenticationRequired(false);
+        fileDrop.setValid(false);
+
+        fileDropRepository.save(fileDrop);
+
+        Optional<FileDrop> foundFileDrop = fileDropRepository.findOne(withDownloadKey(downloadKey));
+
+        assertNotNull(foundFileDrop);
     }
 
     @Test
