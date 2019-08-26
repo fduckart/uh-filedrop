@@ -20,6 +20,9 @@ public class DownloadController {
     @PreAuthorize("isAuthenticated()")
     public String getDownload(Model model, @PathVariable String downloadKey) {
         FileDrop fileDrop = fileDropService.getFileDrop(downloadKey);
+        if (fileDrop == null) {
+            throw new NullPointerException(downloadKey + " is not valid.");
+        }
         model.addAttribute("fileDrop", fileDrop);
         return "user/download";
     }
