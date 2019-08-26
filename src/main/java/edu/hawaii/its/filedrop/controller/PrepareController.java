@@ -24,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapService;
+import edu.hawaii.its.filedrop.service.WorkflowService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.util.Strings;
@@ -38,6 +39,9 @@ public class PrepareController {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @Autowired
+    private WorkflowService workflowService;
 
     @Autowired
     private LdapService ldapService;
@@ -68,8 +72,8 @@ public class PrepareController {
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
         args.put("fileDropDownloadKey", fileDrop.getDownloadKey());
-        fileDropService.addProcessVariables(
-                fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId(), args);
+        workflowService.addProcessVariables(
+                workflowService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId(), args);
         logger.debug(userContextService.getCurrentUser().getUsername() + " created new " + fileDrop);
         return "redirect:/prepare/files";
     }
@@ -77,16 +81,16 @@ public class PrepareController {
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = "/prepare/files")
     public String addFiles(Model model) {
-        Task currentTask = fileDropService.getCurrentTask(userContextService.getCurrentUser());
-        if (currentTask.getName().equalsIgnoreCase("addRecipients")) {
+        Task currentTask = workflowService.getCurrentTask(userContextService.getCurrentUser());
+        if (workflowService.atTask(userContextService.getCurrentUser(), "addRecipients")) {
             return "redirect:/prepare";
         }
         logger.debug("User at addFiles.");
         model.addAttribute("recipients",
-                fileDropService.getProcessVariables(currentTask.getProcessInstanceId()).get("recipients"));
+                workflowService.getProcessVariables(currentTask.getProcessInstanceId()).get("recipients"));
         model.addAttribute("maxUploadSize", maxUploadSize);
         model.addAttribute("downloadKey",
-                fileDropService.getProcessVariables(currentTask.getProcessInstanceId()).get("fileDropDownloadKey"));
+                workflowService.getProcessVariables(currentTask.getProcessInstanceId()).get("fileDropDownloadKey"));
         return "user/files";
     }
 
@@ -98,8 +102,8 @@ public class PrepareController {
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());
         fileSet.setComment(comment);
-        Map<String, Object> args = fileDropService.getProcessVariables(
-                fileDropService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId());
+        Map<String, Object> args = workflowService.getProcessVariables(
+                workflowService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId());
         fileSet.setFileDrop(fileDropService.getFileDrop((Integer) args.get("fileDropId")));
         fileDropService.saveFileSet(fileSet);
         logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + fileSet);
