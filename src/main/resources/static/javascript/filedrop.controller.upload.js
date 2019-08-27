@@ -23,7 +23,7 @@ function UploadJsController($scope, Upload, $window) {
                           count--;
 
                           if (count === 0) {
-                              $window.location.href = "/filedrop/download/" + $scope.downloadKey;
+                              $window.location.href = "/filedrop/dl/" + $scope.downloadKey;
                           }
                       });
             }
