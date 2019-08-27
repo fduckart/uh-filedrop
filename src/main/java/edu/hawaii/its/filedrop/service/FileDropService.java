@@ -1,14 +1,11 @@
 package edu.hawaii.its.filedrop.service;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.flowable.engine.RuntimeService;
-import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,10 +26,7 @@ public class FileDropService {
     private static final Log logger = LogFactory.getLog(FileDropService.class);
 
     @Autowired
-    private RuntimeService runtimeService;
-
-    @Autowired
-    private TaskService taskService;
+    private WorkflowService workflowService;
 
     @Autowired
     private FileDropRepository fileDropRepository;
@@ -41,38 +35,31 @@ public class FileDropService {
     private FileSetRepository fileSetRepository;
 
     public void startUploadProcess(User user) {
-        if (getCurrentTask(user) != null) {
-            List<Task> tasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-            for (Task task : tasks) {
-                runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "restart");
-            }
-        }
-        logger.debug(user.getUsername() + " started upload process.");
-        Map<String, Object> args = new HashMap<>();
-        args.put("initiator", user.getUsername());
-        runtimeService.startProcessInstanceByKey("fileUpload", args);
+        workflowService.startProcess(user, "fileUpload");
         logger.debug("Created tasks for: " + user.getUsername());
     }
 
     public void addRecipients(User user, String... recipients) {
-        if (getCurrentTask(user) != null && getCurrentTask(user).getName().equalsIgnoreCase("addRecipients")) {
-            Task recipientTask = taskService.createTaskQuery().taskAssignee(user.getUsername()).singleResult();
+        if (workflowService.atTask(user, "addRecipients")) {
+            Task recipientTask = workflowService.getCurrentTask(user);
             if (recipients.length == 0) {
                 recipients = new String[1];
                 recipients[0] = user.getUsername();
             }
             logger.debug(user.getUsername() + " added recipients: " + Arrays.toString(recipients));
-            runtimeService.setVariable(recipientTask.getProcessInstanceId(), "recipients", recipients);
-            taskService.complete(recipientTask.getId());
+            workflowService.addProcessVariables(recipientTask.getProcessInstanceId(),
+                    Collections.singletonMap("recipients", recipients));
+            workflowService.completeCurrentTask(user);
         }
     }
 
     public void uploadFile(User user, List<MultipartFile> files) {
-        if (getCurrentTask(user).getName().equalsIgnoreCase("addFiles")) {
+        if (workflowService.atTask(user, "addFiles")) {
             logger.debug(user.getUsername() + " uploaded files.");
-            Task filesTask = taskService.createTaskQuery().taskAssignee(user.getUsername()).singleResult();
-            runtimeService.setVariable(filesTask.getProcessInstanceId(), "files", files);
-            taskService.complete(filesTask.getId());
+            Task filesTask = workflowService.getCurrentTask(user);
+            workflowService
+                    .addProcessVariables(filesTask.getProcessInstanceId(), Collections.singletonMap("files", files));
+            workflowService.completeCurrentTask(user);
         }
     }
 
@@ -94,25 +81,5 @@ public class FileDropService {
 
     public FileDrop getFileDrop(String key) {
         return fileDropRepository.findOne(withDownloadKey(key)).orElse(null);
-    }
-
-    public Task getCurrentTask(User user) {
-        return taskService.createTaskQuery().taskAssignee(user.getUsername()).singleResult();
-    }
-
-    public void addProcessVariables(String processId, Map<String, Object> variables) {
-        runtimeService.setVariables(processId, variables);
-    }
-
-    public void addTaskVariables(String taskId, Map<String, Object> variables) {
-        taskService.setVariables(taskId, variables);
-    }
-
-    public Map<String, Object> getProcessVariables(String processId) {
-        return runtimeService.getVariables(processId);
-    }
-
-    public Map<String, Object> getTaskVariables(String taskId) {
-        return taskService.getVariables(taskId);
     }
 }

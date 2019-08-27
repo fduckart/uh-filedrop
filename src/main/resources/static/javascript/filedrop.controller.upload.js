@@ -1,8 +1,10 @@
 function UploadJsController($scope, Upload, $window) {
-    $scope.init = function(maxUploadSize) {
+    $scope.init = function(maxUploadSize, downloadKey) {
         $scope.files = [];
         $scope.uploadSize = 0;
         $scope.maxUploadSize = maxUploadSize;
+        $scope.downloadKey = downloadKey;
+        console.log($scope.downloadKey);
     };
 
     $scope.submit = function() {
@@ -21,7 +23,7 @@ function UploadJsController($scope, Upload, $window) {
                           count--;
 
                           if (count === 0) {
-                              $window.location.href = "/filedrop";
+                              $window.location.href = "/filedrop/download/" + $scope.downloadKey;
                           }
                       });
             }

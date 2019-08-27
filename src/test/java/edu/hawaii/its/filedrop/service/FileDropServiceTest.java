@@ -4,20 +4,14 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-import org.flowable.engine.RuntimeService;
-import org.flowable.engine.TaskService;
-import org.flowable.engine.runtime.ProcessInstance;
-import org.flowable.task.api.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.hawaii.its.filedrop.access.AnonymousUser;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
@@ -39,117 +33,10 @@ public class FileDropServiceTest {
     private FileDropService fileDropService;
 
     @Autowired
-    private RuntimeService runtimeService;
-
-    @Autowired
-    private TaskService taskService;
+    private WorkflowService workflowService;
 
     @Autowired
     private UserContextService userContextService;
-
-    @Test
-    public void startProcessTest() {
-        AnonymousUser user = new AnonymousUser();
-        assertNotNull(user);
-
-        Map<String, Object> args = new HashMap<>();
-        args.put("initiator", user.getUsername());
-
-        ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
-        assertNotNull(process);
-
-        List<Task> fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
-
-        assertEquals(1, fileDropTasks.size());
-
-        assertEquals("addRecipients", fileDropTasks.get(0).getName());
-
-        assertEquals("anonymous", fileDropTasks.get(0).getAssignee());
-
-        taskService.complete(fileDropTasks.get(0).getId(), args);
-
-        fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
-
-        assertEquals(1, fileDropTasks.size());
-
-        assertEquals("addFiles", fileDropTasks.get(0).getName());
-
-        taskService.complete(fileDropTasks.get(0).getId());
-
-        fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
-
-        assertEquals(0, fileDropTasks.size());
-
-    }
-
-    @Test
-    public void startProcessMultipleAnonymous() {
-        AnonymousUser user = new AnonymousUser();
-        assertNotNull(user);
-
-        Map<String, Object> args = new HashMap<>();
-        args.put("initiator", user.getUsername());
-
-        ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
-        assertNotNull(process);
-
-        AnonymousUser anotherUser = new AnonymousUser();
-        assertNotNull(anotherUser);
-
-        Map<String, Object> args2 = new HashMap<>();
-        args2.put("initiator", anotherUser.getUsername());
-
-        ProcessInstance process2 = runtimeService.startProcessInstanceByKey("fileUpload", args2);
-        assertNotNull(process2);
-
-        List<Task> userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-
-        assertEquals(2, userTasks.size());
-
-        List<Task> processTask = taskService.createTaskQuery().processInstanceId(process.getId()).list();
-
-        assertEquals(1, processTask.size());
-
-        runtimeService.deleteProcessInstance(process.getId(), "test");
-        runtimeService.deleteProcessInstance(process2.getId(), "test");
-    }
-
-    @Test
-    @WithMockUhUser
-    public void startProcessUH() {
-        User user = userContextService.getCurrentUser();
-        assertNotNull(user);
-
-        Map<String, Object> args = new HashMap<>();
-        args.put("initiator", user.getUsername());
-
-        List<Task> userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-
-        for (Task task : userTasks) {
-            runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "test");
-        }
-
-        ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
-        assertNotNull(process);
-
-        assertEquals(1, userTasks.size());
-
-        userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-
-        assertEquals("addRecipients", userTasks.get(0).getName());
-
-        taskService.complete(userTasks.get(0).getId());
-
-        userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-
-        assertEquals("addFiles", userTasks.get(0).getName());
-
-        taskService.complete(userTasks.get(0).getId());
-
-        userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-
-        assertEquals(0, userTasks.size());
-    }
 
     @Test
     @WithMockUhUser
@@ -157,19 +44,19 @@ public class FileDropServiceTest {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
-        assertNull(fileDropService.getCurrentTask(user));
+        assertNull(workflowService.getCurrentTask(user));
         fileDropService.startUploadProcess(user);
-        assertNotNull(fileDropService.getCurrentTask(user));
+        assertNotNull(workflowService.getCurrentTask(user));
 
-        assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
+        assertEquals("addRecipients", workflowService.getCurrentTask(user).getName());
 
         String[] recipients = { "test" };
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
+        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
         fileDropService.uploadFile(user, null);
 
-        assertNull(fileDropService.getCurrentTask(user));
+        assertNull(workflowService.getCurrentTask(user));
     }
 
     @Test
@@ -177,30 +64,30 @@ public class FileDropServiceTest {
     public void testMultipleProcess() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
-        runtimeService.deleteProcessInstance(fileDropService.getCurrentTask(user).getProcessInstanceId(), "test");
-        assertNull(fileDropService.getCurrentTask(user));
+        workflowService.stopProcess(user);
+        assertNull(workflowService.getCurrentTask(user));
         fileDropService.startUploadProcess(user);
-        assertNotNull(fileDropService.getCurrentTask(user));
+        assertNotNull(workflowService.getCurrentTask(user));
 
-        assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
+        assertEquals("addRecipients", workflowService.getCurrentTask(user).getName());
 
         String[] recipients = { "test" };
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
+        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
 
         fileDropService.startUploadProcess(user);
 
-        assertEquals("addRecipients", fileDropService.getCurrentTask(user).getName());
+        assertEquals("addRecipients", workflowService.getCurrentTask(user).getName());
 
         fileDropService.uploadFile(user, null); // Doesn't work since on recipientsTask.
 
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
+        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
         fileDropService.uploadFile(user, null);
 
-        assertNull(fileDropService.getCurrentTask(user));
+        assertNull(workflowService.getCurrentTask(user));
     }
 
     @Test
@@ -215,7 +102,7 @@ public class FileDropServiceTest {
         fileDropService.addRecipients(user, recipients);
 
         Map<String, Object> processVariables =
-                fileDropService.getProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId());
+                workflowService.getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId());
 
         assertFalse(processVariables.isEmpty());
         assertEquals(2, processVariables.size());
@@ -232,7 +119,7 @@ public class FileDropServiceTest {
         String[] recipients = new String[0];
         fileDropService.addRecipients(user, recipients);
 
-        assertNull(fileDropService.getCurrentTask(user));
+        assertNull(workflowService.getCurrentTask(user));
     }
 
     @Test
@@ -247,11 +134,11 @@ public class FileDropServiceTest {
 
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
+        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
 
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("addFiles", fileDropService.getCurrentTask(user).getName());
+        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
 
     }
 
@@ -265,12 +152,12 @@ public class FileDropServiceTest {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("test", "123");
-        fileDropService
-                .addProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId(), variables);
+        workflowService
+                .addProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId(), variables);
 
         Map<String, Object> processVariables =
-                fileDropService
-                        .getProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId());
+                workflowService
+                        .getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId());
 
         assertFalse(processVariables.isEmpty());
         assertEquals(2, processVariables.size());
@@ -287,10 +174,10 @@ public class FileDropServiceTest {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("test", "123");
-        fileDropService.addTaskVariables(fileDropService.getCurrentTask(user).getId(), variables);
+        workflowService.addTaskVariables(workflowService.getCurrentTask(user).getId(), variables);
 
         Map<String, Object> taskVariables =
-                fileDropService.getTaskVariables(fileDropService.getCurrentTask(user).getId());
+                workflowService.getTaskVariables(workflowService.getCurrentTask(user).getId());
 
         assertFalse(taskVariables.isEmpty());
         assertEquals(2, taskVariables.size());
@@ -332,7 +219,9 @@ public class FileDropServiceTest {
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
-        fileDropService.addProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId(), args);
+        workflowService.addProcessVariables(
+                workflowService.getCurrentTask(user).getProcessInstanceId(), args
+        );
 
         fileDropService.addRecipients(user, recipients);
 
@@ -342,7 +231,7 @@ public class FileDropServiceTest {
         fileSet.setComment("Test image png");
 
         Map<String, Object> vars =
-                fileDropService.getProcessVariables(fileDropService.getCurrentTask(user).getProcessInstanceId());
+                workflowService.getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId());
 
         fileSet.setFileDrop(fileDropService.getFileDrop((Integer) vars.get("fileDropId")));
 
