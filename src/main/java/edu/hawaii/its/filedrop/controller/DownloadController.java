@@ -16,7 +16,7 @@ public class DownloadController {
     @Autowired
     private FileDropService fileDropService;
 
-    @GetMapping(value = "/download/{downloadKey}")
+    @GetMapping(value = "/dl/{downloadKey}")
     @PreAuthorize("isAuthenticated()")
     public String getDownload(Model model, @PathVariable String downloadKey) {
         FileDrop fileDrop = fileDropService.getFileDrop(downloadKey);

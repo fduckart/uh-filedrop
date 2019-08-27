@@ -47,7 +47,7 @@ public class DownloadControllerTest {
     @Test
     @WithMockUhUser
     public void getDownloadNoFileDropTest() throws Exception {
-        mockMvc.perform(get("/download/randomtest"))
+        mockMvc.perform(get("/dl/randomtest"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
     }
@@ -87,7 +87,7 @@ public class DownloadControllerTest {
 
         assertEquals("test", fileDrop.getDownloadKey());
 
-        mockMvc.perform(get("/download/" + fileDrop.getDownloadKey()))
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/download"))
                 .andExpect(model().attributeExists("fileDrop"));
