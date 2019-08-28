@@ -5,7 +5,7 @@
 <body ng-app="filedropApp">
 <nav th:replace="menubar :: copy"></nav>
 
-<div class="container" ng-controller="PrepareJsController" ng-init="init();" ng-cloak>
+<div class="container" ng-controller="PrepareJsController" th:attr="ng-init='init(\'' + ${user} + '\');'" ng-cloak>
     <div class="card border-success">
         <div class="card-body">
             <div class="col-sm-12 mb-3">
