@@ -35,6 +35,15 @@ public class FileDropService {
     private FileSetRepository fileSetRepository;
 
     public void startUploadProcess(User user) {
+        if (workflowService.hasTask(user)) {
+            Integer fileDropId =
+                    (Integer) workflowService
+                            .getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId())
+                            .get("fileDropId");
+            if (getFileDrop(fileDropId) != null) {
+                fileDropRepository.delete(getFileDrop(fileDropId));
+            }
+        }
         workflowService.startProcess(user, "fileUpload");
         logger.debug("Created tasks for: " + user.getUsername());
     }
