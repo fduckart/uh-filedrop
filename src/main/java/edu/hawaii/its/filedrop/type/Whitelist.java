@@ -1,6 +1,6 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.sql.Timestamp;
+import java.time.LocalDate;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +21,16 @@ public class Whitelist {
     private String entry;
 
     @Column(name = "created")
-    private Timestamp created;
+    private LocalDate created;
+
+    @Column(name = "registrant")
+    private String registrant;
+
+    @Column(name = "check")
+    private Integer check;
+
+    @Column(name = "expired")
+    private Boolean expired;
 
     public Whitelist() {
 
@@ -43,11 +52,46 @@ public class Whitelist {
         this.entry = entry;
     }
 
-    public Timestamp getCreated() {
+    public String getRegistrant() {
+        return registrant;
+    }
+
+    public void setRegistrant(String registrant) {
+        this.registrant = registrant;
+    }
+
+    public Integer getCheck() {
+        return check;
+    }
+
+    public void setCheck(Integer check) {
+        this.check = check;
+    }
+
+    public boolean isExpired() {
+        return expired;
+    }
+
+    public void setExpired(Boolean expired) {
+        this.expired = expired;
+    }
+
+    public LocalDate getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(LocalDate created) {
         this.created = created;
+    }
+
+    @Override
+    public String toString() {
+        return "Whitelist [id=" + id
+                + ", entry=" + entry
+                + ", registrant=" + registrant
+                + ", check=" + check
+                + ", expired=" + expired
+                + ", created=" + created
+                + "]";
     }
 }
