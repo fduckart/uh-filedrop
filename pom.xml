@@ -206,6 +206,11 @@
       <version>${angularjs-version}</version>
     </dependency>
     <dependency>
+      <groupId>org.webjars.npm</groupId>
+      <artifactId>github-com-Morgul-ui-bootstrap4</artifactId>
+      <version>3.0.5</version>
+    </dependency>
+    <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>font-awesome</artifactId>
       <version>4.7.0</version>
@@ -349,7 +354,6 @@
             <exclude>edu/hawaii/its/filedrop/job/SpaceCheckJob.class</exclude>
             <exclude>edu/hawaii/its/filedrop/type/Download.class</exclude>
             <exclude>edu/hawaii/its/filedrop/type/Validation.class</exclude>
-            <exclude>edu/hawaii/its/filedrop/type/Whitelist.class</exclude>
           </excludes>
         </configuration>
         <executions>
