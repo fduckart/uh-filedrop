@@ -26,7 +26,7 @@ public class Whitelist {
     @Column(name = "registrant")
     private String registrant;
 
-    @Column(name = "check")
+    @Column(name = "expiration_check")
     private Integer check;
 
     @Column(name = "expired")

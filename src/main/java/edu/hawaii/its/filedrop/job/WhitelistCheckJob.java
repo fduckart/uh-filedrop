@@ -14,6 +14,6 @@ public class WhitelistCheckJob implements Job {
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-
+        whitelistService.checkWhitelists();
     }
 }

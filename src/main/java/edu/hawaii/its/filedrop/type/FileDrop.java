@@ -164,8 +164,8 @@ public class FileDrop {
                 + ", uploadKey=" + uploadKey
                 + ", downloadKey=" + downloadKey
                 + ", encryptionKey=" + encryptionKey
-                + ", created=" + created.toString()
-                + ", expiration=" + expiration.toString()
+                + ", created=" + created
+                + ", expiration=" + expiration
                 + ", valid=" + valid
                 + ", authenticationRequired=" + authenticationRequired
                 + "]";
