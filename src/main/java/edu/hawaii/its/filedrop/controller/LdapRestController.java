@@ -11,7 +11,7 @@ import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
 
 @RestController
-public class LDAPRestController {
+public class LdapRestController {
 
     @Autowired
     private LdapService ldapService;

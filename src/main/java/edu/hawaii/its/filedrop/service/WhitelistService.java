@@ -46,7 +46,7 @@ public class WhitelistService {
     private static final Log logger = LogFactory.getLog(WhitelistService.class);
 
     @PostConstruct
-    public void init() {
+    public void init() throws SchedulerException {
         JobDetail whitelistCheckJob = newJob(WhitelistCheckJob.class)
                 .withIdentity("whitelistCheck")
                 .build();
@@ -59,11 +59,7 @@ public class WhitelistService {
                         .repeatForever())
                 .build();
         jobKey = whitelistCheckJob.getKey();
-        try {
-            scheduler.scheduleJob(whitelistCheckJob, whitelistCheckTrigger);
-        } catch (SchedulerException e) {
-            logger.error("Error: ", e);
-        }
+        scheduler.scheduleJob(whitelistCheckJob, whitelistCheckTrigger);
     }
 
     public Whitelist addWhitelist(LdapPerson entry, LdapPerson registrant) {
@@ -94,8 +90,6 @@ public class WhitelistService {
         for (Whitelist whitelist : getAllWhiteList()) {
             if (ldapService.findByUhUuidOrUidOrMail(whitelist.getRegistrant()) instanceof LdapPersonEmpty) {
                 addCheck(whitelist, 1);
-            } else if (whitelist.isExpired()) {
-                whitelist.setExpired(false);
             }
         }
         logger.debug("Finished whitelist check.");

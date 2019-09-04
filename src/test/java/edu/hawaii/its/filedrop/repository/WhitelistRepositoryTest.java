@@ -14,6 +14,7 @@ import edu.hawaii.its.filedrop.type.Whitelist;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -44,6 +45,14 @@ public class WhitelistRepositoryTest {
         assertEquals(Integer.valueOf(0), foundWhitelist.getCheck());
         assertFalse(foundWhitelist.isExpired());
         assertEquals(localDate, foundWhitelist.getCreated());
+
+        foundWhitelist = whitelistRepository.findByEntry("Test");
+        assertNotNull(foundWhitelist);
+    }
+
+    @Test
+    public void notWhitelistedTest() {
+        assertNull(whitelistRepository.findByEntry("testing"));
     }
 
 }
