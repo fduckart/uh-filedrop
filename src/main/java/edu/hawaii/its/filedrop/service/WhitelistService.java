@@ -7,6 +7,7 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.quartz.JobDetail;
+import org.quartz.JobKey;
 import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.quartz.Trigger;
@@ -40,6 +41,8 @@ public class WhitelistService {
     @Value("${app.whitelist.check.threshold}")
     private int threshold;
 
+    private JobKey jobKey;
+
     private static final Log logger = LogFactory.getLog(WhitelistService.class);
 
     @PostConstruct
@@ -55,7 +58,7 @@ public class WhitelistService {
                         .withIntervalInSeconds(interval)
                         .repeatForever())
                 .build();
-
+        jobKey = whitelistCheckJob.getKey();
         try {
             scheduler.scheduleJob(whitelistCheckJob, whitelistCheckTrigger);
         } catch (SchedulerException e) {
@@ -79,9 +82,10 @@ public class WhitelistService {
 
     public int addCheck(Whitelist whitelist, int amount) {
         whitelist.setCheck(whitelist.getCheck() + amount);
-        if (whitelist.getCheck() == threshold) {
+        if (whitelist.getCheck() >= threshold) {
             whitelist.setExpired(true);
         }
+        addWhitelist(whitelist);
         return whitelist.getCheck();
     }
 
@@ -106,6 +110,10 @@ public class WhitelistService {
     }
 
     public boolean isWhitelisted(String entry) {
-        return false;
+        return whitelistRepository.findByEntry(entry) != null;
+    }
+
+    public JobKey getJobKey() {
+        return jobKey;
     }
 }
