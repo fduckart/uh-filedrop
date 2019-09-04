@@ -89,7 +89,7 @@ public class WhitelistService {
         return whitelist.getCheck();
     }
 
-    public void checkWhitelists() {
+    public synchronized void checkWhitelists() {
         logger.debug("Starting whitelist check...");
         for (Whitelist whitelist : getAllWhiteList()) {
             if (ldapService.findByUhUuidOrUidOrMail(whitelist.getRegistrant()) instanceof LdapPersonEmpty) {

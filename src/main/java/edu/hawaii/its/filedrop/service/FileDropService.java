@@ -40,7 +40,7 @@ public class FileDropService {
                     (Integer) workflowService
                             .getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId())
                             .get("fileDropId");
-            if (getFileDrop(fileDropId) != null) {
+            if (fileDropId != null && getFileDrop(fileDropId) != null) {
                 fileDropRepository.delete(getFileDrop(fileDropId));
             }
         }
