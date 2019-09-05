@@ -54,7 +54,7 @@ public class PrepareController {
     public String addRecipients(@RequestParam("validation") Boolean validation,
             @RequestParam("expiration") Integer expiration,
             @RequestParam("recipients") String[] recipients) {
-        logger.debug("User added recipient.");
+        logger.debug("User added recipients: " + Arrays.toString(recipients));
         //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
         FileDrop fileDrop = new FileDrop();
         fileDrop.setRecipient(Arrays.toString(recipients));

@@ -20,9 +20,11 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.service.LdapService;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -31,6 +33,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,6 +52,9 @@ public class AdminControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private LdapService ldapService;
 
     private MockMvc mockMvc;
 
@@ -172,51 +178,92 @@ public class AdminControllerTest {
     }
 
     @Test
-    @WithMockUhUser(username = "admin", roles = {"ROLE_UH", "ROLE_ADMINISTRATOR"})
+    @WithMockUhUser(username = "admin", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void adminTechnology() throws Exception {
         mockMvc.perform(get("/admin/technology"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("admin/technology"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/technology"));
     }
 
     @Test
-    @WithMockUhUser(username = "user", roles = {"ROLE_UH", "ROLE_ADMINISTRATOR"})
+    @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void adminGateMessage() throws Exception {
         mockMvc.perform(get("/admin/gate-message"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("admin/gate-message"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/gate-message"));
     }
 
     @Test
-    @WithMockUhUser(username = "user", roles = {"ROLE_UH", "ROLE_ADMINISTRATOR"})
+    @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void setGateMessage() throws Exception {
         mockMvc.perform(put("/admin/gate-message")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .param("id", "1")
-            .param("text", "Testing"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("admin/gate-message"))
-            .andExpect(model().attribute("message", hasProperty("id", is(1))))
-            .andExpect(model().attribute("message", hasProperty("text", is("Testing"))));
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "1")
+                .param("text", "Testing"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/gate-message"))
+                .andExpect(model().attribute("message", hasProperty("id", is(1))))
+                .andExpect(model().attribute("message", hasProperty("text", is("Testing"))));
     }
 
     @Test
     public void setGateMessageNonAdmin() throws Exception {
         mockMvc.perform(put("/admin/gate-message")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .param("id", "1")
-            .param("text", "Testing"))
-            .andExpect(status().is3xxRedirection());
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "1")
+                .param("text", "Testing"))
+                .andExpect(status().is3xxRedirection());
     }
 
     @Test
-    @WithMockUhUser(username = "user", roles = {"ROLE_UH", "ROLE_ADMINISTRATOR"})
+    @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void setGateMessageWrongType() throws Exception {
         mockMvc.perform(put("/admin/gate-message")
-            .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-            .param("id", "Test")
-            .param("text", "Testing"))
-            .andExpect(status().is3xxRedirection());
+                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                .param("id", "Test")
+                .param("text", "Testing"))
+                .andExpect(status().is3xxRedirection());
+    }
+
+    @Test
+    @WithMockUhUser
+    public void redirectWhitelist() throws Exception {
+        mockMvc.perform(get("/admin/whitelist"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void getWhitelist() throws Exception {
+        mockMvc.perform(get("/admin/whitelist"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/whitelist"));
+
+        mockMvc.perform(get("/api/admin/whitelist"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[0].entry").exists())
+                .andExpect(jsonPath("$[1].entry").exists());
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void addWhitelist() throws Exception {
+        mockMvc.perform(post("/api/admin/whitelist")
+                .param("entry", "uhmadm")
+                .param("registrant", "lukemcd9"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/whitelist"));
+
+        mockMvc.perform(post("/api/admin/whitelist")
+                .param("entry", "ochelp")
+                .param("registrant", "unknown"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/whitelist"));
+
+        mockMvc.perform(get("/api/admin/whitelist"))
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[3].registrant").value("unknown"));
     }
 
 }

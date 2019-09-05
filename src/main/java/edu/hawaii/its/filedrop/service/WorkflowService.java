@@ -37,10 +37,8 @@ public class WorkflowService {
     }
 
     public void stopProcess(User user) {
-        if (hasTask(user)) {
-            Task task = getCurrentTask(user);
-            runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "stop");
-        }
+        Task task = getCurrentTask(user);
+        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "stop");
     }
 
     public boolean atTask(User user, String taskName) {

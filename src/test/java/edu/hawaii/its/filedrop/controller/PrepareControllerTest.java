@@ -65,7 +65,7 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare/files"));
 
-        FileDrop fileDrop = fileDropService.getFileDrop(1);
+        FileDrop fileDrop = fileDropService.getFileDrop(3);
         assertNotNull(fileDrop);
         assertTrue(fileDrop.isAuthenticationRequired());
         assertTrue(fileDrop.isValid());

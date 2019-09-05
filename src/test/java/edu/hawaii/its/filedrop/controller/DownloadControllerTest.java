@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class DownloadControllerTest {
 
     @Autowired
@@ -47,7 +49,7 @@ public class DownloadControllerTest {
     @Test
     @WithMockUhUser
     public void getDownloadNoFileDropTest() throws Exception {
-        mockMvc.perform(get("/download/randomtest"))
+        mockMvc.perform(get("/dl/randomtest"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
     }
@@ -87,7 +89,7 @@ public class DownloadControllerTest {
 
         assertEquals("test", fileDrop.getDownloadKey());
 
-        mockMvc.perform(get("/download/" + fileDrop.getDownloadKey()))
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/download"))
                 .andExpect(model().attributeExists("fileDrop"));
