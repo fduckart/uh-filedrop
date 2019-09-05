@@ -37,7 +37,7 @@ public class WhitelistRepositoryTest {
 
         whitelistRepository.save(whitelist);
 
-        Whitelist foundWhitelist = whitelistRepository.findById(1).orElse(null);
+        Whitelist foundWhitelist = whitelistRepository.findById(3).orElse(null);
         assertNotNull(foundWhitelist);
         assertEquals(whitelist.getId(), foundWhitelist.getId());
         assertEquals("Test", foundWhitelist.getEntry());

@@ -8,6 +8,9 @@ function PrepareJsController($scope, dataProvider) {
         if (/^\s*$/.test($scope.recipient) || $scope.recipient === undefined || $scope.recipients.indexOf($scope.recipient) > -1) {
             return;
         }
+        if ($scope.recipient.indexOf("@") > -1 && $scope.recipient.split("@")[1] !== "hawaii.edu") {
+            $scope.recipients.push($scope.recipient);
+        }
         dataProvider.loadData(function(data) {
             if (data.cn) {
                 $scope.recipients.push(data.cn);

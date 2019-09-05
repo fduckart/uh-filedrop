@@ -1,9 +1,13 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.time.LocalDate;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,12 +15,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.MessageService;
+import edu.hawaii.its.filedrop.service.WhitelistService;
 import edu.hawaii.its.filedrop.type.Message;
+import edu.hawaii.its.filedrop.type.Whitelist;
 
 @Controller
 @PreAuthorize("hasRole('ADMIN')")
@@ -29,6 +36,9 @@ public class AdminController {
 
     @Autowired
     private MessageService messageService;
+
+    @Autowired
+    private WhitelistService whitelistService;
 
     @GetMapping("/admin")
     public String admin() {
@@ -83,6 +93,43 @@ public class AdminController {
         model.addAttribute("person", person);
 
         return "admin/lookup";
+    }
+
+    @GetMapping("/admin/whitelist")
+    public String whitelist() {
+        logger.debug("User at admin/whitelist.");
+        return "admin/whitelist";
+    }
+
+    @GetMapping("/api/admin/whitelist")
+    public ResponseEntity<List<Whitelist>> getWhiteList() {
+        logger.debug("User at api/admin/whitelist");
+        List<Whitelist> whitelist = whitelistService.getAllWhiteList();
+        whitelist.forEach(wl -> {
+            LdapPerson entry = ldapService.findByUhUuidOrUidOrMail(wl.getEntry());
+            LdapPerson registrant = ldapService.findByUhUuidOrUidOrMail(wl.getRegistrant());
+            if (!(entry instanceof LdapPersonEmpty)) {
+                wl.setEntry(entry.getCn());
+            }
+            if (!(registrant instanceof LdapPersonEmpty)) {
+                wl.setRegistrant(registrant.getCn());
+            }
+        });
+        return ResponseEntity.ok(whitelist);
+    }
+
+    @PostMapping("/api/admin/whitelist")
+    public String addWhitelist(@RequestParam("entry") String entry,
+            @RequestParam("registrant") String registrant) {
+        Whitelist whitelist = new Whitelist();
+        whitelist.setEntry(entry);
+        whitelist.setRegistrant(registrant);
+        whitelist.setCheck(0);
+        whitelist.setExpired(false);
+        whitelist.setCreated(LocalDate.now());
+        whitelist = whitelistService.addWhitelist(whitelist);
+        logger.debug("User added Whitelist: " + whitelist);
+        return "redirect:/admin/whitelist";
     }
 
 }

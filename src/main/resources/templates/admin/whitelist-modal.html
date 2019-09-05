@@ -1,0 +1,42 @@
+<div class="modal" tabindex="-1" role="dialog" id="whitelistModal" th:fragment="copy">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">New Whitelist</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/api/admin/whitelist}" id="whitelistForm" method="POST">
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Entry</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Entry"
+                            aria-describedby="whitelist-entry" name="entry">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-secondary"><i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">Registrant</span>
+                        </div>
+                        <input type="text" class="form-control" aria-label="Registrant"
+                            aria-describedby="whitelist-registrant" name="registrant">
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-outline-secondary"><i class="fa fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="submit" form="whitelistForm" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

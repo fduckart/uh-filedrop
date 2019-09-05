@@ -55,3 +55,6 @@ insert into system_role (id, person_id, role_id, office_id) values (28, 25, 13, 
 insert into system_role (id, person_id, role_id, office_id) values (29, 26, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (30, 26, 13, 11);
 insert into system_role (id, person_id, role_id, office_id) values (31,  2, 13, 11);
+
+insert into whitelist (id, entry, registrant, created, expiration_check, expired) values (1, 'uhsm', 'lukemcd9', '2019-09-04', 0, false);
+insert into whitelist (id, entry, registrant, created, expiration_check, expired) values (2, 'help', 'lukemcd9', '2019-06-26', 0, false);
