@@ -20,6 +20,7 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.service.LdapService;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
@@ -51,6 +52,9 @@ public class AdminControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private LdapService ldapService;
 
     private MockMvc mockMvc;
 
@@ -237,7 +241,7 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/api/admin/whitelist"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[0].entry").exists())
                 .andExpect(jsonPath("$[1].entry").exists());
     }
@@ -250,6 +254,16 @@ public class AdminControllerTest {
                 .param("registrant", "lukemcd9"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/whitelist"));
+
+        mockMvc.perform(post("/api/admin/whitelist")
+                .param("entry", "ochelp")
+                .param("registrant", "unknown"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/whitelist"));
+
+        mockMvc.perform(get("/api/admin/whitelist"))
+                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$[3].registrant").value("unknown"));
     }
 
 }
