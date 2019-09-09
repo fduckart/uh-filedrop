@@ -312,8 +312,7 @@ public class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/whitelist"));
         mockMvc.perform(delete("/api/admin/whitelist/6"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/whitelist"));
+                .andExpect(status().isOk());
     }
 
 }
