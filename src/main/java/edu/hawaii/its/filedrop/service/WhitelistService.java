@@ -76,6 +76,10 @@ public class WhitelistService {
         return whitelistRepository.save(whitelist);
     }
 
+    public void deleteWhitelist(Whitelist whitelist) {
+        whitelistRepository.delete(whitelist);
+    }
+
     public int addCheck(Whitelist whitelist, int amount) {
         whitelist.setCheck(whitelist.getCheck() + amount);
         if (whitelist.getCheck() >= threshold) {

@@ -33,6 +33,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -300,6 +301,19 @@ public class AdminControllerTest {
         assertEquals("", whitelist.getEntryName());
         assertEquals("testing", whitelist.getRegistrant());
         assertEquals("", whitelist.getEntryName());
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void deleteWhitelist() throws Exception {
+        mockMvc.perform(post("/api/admin/whitelist")
+                .param("entry", "help")
+                .param("registrant", "jwlennon"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/whitelist"));
+        mockMvc.perform(delete("/api/admin/whitelist/6"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/whitelist"));
     }
 
 }

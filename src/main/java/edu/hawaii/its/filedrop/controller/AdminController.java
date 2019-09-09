@@ -11,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -121,6 +123,14 @@ public class AdminController {
         whitelist.setCreated(LocalDate.now());
         whitelist = whitelistService.addWhitelist(whitelist);
         logger.debug("User added Whitelist: " + whitelist);
+        return "redirect:/admin/whitelist";
+    }
+
+    @DeleteMapping("/api/admin/whitelist/{whitelistId}")
+    public String deleteWhitelist(@PathVariable Integer whitelistId) {
+        Whitelist whitelist = whitelistService.getWhiteList(whitelistId);
+        whitelistService.deleteWhitelist(whitelist);
+        logger.debug("User deleted Whitelist: " + whitelist);
         return "redirect:/admin/whitelist";
     }
 
