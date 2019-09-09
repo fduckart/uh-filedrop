@@ -105,16 +105,6 @@ public class AdminController {
     public ResponseEntity<List<Whitelist>> getWhiteList() {
         logger.debug("User at api/admin/whitelist");
         List<Whitelist> whitelist = whitelistService.getAllWhiteList();
-        whitelist.forEach(wl -> {
-            LdapPerson entry = ldapService.findByUhUuidOrUidOrMail(wl.getEntry());
-            LdapPerson registrant = ldapService.findByUhUuidOrUidOrMail(wl.getRegistrant());
-            if (!(entry instanceof LdapPersonEmpty)) {
-                wl.setEntry(entry.getCn());
-            }
-            if (!(registrant instanceof LdapPersonEmpty)) {
-                wl.setRegistrant(registrant.getCn());
-            }
-        });
         return ResponseEntity.ok(whitelist);
     }
 
@@ -123,7 +113,9 @@ public class AdminController {
             @RequestParam("registrant") String registrant) {
         Whitelist whitelist = new Whitelist();
         whitelist.setEntry(entry);
+        whitelist.setEntryName(ldapService.findByUid(entry).getCn());
         whitelist.setRegistrant(registrant);
+        whitelist.setRegistrantName(ldapService.findByUid(registrant).getCn());
         whitelist.setCheck(0);
         whitelist.setExpired(false);
         whitelist.setCreated(LocalDate.now());

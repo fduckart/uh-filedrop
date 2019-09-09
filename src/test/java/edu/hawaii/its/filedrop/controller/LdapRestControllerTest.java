@@ -14,6 +14,7 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
@@ -37,7 +38,9 @@ public class LdapRestControllerTest {
     @Test
     @WithMockUhUser
     public void ldapRestTest() throws Exception {
-        mockMvc.perform(get("/api/ldap/" + "lukemcd9"))
-                .andExpect(status().isOk());
+        mockMvc.perform(get("/api/ldap/" + "jwlennon"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.cn").value("John W Lennon"));
     }
 }

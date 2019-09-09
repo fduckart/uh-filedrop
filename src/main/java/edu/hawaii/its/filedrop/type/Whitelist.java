@@ -7,6 +7,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "whitelist")
@@ -31,6 +32,12 @@ public class Whitelist {
 
     @Column(name = "expired")
     private Boolean expired;
+
+    @Transient
+    private String entryName;
+
+    @Transient
+    private String registrantName;
 
     public Whitelist() {
 
@@ -82,6 +89,22 @@ public class Whitelist {
 
     public void setCreated(LocalDate created) {
         this.created = created;
+    }
+
+    public String getEntryName() {
+        return entryName;
+    }
+
+    public void setEntryName(String entryName) {
+        this.entryName = entryName;
+    }
+
+    public String getRegistrantName() {
+        return registrantName;
+    }
+
+    public void setRegistrantName(String registrantName) {
+        this.registrantName = registrantName;
     }
 
     @Override

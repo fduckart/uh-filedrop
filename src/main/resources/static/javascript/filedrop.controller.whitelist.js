@@ -21,6 +21,14 @@ function WhitelistJsController($scope, dataProvider) {
         $("#whitelistModal")
         .modal("hide");
     };
+
+    $scope.getEntryName = function(whitelist) {
+        return whitelist.entryName ? whitelist.entryName : whitelist.entry;
+    };
+
+    $scope.getRegistrantName = function(whitelist) {
+        return whitelist.registrantName ? whitelist.registrantName : whitelist.registrant;
+    };
 }
 
 filedropApp.controller("WhitelistJsController", WhitelistJsController);

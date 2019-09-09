@@ -96,11 +96,21 @@ public class WhitelistService {
     }
 
     public Whitelist getWhiteList(Integer id) {
-        return whitelistRepository.findById(id).orElse(null);
+        Whitelist whitelist = whitelistRepository.findById(id).orElse(null);
+        if (whitelist != null) {
+            whitelist.setEntryName(ldapService.findByUid(whitelist.getEntry()).getCn());
+            whitelist.setRegistrantName(ldapService.findByUid(whitelist.getRegistrant()).getCn());
+        }
+        return whitelist;
     }
 
     public List<Whitelist> getAllWhiteList() {
-        return whitelistRepository.findAll();
+        List<Whitelist> whitelists = whitelistRepository.findAll();
+        whitelists.forEach(whitelist -> {
+            whitelist.setEntryName(ldapService.findByUhUuidOrUidOrMail(whitelist.getEntry()).getCn());
+            whitelist.setRegistrantName(ldapService.findByUhUuidOrUidOrMail(whitelist.getRegistrant()).getCn());
+        });
+        return whitelists;
     }
 
     public boolean isWhitelisted(String entry) {

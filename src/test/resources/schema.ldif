@@ -41,6 +41,7 @@ cn: Keith Richards
 sn: Richards
 givenname: Keith
 uid: krichards
+uhEmail: krichards@example.com
 mail: krichards@example.com
 mail: keith.richards@example.com
 uhUuid: 10000002
@@ -89,17 +90,56 @@ ou: University of Hawaii System
 uhOrgAffiliation: eduPersonOrgDN=uhm,eduPersonAffiliation=faculty
 eduPersonAffiliation: faculty
 
-dn: cn=Frank Duckart,ou=People,dc=hawaii,dc=edu
+dn: cn=John Winston Lennon,ou=People,dc=hawaii,dc=edu
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
 objectClass: person
 objectClass: top
-cn: Frank Duckart
-sn: Duckart
-givenname: Frank
-uid: fduckart
-mail: fduckart@hawaii.edu
-uhUuid: 17958670
+cn: John W Lennon
+sn: Lennon
+givenname: John
+uid: jwlennon
+uhEmail: jwlennon@hawaii.edu
+mail: jwlennon@hawaii.edu
+uhUuid: 11111111
+title: Ex Beatle
+telephoneNumber: (555) 555-1215
+facsimileTelephoneNumber: (555) 555-1216
+ou: Leeward Community College
+ou: Chancellor's Office
+uhOrgAffiliation: eduPersonOrgDN=lcc,eduPersonAffiliation=faculty
+eduPersonOrgDN: lcc
+eduPersonAffiliation: faculty
+
+dn: cn=Test Staff2,ou=People,dc=hawaii,dc=edu
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Test Staff2
+sn: Staff2
+givenname: Test
+uid: test21
+mail: test2@hawaii.edu
+uhUuid: 11668133
+title: Testy Tester
+telephoneNumber: (555) 555-1215
+facsimileTelephoneNumber: (555) 555-1216
+ou: University of Hawaii System
+uhOrgAffiliation: eduPersonOrgDN=uhm,eduPersonAffiliation=staff
+eduPersonAffiliation: staff
+
+dn: cn=Magdalena Kaleleiki,ou=People,dc=hawaii,dc=edu
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Magdalena Kaleleiki
+sn: Kaleleiki
+givenname: Magdalena
+uid: amek
+mail: amek@hawaii.edu
+uhUuid: 19407388
 title: Info Tech Spec
 telephoneNumber: (555) 555-1215
 facsimileTelephoneNumber: (555) 555-1216
@@ -118,3 +158,15 @@ givenname: Some
 uid: 20000004
 mail: 20000004@hawaii.edu
 uhUuid: 20000004
+
+dn: cn=help,ou=People,dc=hawaii,dc=edu
+givenName: ITS Help Desk
+sn: ITS Help Desk
+cn: ITS Help Desk
+uid: help
+objectClass: eduPerson
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+objectClass: uhEduPerson

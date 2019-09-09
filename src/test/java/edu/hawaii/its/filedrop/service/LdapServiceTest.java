@@ -1,15 +1,5 @@
 package edu.hawaii.its.filedrop.service;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import java.util.List;
 
 import org.junit.Test;
@@ -22,6 +12,16 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -116,6 +116,26 @@ public class LdapServiceTest {
         assertThat(person.getUhUuid(), equalTo("10000001"));
         assertThat(person.getMails().size(), equalTo(1));
         assertThat(person.getMails().get(0), equalTo("beno@example.com"));
+    }
+
+    @Test
+    public void findByUhUuid2() {
+        String uhUuid = "10000001";
+        LdapPerson person = ldapService.findByUhUuid(uhUuid);
+        assertThat(person.getGivenName(), equalTo("Brian"));
+        assertThat(person.getSn(), equalTo("Eno"));
+        assertThat(person.getCn(), equalTo("Brian Eno"));
+        assertThat(person.getUhUuid(), equalTo(uhUuid));
+        assertThat(person.getMails().size(), equalTo(1));
+        assertThat(person.getMails().get(0), equalTo("beno@example.com"));
+        uhUuid = "11111111";
+        person = ldapService.findByUhUuid(uhUuid);
+        assertThat(person.getGivenName(), equalTo("John"));
+        assertThat(person.getSn(), equalTo("Lennon"));
+        assertThat(person.getCn(), equalTo("John W Lennon"));
+        assertThat(person.getUhUuid(), equalTo(uhUuid));
+        assertThat(person.getMails().size(), equalTo(1));
+        assertThat(person.getMails().get(0), equalTo("jwlennon@hawaii.edu"));
     }
 
     @Test
