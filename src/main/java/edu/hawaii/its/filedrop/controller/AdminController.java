@@ -6,16 +6,20 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
@@ -105,16 +109,6 @@ public class AdminController {
     public ResponseEntity<List<Whitelist>> getWhiteList() {
         logger.debug("User at api/admin/whitelist");
         List<Whitelist> whitelist = whitelistService.getAllWhiteList();
-        whitelist.forEach(wl -> {
-            LdapPerson entry = ldapService.findByUhUuidOrUidOrMail(wl.getEntry());
-            LdapPerson registrant = ldapService.findByUhUuidOrUidOrMail(wl.getRegistrant());
-            if (!(entry instanceof LdapPersonEmpty)) {
-                wl.setEntry(entry.getCn());
-            }
-            if (!(registrant instanceof LdapPersonEmpty)) {
-                wl.setRegistrant(registrant.getCn());
-            }
-        });
         return ResponseEntity.ok(whitelist);
     }
 
@@ -123,13 +117,23 @@ public class AdminController {
             @RequestParam("registrant") String registrant) {
         Whitelist whitelist = new Whitelist();
         whitelist.setEntry(entry);
+        whitelist.setEntryName(ldapService.findByUid(entry).getCn());
         whitelist.setRegistrant(registrant);
+        whitelist.setRegistrantName(ldapService.findByUid(registrant).getCn());
         whitelist.setCheck(0);
         whitelist.setExpired(false);
         whitelist.setCreated(LocalDate.now());
         whitelist = whitelistService.addWhitelist(whitelist);
         logger.debug("User added Whitelist: " + whitelist);
         return "redirect:/admin/whitelist";
+    }
+
+    @DeleteMapping("/api/admin/whitelist/{whitelistId}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteWhitelist(@PathVariable Integer whitelistId) {
+        Whitelist whitelist = whitelistService.getWhiteList(whitelistId);
+        whitelistService.deleteWhitelist(whitelist);
+        logger.debug("User deleted Whitelist: " + whitelist);
     }
 
 }

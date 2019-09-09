@@ -21,15 +21,19 @@ import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.LdapService;
+import edu.hawaii.its.filedrop.service.WhitelistService;
+import edu.hawaii.its.filedrop.type.Whitelist;
 
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
@@ -52,6 +56,9 @@ public class AdminControllerTest {
 
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private WhitelistService whitelistService;
 
     @Autowired
     private LdapService ldapService;
@@ -241,7 +248,7 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/api/admin/whitelist"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(4)))
+                .andExpect(jsonPath("$", hasSize(5)))
                 .andExpect(jsonPath("$[0].entry").exists())
                 .andExpect(jsonPath("$[1].entry").exists());
     }
@@ -250,20 +257,62 @@ public class AdminControllerTest {
     @WithMockUhAdmin
     public void addWhitelist() throws Exception {
         mockMvc.perform(post("/api/admin/whitelist")
-                .param("entry", "uhmadm")
-                .param("registrant", "lukemcd9"))
+                .param("entry", "help")
+                .param("registrant", "jwlennon"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/whitelist"));
 
+        Whitelist whitelist = whitelistService.getWhiteList(3);
+        assertEquals("help", whitelist.getEntry());
+        assertEquals("ITS Help Desk", whitelist.getEntryName());
+        assertEquals("jwlennon", whitelist.getRegistrant());
+        assertEquals("John W Lennon", whitelist.getRegistrantName());
+
         mockMvc.perform(post("/api/admin/whitelist")
-                .param("entry", "ochelp")
-                .param("registrant", "unknown"))
+                .param("entry", "help")
+                .param("registrant", "jwlennon"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/whitelist"));
 
         mockMvc.perform(get("/api/admin/whitelist"))
                 .andExpect(jsonPath("$", hasSize(4)))
-                .andExpect(jsonPath("$[3].registrant").value("unknown"));
+                .andExpect(jsonPath("$[3].entry").value("help"))
+                .andExpect(jsonPath("$[3].registrant").value("jwlennon"));
+
+        whitelist = whitelistService.getWhiteList(4);
+        assertEquals("help", whitelist.getEntry());
+        assertEquals("jwlennon", whitelist.getRegistrant());
+
+        mockMvc.perform(post("/api/admin/whitelist")
+                .param("entry", "testing")
+                .param("registrant", "testing"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/whitelist"));
+
+        mockMvc.perform(get("/api/admin/whitelist"))
+                .andExpect(jsonPath("$", hasSize(5)))
+                .andExpect(jsonPath("$[4].entry").value("testing"))
+                .andExpect(jsonPath("$[4].entryName").value(""))
+                .andExpect(jsonPath("$[4].registrant").value("testing"))
+                .andExpect(jsonPath("$[4].registrantName").value(""));
+
+        whitelist = whitelistService.getWhiteList(5);
+        assertEquals("testing", whitelist.getEntry());
+        assertEquals("", whitelist.getEntryName());
+        assertEquals("testing", whitelist.getRegistrant());
+        assertEquals("", whitelist.getEntryName());
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void deleteWhitelist() throws Exception {
+        mockMvc.perform(post("/api/admin/whitelist")
+                .param("entry", "help")
+                .param("registrant", "jwlennon"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/whitelist"));
+        mockMvc.perform(delete("/api/admin/whitelist/6"))
+                .andExpect(status().isOk());
     }
 
 }

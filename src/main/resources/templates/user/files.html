@@ -67,8 +67,7 @@
             <div class="row">
                 <div class="col-sm-12">
                     <p ng-class="isUploadLarge() ? 'text-danger' : ''" ng-if="uploadSize > 0">Upload size: {{uploadSize
-                        |
-                        bytes}} / {{maxUploadSize | bytes}} </p>
+                        | bytes}} / {{maxUploadSize | bytes}} </p>
                     <button class="btn" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'" type="submit"
                         ng-disabled="isUploadLarge()" form="filesForm">Submit
                     </button>
