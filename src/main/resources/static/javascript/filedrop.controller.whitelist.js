@@ -29,6 +29,15 @@ function WhitelistJsController($scope, dataProvider) {
     $scope.getRegistrantName = function(whitelist) {
         return whitelist.registrantName ? whitelist.registrantName : whitelist.registrant;
     };
+
+    $scope.deleteWhitelist = function(whitelist) {
+        dataProvider.delData(function(data) {
+            var index = $scope.whitelist.indexOf(whitelist);
+            if (index > -1) {
+                $scope.whitelist.splice(index, 1);
+            }
+        }, URL_LOAD + "/" + whitelist.id);
+    };
 }
 
 filedropApp.controller("WhitelistJsController", WhitelistJsController);

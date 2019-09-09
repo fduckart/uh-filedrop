@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
@@ -127,11 +129,11 @@ public class AdminController {
     }
 
     @DeleteMapping("/api/admin/whitelist/{whitelistId}")
-    public String deleteWhitelist(@PathVariable Integer whitelistId) {
+    @ResponseStatus(value = HttpStatus.OK)
+    public void deleteWhitelist(@PathVariable Integer whitelistId) {
         Whitelist whitelist = whitelistService.getWhiteList(whitelistId);
         whitelistService.deleteWhitelist(whitelist);
         logger.debug("User deleted Whitelist: " + whitelist);
-        return "redirect:/admin/whitelist";
     }
 
 }
