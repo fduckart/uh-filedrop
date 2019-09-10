@@ -24,7 +24,7 @@
     <junit.version>4.12</junit.version>
     <commons-dbcp-version>2.1.1</commons-dbcp-version>
     <hibernate.version>5.2.3.Final</hibernate.version>
-    <h2.version>1.4.192</h2.version>
+    <h2.version>1.4.197</h2.version>
     <cas.client-version>3.4.1</cas.client-version>
 
     <bootstrap-version>4.3.1</bootstrap-version>
