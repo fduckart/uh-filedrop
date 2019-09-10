@@ -13,7 +13,7 @@ function PrepareJsController($scope, dataProvider) {
         }
         dataProvider.loadData(function(data) {
             if (data.cn) {
-                $scope.recipients.push(data.cn);
+                $scope.recipients.push({ name: data.cn, uid: data.uid });
             }
         }, "/filedrop/api/ldap/" + $scope.recipient);
         $scope.recipient = "";
@@ -27,7 +27,11 @@ function PrepareJsController($scope, dataProvider) {
     };
 
     $scope.getRecipients = function() {
-        return $scope.recipients.join(",");
+        var recipients = [];
+        for (var i = 0; i < $scope.recipients.length; i++) {
+            recipients.push($scope.recipients[i].uid);
+        }
+        return recipients.join(",");
     };
 }
 

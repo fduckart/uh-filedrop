@@ -1,6 +1,6 @@
 package edu.hawaii.its.filedrop.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -55,7 +55,6 @@ public class PrepareController {
             @RequestParam("expiration") Integer expiration,
             @RequestParam("recipients") String[] recipients) {
         logger.debug("User added recipients: " + Arrays.toString(recipients));
-        //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
         FileDrop fileDrop = new FileDrop();
         fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setEncryptionKey(Strings.generateRandomString());
@@ -63,7 +62,7 @@ public class PrepareController {
         fileDrop.setUploadKey(Strings.generateRandomString());
         fileDrop.setUploader(userContextService.getCurrentUser().getUsername());
         fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
-        fileDrop.setCreated(LocalDate.now());
+        fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
         fileDrop.setValid(validation);
         fileDrop.setAuthenticationRequired(validation);

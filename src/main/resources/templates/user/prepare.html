@@ -20,7 +20,7 @@
                     <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
                         <button type="button" class="btn btn-outline-dark btn-sm" th:disabled="${helpdesk}"
                             ng-click="removeRecipient(r)">
-                            {{r}} <span th:if="!${helpdesk}" class="badge badge-danger">&times;</span>
+                            {{ r.name }} <span th:if="!${helpdesk}" class="badge badge-danger">&times;</span>
                         </button>
                     </li>
                 </ul>
