@@ -5,7 +5,8 @@
 <body ng-app="filedropApp">
 <nav th:replace="menubar :: copy"></nav>
 
-<div class="container" ng-controller="PrepareJsController" th:attr="ng-init='init(\'' + ${user} + '\');'">
+<div class="container" ng-controller="PrepareJsController"
+    th:attr="ng-init='init(\'' + ${user} + '\',' + ${helpdesk} + ');'">
     <div class="card border-success">
         <div class="card-body">
             <div class="col-sm-12 mb-3">
@@ -25,7 +26,6 @@
                     </li>
                 </ul>
                 <form ng-submit="addRecipient()">
-                    <div hidden th:if="${helpdesk}" ng-init="recipients = ['helpdesk@hawaii.edu']"></div>
                     <div class="input-group" th:if="!${helpdesk}">
                         <label hidden for="recipient">Recipients: </label>
                         <input class="form-control" id="recipient" type="text" name="recipient"

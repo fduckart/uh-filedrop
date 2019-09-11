@@ -1,7 +1,11 @@
 function PrepareJsController($scope, dataProvider) {
-    $scope.init = function(sender) {
+    $scope.init = function(sender, helpdesk) {
         $scope.sender = sender;
         $scope.recipients = [];
+        if (helpdesk) {
+            $scope.recipient = "help@hawaii.edu";
+            $scope.addRecipient();
+        }
     };
 
     $scope.addRecipient = function() {
@@ -9,7 +13,8 @@ function PrepareJsController($scope, dataProvider) {
             return;
         }
         if ($scope.recipient.indexOf("@") > -1 && $scope.recipient.split("@")[1] !== "hawaii.edu") {
-            $scope.recipients.push($scope.recipient);
+            $scope.recipients.push({ name: $scope.recipient });
+            return;
         }
         dataProvider.loadData(function(data) {
             if (data.cn) {
