@@ -1,20 +1,20 @@
-insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (1, 1, 1, 'Welcome to the University of Hawai''i FileDrop application.');
-insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (2, 1, 1, 'Welcome to the University of Hawai''i FileDrop application.');
-insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (3, 1, 1, 'FileDrop is currently unavailable.');
-insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (4, 0, 1, 'University of Hawaii Information Technology Services resides in a state-of-the-art, six-story, 74,000-square-foot facility located on the Manoa campus.');
+insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (1, 'Y', 1, 'Welcome to the University of Hawai''i FileDrop application.');
+insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (2, 'Y', 1, 'Welcome to the University of Hawai''i FileDrop application.');
+insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (3, 'Y', 1, 'FileDrop is currently unavailable.');
+insert into message (MSG_ID, MSG_ENABLED, MSG_TYPE_ID, MSG_TEXT) values (4, 'N', 1, 'University of Hawaii Information Technology Services resides in a state-of-the-art, six-story, 74,000-square-foot facility located on the Manoa campus.');
 
 -- Campus codes and names.
-insert into campus (id, code, actual, description) values (1,  'HA', 1, 'Hawaii Community College');
-insert into campus (id, code, actual, description) values (2,  'HI', 1, 'UH Hilo');
-insert into campus (id, code, actual, description) values (3,  'HO', 1, 'Honolulu Community College');
-insert into campus (id, code, actual, description) values (4,  'KA', 1, 'Kapiolani Community College');
-insert into campus (id, code, actual, description) values (5,  'KU', 1, 'Kauai Community College');
-insert into campus (id, code, actual, description) values (6,  'LE', 1, 'Leeward Community College');
-insert into campus (id, code, actual, description) values (7,  'MA', 1, 'UH Manoa');
-insert into campus (id, code, actual, description) values (8,  'MU', 1, 'UH Maui College');
-insert into campus (id, code, actual, description) values (9,  'WI', 1, 'Windward Community College');
-insert into campus (id, code, actual, description) values (10, 'WO', 1, 'UH West Oahu');
-insert into campus (id, code, actual, description) values (11, 'SW', 0, 'UH System');
+insert into campus (id, code, actual, description) values (1,  'HA', 'Y', 'Hawaii Community College');
+insert into campus (id, code, actual, description) values (2,  'HI', 'Y', 'UH Hilo');
+insert into campus (id, code, actual, description) values (3,  'HO', 'Y', 'Honolulu Community College');
+insert into campus (id, code, actual, description) values (4,  'KA', 'Y', 'Kapiolani Community College');
+insert into campus (id, code, actual, description) values (5,  'KU', 'Y', 'Kauai Community College');
+insert into campus (id, code, actual, description) values (6,  'LE', 'Y', 'Leeward Community College');
+insert into campus (id, code, actual, description) values (7,  'MA', 'Y', 'UH Manoa');
+insert into campus (id, code, actual, description) values (8,  'MU', 'Y', 'UH Maui College');
+insert into campus (id, code, actual, description) values (9,  'WI', 'Y', 'Windward Community College');
+insert into campus (id, code, actual, description) values (10, 'WO', 'Y', 'UH West Oahu');
+insert into campus (id, code, actual, description) values (11, 'SW', 'N', 'UH System');
 
 -- Campus offices.
 insert into office (id, campus_id, sort_id, description) values (1,   1, 1,  'Chancellors Office');
