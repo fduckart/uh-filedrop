@@ -18,6 +18,7 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
+import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -83,11 +84,16 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("recipients", "test", "test2")
+                .param("recipients", "test", "jwlennon")
                 .param("validation", "true")
                 .param("expiration", "5"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare/files"));
+
+        mockMvc.perform(get("/prepare/files"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/files"))
+                .andExpect(model().attribute("recipients", contains("test", "John W Lennon")));
     }
 
     @Test

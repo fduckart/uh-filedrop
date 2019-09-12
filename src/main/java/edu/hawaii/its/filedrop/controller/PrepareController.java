@@ -1,9 +1,10 @@
 package edu.hawaii.its.filedrop.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -23,11 +24,15 @@ import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.LdapPerson;
+import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.WorkflowService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.util.Strings;
+
+import static java.util.stream.Collectors.toList;
 
 @Controller
 public class PrepareController {
@@ -55,7 +60,6 @@ public class PrepareController {
             @RequestParam("expiration") Integer expiration,
             @RequestParam("recipients") String[] recipients) {
         logger.debug("User added recipients: " + Arrays.toString(recipients));
-        //        LdapPerson ldapPerson = ldapService.findByUid(recipient);
         FileDrop fileDrop = new FileDrop();
         fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setEncryptionKey(Strings.generateRandomString());
@@ -63,7 +67,7 @@ public class PrepareController {
         fileDrop.setUploadKey(Strings.generateRandomString());
         fileDrop.setUploader(userContextService.getCurrentUser().getUsername());
         fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
-        fileDrop.setCreated(LocalDate.now());
+        fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
         fileDrop.setValid(validation);
         fileDrop.setAuthenticationRequired(validation);
@@ -86,8 +90,17 @@ public class PrepareController {
             return "redirect:/prepare";
         }
         logger.debug("User at addFiles.");
-        model.addAttribute("recipients",
-                workflowService.getProcessVariables(currentTask.getProcessInstanceId()).get("recipients"));
+        List<String> recipients =
+                Arrays.asList((String[]) workflowService.getProcessVariables(currentTask.getProcessInstanceId())
+                        .get("recipients"));
+        recipients = recipients.stream().map(recipient -> {
+            LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
+            if (!(ldapPerson instanceof LdapPersonEmpty)) {
+                return ldapPerson.getCn();
+            }
+            return recipient;
+        }).collect(toList());
+        model.addAttribute("recipients", recipients);
         model.addAttribute("maxUploadSize", maxUploadSize);
         model.addAttribute("downloadKey",
                 workflowService.getProcessVariables(currentTask.getProcessInstanceId()).get("fileDropDownloadKey"));

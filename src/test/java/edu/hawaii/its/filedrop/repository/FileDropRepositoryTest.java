@@ -1,6 +1,6 @@
 package edu.hawaii.its.filedrop.repository;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
 import java.util.List;
@@ -40,8 +40,8 @@ public class FileDropRepositoryTest {
 
     @Test
     public void specificationWithIdTest() {
-        LocalDate created = LocalDate.now();
-        LocalDate expiration = created.plus(10, ChronoUnit.DAYS);
+        LocalDateTime created = LocalDateTime.now();
+        LocalDateTime expiration = created.plus(10, ChronoUnit.DAYS);
         FileDrop fileDrop = new FileDrop();
         fileDrop.setId(1);
         fileDrop.setUploader("test");
@@ -80,8 +80,8 @@ public class FileDropRepositoryTest {
         fileDrop.setId(1);
         fileDrop.setUploader("test");
         fileDrop.setUploaderFullName("Test 123");
-        fileDrop.setCreated(LocalDate.now());
-        fileDrop.setExpiration(LocalDate.now().plus(10, ChronoUnit.DAYS));
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop.setDownloadKey(downloadKey);
         fileDrop.setUploadKey("upload-key");
         fileDrop.setEncryptionKey("encrypted");
@@ -101,8 +101,8 @@ public class FileDropRepositoryTest {
         fileDrop.setId(1);
         fileDrop.setUploader("test");
         fileDrop.setUploaderFullName("Test 123");
-        fileDrop.setCreated(LocalDate.now());
-        fileDrop.setExpiration(LocalDate.now().plus(10, ChronoUnit.DAYS));
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop.setDownloadKey("download-key");
         fileDrop.setUploadKey("upload-key");
         fileDrop.setEncryptionKey("encrypted");
@@ -115,8 +115,8 @@ public class FileDropRepositoryTest {
         fileDrop2.setId(2);
         fileDrop2.setUploader("test");
         fileDrop2.setUploaderFullName("Test 123");
-        fileDrop2.setCreated(LocalDate.now());
-        fileDrop2.setExpiration(LocalDate.now().plus(10, ChronoUnit.DAYS));
+        fileDrop2.setCreated(LocalDateTime.now());
+        fileDrop2.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop2.setDownloadKey("download-key2");
         fileDrop2.setUploadKey("upload-key2");
         fileDrop2.setEncryptionKey("encrypted2");
@@ -151,8 +151,8 @@ public class FileDropRepositoryTest {
         fileDrop.setId(1);
         fileDrop.setUploader("test");
         fileDrop.setUploaderFullName("Test 123");
-        fileDrop.setCreated(LocalDate.now());
-        fileDrop.setExpiration(LocalDate.now().plus(10, ChronoUnit.DAYS));
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop.setDownloadKey("download-key");
         fileDrop.setUploadKey("upload-key");
         fileDrop.setEncryptionKey("encrypted");
@@ -200,8 +200,8 @@ public class FileDropRepositoryTest {
         fileDrop.setId(1);
         fileDrop.setUploader("test");
         fileDrop.setUploaderFullName("Test 123");
-        fileDrop.setCreated(LocalDate.now());
-        fileDrop.setExpiration(LocalDate.now().plus(10, ChronoUnit.DAYS));
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop.setDownloadKey("download-key");
         fileDrop.setUploadKey("upload-key");
         fileDrop.setEncryptionKey("encrypted");

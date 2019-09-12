@@ -1,6 +1,6 @@
 package edu.hawaii.its.filedrop.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -213,8 +213,8 @@ public class FileDropServiceTest {
         fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setValid(true);
         fileDrop.setAuthenticationRequired(true);
-        fileDrop.setCreated(LocalDate.now());
-        fileDrop.setExpiration(LocalDate.now().plus(10, ChronoUnit.DAYS));
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
         Map<String, Object> args = new HashMap<>();

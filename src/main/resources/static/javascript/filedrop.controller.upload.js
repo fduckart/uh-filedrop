@@ -4,7 +4,6 @@ function UploadJsController($scope, Upload, $window) {
         $scope.uploadSize = 0;
         $scope.maxUploadSize = maxUploadSize;
         $scope.downloadKey = downloadKey;
-        console.log($scope.downloadKey);
     };
 
     $scope.submit = function() {

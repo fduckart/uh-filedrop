@@ -1,7 +1,11 @@
 function PrepareJsController($scope, dataProvider) {
-    $scope.init = function(sender) {
+    $scope.init = function(sender, helpdesk) {
         $scope.sender = sender;
         $scope.recipients = [];
+        if (helpdesk) {
+            $scope.recipient = "help@hawaii.edu";
+            $scope.addRecipient();
+        }
     };
 
     $scope.addRecipient = function() {
@@ -9,11 +13,12 @@ function PrepareJsController($scope, dataProvider) {
             return;
         }
         if ($scope.recipient.indexOf("@") > -1 && $scope.recipient.split("@")[1] !== "hawaii.edu") {
-            $scope.recipients.push($scope.recipient);
+            $scope.recipients.push({ name: $scope.recipient });
+            return;
         }
         dataProvider.loadData(function(data) {
             if (data.cn) {
-                $scope.recipients.push(data.cn);
+                $scope.recipients.push({ name: data.cn, uid: data.uid });
             }
         }, "/filedrop/api/ldap/" + $scope.recipient);
         $scope.recipient = "";
@@ -27,7 +32,11 @@ function PrepareJsController($scope, dataProvider) {
     };
 
     $scope.getRecipients = function() {
-        return $scope.recipients.join(",");
+        var recipients = [];
+        for (var i = 0; i < $scope.recipients.length; i++) {
+            recipients.push($scope.recipients[i].uid);
+        }
+        return recipients.join(",");
     };
 }
 
