@@ -14,6 +14,7 @@ function PrepareJsController($scope, dataProvider) {
         }
         if ($scope.recipient.indexOf("@") > -1 && $scope.recipient.split("@")[1] !== "hawaii.edu") {
             $scope.recipients.push({ name: $scope.recipient });
+            $scope.recipient = "";
             return;
         }
         dataProvider.loadData(function(data) {
