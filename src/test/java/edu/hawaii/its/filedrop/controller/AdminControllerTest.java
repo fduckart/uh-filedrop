@@ -262,7 +262,7 @@ public class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/whitelist"));
 
-        Whitelist whitelist = whitelistService.getWhiteList(3);
+        Whitelist whitelist = whitelistService.findWhiteList(3);
         assertEquals("help", whitelist.getEntry());
         assertEquals("ITS Help Desk", whitelist.getEntryName());
         assertEquals("jwlennon", whitelist.getRegistrant());
@@ -279,7 +279,7 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$[3].entry").value("help"))
                 .andExpect(jsonPath("$[3].registrant").value("jwlennon"));
 
-        whitelist = whitelistService.getWhiteList(4);
+        whitelist = whitelistService.findWhiteList(4);
         assertEquals("help", whitelist.getEntry());
         assertEquals("jwlennon", whitelist.getRegistrant());
 
@@ -296,7 +296,7 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$[4].registrant").value("testing"))
                 .andExpect(jsonPath("$[4].registrantName").value(""));
 
-        whitelist = whitelistService.getWhiteList(5);
+        whitelist = whitelistService.findWhiteList(5);
         assertEquals("testing", whitelist.getEntry());
         assertEquals("", whitelist.getEntryName());
         assertEquals("testing", whitelist.getRegistrant());

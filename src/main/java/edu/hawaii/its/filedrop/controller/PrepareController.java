@@ -117,7 +117,7 @@ public class PrepareController {
         fileSet.setComment(comment);
         Map<String, Object> args = workflowService.getProcessVariables(
                 workflowService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId());
-        fileSet.setFileDrop(fileDropService.getFileDrop((Integer) args.get("fileDropId")));
+        fileSet.setFileDrop(fileDropService.findFileDrop((Integer) args.get("fileDropId")));
         fileDropService.saveFileSet(fileSet);
         logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + fileSet);
     }

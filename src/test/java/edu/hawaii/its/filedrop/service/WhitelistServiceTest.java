@@ -60,7 +60,7 @@ public class WhitelistServiceTest {
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelistService.addWhitelist(whitelist);
-        Whitelist whitelist2 = whitelistService.getWhiteList(whitelist.getId());
+        Whitelist whitelist2 = whitelistService.findWhiteList(whitelist.getId());
         assertNotNull(whitelist);
         assertEquals("Test Entry", whitelist.getEntry());
         assertEquals("Some Person", whitelist.getRegistrant());
@@ -74,7 +74,7 @@ public class WhitelistServiceTest {
     @Test
     public void addWhitelistLdapTest() {
         Whitelist whitelist = whitelistService.addWhitelist(new LdapPersonEmpty(), new LdapPersonEmpty());
-        whitelist = whitelistService.getWhiteList(whitelist.getId());
+        whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertNotNull(whitelist);
         assertEquals("", whitelist.getEntry());
         assertEquals("", whitelist.getRegistrant());
@@ -137,7 +137,7 @@ public class WhitelistServiceTest {
         whitelist = whitelistService.addWhitelist(whitelist);
         scheduler.triggerJob(whitelistService.getJobKey());
         Thread.sleep(500);
-        whitelist = whitelistService.getWhiteList(whitelist.getId());
+        whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertEquals(Integer.valueOf(1), whitelist.getCheck());
         assertTrue(whitelistService.isWhitelisted(whitelist.getEntry()));
     }
@@ -154,7 +154,7 @@ public class WhitelistServiceTest {
         whitelist = whitelistService.addWhitelist(whitelist);
         scheduler.triggerJob(whitelistService.getJobKey());
         Thread.sleep(500);
-        whitelist = whitelistService.getWhiteList(whitelist.getId());
+        whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertTrue(whitelistService.isWhitelisted(whitelist.getEntry()));
         assertTrue(whitelist.isExpired());
     }

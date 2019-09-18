@@ -82,7 +82,7 @@ public class DownloadControllerTest {
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
-        FileDrop fileDrop = fileDropService.getFileDrop(1);
+        FileDrop fileDrop = fileDropService.findFileDrop(1);
         fileDrop.setDownloadKey("test");
         fileDropService.saveFileDrop(fileDrop);
         assertNotNull(fileDrop);

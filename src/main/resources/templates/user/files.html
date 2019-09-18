@@ -28,7 +28,8 @@
                     <form id="filesForm" ng-submit="submit()">
                         <div class="card bg-light" style="cursor: pointer;" ngf-drag-over-class="'border-success'"
                             ngf-drop ngf-select
-                            ngf-change="addFiles($files)" ngf-multiple="true">
+                            ngf-change="addFiles($files)" ngf-multiple="true"
+                            ngf-keep="'distinct'">
                             <div class="card-body text-center m-auto">
                                 Drag Files or Click here
                             </div>
