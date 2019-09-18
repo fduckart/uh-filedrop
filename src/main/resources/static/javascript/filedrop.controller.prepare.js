@@ -9,7 +9,7 @@ function PrepareJsController($scope, dataProvider) {
     };
 
     $scope.addRecipient = function() {
-        if (/^\s*$/.test($scope.recipient) || $scope.recipient === undefined || $scope.recipients.indexOf($scope.recipient) > -1) {
+        if (/^\s*$/.test($scope.recipient) || $scope.recipient === undefined || $scope.hasRecipient($scope.recipient)) {
             return;
         }
         if ($scope.recipient.indexOf("@") > -1 && $scope.recipient.split("@")[1] !== "hawaii.edu") {
@@ -34,11 +34,15 @@ function PrepareJsController($scope, dataProvider) {
 
     $scope.getRecipients = function() {
         var recipients = [];
-        for (var i = 0; i < $scope.recipients.length; i++) {
-            recipients.push($scope.recipients[i].uid);
-        }
+        $scope.recipients.forEach(function(recipient) {
+            recipients.push(recipient.uid ? recipient.uid : recipient.name);
+        });
         return recipients.join(",");
     };
+
+    $scope.hasRecipient = function(recipient) {
+        return $scope.recipients.includes($scope.recipients.find(function (r) { return (r.uid === recipient) || (r.name === recipient) }));
+    }
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);
