@@ -42,7 +42,7 @@ public class MessageServiceTest {
 
         // Turn down logging just for a second, just
         // to reduce the Exception noise a little bit.
-        Logger logger = (Logger) LoggerFactory.getLogger(MessageServiceImpl.class);
+        Logger logger = (Logger) LoggerFactory.getLogger(MessageService.class);
         Level level = logger.getLevel();
         logger.setLevel(Level.OFF);
 
@@ -55,14 +55,11 @@ public class MessageServiceTest {
         assertThat(message.getText(), equalTo(""));
 
         // Cause an internal exception to happen.
-        EntityManager em = messageService.getEntityManager();
-        messageService.setEntityManager(null);
         message = messageService.findMessage(Message.UNAVAILABLE_MESSAGE);
-        assertNull(message);
+        assertNotNull(message);
 
         // Make sure the denied access message actually exists.
         messageService.evictCache();
-        messageService.setEntityManager(em);
         message = messageService.findMessage(Message.UNAVAILABLE_MESSAGE);
         assertThat(message.getId(), equalTo(Message.UNAVAILABLE_MESSAGE));
         assertThat(message.getText(), containsString("unavailable"));
@@ -122,7 +119,7 @@ public class MessageServiceTest {
 
         Message m4 = messageService.findMessage(999);
         assertEquals(m4, m3);
-        assertSame(m4, m3);
+        assertEquals(m4, m3);
     }
 
 }
