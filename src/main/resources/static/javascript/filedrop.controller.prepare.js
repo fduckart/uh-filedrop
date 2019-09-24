@@ -17,7 +17,8 @@ function PrepareJsController($scope, dataProvider) {
             $scope.recipient = "";
             return;
         }
-        dataProvider.loadData(function(data) {
+        dataProvider.loadData(function(response) {
+            var data = response.data;
             if (data.cn) {
                 $scope.recipients.push({ name: data.cn, uid: data.uid });
             }

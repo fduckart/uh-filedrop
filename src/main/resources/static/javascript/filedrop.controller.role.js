@@ -9,8 +9,8 @@
         };
 
         $scope.loadData = function() {
-            dataProvider.loadData(function(data) {
-                $scope.roles = data;
+            dataProvider.loadData(function(response) {
+                $scope.roles = response.data;
             }, URL_LOAD);
         }
     }

@@ -30,6 +30,7 @@ function UploadJsController($scope, Upload, $window) {
     };
 
     $scope.addFiles = function(files) {
+        $scope.files = $scope.files.concat(files);
         angular.forEach(files, function(file) {
             file.comment = "";
             $scope.uploadSize += file.size;
