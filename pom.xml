@@ -355,6 +355,7 @@
             <exclude>edu/hawaii/its/filedrop/type/Download.class</exclude>
             <exclude>edu/hawaii/its/filedrop/type/Validation.class</exclude>
             <exclude>edu/hawaii/its/filedrop/job/ExpireJob.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/job/SubmitJob.class</exclude>
           </excludes>
         </configuration>
         <executions>
