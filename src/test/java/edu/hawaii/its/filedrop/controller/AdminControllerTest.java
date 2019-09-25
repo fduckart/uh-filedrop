@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.WhitelistService;
 import edu.hawaii.its.filedrop.type.Whitelist;
 
@@ -36,7 +35,6 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -59,9 +57,6 @@ public class AdminControllerTest {
 
     @Autowired
     private WhitelistService whitelistService;
-
-    @Autowired
-    private LdapService ldapService;
 
     private MockMvc mockMvc;
 
@@ -203,7 +198,7 @@ public class AdminControllerTest {
     @Test
     @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void setGateMessage() throws Exception {
-        mockMvc.perform(put("/admin/gate-message")
+        mockMvc.perform(post("/admin/gate-message")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "1")
                 .param("text", "Testing"))
@@ -215,7 +210,7 @@ public class AdminControllerTest {
 
     @Test
     public void setGateMessageNonAdmin() throws Exception {
-        mockMvc.perform(put("/admin/gate-message")
+        mockMvc.perform(post("/admin/gate-message")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "1")
                 .param("text", "Testing"))
@@ -225,7 +220,7 @@ public class AdminControllerTest {
     @Test
     @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void setGateMessageWrongType() throws Exception {
-        mockMvc.perform(put("/admin/gate-message")
+        mockMvc.perform(post("/admin/gate-message")
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .param("id", "Test")
                 .param("text", "Testing"))

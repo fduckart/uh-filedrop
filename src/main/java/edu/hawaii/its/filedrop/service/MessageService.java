@@ -1,7 +1,5 @@
 package edu.hawaii.its.filedrop.service;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -17,8 +15,6 @@ public class MessageService {
 
     @Autowired
     private MessageRepository messageRepository;
-
-    private static final Log logger = LogFactory.getLog(MessageService.class);
 
     @CacheEvict(value = "messages", allEntries = true)
     public void evictCache() {

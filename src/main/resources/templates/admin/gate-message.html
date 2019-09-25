@@ -11,13 +11,16 @@
                 aria-hidden="true">&times;</span></button>
             Gate message updated.
         </div>
-        <form action="" th:action="@{/admin/gate-message}" th:object="${message}" th:method="PUT">
+        <form action="" th:action="@{/admin/gate-message}" th:object="${message}" th:method="POST">
             <div class="form-group">
                 <input type="hidden" id="id" th:field="*{id}" th:value="${message.id}">
                 <label for="message">Message:</label>
                 <textarea class="form-control" id="message" th:field="*{text}" th:value="${message.text}"></textarea>
             </div>
-            <button th:type="submit" class="btn btn-primary">Update</button>
+            <div class="form-group">
+                <input th:type="submit" class="btn btn-primary" value="Update">
+                <input th:type="reset" class="btn btn-danger" value="Cancel">
+            </div>
         </form>
     </div>
     <!-- / Content container. -->

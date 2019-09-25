@@ -14,6 +14,8 @@ import javax.persistence.Table;
 @Table(name = "fileset")
 public class FileSet implements Serializable {
 
+    private static final long serialVersionUID = 101L;
+
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
