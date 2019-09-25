@@ -20,7 +20,6 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.WhitelistService;
 import edu.hawaii.its.filedrop.type.Whitelist;
 
@@ -59,9 +58,6 @@ public class AdminControllerTest {
 
     @Autowired
     private WhitelistService whitelistService;
-
-    @Autowired
-    private LdapService ldapService;
 
     private MockMvc mockMvc;
 
