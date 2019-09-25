@@ -40,8 +40,8 @@ public class FileDropService {
                     (Integer) workflowService
                             .getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId())
                             .get("fileDropId");
-            if (fileDropId != null && getFileDrop(fileDropId) != null) {
-                fileDropRepository.delete(getFileDrop(fileDropId));
+            if (fileDropId != null && findFileDrop(fileDropId) != null) {
+                fileDropRepository.delete(findFileDrop(fileDropId));
             }
         }
         workflowService.startProcess(user, "fileUpload");
@@ -76,7 +76,7 @@ public class FileDropService {
         return fileSetRepository.save(fileSet);
     }
 
-    public List<FileSet> getFileSets(FileDrop fileDrop) {
+    public List<FileSet> findFileSets(FileDrop fileDrop) {
         return fileSetRepository.findAllByFileDrop(fileDrop);
     }
 
@@ -84,11 +84,11 @@ public class FileDropService {
         return fileDropRepository.save(fileDrop);
     }
 
-    public FileDrop getFileDrop(Integer id) {
+    public FileDrop findFileDrop(Integer id) {
         return fileDropRepository.findOne(withId(id)).orElse(null);
     }
 
-    public FileDrop getFileDrop(String key) {
+    public FileDrop findFileDrop(String key) {
         return fileDropRepository.findOne(withDownloadKey(key)).orElse(null);
     }
 }

@@ -19,7 +19,7 @@ public class DownloadController {
     @GetMapping(value = "/dl/{downloadKey}")
     @PreAuthorize("isAuthenticated()")
     public String getDownload(Model model, @PathVariable String downloadKey) {
-        FileDrop fileDrop = fileDropService.getFileDrop(downloadKey);
+        FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
         if (fileDrop == null) {
             throw new NullPointerException(downloadKey + " is not valid.");
         }

@@ -12,13 +12,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.job.SubmitJob;
 import edu.hawaii.its.filedrop.repository.WhitelistRepository;
 import edu.hawaii.its.filedrop.type.Whitelist;
 
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
@@ -60,7 +63,7 @@ public class WhitelistServiceTest {
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelistService.addWhitelist(whitelist);
-        Whitelist whitelist2 = whitelistService.getWhiteList(whitelist.getId());
+        Whitelist whitelist2 = whitelistService.findWhiteList(whitelist.getId());
         assertNotNull(whitelist);
         assertEquals("Test Entry", whitelist.getEntry());
         assertEquals("Some Person", whitelist.getRegistrant());
@@ -74,7 +77,7 @@ public class WhitelistServiceTest {
     @Test
     public void addWhitelistLdapTest() {
         Whitelist whitelist = whitelistService.addWhitelist(new LdapPersonEmpty(), new LdapPersonEmpty());
-        whitelist = whitelistService.getWhiteList(whitelist.getId());
+        whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertNotNull(whitelist);
         assertEquals("", whitelist.getEntry());
         assertEquals("", whitelist.getRegistrant());
@@ -137,7 +140,7 @@ public class WhitelistServiceTest {
         whitelist = whitelistService.addWhitelist(whitelist);
         scheduler.triggerJob(whitelistService.getJobKey());
         Thread.sleep(500);
-        whitelist = whitelistService.getWhiteList(whitelist.getId());
+        whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertEquals(Integer.valueOf(1), whitelist.getCheck());
         assertTrue(whitelistService.isWhitelisted(whitelist.getEntry()));
     }
@@ -154,7 +157,7 @@ public class WhitelistServiceTest {
         whitelist = whitelistService.addWhitelist(whitelist);
         scheduler.triggerJob(whitelistService.getJobKey());
         Thread.sleep(500);
-        whitelist = whitelistService.getWhiteList(whitelist.getId());
+        whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertTrue(whitelistService.isWhitelisted(whitelist.getEntry()));
         assertTrue(whitelist.isExpired());
     }

@@ -191,7 +191,7 @@ public class FileDropServiceTest {
 
         fileDropService.saveFileDrop(fileDrop);
 
-        assertEquals(fileDrop.getId(), fileDropService.getFileDrop("test-key").getId());
+        assertEquals(fileDrop.getId(), fileDropService.findFileDrop("test-key").getId());
     }
 
     @Test
@@ -233,7 +233,7 @@ public class FileDropServiceTest {
         Map<String, Object> vars =
                 workflowService.getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId());
 
-        fileSet.setFileDrop(fileDropService.getFileDrop((Integer) vars.get("fileDropId")));
+        fileSet.setFileDrop(fileDropService.findFileDrop((Integer) vars.get("fileDropId")));
 
         fileDropService.saveFileSet(fileSet);
 
@@ -242,7 +242,7 @@ public class FileDropServiceTest {
         fileSet.setType("image/jpg");
         fileSet.setComment("Test image jpg");
 
-        fileSet.setFileDrop(fileDropService.getFileDrop((Integer) vars.get("fileDropId")));
+        fileSet.setFileDrop(fileDropService.findFileDrop((Integer) vars.get("fileDropId")));
 
         fileDropService.saveFileSet(fileSet);
 
@@ -250,6 +250,6 @@ public class FileDropServiceTest {
 
         assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
         assertEquals(2,
-                fileDropService.getFileSets(fileDropService.getFileDrop((Integer) vars.get("fileDropId"))).size());
+                fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());
     }
 }

@@ -1,13 +1,13 @@
 package edu.hawaii.its.filedrop.job;
 
-import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import edu.hawaii.its.filedrop.service.WhitelistService;
 
-public class WhitelistCheckJob implements Job {
+@SubmitJobComponent(classCode = "W")
+public class WhitelistCheckJob extends SubmitJob {
 
     @Autowired
     private WhitelistService whitelistService;

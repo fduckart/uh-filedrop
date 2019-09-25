@@ -4,22 +4,21 @@
         return {
             loadData: function(callback, url) {
                 $http.get(encodeURI(url))
-                     .success(callback)
-                     .error(function(data, status) {
+                     .then(callback, function(response, status) {
                          console.log("Error in dataProvider; status: ", status);
                      });
             },
             delData: function(callback, url) {
                 $http.delete(encodeURI(url))
-                     .success(callback)
-                     .error(function(data, status) {
-                         console.log("Error in dataProvider; status: ", status);
-                     });
+                     .then(callback,
+                         function(data, status) {
+                             console.log("Error in dataProvider; status: ", status);
+                         }
+                     );
             },
             saveData: function(callback, url, data) {
                 $http.post(encodeURI(url), data)
-                     .success(callback)
-                     .error(function(data, status) {
+                     .then(callback, function(response, status) {
                          console.log("Error in dataProvider; status: ", status);
                      });
             }

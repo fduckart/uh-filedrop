@@ -7,8 +7,8 @@ function WhitelistJsController($scope, dataProvider) {
     };
 
     $scope.loadData = function() {
-        dataProvider.loadData(function(data) {
-            $scope.whitelist = data;
+        dataProvider.loadData(function(response) {
+            $scope.whitelist = response.data;
         }, URL_LOAD);
     };
 

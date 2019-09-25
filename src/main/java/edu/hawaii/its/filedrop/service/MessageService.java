@@ -1,20 +1,51 @@
 package edu.hawaii.its.filedrop.service;
 
-import javax.persistence.EntityManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import edu.hawaii.its.filedrop.repository.MessageRepository;
 import edu.hawaii.its.filedrop.type.Message;
 
-public interface MessageService {
-    public EntityManager getEntityManager();
+@Service
+public class MessageService {
 
-    public void setEntityManager(EntityManager em);
+    @Autowired
+    private MessageRepository messageRepository;
 
-    public void evictCache();
+    private static final Log logger = LogFactory.getLog(MessageService.class);
 
-    public Message findMessage(int id);
+    @CacheEvict(value = "messages", allEntries = true)
+    public void evictCache() {
+        // Empty.
+    }
 
-    public Message add(Message message);
+    @Transactional(readOnly = true)
+    @Cacheable(value = "messages", key = "#id")
+    public Message findMessage(int id) {
+        Message message = null;
+        message = messageRepository.findById(id).orElse(null);
+        if (message == null) {
+            message = new Message();
+        }
+        return message;
+    }
 
-    public Message update(Message message);
+    @Transactional
+    @CachePut(value = "messages", key = "#result")
+    public Message update(Message message) {
+        return messageRepository.save(message);
+    }
+
+    @Transactional
+    @CachePut(value = "messages", key = "#result")
+    public Message add(Message message) {
+        return messageRepository.save(message);
+    }
 
 }

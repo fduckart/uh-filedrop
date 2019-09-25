@@ -108,7 +108,7 @@ public class AdminController {
     @GetMapping("/api/admin/whitelist")
     public ResponseEntity<List<Whitelist>> getWhiteList() {
         logger.debug("User at api/admin/whitelist");
-        List<Whitelist> whitelist = whitelistService.getAllWhiteList();
+        List<Whitelist> whitelist = whitelistService.findAllWhiteList();
         return ResponseEntity.ok(whitelist);
     }
 
@@ -131,7 +131,7 @@ public class AdminController {
     @DeleteMapping("/api/admin/whitelist/{whitelistId}")
     @ResponseStatus(value = HttpStatus.OK)
     public void deleteWhitelist(@PathVariable Integer whitelistId) {
-        Whitelist whitelist = whitelistService.getWhiteList(whitelistId);
+        Whitelist whitelist = whitelistService.findWhiteList(whitelistId);
         whitelistService.deleteWhitelist(whitelist);
         logger.debug("User deleted Whitelist: " + whitelist);
     }

@@ -29,7 +29,7 @@
 
     <bootstrap-version>4.3.1</bootstrap-version>
     <jquery-version>3.2.0</jquery-version>
-    <angularjs-version>1.5.8</angularjs-version>
+    <angularjs-version>1.7.8</angularjs-version>
     <angular-mocks-version>1.5.8</angular-mocks-version>
   </properties>
 
@@ -355,6 +355,7 @@
             <exclude>edu/hawaii/its/filedrop/type/Download.class</exclude>
             <exclude>edu/hawaii/its/filedrop/type/Validation.class</exclude>
             <exclude>edu/hawaii/its/filedrop/job/ExpireJob.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/job/SubmitJob.class</exclude>
           </excludes>
         </configuration>
         <executions>

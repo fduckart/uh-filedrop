@@ -91,7 +91,7 @@ public class WhitelistService {
 
     public synchronized void checkWhitelists() {
         logger.debug("Starting whitelist check...");
-        for (Whitelist whitelist : getAllWhiteList()) {
+        for (Whitelist whitelist : findAllWhiteList()) {
             if (ldapService.findByUhUuidOrUidOrMail(whitelist.getRegistrant()) instanceof LdapPersonEmpty) {
                 addCheck(whitelist, 1);
             }
@@ -99,7 +99,7 @@ public class WhitelistService {
         logger.debug("Finished whitelist check.");
     }
 
-    public Whitelist getWhiteList(Integer id) {
+    public Whitelist findWhiteList(Integer id) {
         Whitelist whitelist = whitelistRepository.findById(id).orElse(null);
         if (whitelist != null) {
             whitelist.setEntryName(ldapService.findByUid(whitelist.getEntry()).getCn());
@@ -108,7 +108,7 @@ public class WhitelistService {
         return whitelist;
     }
 
-    public List<Whitelist> getAllWhiteList() {
+    public List<Whitelist> findAllWhiteList() {
         List<Whitelist> whitelists = whitelistRepository.findAll();
         whitelists.forEach(whitelist -> {
             whitelist.setEntryName(ldapService.findByUhUuidOrUidOrMail(whitelist.getEntry()).getCn());
