@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.quartz.Scheduler;
+import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.job.WhitelistCheckJob;
 import edu.hawaii.its.filedrop.repository.WhitelistRepository;
 import edu.hawaii.its.filedrop.type.Whitelist;
 
@@ -32,7 +33,7 @@ public class WhitelistServiceTest {
     private WhitelistRepository whitelistRepository;
 
     @Autowired
-    private Scheduler scheduler;
+    private SchedulerService schedulerService;
 
     @Value("${app.whitelist.check.threshold}")
     private Integer threshold;
@@ -135,11 +136,14 @@ public class WhitelistServiceTest {
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelist = whitelistService.addWhitelist(whitelist);
-        scheduler.triggerJob(whitelistService.getJobKey());
+        WhitelistCheckJob whitelistCheckJob = new WhitelistCheckJob();
+        whitelistCheckJob.setInterval(5);
+        JobDetail jobDetail = schedulerService.addJob(whitelistCheckJob, "SERVICE_TEST");
         Thread.sleep(500);
         whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertEquals(Integer.valueOf(1), whitelist.getCheck());
         assertTrue(whitelistService.isWhitelisted(whitelist.getEntry()));
+        schedulerService.deleteJob(jobDetail.getKey());
     }
 
     @Test
@@ -152,11 +156,14 @@ public class WhitelistServiceTest {
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelist = whitelistService.addWhitelist(whitelist);
-        scheduler.triggerJob(whitelistService.getJobKey());
+        WhitelistCheckJob whitelistCheckJob = new WhitelistCheckJob();
+        whitelistCheckJob.setInterval(5);
+        JobDetail jobDetail = schedulerService.addJob(whitelistCheckJob, "SERVICE_TEST");
         Thread.sleep(500);
         whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertTrue(whitelistService.isWhitelisted(whitelist.getEntry()));
         assertTrue(whitelist.isExpired());
+        schedulerService.deleteJob(jobDetail.getKey());
     }
 
     @Test
