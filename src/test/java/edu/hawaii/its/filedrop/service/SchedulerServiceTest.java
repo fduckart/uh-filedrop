@@ -63,6 +63,6 @@ public class SchedulerServiceTest {
 
     @Test(expected = NullPointerException.class)
     public void nullJob() throws SchedulerException {
-        JobDetail jobDetail = schedulerService.addJob(null);
+        schedulerService.addJob(null);
     }
 }
