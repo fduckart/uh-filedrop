@@ -9,7 +9,7 @@ public abstract class SubmitJob implements Job {
 
     protected final Log logger = LogFactory.getLog(getClass());
     private final String classCode;
-
+    private int interval;
     protected SubmitJob() {
         Class<SubmitJobComponent> clazz = SubmitJobComponent.class;
         SubmitJobComponent jobAnnotation = getClass().getAnnotation(clazz);
@@ -28,5 +28,13 @@ public abstract class SubmitJob implements Job {
         return getClass().getCanonicalName() + " ["
                 + "classCode=" + classCode
                 + "]";
+    }
+
+    public int getInterval() {
+        return interval;
+    }
+
+    public void setInterval(int interval) {
+        this.interval = interval;
     }
 }

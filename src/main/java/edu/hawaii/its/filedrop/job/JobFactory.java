@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.job;
 
 import java.util.List;
-
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
@@ -32,5 +31,9 @@ public class JobFactory {
         }
 
         logger.info("init; started.");
+    }
+
+    public List<SubmitJob> getJobs() {
+        return jobs;
     }
 }
