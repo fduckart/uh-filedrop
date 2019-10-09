@@ -7,6 +7,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import edu.hawaii.its.filedrop.exception.FileDropNotFoundException;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 
@@ -21,7 +22,7 @@ public class DownloadController {
     public String getDownload(Model model, @PathVariable String downloadKey) {
         FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
         if (fileDrop == null) {
-            throw new NullPointerException(downloadKey + " is not valid.");
+            throw new FileDropNotFoundException(downloadKey + " is not valid.");
         }
         model.addAttribute("fileDrop", fileDrop);
         return "user/download";
