@@ -36,16 +36,17 @@ public class FileDropService {
 
     public void startUploadProcess(User user) {
         if (workflowService.hasTask(user)) {
-            Integer fileDropId =
-                    (Integer) workflowService
-                            .getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId())
-                            .get("fileDropId");
+            Integer fileDropId = getFileDropId(user);
             if (fileDropId != null && findFileDrop(fileDropId) != null) {
                 fileDropRepository.delete(findFileDrop(fileDropId));
             }
         }
         workflowService.startProcess(user, "fileUpload");
         logger.debug("Created tasks for: " + user.getUsername());
+    }
+
+    public Integer getFileDropId(User user) {
+        return (Integer) workflowService.getProcessVariables(workflowService.getCurrentTask(user)).get("fileDropId");
     }
 
     public void addRecipients(User user, String... recipients) {
@@ -56,8 +57,7 @@ public class FileDropService {
                 recipients[0] = user.getUsername();
             }
             logger.debug(user.getUsername() + " added recipients: " + Arrays.toString(recipients));
-            workflowService.addProcessVariables(recipientTask.getProcessInstanceId(),
-                    Collections.singletonMap("recipients", recipients));
+            workflowService.addProcessVariables(recipientTask, Collections.singletonMap("recipients", recipients));
             workflowService.completeCurrentTask(user);
         }
     }
@@ -66,8 +66,7 @@ public class FileDropService {
         if (workflowService.atTask(user, "addFiles")) {
             logger.debug(user.getUsername() + " uploaded files.");
             Task filesTask = workflowService.getCurrentTask(user);
-            workflowService
-                    .addProcessVariables(filesTask.getProcessInstanceId(), Collections.singletonMap("files", files));
+            workflowService.addProcessVariables(filesTask, Collections.singletonMap("files", files));
             workflowService.completeCurrentTask(user);
         }
     }

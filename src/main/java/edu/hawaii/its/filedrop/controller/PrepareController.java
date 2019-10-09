@@ -60,6 +60,7 @@ public class PrepareController {
             @RequestParam("expiration") Integer expiration,
             @RequestParam("recipients") String[] recipients) {
         logger.debug("User added recipients: " + Arrays.toString(recipients));
+
         FileDrop fileDrop = new FileDrop();
         fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setEncryptionKey(Strings.generateRandomString());
@@ -71,14 +72,17 @@ public class PrepareController {
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
         fileDrop.setValid(validation);
         fileDrop.setAuthenticationRequired(validation);
+
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         fileDropService.addRecipients(userContextService.getCurrentUser(), recipients);
+
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
         args.put("fileDropDownloadKey", fileDrop.getDownloadKey());
-        workflowService.addProcessVariables(
-                workflowService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId(), args);
+        workflowService.addProcessVariables(workflowService.getCurrentTask(userContextService.getCurrentUser()), args);
+
         logger.debug(userContextService.getCurrentUser().getUsername() + " created new " + fileDrop);
+
         return "redirect:/prepare/files";
     }
 
@@ -86,24 +90,25 @@ public class PrepareController {
     @GetMapping(value = "/prepare/files")
     public String addFiles(Model model) {
         Task currentTask = workflowService.getCurrentTask(userContextService.getCurrentUser());
+
         if (workflowService.atTask(userContextService.getCurrentUser(), "addRecipients")) {
             return "redirect:/prepare";
         }
+
         logger.debug("User at addFiles.");
-        List<String> recipients =
-                Arrays.asList((String[]) workflowService.getProcessVariables(currentTask.getProcessInstanceId())
-                        .get("recipients"));
-        recipients = recipients.stream().map(recipient -> {
+
+        String[] recipients = (String[]) workflowService.getProcessVariables(currentTask).get("recipients");
+        List<String> recipientsList = Arrays.stream(recipients).map(recipient -> {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
             if (!(ldapPerson instanceof LdapPersonEmpty)) {
                 return ldapPerson.getCn();
             }
             return recipient;
         }).collect(toList());
-        model.addAttribute("recipients", recipients);
+
+        model.addAttribute("recipients", recipientsList);
         model.addAttribute("maxUploadSize", maxUploadSize);
-        model.addAttribute("downloadKey",
-                workflowService.getProcessVariables(currentTask.getProcessInstanceId()).get("fileDropDownloadKey"));
+        model.addAttribute("downloadKey", workflowService.getProcessVariables(currentTask).get("fileDropDownloadKey"));
         return "user/files";
     }
 
@@ -115,10 +120,13 @@ public class PrepareController {
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());
         fileSet.setComment(comment);
-        Map<String, Object> args = workflowService.getProcessVariables(
-                workflowService.getCurrentTask(userContextService.getCurrentUser()).getProcessInstanceId());
+
+        Task currentTask = workflowService.getCurrentTask(userContextService.getCurrentUser());
+        Map<String, Object> args = workflowService.getProcessVariables(currentTask);
+
         fileSet.setFileDrop(fileDropService.findFileDrop((Integer) args.get("fileDropId")));
         fileDropService.saveFileSet(fileSet);
+
         logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + fileSet);
     }
 }

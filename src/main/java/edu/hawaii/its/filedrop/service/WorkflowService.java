@@ -61,15 +61,15 @@ public class WorkflowService {
         runtimeService.setVariables(processId, variables);
     }
 
-    public void addTaskVariables(String taskId, Map<String, Object> variables) {
-        taskService.setVariables(taskId, variables);
+    public void addProcessVariables(Task task, Map<String, Object> variables) {
+        addProcessVariables(task.getProcessInstanceId(), variables);
     }
 
     public Map<String, Object> getProcessVariables(String processId) {
         return runtimeService.getVariables(processId);
     }
 
-    public Map<String, Object> getTaskVariables(String taskId) {
-        return taskService.getVariables(taskId);
+    public Map<String, Object> getProcessVariables(Task task) {
+        return getProcessVariables(task.getProcessInstanceId());
     }
 }

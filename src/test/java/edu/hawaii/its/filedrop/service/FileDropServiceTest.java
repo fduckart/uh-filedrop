@@ -144,7 +144,7 @@ public class FileDropServiceTest {
 
     @Test
     @WithMockUhUser
-    public void processVariablesTest() {
+    public void processVariablesStringTest() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
@@ -166,7 +166,7 @@ public class FileDropServiceTest {
 
     @Test
     @WithMockUhUser(username = "rstarr", uhuuid = "9887722")
-    public void taskVariablesTest() {
+    public void processVariablesTest() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
@@ -174,10 +174,10 @@ public class FileDropServiceTest {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("test", "123");
-        workflowService.addTaskVariables(workflowService.getCurrentTask(user).getId(), variables);
+        workflowService.addProcessVariables(workflowService.getCurrentTask(user), variables);
 
         Map<String, Object> taskVariables =
-                workflowService.getTaskVariables(workflowService.getCurrentTask(user).getId());
+                workflowService.getProcessVariables(workflowService.getCurrentTask(user));
 
         assertFalse(taskVariables.isEmpty());
         assertEquals(2, taskVariables.size());
