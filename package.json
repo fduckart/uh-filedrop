@@ -1,0 +1,22 @@
+{
+  "name": "uh-filedrop",
+  "version": "1.0.0",
+  "description": "UH FileDrop web application.",
+  "scripts": {
+    "build": "babel src/main/javascript/ -d src/main/resources/static/javascript/ --presets es2015",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fduckart/uh-filedrop.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/fduckart/uh-filedrop/issues"
+  },
+  "homepage": "https://github.com/fduckart/uh-filedrop#readme",
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1"
+  }
+}

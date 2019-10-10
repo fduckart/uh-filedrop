@@ -1,20 +1,19 @@
-"use strict";
-
-(function () {
+(function() {
 
     function CampusJsController($scope, dataProvider) {
         var URL_CAMPUS_LOAD = "/filedrop/api/campuses";
         $scope.campuses = [];
 
-        $scope.init = function () {
+        $scope.init = function() {
             $scope.loadData();
         };
 
-        $scope.loadData = function () {
-            dataProvider.loadData(function (data) {
+        $scope.loadData = function() {
+            dataProvider.loadData(function(data) {
                 $scope.campuses = data;
             }, URL_CAMPUS_LOAD);
-        };
+        }
     }
     filedropApp.controller("CampusJsController", CampusJsController);
+
 })();

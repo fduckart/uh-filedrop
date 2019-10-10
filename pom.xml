@@ -293,6 +293,36 @@
         </configuration>
       </plugin>
       <plugin>
+        <groupId>com.github.eirslett</groupId>
+        <artifactId>frontend-maven-plugin</artifactId>
+        <version>1.8.0</version>
+        <executions>
+          <execution>
+            <!-- optional: you don't really need execution ids, but it looks nice in your build log. -->
+            <id>install node and npm</id>
+            <goals>
+              <goal>install-node-and-npm</goal>
+            </goals>
+            <!-- optional: default phase is "generate-resources" -->
+            <phase>generate-resources</phase>
+          </execution>
+
+          <execution>
+            <id>build</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>run build</arguments>
+            </configuration>
+          </execution>
+        </executions>
+        <configuration>
+          <nodeVersion>v10.16.3</nodeVersion>
+        </configuration>
+      </plugin>
+      <plugin>
         <groupId>com.github.searls</groupId>
         <artifactId>jasmine-maven-plugin</artifactId>
         <version>2.2</version>
@@ -300,7 +330,6 @@
           <preloadSources>
             <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.min.js"></source>
             <source>classpath/META-INF/resources/webjars/jquery/${jquery-version}/jquery.min.js</source>
-            <source>classpath/META-INF/resources/webjars/popper.js/1.15.0/popper.min.js</source>
             <source>classpath/META-INF/resources/webjars/bootstrap/3.3.7/js/bootstrap.min.js</source>
             <source>classpath/META-INF/resources/webjars/angular-mocks/${angular-mocks-version}/angular-mocks.js
             </source>

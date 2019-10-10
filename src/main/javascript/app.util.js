@@ -1,10 +1,8 @@
-'use strict';
-
-$(function () {
+$(function() {
     // Make menus drop down automatically.
-    $('ul.nav li.dropdown').hover(function () {
+    $('ul.nav li.dropdown').hover(function() {
         $('.dropdown-menu', this).fadeIn();
-    }, function () {
+    }, function() {
         $('.dropdown-menu', this).fadeOut('fast');
     });
 });
