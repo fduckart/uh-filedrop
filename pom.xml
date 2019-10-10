@@ -328,9 +328,10 @@
         <version>2.2</version>
         <configuration>
           <preloadSources>
-            <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.min.js"></source>
+            <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>
+            <source>classpath/META-INF/resources/webjars/ng-file-upload/12.2.13/ng-file-upload.min.js"></source>
             <source>classpath/META-INF/resources/webjars/jquery/${jquery-version}/jquery.min.js</source>
-            <source>classpath/META-INF/resources/webjars/bootstrap/3.3.7/js/bootstrap.min.js</source>
+            <source>classpath/META-INF/resources/webjars/bootstrap/${bootstrap-version}/js/bootstrap.min.js</source>
             <source>classpath/META-INF/resources/webjars/angular-mocks/${angular-mocks-version}/angular-mocks.js
             </source>
             <source>${basedir}/src/main/resources/static/javascript/app.js</source>
