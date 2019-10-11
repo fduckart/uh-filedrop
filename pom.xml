@@ -306,7 +306,17 @@
             <!-- optional: default phase is "generate-resources" -->
             <phase>generate-resources</phase>
           </execution>
-
+          
+          <execution>
+            <id>install</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>install</arguments>
+            </configuration>
+          </execution>
           <execution>
             <id>build</id>
             <goals>
