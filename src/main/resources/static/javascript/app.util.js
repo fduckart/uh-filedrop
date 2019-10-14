@@ -1,5 +1,3 @@
-'use strict';
-
 $(function () {
     // Make menus drop down automatically.
     $('ul.nav li.dropdown').hover(function () {

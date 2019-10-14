@@ -1,5 +1,3 @@
-"use strict";
-
 var filedropApp = angular.module("filedropApp", ["ngFileUpload"]);
 
 filedropApp.filter("bytes", function () {

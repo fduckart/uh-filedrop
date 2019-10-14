@@ -1,5 +1,3 @@
-"use strict";
-
 (function () {
 
     filedropApp.factory("dataProvider", function ($http) {

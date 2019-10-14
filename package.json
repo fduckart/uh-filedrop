@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "UH FileDrop web application.",
   "scripts": {
-    "build": "babel src/main/javascript/ -d src/main/resources/static/javascript/ --presets es2015",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "babel src/main/resources/static/javascript/ -d src/main/resources/static/javascript/test/ --presets es2015",
+    "test": "babel src/test/javascript/ -d src/test/resources/javascript/ --presets es2015"
   },
   "repository": {
     "type": "git",

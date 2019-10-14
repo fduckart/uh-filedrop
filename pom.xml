@@ -317,6 +317,17 @@
               <arguments>run build</arguments>
             </configuration>
           </execution>
+
+          <execution>
+            <id>test</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>run test</arguments>
+            </configuration>
+          </execution>
         </executions>
         <configuration>
           <nodeVersion>v10.16.3</nodeVersion>
@@ -327,7 +338,8 @@
         <artifactId>jasmine-maven-plugin</artifactId>
         <version>2.2</version>
         <configuration>
-          <jsSrcDir>${basedir}/src/main/resources/static/javascript</jsSrcDir>
+          <jsSrcDir>${basedir}/src/main/resources/static/javascript/test</jsSrcDir>
+          <jsTestSrcDir>${basedir}/src/test/resources/javascript/</jsTestSrcDir>
           <preloadSources>
             <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>
             <source>classpath/META-INF/resources/webjars/ng-file-upload/12.2.13/ng-file-upload.min.js"></source>
@@ -340,9 +352,6 @@
             <source>${basedir}/src/main/resources/static/javascript/filedrop.controller.campus.js</source>
             <source>${basedir}/src/main/resources/static/javascript/filedrop.controller.role.js</source>
           </preloadSources>
-          <specIncludes>
-            <include>**/*.test.js</include>
-          </specIncludes>
         </configuration>
       </plugin>
       <plugin>
@@ -366,6 +375,20 @@
                 <echo>$ ./mvnw clean spring-boot:run</echo>
               </tasks>
             </configuration>
+          </execution>
+          <execution>
+            <id>move-transpiled-js</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <target>
+                <move todir="${project.basedir}/target/classes/static/javascript" overwrite="true">
+                  <fileset dir="${project.basedir}/src/main/resources/static/javascript/test"/>
+                </move>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
           </execution>
         </executions>
       </plugin>

@@ -1,5 +1,3 @@
-"use strict";
-
 function PrepareJsController($scope, dataProvider) {
     $scope.init = function (sender, helpdesk) {
         $scope.sender = sender;

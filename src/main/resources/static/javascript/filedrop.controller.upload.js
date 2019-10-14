@@ -1,5 +1,3 @@
-"use strict";
-
 function UploadJsController($scope, Upload, $window) {
     $scope.init = function (maxUploadSize, downloadKey) {
         $scope.files = [];

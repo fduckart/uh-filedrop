@@ -1,5 +1,5 @@
-"use strict";
-
-var es6 = function es6(arg) {
-    arg + " matey";
+let test = (arg) => {
+    `${arg} matey`;
 };
+
+console.log(test("arrrrg"));

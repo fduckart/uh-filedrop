@@ -1,8 +1,4 @@
-"use strict";
-
-(function () {
-
-    function RoleJsController($scope, dataProvider) {
+function RoleJsController($scope, dataProvider) {
         var URL_LOAD = "/filedrop/api/roles";
         $scope.roles = [];
 
@@ -15,6 +11,5 @@
                 $scope.roles = response.data;
             }, URL_LOAD);
         };
-    }
-    filedropApp.controller("RoleJsController", RoleJsController);
-})();
+}
+filedropApp.controller("RoleJsController", RoleJsController);
