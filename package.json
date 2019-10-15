@@ -4,6 +4,7 @@
   "description": "UH FileDrop web application.",
   "scripts": {
     "build": "babel src/main/resources/static/javascript/ -d src/main/resources/static/javascript/test/ --presets es2015",
+    "build-ts": "tsc -p src/main/resources/static/typescript",
     "test": "babel src/test/javascript/ -d src/test/resources/javascript/ --presets es2015"
   },
   "private": true,
@@ -18,6 +19,7 @@
   "homepage": "https://github.com/fduckart/uh-filedrop#readme",
   "devDependencies": {
     "babel-cli": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1"
+    "babel-preset-es2015": "^6.24.1",
+    "typescript": "^3.6.4"
   }
 }

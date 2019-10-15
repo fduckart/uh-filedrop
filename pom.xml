@@ -327,7 +327,16 @@
               <arguments>run build</arguments>
             </configuration>
           </execution>
-
+          <execution>
+            <id>build-ts</id>
+            <goals>
+              <goal>npm</goal>
+            </goals>
+            <phase>generate-resources</phase>
+            <configuration>
+              <arguments>run build-ts</arguments>
+            </configuration>
+          </execution>
           <execution>
             <id>test</id>
             <goals>
@@ -391,8 +400,22 @@
             <phase>process-resources</phase>
             <configuration>
               <target>
-                <move todir="${project.basedir}/target/classes/static/javascript" overwrite="true">
+                <move todir="${project.basedir}/target/classes/static/javascript" overwrite="true" flatten="true">
                   <fileset dir="${project.basedir}/src/main/resources/static/javascript/test"/>
+                </move>
+              </target>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>move-compiled-ts</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <target>
+                <move todir="${project.basedir}/target/classes/static/javascript" overwrite="true" flatten="true">
+                  <fileset dir="${project.basedir}/src/main/resources/static/typescript" includes="*.js"/>
                 </move>
               </target>
             </configuration>
