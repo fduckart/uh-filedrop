@@ -342,7 +342,7 @@
             <goals>
               <goal>npm</goal>
             </goals>
-            <phase>generate-resources</phase>
+            <phase>generate-test-resources</phase>
             <configuration>
               <arguments>run test</arguments>
             </configuration>
@@ -357,7 +357,7 @@
         <artifactId>jasmine-maven-plugin</artifactId>
         <version>2.2</version>
         <configuration>
-          <jsSrcDir>${basedir}/src/main/resources/static/javascript/test</jsSrcDir>
+          <jsSrcDir>${basedir}/src/main/resources/static/javascript/es5</jsSrcDir>
           <jsTestSrcDir>${basedir}/src/test/resources/javascript/</jsTestSrcDir>
           <preloadSources>
             <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>
@@ -400,9 +400,10 @@
             <phase>process-resources</phase>
             <configuration>
               <target>
-                <move todir="${project.basedir}/target/classes/static/javascript" overwrite="true" flatten="true">
-                  <fileset dir="${project.basedir}/src/main/resources/static/javascript/test"/>
+                <move todir="${project.build.outputDirectory}/static/javascript" overwrite="true" flatten="true">
+                  <fileset dir="${project.basedir}/src/main/resources/static/javascript/es5"/>
                 </move>
+                <delete dir="${project.build.outputDirectory}/static/javascript/es5"/>
               </target>
             </configuration>
             <goals>
@@ -414,9 +415,10 @@
             <phase>process-resources</phase>
             <configuration>
               <target>
-                <move todir="${project.basedir}/target/classes/static/javascript" overwrite="true" flatten="true">
+                <move todir="${project.build.outputDirectory}/static/javascript" overwrite="true" flatten="true">
                   <fileset dir="${project.basedir}/src/main/resources/static/typescript" includes="*.js"/>
                 </move>
+                <delete dir="${project.build.outputDirectory}/static/typescript"/>
               </target>
             </configuration>
             <goals>
