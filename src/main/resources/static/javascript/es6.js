@@ -1,5 +1,5 @@
 let test = (arg) => {
-    `${arg} matey`;
+    return `${arg} matey`;
 };
 
 console.log(test("arrrrg"));
