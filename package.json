@@ -6,6 +6,7 @@
     "build": "babel src/main/resources/static/javascript/ -d src/main/resources/static/javascript/test/ --presets es2015",
     "test": "babel src/test/javascript/ -d src/test/resources/javascript/ --presets es2015"
   },
+  "private": true,
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fduckart/uh-filedrop.git"
