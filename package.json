@@ -5,7 +5,7 @@
   "scripts": {
     "build": "babel src/main/resources/static/javascript/ -d src/main/resources/static/javascript/es5/ --presets es2015",
     "build-ts": "tsc -p src/main/resources/static/typescript",
-    "test": "babel src/test/javascript/ -d src/test/resources/javascript/ --presets es2015"
+    "test": "babel src/test/javascript/ -d target/test-classes/javascript/ --presets es2015"
   },
   "private": true,
   "repository": {

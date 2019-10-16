@@ -356,9 +356,16 @@
         <groupId>com.github.searls</groupId>
         <artifactId>jasmine-maven-plugin</artifactId>
         <version>2.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>test</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <jsSrcDir>${basedir}/src/main/resources/static/javascript/es5</jsSrcDir>
-          <jsTestSrcDir>${basedir}/src/test/resources/javascript/</jsTestSrcDir>
+          <jsTestSrcDir>${basedir}/target/test-classes/javascript</jsTestSrcDir>
           <preloadSources>
             <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>
             <source>classpath/META-INF/resources/webjars/ng-file-upload/12.2.13/ng-file-upload.min.js"></source>
