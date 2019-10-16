@@ -9,3 +9,7 @@ edu.hawaii.its.iml
 /target
 *-overrides.properties
 *.iml
+node/
+node_modules/
+package-lock.json
+babel/

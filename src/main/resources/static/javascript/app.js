@@ -1,8 +1,7 @@
-"use strict";
 var filedropApp = angular.module("filedropApp", ["ngFileUpload"]);
 
-filedropApp.filter("bytes", function() {
-    return function(bytes, precision) {
+filedropApp.filter("bytes", function () {
+    return function (bytes, precision) {
         if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) return "-";
         if (typeof precision === "undefined") precision = 1;
         var units = ["bytes", "kB", "MB", "GB", "TB", "PB"],

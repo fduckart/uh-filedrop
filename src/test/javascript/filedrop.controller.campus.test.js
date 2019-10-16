@@ -1,7 +1,7 @@
 describe("CampusJsController", function() {
 
     beforeEach(module('filedropApp'));
-
+    const test = 'test';
     var scope;
     var controller;
     var dataProvider;

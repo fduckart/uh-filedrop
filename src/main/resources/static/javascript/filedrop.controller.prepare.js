@@ -1,5 +1,5 @@
 function PrepareJsController($scope, dataProvider) {
-    $scope.init = function(sender, helpdesk) {
+    $scope.init = function (sender, helpdesk) {
         $scope.sender = sender;
         $scope.recipients = [];
         if (helpdesk) {
@@ -8,7 +8,7 @@ function PrepareJsController($scope, dataProvider) {
         }
     };
 
-    $scope.addRecipient = function() {
+    $scope.addRecipient = function () {
         if (/^\s*$/.test($scope.recipient) || $scope.recipient === undefined || $scope.hasRecipient($scope.recipient)) {
             return;
         }
@@ -17,7 +17,7 @@ function PrepareJsController($scope, dataProvider) {
             $scope.recipient = "";
             return;
         }
-        dataProvider.loadData(function(response) {
+        dataProvider.loadData(function (response) {
             var data = response.data;
             if (data.cn) {
                 $scope.recipients.push({ name: data.cn, uid: data.uid });
@@ -26,24 +26,26 @@ function PrepareJsController($scope, dataProvider) {
         $scope.recipient = "";
     };
 
-    $scope.removeRecipient = function(recipient) {
+    $scope.removeRecipient = function (recipient) {
         var index = $scope.recipients.indexOf(recipient);
         if (index > -1) {
             $scope.recipients.splice(index, 1);
         }
     };
 
-    $scope.getRecipients = function() {
+    $scope.getRecipients = function () {
         var recipients = [];
-        $scope.recipients.forEach(function(recipient) {
+        $scope.recipients.forEach(function (recipient) {
             recipients.push(recipient.uid ? recipient.uid : recipient.name);
         });
         return recipients.join(",");
     };
 
-    $scope.hasRecipient = function(recipient) {
-        return $scope.recipients.includes($scope.recipients.find(function (r) { return (r.uid === recipient) || (r.name === recipient) }));
-    }
+    $scope.hasRecipient = function (recipient) {
+        return $scope.recipients.includes($scope.recipients.find(function (r) {
+            return r.uid === recipient || r.name === recipient;
+        }));
+    };
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);
