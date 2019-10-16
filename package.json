@@ -4,7 +4,7 @@
   "description": "UH FileDrop web application.",
   "scripts": {
     "build": "babel src/main/resources/static/javascript/ -d target/classes/static/javascript --presets es2015",
-    "build-ts": "tsc -p src/main/resources/static/typescript",
+    "build-ts": "tsc -p src/main/resources/static/typescript --outDir target/classes/static/javascript",
     "test": "babel src/test/javascript/ -d target/test-classes/javascript/ --presets es2015"
   },
   "private": true,
