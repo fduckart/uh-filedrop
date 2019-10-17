@@ -6,28 +6,14 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
-import edu.hawaii.its.filedrop.job.SpaceCheckJob;
-
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
-import static org.quartz.TriggerBuilder.newTrigger;
-
 
 @Service
 public class SpaceCheckService {
-
-    @Autowired
-    private Scheduler scheduler;
 
     private static final Log logger = LogFactory.getLog(SpaceCheckService.class);
 
@@ -59,24 +45,6 @@ public class SpaceCheckService {
         Assert.isTrue(maxUploadSize > 0, "property 'maxUploadSize' is required");
 
         logger.info("init; started.");
-
-        JobDetail spaceCheckJob = newJob(SpaceCheckJob.class)
-            .withIdentity("spaceCheck")
-            .build();
-
-        Trigger spaceCheckTrigger = newTrigger()
-            .withIdentity("spaceCheckTrigger")
-            .startNow()
-            .withSchedule(simpleSchedule()
-                .withIntervalInSeconds(interval)
-                .repeatForever())
-            .build();
-
-        try {
-            scheduler.scheduleJob(spaceCheckJob, spaceCheckTrigger);
-        } catch (SchedulerException e) {
-            logger.error("Error: ", e);
-        }
     }
 
     public synchronized void update() {
