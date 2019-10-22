@@ -1,13 +1,12 @@
 package edu.hawaii.its.filedrop.service;
 
 import java.io.File;
-import java.io.IOException;
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
 
@@ -31,9 +30,13 @@ public class SpaceCheckService {
     @Value("${app.scheduler.spacecheck.interval}")
     private int interval;
 
+    @Autowired
+    private StorageService storageService;
+
     @PostConstruct
     public void init() {
         logger.info("init; root: " + root);
+        root = storageService.getRootLocation().toFile();
         Assert.notNull(root, "property 'root' is required");
 
         logger.info("init; root exists?: " + root.exists());
@@ -94,15 +97,6 @@ public class SpaceCheckService {
 
     public boolean isFreeSpaceAvailable() {
         return isFreeSpaceAvailable(maxUploadSize);
-    }
-
-    public File getRoot() {
-        return root;
-    }
-
-    @Value("${app.storage-base}")
-    public void setRoot(Resource resource) throws IOException {
-        this.root = resource.getFile();
     }
 
     public synchronized long getBytesFree() {
