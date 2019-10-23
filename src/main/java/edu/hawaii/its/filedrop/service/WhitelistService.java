@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.JobKey;
-import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -23,13 +21,8 @@ public class WhitelistService {
     @Autowired
     private LdapService ldapService;
 
-    @Autowired
-    private Scheduler scheduler;
-
     @Value("${app.whitelist.check.threshold}")
     private int threshold;
-
-    private JobKey jobKey;
 
     private static final Log logger = LogFactory.getLog(WhitelistService.class);
 

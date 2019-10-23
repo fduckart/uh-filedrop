@@ -51,6 +51,7 @@ public class SchedulerService {
                         .repeatForever())
                 .build();
         scheduler.scheduleJob(job, trigger);
+        logger.debug("Job added: " + job.toString());
         return job;
     }
 

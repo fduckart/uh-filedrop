@@ -24,11 +24,9 @@ public class FileSystemStorageService implements StorageService {
     private final Log logger = LogFactory.getLog(FileSystemStorageService.class);
 
     private final Path rootLocation;
-    private final StorageProperties properties;
 
     @Autowired
     public FileSystemStorageService(StorageProperties properties) {
-        this.properties = properties;
         this.rootLocation = Paths.get(properties.getLocation());
     }
 
