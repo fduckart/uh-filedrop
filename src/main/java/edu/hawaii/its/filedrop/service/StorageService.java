@@ -19,15 +19,13 @@ public interface StorageService {
 
     boolean storeFileSet(MultipartFile file, Path filePath);
 
-    void delete(String fileName, Integer fileSetId);
-
     void delete(String fileName, String directory);
 
     void delete(Path path);
 
-    boolean exists(String fileName, Integer fileSetId);
+    boolean exists(String fileName, String downloadKey);
 
-    boolean exists(MultipartFile file, Integer fileSetId);
+    boolean exists(MultipartFile file, String downloadKey);
 
     boolean exists(Path path);
 

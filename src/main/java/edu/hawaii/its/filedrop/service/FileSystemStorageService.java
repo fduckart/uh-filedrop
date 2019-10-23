@@ -119,11 +119,6 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void delete(String fileName, Integer fileSetId) {
-        delete(fileName, fileSetId.toString());
-    }
-
-    @Override
     public void delete(String fileName, String directory) {
         try {
             String pathStr = directory + File.separator + fileName;
@@ -148,13 +143,13 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public boolean exists(String fileName, Integer fileSetId) {
-        return exists(fileSetId + File.separator + fileName);
+    public boolean exists(String fileName, String downloadKey) {
+        return exists(downloadKey + File.separator + fileName);
     }
 
     @Override
-    public boolean exists(MultipartFile file, Integer fileSetId) {
-        return exists(file.getOriginalFilename(), fileSetId);
+    public boolean exists(MultipartFile file, String downloadKey) {
+        return exists(file.getOriginalFilename(), downloadKey);
     }
 
     @Override
