@@ -330,12 +330,14 @@ public class FileSystemStorageServiceTest {
             storageService.delete(Paths.get(storageService.getRootLocation().toString(), "test"));
         } catch(Exception e) {
             assertEquals(e.getClass(), StorageException.class);
+            assertThat(e.getMessage(), containsString("IOException"));
         }
 
         try {
             storageService.delete("test", storageService.getRootLocation().toString());
         } catch(Exception e) {
             assertEquals(e.getClass(), StorageException.class);
+            assertThat(e.getMessage(), containsString("IOException"));
         }
     }
 
