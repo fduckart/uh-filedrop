@@ -1,6 +1,10 @@
 package edu.hawaii.its.filedrop.service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,10 +27,11 @@ import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.util.Strings;
 
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +39,7 @@ import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class FileSystemStorageServiceTest {
 
     @Autowired
@@ -137,6 +142,7 @@ public class FileSystemStorageServiceTest {
     public void storeFileSet() throws Exception {
         FileDrop fileDrop = new FileDrop();
         fileDrop.setDownloadKey(Strings.generateRandomString());
+        fileDrop.setUploadKey(Strings.generateRandomString());
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         final String downloadKey = fileDrop.getDownloadKey();
         assertNotNull(downloadKey);
@@ -187,7 +193,9 @@ public class FileSystemStorageServiceTest {
     @Test
     public void storeFileSetEmpty() throws Exception {
         FileDrop fileDrop = new FileDrop();
+        fileDrop.setId(123456789);
         fileDrop.setDownloadKey(Strings.generateRandomString());
+        fileDrop.setUploadKey(Strings.generateRandomString());
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         final String downloadKey = fileDrop.getDownloadKey();
         assertNotNull(downloadKey);
@@ -318,6 +326,42 @@ public class FileSystemStorageServiceTest {
         } catch (Exception e) {
             assertThat(e, instanceOf(StorageException.class));
             assertThat(e.getMessage(), containsString("FileAlreadyExistsException"));
+        }
+    }
+
+    @Test
+    public void testFileContent() {
+        File file;
+
+        try {
+            file = File.createTempFile("~tmp", ".tmp");
+            file.deleteOnExit();
+
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+            StringBuilder content = new StringBuilder();
+
+            content.append("I'd like to be");
+            content.append("under the sea");
+            content.append("in an octopus's garden");
+            content.append("in the shade");
+            content.append("- Ringo");
+
+            bufferedWriter.write(content.toString());
+            bufferedWriter.close();
+
+            assertTrue(Files.exists(file.toPath()));
+            assertThat(file.length(), greaterThan(0L));
+            assertThat(Files.size(file.toPath()), equalTo(file.length()));
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            StringBuilder builder = new StringBuilder();
+
+            bufferedReader.lines().forEach(builder::append);
+            bufferedReader.close();
+
+            assertThat(builder.toString(), equalTo(content.toString()));
+        } catch(Exception e) {
+            fail("Unexpected exceiption: " + e);
         }
     }
 
