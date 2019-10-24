@@ -24,9 +24,9 @@ import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.util.Strings;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -84,7 +84,7 @@ public class FileSystemStorageServiceTest {
     @Test
     public void rootLocation() {
         assertNotNull(storageService.getRootLocation());
-        assertEquals("StorageProperties [location=" + storageProperties.getLocation() + "]", storageProperties.toString());
+        assertThat("StorageProperties [location=" + storageProperties.getLocation() + "]", equalTo(storageProperties.toString()));
     }
 
     @Test
@@ -145,7 +145,7 @@ public class FileSystemStorageServiceTest {
 
         // Make sure the file is not there
         // before performing the main test.
-        assertEquals(downloadKey, expectedPath.getParent().getFileName().toString());
+        assertThat(downloadKey, equalTo(expectedPath.getParent().getFileName().toString()));
         storageService.delete(expectedPath);
 
         assertFalse(storageService.exists(expectedPath));
@@ -196,7 +196,7 @@ public class FileSystemStorageServiceTest {
 
         // Make sure the file is not there
         // before performing the main test.
-        assertEquals(downloadKey, expectedPath.getParent().getFileName().toString());
+        assertThat(downloadKey, equalTo(expectedPath.getParent().getFileName().toString()));
         storageService.delete(expectedPath);
 
         assertFalse(storageService.exists(expectedPath));
@@ -259,7 +259,7 @@ public class FileSystemStorageServiceTest {
             storageService.loadAsResource(file.getAbsolutePath() + "no");
             fail("Should not have reached here.");
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageFileNotFoundException.class);
+            assertThat(e, instanceOf(StorageFileNotFoundException.class));
             assertThat(e.getMessage(), containsString("Error reading file"));
         }
     }
@@ -284,7 +284,7 @@ public class FileSystemStorageServiceTest {
             storageService.store(multipartFile);
             fail("Should not have reached here.");
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
             assertThat(e.getMessage(), containsString("Failed to store empty file"));
         }
 
@@ -292,7 +292,7 @@ public class FileSystemStorageServiceTest {
             storageService.storeFileSet(multipartFile, storageService.getRootLocation());
             fail("Should not have reached here.");
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
         }
     }
 
@@ -316,7 +316,7 @@ public class FileSystemStorageServiceTest {
             storageService.store(multipartFile);
             fail("Should not have reached here.");
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
             assertThat(e.getMessage(), containsString("FileAlreadyExistsException"));
         }
     }
@@ -326,7 +326,7 @@ public class FileSystemStorageServiceTest {
         try {
             storageService.delete(null);
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
         }
     }
 
@@ -335,7 +335,7 @@ public class FileSystemStorageServiceTest {
         try {
             storageService.createDirectories(null);
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
         }
     }
 
@@ -348,16 +348,5 @@ public class FileSystemStorageServiceTest {
     public void testToString() {
         String s = storageService.toString();
         assertThat(s, containsString("FileSystemStorageService ["));
-
-        Integer applicationId = 19999999;
-        String committeRecommendationFile = "somefile";
-
-        String pathStr = applicationId + File.separator
-                + "recommendations"
-                + File.separator
-                + committeRecommendationFile;
-
-        Path path = Paths.get(applicationId.toString(), "recommendations", committeRecommendationFile);
-        assertEquals(pathStr, path.toString());
     }
 }
