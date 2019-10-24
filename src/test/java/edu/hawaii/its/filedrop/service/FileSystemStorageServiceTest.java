@@ -237,11 +237,8 @@ public class FileSystemStorageServiceTest {
 
     @Test
     public void storeAndLoadResource() throws Exception {
-        String tmpdir = System.getProperty("java.io.tmpdir");
-        Path path = Paths.get(tmpdir, "~filedrop.store.txt");
-
-        File file = new File(path.toAbsolutePath().toString());
-        file.deleteOnExit();
+        File file = File.createTempFile("~filedrop.store", "txt");
+        file.delete();
         assertFalse(file.exists());
 
         MockMultipartFile multipartFile =
@@ -327,18 +324,24 @@ public class FileSystemStorageServiceTest {
     @Test
     public void deleteNullFile() {
         try {
-            storageService.delete(Paths.get(storageService.getRootLocation().toString(), "test"));
-        } catch(Exception e) {
+            storageService.delete(null);
+        } catch (Exception e) {
             assertEquals(e.getClass(), StorageException.class);
-            assertThat(e.getMessage(), containsString("IOException"));
         }
+    }
 
+    @Test
+    public void createNullDirectory() {
         try {
-            storageService.delete("test", storageService.getRootLocation().toString());
-        } catch(Exception e) {
+            storageService.createDirectories(null);
+        } catch (Exception e) {
             assertEquals(e.getClass(), StorageException.class);
-            assertThat(e.getMessage(), containsString("IOException"));
         }
+    }
+
+    @Test
+    public void existNullFile() {
+        assertFalse(storageService.exists((String)null));
     }
 
     @Test

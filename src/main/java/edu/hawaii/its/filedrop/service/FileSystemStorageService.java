@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.service;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -118,15 +117,7 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public void delete(String fileName, String directory) {
-        try {
-            String pathStr = directory + File.separator + fileName;
-            Path path = Paths.get(pathStr);
-            if(!Files.deleteIfExists(path)) {
-                logger.warn("No file to delete: " + pathStr);
-            }
-        } catch(IOException e) {
-            throw new StorageException(e.toString(), e);
-        }
+        delete(Paths.get(directory, fileName));
     }
 
     @Override
@@ -135,7 +126,7 @@ public class FileSystemStorageService implements StorageService {
             if(!Files.deleteIfExists(path)) {
                 logger.warn("No file to delete: " + path.toString());
             }
-        } catch(IOException e) {
+        } catch(Exception e) {
             throw new StorageException(e);
         }
     }
