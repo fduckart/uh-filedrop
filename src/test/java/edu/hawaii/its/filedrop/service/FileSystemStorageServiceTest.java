@@ -1,6 +1,10 @@
 package edu.hawaii.its.filedrop.service;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -23,10 +27,11 @@ import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.util.Strings;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertEquals;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.instanceOf;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -34,7 +39,7 @@ import static org.junit.Assert.fail;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_EACH_TEST_METHOD)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class FileSystemStorageServiceTest {
 
     @Autowired
@@ -84,7 +89,7 @@ public class FileSystemStorageServiceTest {
     @Test
     public void rootLocation() {
         assertNotNull(storageService.getRootLocation());
-        assertEquals("StorageProperties [location=" + storageProperties.getLocation() + "]", storageProperties.toString());
+        assertThat("StorageProperties [location=" + storageProperties.getLocation() + "]", equalTo(storageProperties.toString()));
     }
 
     @Test
@@ -137,6 +142,7 @@ public class FileSystemStorageServiceTest {
     public void storeFileSet() throws Exception {
         FileDrop fileDrop = new FileDrop();
         fileDrop.setDownloadKey(Strings.generateRandomString());
+        fileDrop.setUploadKey(Strings.generateRandomString());
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         final String downloadKey = fileDrop.getDownloadKey();
         assertNotNull(downloadKey);
@@ -145,7 +151,7 @@ public class FileSystemStorageServiceTest {
 
         // Make sure the file is not there
         // before performing the main test.
-        assertEquals(downloadKey, expectedPath.getParent().getFileName().toString());
+        assertThat(downloadKey, equalTo(expectedPath.getParent().getFileName().toString()));
         storageService.delete(expectedPath);
 
         assertFalse(storageService.exists(expectedPath));
@@ -187,7 +193,9 @@ public class FileSystemStorageServiceTest {
     @Test
     public void storeFileSetEmpty() throws Exception {
         FileDrop fileDrop = new FileDrop();
+        fileDrop.setId(123456789);
         fileDrop.setDownloadKey(Strings.generateRandomString());
+        fileDrop.setUploadKey(Strings.generateRandomString());
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         final String downloadKey = fileDrop.getDownloadKey();
         assertNotNull(downloadKey);
@@ -196,7 +204,7 @@ public class FileSystemStorageServiceTest {
 
         // Make sure the file is not there
         // before performing the main test.
-        assertEquals(downloadKey, expectedPath.getParent().getFileName().toString());
+        assertThat(downloadKey, equalTo(expectedPath.getParent().getFileName().toString()));
         storageService.delete(expectedPath);
 
         assertFalse(storageService.exists(expectedPath));
@@ -259,7 +267,7 @@ public class FileSystemStorageServiceTest {
             storageService.loadAsResource(file.getAbsolutePath() + "no");
             fail("Should not have reached here.");
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageFileNotFoundException.class);
+            assertThat(e, instanceOf(StorageFileNotFoundException.class));
             assertThat(e.getMessage(), containsString("Error reading file"));
         }
     }
@@ -284,7 +292,7 @@ public class FileSystemStorageServiceTest {
             storageService.store(multipartFile);
             fail("Should not have reached here.");
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
             assertThat(e.getMessage(), containsString("Failed to store empty file"));
         }
 
@@ -292,7 +300,7 @@ public class FileSystemStorageServiceTest {
             storageService.storeFileSet(multipartFile, storageService.getRootLocation());
             fail("Should not have reached here.");
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
         }
     }
 
@@ -316,8 +324,44 @@ public class FileSystemStorageServiceTest {
             storageService.store(multipartFile);
             fail("Should not have reached here.");
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
             assertThat(e.getMessage(), containsString("FileAlreadyExistsException"));
+        }
+    }
+
+    @Test
+    public void testFileContent() {
+        File file;
+
+        try {
+            file = File.createTempFile("~tmp", ".tmp");
+            file.deleteOnExit();
+
+            BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(file));
+            StringBuilder content = new StringBuilder();
+
+            content.append("I'd like to be");
+            content.append("under the sea");
+            content.append("in an octopus's garden");
+            content.append("in the shade");
+            content.append("- Ringo");
+
+            bufferedWriter.write(content.toString());
+            bufferedWriter.close();
+
+            assertTrue(Files.exists(file.toPath()));
+            assertThat(file.length(), greaterThan(0L));
+            assertThat(Files.size(file.toPath()), equalTo(file.length()));
+
+            BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+            StringBuilder builder = new StringBuilder();
+
+            bufferedReader.lines().forEach(builder::append);
+            bufferedReader.close();
+
+            assertThat(builder.toString(), equalTo(content.toString()));
+        } catch(Exception e) {
+            fail("Unexpected exceiption: " + e);
         }
     }
 
@@ -326,7 +370,7 @@ public class FileSystemStorageServiceTest {
         try {
             storageService.delete(null);
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
         }
     }
 
@@ -335,7 +379,7 @@ public class FileSystemStorageServiceTest {
         try {
             storageService.createDirectories(null);
         } catch (Exception e) {
-            assertEquals(e.getClass(), StorageException.class);
+            assertThat(e, instanceOf(StorageException.class));
         }
     }
 
@@ -348,16 +392,5 @@ public class FileSystemStorageServiceTest {
     public void testToString() {
         String s = storageService.toString();
         assertThat(s, containsString("FileSystemStorageService ["));
-
-        Integer applicationId = 19999999;
-        String committeRecommendationFile = "somefile";
-
-        String pathStr = applicationId + File.separator
-                + "recommendations"
-                + File.separator
-                + committeRecommendationFile;
-
-        Path path = Paths.get(applicationId.toString(), "recommendations", committeRecommendationFile);
-        assertEquals(pathStr, path.toString());
     }
 }
