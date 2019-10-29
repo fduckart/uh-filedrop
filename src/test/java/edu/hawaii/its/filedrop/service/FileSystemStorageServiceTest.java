@@ -361,7 +361,7 @@ public class FileSystemStorageServiceTest {
 
             assertThat(builder.toString(), equalTo(content.toString()));
         } catch(Exception e) {
-            fail("Unexpected exceiption: " + e);
+            fail("Unexpected exception: " + e);
         }
     }
 

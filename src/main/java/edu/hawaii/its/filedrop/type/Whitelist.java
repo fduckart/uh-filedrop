@@ -39,8 +39,9 @@ public class Whitelist {
     @Transient
     private String registrantName;
 
+    //Constructor
     public Whitelist() {
-
+        //Empty
     }
 
     public Integer getId() {

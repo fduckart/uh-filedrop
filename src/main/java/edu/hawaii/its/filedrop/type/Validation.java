@@ -26,8 +26,9 @@ public class Validation {
     @Column(name = "ip_addr", length = 32, nullable = false)
     private String ipAddress;
 
+    //Constructor
     public Validation() {
-
+        //Empty
     }
 
     public String getAddress() {

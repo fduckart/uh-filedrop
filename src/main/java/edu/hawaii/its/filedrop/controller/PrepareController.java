@@ -22,10 +22,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 
+import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
-import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.WorkflowService;
 import edu.hawaii.its.filedrop.type.FileDrop;
@@ -59,29 +59,33 @@ public class PrepareController {
     public String addRecipients(@RequestParam("validation") Boolean validation,
             @RequestParam("expiration") Integer expiration,
             @RequestParam("recipients") String[] recipients) {
-        logger.debug("User added recipients: " + Arrays.toString(recipients));
+        User user = currentUser();
+        if(logger.isDebugEnabled()) {
+            logger.debug("User: " + currentUser());
+            logger.debug("User added recipients: " + Arrays.toString(recipients));
+        }
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setEncryptionKey(Strings.generateRandomString());
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
-        fileDrop.setUploader(userContextService.getCurrentUser().getUsername());
-        fileDrop.setUploaderFullName(userContextService.getCurrentUser().getName());
+        fileDrop.setUploader(user.getUsername());
+        fileDrop.setUploaderFullName(user.getName());
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
         fileDrop.setValid(validation);
         fileDrop.setAuthenticationRequired(validation);
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
-        fileDropService.addRecipients(userContextService.getCurrentUser(), recipients);
+        fileDropService.addRecipients(user, recipients);
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
         args.put("fileDropDownloadKey", fileDrop.getDownloadKey());
-        workflowService.addProcessVariables(workflowService.getCurrentTask(userContextService.getCurrentUser()), args);
+        workflowService.addProcessVariables(workflowService.getCurrentTask(user), args);
 
-        logger.debug(userContextService.getCurrentUser().getUsername() + " created new " + fileDrop);
+        logger.debug(user.getUsername() + " created new " + fileDrop);
 
         return "redirect:/prepare/files";
     }
@@ -89,18 +93,19 @@ public class PrepareController {
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = "/prepare/files")
     public String addFiles(Model model) {
-        Task currentTask = workflowService.getCurrentTask(userContextService.getCurrentUser());
+        Task currentTask = workflowService.getCurrentTask(currentUser());
 
-        if (workflowService.atTask(userContextService.getCurrentUser(), "addRecipients")) {
+        if (workflowService.atTask(currentUser(), "addRecipients")) {
             return "redirect:/prepare";
         }
 
         logger.debug("User at addFiles.");
 
-        String[] recipients = (String[]) workflowService.getProcessVariables(currentTask).get("recipients");
+        Map<String, Object> processVariables = workflowService.getProcessVariables(currentTask);
+        String[] recipients = (String[]) processVariables.get("recipients");
         List<String> recipientsList = Arrays.stream(recipients).map(recipient -> {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
-            if (!(ldapPerson instanceof LdapPersonEmpty)) {
+            if (ldapPerson.isValid()) {
                 return ldapPerson.getCn();
             }
             return recipient;
@@ -115,18 +120,22 @@ public class PrepareController {
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare/files")
     @ResponseStatus(value = HttpStatus.OK)
-    public void uploadFiles(@RequestParam("file") MultipartFile file, @RequestParam("comment") String comment) {
+    public void uploadFiles(@RequestParam MultipartFile file, @RequestParam String comment) {
         FileSet fileSet = new FileSet();
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());
         fileSet.setComment(comment);
 
-        Task currentTask = workflowService.getCurrentTask(userContextService.getCurrentUser());
-        Map<String, Object> args = workflowService.getProcessVariables(currentTask);
-
-        fileSet.setFileDrop(fileDropService.findFileDrop((Integer) args.get("fileDropId")));
+        Task currentTask = workflowService.getCurrentTask(currentUser());
+        Map<String, Object> processVariables = workflowService.getProcessVariables(currentTask);
+        Integer fileDropId = (Integer) processVariables.get("fileDropId");
+        fileSet.setFileDrop(fileDropService.findFileDrop(fileDropId));
         fileDropService.saveFileSet(fileSet);
 
-        logger.debug(userContextService.getCurrentUser().getUsername() + " uploaded: " + fileSet);
+        logger.debug(currentUser().getUsername() + " uploaded: " + fileSet);
+    }
+
+    private User currentUser() {
+        return userContextService.getCurrentUser();
     }
 }

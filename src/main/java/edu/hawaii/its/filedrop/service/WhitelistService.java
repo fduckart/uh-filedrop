@@ -56,7 +56,7 @@ public class WhitelistService {
     public synchronized void checkWhitelists() {
         logger.debug("Starting whitelist check...");
         for (Whitelist whitelist : findAllWhiteList()) {
-            if (ldapService.findByUhUuidOrUidOrMail(whitelist.getRegistrant()) instanceof LdapPersonEmpty) {
+            if (!ldapService.findByUhUuidOrUidOrMail(whitelist.getRegistrant()).isValid()) {
                 addCheck(whitelist, 1);
             }
         }
