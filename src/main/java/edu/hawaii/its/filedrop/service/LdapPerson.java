@@ -68,11 +68,11 @@ public class LdapPerson implements PersonIdentifiable {
     }
 
     public boolean isValid() {
-        return getUhUuid().length() > 0;
+        return getUid().length() > 0;
     }
 
     public String getUid() {
-        return uid;
+        return uid != null ? uid : "";
     }
 
     public void setUid(String uid) {

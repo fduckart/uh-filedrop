@@ -1,14 +1,14 @@
 package edu.hawaii.its.filedrop.service;
 
+import org.junit.Before;
+import org.junit.Test;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import org.junit.Before;
-import org.junit.Test;
 
 public class LdapPersonTest {
 
@@ -31,7 +31,7 @@ public class LdapPersonTest {
         assertNull(ldapPerson.getSn());
         assertNull(ldapPerson.getTitle());
         assertThat(ldapPerson.getUhUuid(), equalTo(""));
-        assertNull(ldapPerson.getUid());
+        assertThat(ldapPerson.getUid(), equalTo(""));
 
         ldapPerson.setGivenName(null);
         assertThat(ldapPerson.getGivenName(), equalTo(""));
@@ -42,6 +42,11 @@ public class LdapPersonTest {
         assertThat(ldapPerson.getUhUuid(), equalTo(""));
         ldapPerson.setUhUuid("12345678");
         assertThat(ldapPerson.getUhUuid(), equalTo("12345678"));
+
+        ldapPerson.setUid(null);
+        assertThat(ldapPerson.getUid(), equalTo(""));
+        ldapPerson.setUid("username");
+        assertThat(ldapPerson.getUid(), equalTo("username"));
 
         assertThat(ldapPerson.isValid(), equalTo(true));
     }

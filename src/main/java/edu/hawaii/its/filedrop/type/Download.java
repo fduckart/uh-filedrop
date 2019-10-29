@@ -39,8 +39,9 @@ public class Download {
     @Column(name = "ip_addr", length = 16)
     private String ipAddress;
 
+    //Constructor
     public Download() {
-
+        //Empty
     }
 
     enum Status {

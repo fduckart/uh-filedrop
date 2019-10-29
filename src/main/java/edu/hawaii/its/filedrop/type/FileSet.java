@@ -34,8 +34,9 @@ public class FileSet implements Serializable {
     @Column(name = "comment", nullable = false)
     private String comment;
 
+    //Constructor
     public FileSet() {
-
+        //Empty
     }
 
     public Integer getId() {

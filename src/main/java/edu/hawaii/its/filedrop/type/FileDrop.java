@@ -55,8 +55,9 @@ public class FileDrop {
     @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL)
     private Set<FileSet> fileSet;
 
+    //Constructor
     public FileDrop() {
-
+        //Empty
     }
 
     public Integer getId() {
