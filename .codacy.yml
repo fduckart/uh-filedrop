@@ -1,0 +1,2 @@
+exclude_paths:
+  - 'src/test/java/edu/hawaii/its/filedrop/**'
