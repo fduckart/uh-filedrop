@@ -405,6 +405,11 @@
             <exclude>edu/hawaii/its/filedrop/type/Validation.class</exclude>
             <exclude>edu/hawaii/its/filedrop/job/ExpireJob.class</exclude>
             <exclude>edu/hawaii/its/filedrop/job/SubmitJob.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/crypto/CipherFilter.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/crypto/CipherFilterFactory.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/crypto/Ciphers.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/crypto/JCECipherFilterFactory.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/crypto/NullCipherFilterFactory.class</exclude>
           </excludes>
         </configuration>
         <executions>

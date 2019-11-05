@@ -112,8 +112,7 @@ public class AdminController {
     }
 
     @PostMapping("/api/admin/whitelist")
-    public String addWhitelist(@RequestParam("entry") String entry,
-            @RequestParam("registrant") String registrant) {
+    public String addWhitelist(@RequestParam("entry") String entry, @RequestParam("registrant") String registrant) {
         Whitelist whitelist = new Whitelist();
         whitelist.setEntry(entry);
         whitelist.setEntryName(ldapService.findByUid(entry).getCn());

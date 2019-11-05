@@ -357,6 +357,7 @@ public class FileSystemStorageServiceTest {
             StringBuilder builder = new StringBuilder();
 
             bufferedReader.lines().forEach(builder::append);
+            bufferedReader.lines().forEach(System.out::println);
             bufferedReader.close();
 
             assertThat(builder.toString(), equalTo(content.toString()));
