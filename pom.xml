@@ -410,6 +410,9 @@
             <exclude>edu/hawaii/its/filedrop/crypto/Ciphers.class</exclude>
             <exclude>edu/hawaii/its/filedrop/crypto/JCECipherFilterFactory.class</exclude>
             <exclude>edu/hawaii/its/filedrop/crypto/NullCipherFilterFactory.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/crypto/Cipher.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/crypto/Aes256.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/crypto/Rc2.class</exclude>
           </excludes>
         </configuration>
         <executions>
