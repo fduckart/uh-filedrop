@@ -20,10 +20,7 @@ public class Ciphers {
 
         ciphers = new HashMap<>();
 
-        CipherFilterFactory cff = new NullCipherFilterFactory();
-        this.nullCipher = cff;
-        ciphers.put(cff.getType(), cff);
-
+        CipherFilterFactory cff;
         cff = JCECipherFilterFactory.makeRC2FilterFactory();
         this.defaultCipher = cff;
         ciphers.put(cff.getType(), cff);
