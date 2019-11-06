@@ -14,6 +14,7 @@ public class CipherLocator {
                 break;
             default:
                 foundCipher = new Aes256();
+                break;
         }
 
         return foundCipher;

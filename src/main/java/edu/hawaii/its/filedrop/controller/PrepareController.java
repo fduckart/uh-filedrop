@@ -56,7 +56,8 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
-    public String addRecipients(@RequestParam("validation") Boolean validation,
+    public String addRecipients(@RequestParam("sender") String sender,
+            @RequestParam("validation") Boolean validation,
             @RequestParam("expiration") Integer expiration,
             @RequestParam("recipients") String[] recipients) {
         User user = currentUser();
@@ -70,7 +71,7 @@ public class PrepareController {
         fileDrop.setEncryptionKey(Strings.generateRandomString());
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
-        fileDrop.setUploader(user.getUsername());
+        fileDrop.setUploader(user.getAttributes().getMail().get(0));
         fileDrop.setUploaderFullName(user.getName());
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
