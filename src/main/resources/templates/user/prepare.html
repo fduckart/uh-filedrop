@@ -12,7 +12,10 @@
             <div class="col-sm-12 mb-3">
                 <h5>Sender:</h5>
                 <div class="input-group">
-                    <input class="form-control" type="text" disabled th:value="${user}">
+                    <input class="form-control" type="text" disabled th:value="${user}" ng-if="!userHasMultipleEmails()">
+                    <select name="email" id="email" class="custom-select" ng-model="sender" ng-if="userHasMultipleEmails()">
+                        <option ng-repeat="email in senderEmails" value="{{ email }}">{{ email }}</option>
+                    </select>
                 </div>
             </div>
             <div class="col-sm-12 mb-3">
@@ -41,6 +44,7 @@
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <h5>Require Authentication:</h5>
+                            <input type="hidden" name="sender" ng-value="sender">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation" id="validationRequired"
                                     value="true" checked>

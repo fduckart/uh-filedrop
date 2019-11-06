@@ -6,6 +6,12 @@ function PrepareJsController($scope, dataProvider) {
             $scope.recipient = "help@hawaii.edu";
             $scope.addRecipient();
         }
+        $scope.senderEmails = [];
+
+        dataProvider.loadData(function(response) {
+           var data = response.data;
+           $scope.senderEmails = data.mails;
+        }, "/filedrop/api/ldap/" + sender);
     };
 
     $scope.addRecipient = function () {
@@ -45,6 +51,10 @@ function PrepareJsController($scope, dataProvider) {
         return $scope.recipients.includes($scope.recipients.find(function (r) {
             return r.uid === recipient || r.name === recipient;
         }));
+    };
+
+    $scope.userHasMultipleEmails = function() {
+        return $scope.senderEmails.length >= 2;
     };
 }
 

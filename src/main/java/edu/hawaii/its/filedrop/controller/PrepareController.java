@@ -56,7 +56,8 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
-    public String addRecipients(@RequestParam("validation") Boolean validation,
+    public String addRecipients(@RequestParam("sender") String sender,
+            @RequestParam("validation") Boolean validation,
             @RequestParam("expiration") Integer expiration,
             @RequestParam("recipients") String[] recipients) {
         User user = currentUser();
@@ -86,6 +87,7 @@ public class PrepareController {
         workflowService.addProcessVariables(workflowService.getCurrentTask(user), args);
 
         logger.debug(user.getUsername() + " created new " + fileDrop);
+        logger.debug("Sender: " + sender);
 
         return "redirect:/prepare/files";
     }

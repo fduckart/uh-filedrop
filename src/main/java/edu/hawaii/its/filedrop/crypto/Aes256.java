@@ -4,11 +4,6 @@ import java.security.GeneralSecurityException;
 
 public class Aes256 implements Cipher {
 
-    // Constructor
-    public Aes256() {
-        // Empty
-    }
-
     @Override
     public javax.crypto.Cipher decrypt(String key) throws GeneralSecurityException {
         return null;
