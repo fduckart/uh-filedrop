@@ -71,7 +71,7 @@ public class PrepareController {
         fileDrop.setEncryptionKey(Strings.generateRandomString());
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
-        fileDrop.setUploader(user.getAttributes().getMail().get(0));
+        fileDrop.setUploader(user.getUsername());
         fileDrop.setUploaderFullName(user.getName());
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
@@ -87,6 +87,7 @@ public class PrepareController {
         workflowService.addProcessVariables(workflowService.getCurrentTask(user), args);
 
         logger.debug(user.getUsername() + " created new " + fileDrop);
+        logger.debug("Sender: " + sender);
 
         return "redirect:/prepare/files";
     }

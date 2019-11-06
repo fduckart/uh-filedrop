@@ -60,6 +60,7 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
+                .param("sender", "test")
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))
@@ -84,6 +85,7 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
+                .param("sender", "jwlennon@hawaii.edu")
                 .param("recipients", "test", "jwlennon")
                 .param("validation", "true")
                 .param("expiration", "5"))
@@ -116,6 +118,7 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
+                .param("sender", "test")
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))

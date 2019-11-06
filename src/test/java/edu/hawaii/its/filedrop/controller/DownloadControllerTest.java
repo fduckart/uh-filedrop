@@ -63,6 +63,7 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
+                .param("sender", "test")
                 .param("recipients", "test", "test2")
                 .param("validation", "true")
                 .param("expiration", "5"))
