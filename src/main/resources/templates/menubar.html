@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm" role="navigation" th:fragment="copy">
+<nav class="navbar navbar-expand-md navbar-light bg-white fixed-top shadow-sm" role="navigation" th:fragment="copy">
     <!-- Brand and toggle get grouped for better mobile display -->
     <button class="navbar-toggler" type="button" data-toggle="collapse"
         data-target="#filedrop-navbar-collapse-1" aria-controls="navbarText" aria-expanded="false"
@@ -44,7 +44,7 @@
                         <a th:href="@{/admin/technology}" class="dropdown-item">Technology</a>
                     </div>
                 </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
                     <a class="nav-link" th:href="@{/logout}">Logout</a>
                 </li>
             </ul>
