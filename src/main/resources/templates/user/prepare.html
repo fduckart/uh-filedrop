@@ -10,30 +10,29 @@
     <div class="card border-success">
         <div class="card-body">
             <div class="col-sm-12 mb-3">
-                <h5>Sender:</h5>
+                <label for="email" class="filedrop-label">Sender</label>
                 <div class="input-group">
-                    <input class="form-control" type="text" disabled th:value="${user}" ng-if="!userHasMultipleEmails()">
+                    <input name="email" class="form-control" type="text" disabled th:value="${user}" ng-if="!userHasMultipleEmails()">
                     <select name="email" id="email" class="custom-select" ng-model="sender" ng-if="userHasMultipleEmails()">
                         <option ng-repeat="email in senderEmails" value="{{ email }}">{{ email }}</option>
                     </select>
                 </div>
             </div>
             <div class="col-sm-12 mb-3">
-                <h5>Recipients:</h5>
+                <label for="recipient" class="filedrop-label">Recipients</label>
                 <ul class="list-inline">
                     <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
                         <button type="button" class="btn btn-outline-dark btn-sm" th:disabled="${helpdesk}"
-                            ng-click="removeRecipient(r)">
+                            ng-click="removeRecipient(r)" aria-label="Recipient name">
                             {{ r.name }} <span th:if="!${helpdesk}" class="badge badge-danger">&times;</span>
                         </button>
                     </li>
                 </ul>
-                <form ng-submit="addRecipient()">
+                <form ng-submit="addRecipient(recipient)">
                     <div class="input-group" th:if="!${helpdesk}">
-                        <label hidden for="recipient">Recipients: </label>
                         <input class="form-control" id="recipient" type="text" name="recipient"
                             ng-model="recipient">
-                        <button th:disabled="${helpdesk}" th:hidden="${helpdesk}" type="submit"
+                        <button th:disabled="${helpdesk}" th:hidden="${helpdesk}" aria-disabled="true" type="submit"
                             class="btn btn-primary ml-2 d-inline-block">Add Recipient
                         </button>
                     </div>
@@ -43,11 +42,11 @@
                 <form th:action="@{/prepare/}" method="POST" ng-submit="addRecipient()">
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
-                            <h5>Require Authentication:</h5>
+                            <label for="validationRequired" class="filedrop-label">Require Authentication</label>
                             <input type="hidden" name="sender" ng-value="sender">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation" id="validationRequired"
-                                    value="true" checked>
+                                    ng-value="true" ng-model="authentication">
                                 <label class="form-check-label" for="validationRequired">
                                     Yes, require recipient to log in using the UH Login (recommended).
                                 </label>
@@ -55,7 +54,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation"
                                     id="validationNotRequired"
-                                    value="false">
+                                    ng-value="false" ng-model="authentication">
                                 <label class="form-check-label" for="validationNotRequired">
                                     No login required (unsecure download available to anyone).
                                 </label>
@@ -64,29 +63,29 @@
                     </div>
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
-                            <h5>Expiration Timer:</h5>
-                            <label for="expiration" hidden></label>
-                            <select name="expiration" id="expiration">
-                                <option value="1">1 day</option>
-                                <option value="2">2 days</option>
-                                <option value="3">3 days</option>
-                                <option value="4">4 days</option>
-                                <option value="5" selected>5 days</option>
-                                <option value="6">6 days</option>
-                                <option value="7">7 days</option>
-                                <option value="14">14 days</option>
-                            </select>
+                            <label for="expiration" class="filedrop-label">Expiration Timer</label>
+                            <div class="col-sm-4 px-0">
+                                <select class="custom-select" name="expiration" id="expiration">
+                                    <option value="1">1 day</option>
+                                    <option value="2">2 days</option>
+                                    <option value="3">3 days</option>
+                                    <option value="4">4 days</option>
+                                    <option value="5" selected>5 days</option>
+                                    <option value="6">6 days</option>
+                                    <option value="7">7 days</option>
+                                    <option value="14">14 days</option>
+                                </select>
+                            </div>
                         </div>
                     </div>
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
-                            <h5>Optional Message:</h5>
-                            <label for="message" hidden></label>
+                            <label for="message" class="filedrop-label">Optional Message</label>
                             <textarea class="form-control" name="message" id="message" rows="5"></textarea>
                         </div>
                     </div>
                     <input type="hidden" name="recipients" ng-value="getRecipients()">
-                    <button class="btn btn-primary" type="submit">Next</button>
+                    <button class="btn btn-primary pull-right" aria-label="" type="submit">Next</button>
                 </form>
             </div>
         </div>

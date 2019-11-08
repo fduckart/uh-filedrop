@@ -2,38 +2,40 @@ function PrepareJsController($scope, dataProvider) {
     $scope.init = function (sender, helpdesk) {
         $scope.sender = sender;
         $scope.recipients = [];
+        $scope.authentication = true;
+        $scope.senderEmails = [];
+
         if (helpdesk) {
             $scope.recipient = "help@hawaii.edu";
             $scope.addRecipient();
         }
-        $scope.senderEmails = [];
 
         dataProvider.loadData(function(response) {
-           var data = response.data;
+           let data = response.data;
            $scope.senderEmails = data.mails;
         }, "/filedrop/api/ldap/" + sender);
     };
 
-    $scope.addRecipient = function () {
-        if (/^\s*$/.test($scope.recipient) || $scope.recipient === undefined || $scope.hasRecipient($scope.recipient)) {
+    $scope.addRecipient = function (recipient) {
+        if (/^\s*$/.test(recipient) || recipient === undefined || $scope.hasRecipient(recipient)) {
             return;
         }
-        if ($scope.recipient.indexOf("@") > -1 && $scope.recipient.split("@")[1] !== "hawaii.edu") {
-            $scope.recipients.push({ name: $scope.recipient });
-            $scope.recipient = "";
-            return;
-        }
+
         dataProvider.loadData(function (response) {
-            var data = response.data;
+            let data = response.data;
             if (data.cn) {
                 $scope.recipients.push({ name: data.cn, uid: data.uid });
+            } else {
+                $scope.authentication = false;
+                $scope.recipients.push({ name: recipient });
             }
-        }, "/filedrop/api/ldap/" + $scope.recipient);
-        $scope.recipient = "";
+        }, "/filedrop/api/ldap/" + recipient);
+
+        $scope.recipient = '';
     };
 
     $scope.removeRecipient = function (recipient) {
-        var index = $scope.recipients.indexOf(recipient);
+        let index = $scope.recipients.indexOf(recipient);
         if (index > -1) {
             $scope.recipients.splice(index, 1);
         }
