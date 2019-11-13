@@ -6,18 +6,18 @@ import org.springframework.stereotype.Service;
 public class CipherLocator {
 
     public Cipher find(String code) {
-        Cipher foundCipher;
+        Cipher cipher;
 
         switch(code) {
             case "rc2":
-                foundCipher = new Rc2();
+                cipher = new Rc2();
                 break;
             default:
-                foundCipher = new Aes256();
+                cipher = new Aes256();
                 break;
         }
 
-        return foundCipher;
+        return cipher;
     }
 
 }

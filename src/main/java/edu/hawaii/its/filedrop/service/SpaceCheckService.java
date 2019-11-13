@@ -16,7 +16,8 @@ public class SpaceCheckService {
 
     private static final Log logger = LogFactory.getLog(SpaceCheckService.class);
 
-    public static final long DEFAULT_RESERVED_SPACE = 1000000000;
+    @Value("app.scheduler.spacecheck.default-reserved-space")
+    public static long DEFAULT_RESERVED_SPACE = 1000000000;
     private File root;
     private long bytesFree;
     private long bytesUsed;
@@ -45,7 +46,7 @@ public class SpaceCheckService {
         logger.info("init; bytesUsed: " + bytesUsed);
 
         logger.info("init; maxUploadSize: " + maxUploadSize);
-        Assert.isTrue(maxUploadSize > 0, "property 'maxUploadSize' is required");
+        Assert.isTrue(maxUploadSize > 0, "property 'maxUploadSize' is required and must be positive");
 
         logger.info("init; started.");
     }
@@ -66,16 +67,11 @@ public class SpaceCheckService {
         if (free > 0) {
             this.bytesFree = free;
             this.bytesUsed = used;
-        } else {
-            throw new RuntimeException("failed to update free space count");
         }
     }
 
     public void setMaxUploadSize(long maxUploadSize) {
-        if (maxUploadSize <= 0) {
-            String msg = "property 'maxUploadSize' must be positive";
-            throw new IllegalArgumentException(msg);
-        } else if (maxUploadSize <= 1000) {
+        if (maxUploadSize <= 1000) {
             this.maxUploadSize = maxUploadSize * 1000000;
         } else {
             this.maxUploadSize = maxUploadSize;

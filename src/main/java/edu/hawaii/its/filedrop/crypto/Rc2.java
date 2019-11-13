@@ -29,7 +29,7 @@ public class Rc2 implements Cipher {
         javax.crypto.Cipher cipher = javax.crypto.Cipher.getInstance(getAlgorithmName());
         PBEParameterSpec parameterSpec = new PBEParameterSpec(getSalt(), iterationCount);
         cipher.init(javax.crypto.Cipher.ENCRYPT_MODE, secretKey, parameterSpec);
-        return null;
+        return cipher;
     }
 
     @Override

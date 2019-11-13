@@ -42,7 +42,7 @@ function PrepareJsController($scope, dataProvider) {
     };
 
     $scope.getRecipients = function () {
-        var recipients = [];
+        let recipients = [];
         $scope.recipients.forEach(function (recipient) {
             recipients.push(recipient.uid ? recipient.uid : recipient.name);
         });

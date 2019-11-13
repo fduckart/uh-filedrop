@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 >
 <head th:replace="header :: copy"></head>
-<body>
+<body ng-app="filedropApp">
     <nav th:replace="menubar :: copy"></nav>
 
     <!--  Content container -->
@@ -52,7 +52,7 @@
                             </td>
                             <td align="left" valign="top">
                                 <p>
-                                    A: <span th:utext="#{faq.answer.4}"></span>
+                                    A: <span th:utext="#{faq.answer.4(${maxSize})}"></span>
                                 </p>
                             </td>
                         </tr>

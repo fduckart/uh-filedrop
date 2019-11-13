@@ -39,7 +39,7 @@ public class CampusService {
     @Transactional(readOnly = true)
     @Cacheable(value = "campusesById", key = "#id")
     public Campus find(Integer id) {
-        return campusRepository.findById(id).orElse(null);
+        return campusRepository.findById(id).orElse(createEmptyCampus());
     }
 
     @Transactional
@@ -57,5 +57,14 @@ public class CampusService {
 
     public void setCampusRepository(CampusRepository campusRepository) {
         this.campusRepository = campusRepository;
+    }
+
+    public Campus createEmptyCampus() {
+        Campus campus = new Campus();
+        campus.setDescription("");
+        campus.setCode("");
+        campus.setId(-1);
+        campus.setCode("");
+        return campus;
     }
 }
