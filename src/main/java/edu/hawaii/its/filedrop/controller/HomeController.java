@@ -1,12 +1,6 @@
 package edu.hawaii.its.filedrop.controller;
 
-import edu.hawaii.its.filedrop.access.User;
-import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.service.EmailService;
-import edu.hawaii.its.filedrop.service.FileDropService;
-import edu.hawaii.its.filedrop.service.MessageService;
-import edu.hawaii.its.filedrop.service.SpaceCheckService;
-import edu.hawaii.its.filedrop.type.Message;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +11,14 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import edu.hawaii.its.filedrop.access.User;
+import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.EmailService;
+import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.MessageService;
+import edu.hawaii.its.filedrop.service.SpaceCheckService;
+import edu.hawaii.its.filedrop.type.Message;
 
 @Controller
 public class HomeController {
@@ -109,7 +111,7 @@ public class HomeController {
     @GetMapping(value = { "/help/faq", "/help/faqs" })
     public String faq(Model model) {
         logger.debug("User at faq.");
-        model.addAttribute("maxSize", maxSize);
+        model.addAttribute("maxSize", FileUtils.byteCountToDisplaySize(maxSize));
         return "help/faq";
     }
 
