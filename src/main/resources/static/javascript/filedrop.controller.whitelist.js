@@ -1,5 +1,5 @@
 function WhitelistJsController($scope, dataProvider) {
-    var URL_LOAD = "/filedrop/api/admin/whitelist";
+    let URL_LOAD = "/filedrop/api/admin/whitelist";
 
     $scope.init = function () {
         $scope.whitelist = [];

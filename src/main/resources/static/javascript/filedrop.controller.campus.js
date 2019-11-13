@@ -1,5 +1,5 @@
 function CampusJsController($scope, dataProvider) {
-    var URL_CAMPUS_LOAD = "/filedrop/api/campuses";
+    let URL_CAMPUS_LOAD = "/filedrop/api/campuses";
     $scope.campuses = [];
 
     $scope.init = function () {
