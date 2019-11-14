@@ -68,6 +68,8 @@ public class HomeController {
         Message message = messageService.findMessage(messageId);
         model.addAttribute("gatemessage", message.getText());
 
+        model.addAttribute("maxSize", FileUtils.byteCountToDisplaySize(maxSize));
+
         return "home";
     }
 

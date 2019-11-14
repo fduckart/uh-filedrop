@@ -64,7 +64,6 @@ public class CampusService {
         campus.setDescription("");
         campus.setCode("");
         campus.setId(-1);
-        campus.setCode("");
         return campus;
     }
 }
