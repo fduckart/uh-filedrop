@@ -6,6 +6,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
@@ -48,15 +49,16 @@ public class DownloadControllerTest {
 
     @Test
     @WithMockUhUser
-    public void getDownloadNoFileDropTest() throws Exception {
+    public void downloadNoFileDropTest() throws Exception {
         mockMvc.perform(get("/dl/randomtest"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/download-error"))
+                .andExpect(model().attribute("error", "Download not found"));
     }
 
     @Test
     @WithMockUhUser
-    public void getDownloadTest() throws Exception {
+    public void downloadTest() throws Exception {
 
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
@@ -83,7 +85,7 @@ public class DownloadControllerTest {
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
-        FileDrop fileDrop = fileDropService.findFileDrop(1);
+        FileDrop fileDrop = fileDropService.findFileDrop(2);
         fileDrop.setDownloadKey("test");
         fileDropService.saveFileDrop(fileDrop);
         assertNotNull(fileDrop);
@@ -91,9 +93,34 @@ public class DownloadControllerTest {
         assertEquals("test", fileDrop.getDownloadKey());
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/sl/" + fileDrop.getDownloadKey()));
+
+        mockMvc.perform(get("/sl/" + fileDrop.getDownloadKey()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/download"))
                 .andExpect(model().attributeExists("fileDrop"));
 
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void downloadNoAuth() throws Exception {
+        mockMvc.perform(get("/dl/downloadKey2"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("fileDrop"));
+    }
+
+    @Test
+    @WithMockUhUser
+    public void downloadUnauthorized() throws Exception {
+        mockMvc.perform(get("/dl/downloadKey"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/sl/downloadKey"));
+
+        mockMvc.perform(get("/sl/downloadKey"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/download-error"))
+                .andExpect(model().attribute("error", "You are not a recipient for this drop."));
     }
 }

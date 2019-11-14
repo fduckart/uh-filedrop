@@ -402,6 +402,7 @@
             <exclude>edu/hawaii/its/filedrop/service/SpaceCheckService.class</exclude>
             <exclude>edu/hawaii/its/filedrop/job/SpaceCheckJob.class</exclude>
             <exclude>edu/hawaii/its/filedrop/type/Download.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/exception/FileDropNotFoundException.class</exclude>
             <exclude>edu/hawaii/its/filedrop/type/Validation.class</exclude>
             <exclude>edu/hawaii/its/filedrop/job/ExpireJob.class</exclude>
             <exclude>edu/hawaii/its/filedrop/job/SubmitJob.class</exclude>

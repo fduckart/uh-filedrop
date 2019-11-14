@@ -67,7 +67,7 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare/files"));
 
-        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        FileDrop fileDrop = fileDropService.findFileDrop(4);
         assertNotNull(fileDrop);
         assertTrue(fileDrop.isAuthenticationRequired());
         assertTrue(fileDrop.isValid());
@@ -138,7 +138,7 @@ public class PrepareControllerTest {
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
-        FileDrop fileDrop = fileDropService.findFileDrop(1);
+        FileDrop fileDrop = fileDropService.findFileDrop(2);
         assertNotNull(fileDrop);
 
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
