@@ -17,7 +17,7 @@ function UploadJsController($scope, Upload, $window) {
                     },
                     arrayKey: ""
                 }).then(function () {
-                    if (i === $scope.files.length) {
+                    if (i === ($scope.files.length - 1)) {
                         $window.location.href = "/filedrop/dl/" + $scope.downloadKey;
                     }
                 });
