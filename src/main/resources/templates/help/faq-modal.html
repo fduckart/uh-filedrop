@@ -1,0 +1,109 @@
+<div class="modal" tabindex="-1" role="dialog" id="faqModal" th:fragment="copy">
+    <div class="modal-dialog modal-xl" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">FAQ</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered">
+                    <tbody>
+                    <tr>
+                        <td colspan="2" align="left" valign="top"><b>General Questions</b></td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" class="faq-question">
+                            Q: <span th:text="#{faq.question.1}"></span>
+                        </td>
+                        <td align="left" valign="top">
+                            <p>
+                                A: <span th:utext="#{faq.answer.1}"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" class="faq-question">
+                            Q: <span th:text="#{faq.question.2}"></span>
+                        </td>
+                        <td align="left" valign="top">
+                            <p>
+                                A: <span th:utext="#{faq.answer.2}"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" class="faq-question">
+                            Q: <span th:text="#{faq.question.3}"></span>
+                        </td>
+                        <td align="left" valign="top">
+                            <p>
+                                A: <span th:utext="#{faq.answer.3}"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" class="faq-question">
+                            <a id="size" class="faq-anchor-link"></a>
+                            Q: <span th:text="#{faq.question.4}"></span>
+                        </td>
+                        <td align="left" valign="top">
+                            <p>
+                                A: <span th:utext="#{faq.answer.4(${maxSize})}"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" class="faq-question">
+                            Q: <span th:text="#{faq.question.5}"></span>
+                        </td>
+                        <td align="left" valign="top">
+                            <p>
+                                A: <span th:utext="#{faq.answer.5}"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" class="faq-question">
+                            Q: <span th:text="#{faq.question.6}"></span>
+                            <a id="auth"></a>
+                        </td>
+                        <td align="left" valign="top">
+                            <p>
+                                A: <span th:utext="#{faq.answer.6}"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" class="faq-question">
+                            Q: <span th:text="#{faq.question.7}"></span>
+                        </td>
+                        <td align="left" valign="top">
+                            <p>
+                                A: <span th:utext="#{faq.answer.7}"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" align="left" valign="top"><b>Resources</b></td>
+                    </tr>
+                    <tr>
+                        <td align="left" valign="top" class="faq-question">
+                            Q: <span th:text="#{faq.question.8}"></span>
+                        </td>
+                        <td align="left" valign="top">
+                            <p>
+                                A: <span th:utext="#{faq.answer.8}"></span>
+                            </p>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
