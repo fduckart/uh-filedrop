@@ -60,7 +60,14 @@ public class PrepareController {
             @RequestParam("validation") Boolean validation,
             @RequestParam("expiration") Integer expiration,
             @RequestParam("recipients") String[] recipients) {
+
         User user = currentUser();
+
+        if(recipients.length == 0) {
+            recipients = new String[1];
+            recipients[0] = currentUser().getUsername();
+        }
+
         if(logger.isDebugEnabled()) {
             logger.debug("User: " + currentUser());
             logger.debug("User added recipients: " + Arrays.toString(recipients));

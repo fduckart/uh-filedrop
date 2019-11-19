@@ -71,6 +71,10 @@ public class FileDropService {
         }
     }
 
+    public boolean isAuthorized(FileDrop fileDrop, String user) {
+        return fileDrop.getRecipients().contains(user) || fileDrop.getUploader().equals(user);
+    }
+
     public FileSet saveFileSet(FileSet fileSet) {
         return fileSetRepository.save(fileSet);
     }

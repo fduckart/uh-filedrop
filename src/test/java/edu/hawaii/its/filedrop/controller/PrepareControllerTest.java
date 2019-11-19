@@ -22,7 +22,6 @@ import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -67,14 +66,11 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare/files"));
 
-        FileDrop fileDrop = fileDropService.findFileDrop(4);
-        assertNotNull(fileDrop);
-        assertTrue(fileDrop.isAuthenticationRequired());
-        assertTrue(fileDrop.isValid());
-        assertEquals(2019, fileDrop.getCreated().getYear());
-        assertEquals(2019, fileDrop.getExpiration().getYear());
-        assertEquals("user", fileDrop.getUploader());
-        assertEquals("User", fileDrop.getUploaderFullName());
+
+        mockMvc.perform(get("/prepare/files"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/files"))
+                .andExpect(model().attribute("recipients", contains("test", "test2")));
     }
 
     @Test
@@ -96,6 +92,27 @@ public class PrepareControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/files"))
                 .andExpect(model().attribute("recipients", contains("test", "John W Lennon")));
+    }
+
+    @Test
+    @WithMockUhUser(username = "jwlennon", name = "John W Lennon")
+    public void addNoRecipients() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "jwlennon@hawaii.edu")
+                .param("recipients", "")
+                .param("validation", "true")
+                .param("expiration", "5"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare/files"));
+
+        mockMvc.perform(get("/prepare/files"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/files"))
+                .andExpect(model().attribute("recipients", contains("John W Lennon")));
     }
 
     @Test
