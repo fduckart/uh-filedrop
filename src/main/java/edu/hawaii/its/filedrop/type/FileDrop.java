@@ -1,6 +1,8 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -10,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "filedrop")
@@ -44,20 +47,20 @@ public class FileDrop {
     @Column(name = "valid_until", nullable = false)
     private LocalDateTime expiration;
 
-    //Need to alter table from character to boolean
+    // Need to alter table from character to boolean
     @Column(name = "is_valid", nullable = false)
     private Boolean valid;
 
-    //Need to alter table from character to boolean
+    // Need to alter table from character to boolean
     @Column(name = "require_auth", nullable = false)
     private Boolean authenticationRequired;
 
     @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL)
     private Set<FileSet> fileSet;
 
-    //Constructor
+    // Constructor
     public FileDrop() {
-        //Empty
+        // Empty
     }
 
     public Integer getId() {
@@ -154,6 +157,12 @@ public class FileDrop {
 
     public void setFileSet(Set<FileSet> fileSet) {
         this.fileSet = fileSet;
+    }
+
+    @Transient
+    public List<String> getRecipients() {
+        String recipient = this.recipient.substring(1, this.recipient.length() - 2);
+        return Arrays.asList(recipient.split(", "));
     }
 
     @Override

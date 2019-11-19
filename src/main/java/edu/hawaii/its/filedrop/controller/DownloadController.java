@@ -1,8 +1,5 @@
 package edu.hawaii.its.filedrop.controller;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,14 +45,13 @@ public class DownloadController {
     @PreAuthorize("isAuthenticated()")
     public String downloadSecure(Model model, @PathVariable String downloadKey) {
         FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
-        String recipient = fileDrop.getRecipient().substring(1, fileDrop.getRecipient().length() - 2);
-        List<String> recipientList = Arrays.asList(recipient.split(", "));
-        logger.debug("Current User: " + currentUser().getUsername());
-        logger.debug("Uploader: " + fileDrop.getUploader());
-        if(!(recipientList.contains(currentUser().getUsername()) || fileDrop.getUploader().equals(currentUser().getUsername()))) {
+        logger.debug("downloadSecure; fileDrop: " + fileDrop + " User: " + currentUser().getUsername());
+
+        if(!fileDropService.isAuthorized(fileDrop, currentUser().getUsername())) {
             model.addAttribute("error", "You are not a recipient for this drop.");
             return "user/download-error";
         }
+
         model.addAttribute("fileDrop", fileDrop);
         return "user/download";
     }
