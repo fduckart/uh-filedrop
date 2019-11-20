@@ -16,6 +16,7 @@ import org.springframework.web.context.WebApplicationContext;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.EmailService;
+import edu.hawaii.its.filedrop.service.SpaceCheckService;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
@@ -26,6 +27,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -54,6 +56,9 @@ public class HomeControllerTest {
 
     private MockMvc mockMvc;
 
+    @Autowired
+    private SpaceCheckService spaceCheckService;
+
     @Before
     public void setUp() {
         sendRan = false;
@@ -76,7 +81,20 @@ public class HomeControllerTest {
     public void requestHome() throws Exception {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("home"));
+                .andExpect(view().name("home"))
+                .andExpect(model().attribute("spaceFull", equalTo(false)))
+                .andExpect(model().attribute("gatemessage", equalTo("Welcome to the University of Hawai'i FileDrop application.")));
+    }
+
+    @Test
+    public void requestHomeSpaceFull() throws Exception {
+        spaceCheckService.setBytesFree(0L);
+        mockMvc.perform(get("/"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("home"))
+                .andExpect(model().attribute("spaceFull", equalTo(true)))
+                .andExpect(model().attribute("gatemessage", equalTo("FileDrop is currently unavailable.")));
+        spaceCheckService.update();
     }
 
     @Test
