@@ -23,10 +23,6 @@ public class SpaceCheckServiceTest {
     private SpaceCheckService spaceCheckService;
 
     @Test
-    public void construct() {
-    }
-
-    @Test
     public void maxUploadSizeTest() {
         long maxUploadSize = spaceCheckService.getMaxUploadSize();
 

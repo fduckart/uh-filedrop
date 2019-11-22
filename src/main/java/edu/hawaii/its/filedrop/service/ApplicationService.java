@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,9 +27,6 @@ import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 public class ApplicationService {
 
     private static final Log logger = LogFactory.getLog(ApplicationService.class);
-
-    @PersistenceContext
-    private EntityManager em;
 
     @Autowired
     private AdministratorRepository administratorRepository;

@@ -87,7 +87,7 @@ public class AuthorizationServiceTest {
         assertFalse(roleHolder.contains(NON_UH));
         assertFalse(roleHolder.contains(ADMINISTRATOR));
 
-        roleHolder = authorizationService.fetchRoles("10000006", false);
+        roleHolder = authorizationService.fetchRoles("10000006");
         assertThat(roleHolder.size(), equalTo(1));
         assertTrue(roleHolder.contains(ANONYMOUS));
         assertFalse(roleHolder.contains(UH));
