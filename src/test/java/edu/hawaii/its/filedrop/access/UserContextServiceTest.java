@@ -1,12 +1,5 @@
 package edu.hawaii.its.filedrop.access;
 
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +10,13 @@ import org.springframework.test.context.junit4.SpringRunner;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.controller.WithMockUhUser;
 import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -37,26 +37,6 @@ public class UserContextServiceTest {
         assertThat(user.getUhuuid(), equalTo("12345678"));
         assertThat(user.getUsername(), equalTo("admin"));
         assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR));
-
-        userContextService.setCurrentUhuuid("87654321");
-        assertThat(userContextService.getCurrentUhuuid(), equalTo("87654321"));
-    }
-
-    @Test
-    @WithMockUhUser
-    public void nonAdminCannotChangeUhuuid() {
-        assertThat(userContextService.getCurrentUhuuid(), equalTo("12345678"));
-        assertThat(userContextService.getCurrentUsername(), equalTo("user"));
-
-        User user = userContextService.getCurrentUser();
-        assertNotNull(user);
-        assertThat(user.getUhuuid(), equalTo("12345678"));
-        assertThat(user.getUsername(), equalTo("user"));
-        assertFalse(user.hasRole(SecurityRole.ADMINISTRATOR));
-
-        // UhUuid should not change.
-        userContextService.setCurrentUhuuid("87654321");
-        assertThat(userContextService.getCurrentUhuuid(), equalTo("12345678"));
     }
 
     @Test
