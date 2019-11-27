@@ -32,7 +32,7 @@ public class User extends org.springframework.security.core.userdetails.User {
         return uhuuid;
     }
 
-    public void setUhuuid(String uhuuid) {
+    private void setUhuuid(String uhuuid) {
         this.uhuuid = uhuuid != null ? uhuuid : "";
     }
 

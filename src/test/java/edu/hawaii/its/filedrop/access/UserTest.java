@@ -1,5 +1,14 @@
 package edu.hawaii.its.filedrop.access;
 
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
+
+import org.junit.Test;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ANONYMOUS;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -9,15 +18,6 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
-
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Set;
-
-import org.junit.Test;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class UserTest {
 
@@ -99,7 +99,7 @@ public class UserTest {
         User ud = new User("user0", null, authorities);
         assertTrue(u0.equals(ua));
         assertFalse(ud.equals(u0));
-        u0.setUhuuid(null);
+        u0 = new User("user0", null, authorities);
         assertTrue(ud.equals(u0));
         ud = null;
     }
