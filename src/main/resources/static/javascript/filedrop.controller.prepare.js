@@ -25,7 +25,7 @@ function PrepareJsController($scope, dataProvider) {
             let data = response.data;
             if (data.cn) {
                 $scope.recipients.push({ name: data.cn, uid: data.uid });
-            } else {
+            } else if(recipient.indexOf("@") > -1) {
                 $scope.authentication = false;
                 $scope.recipients.push({ name: recipient });
             }
@@ -36,9 +36,20 @@ function PrepareJsController($scope, dataProvider) {
 
     $scope.removeRecipient = function (recipient) {
         let index = $scope.recipients.indexOf(recipient);
+
         if (index > -1) {
             $scope.recipients.splice(index, 1);
         }
+
+        let auth = true;
+
+        for(let r of $scope.recipients) {
+            if(typeof r === "string" && r.indexOf("@") > -1) {
+                auth = false;
+            }
+        }
+
+        $scope.authentication = auth;
     };
 
     $scope.getRecipients = function () {
@@ -51,7 +62,7 @@ function PrepareJsController($scope, dataProvider) {
 
     $scope.hasRecipient = function (recipient) {
         return $scope.recipients.includes($scope.recipients.find(function (r) {
-            return r.uid === recipient || r.name === recipient;
+            return r.uid.toUpperCase() === recipient.toUpperCase() || r.name.toUpperCase() === recipient.toUpperCase();
         }));
     };
 

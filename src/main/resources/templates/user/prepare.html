@@ -46,7 +46,7 @@
                             <input type="hidden" name="sender" ng-value="sender">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation" id="validationRequired"
-                                    ng-value="true" ng-model="authentication">
+                                    ng-value="true" ng-model="authentication" ng-disabled="!authentication">
                                 <label class="form-check-label" for="validationRequired">
                                     Yes, require recipient to log in using the UH Login (recommended).
                                 </label>
@@ -54,7 +54,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation"
                                     id="validationNotRequired"
-                                    ng-value="false" ng-model="authentication">
+                                    ng-value="false" ng-model="authentication" ng-disabled="!authentication">
                                 <label class="form-check-label" for="validationNotRequired">
                                     No login required (unsecure download available to anyone).
                                 </label>
