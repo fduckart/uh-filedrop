@@ -65,7 +65,7 @@ function PrepareJsController($scope, dataProvider) {
 
     $scope.showPopup = function() {
         $("#prepareModal").modal();
-    }
+    };
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);
