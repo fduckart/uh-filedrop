@@ -7,7 +7,7 @@ function PrepareJsController($scope, dataProvider) {
 
         if (helpdesk) {
             $scope.recipient = "help@hawaii.edu";
-            $scope.addRecipient();
+            $scope.addRecipient($scope.recipient);
         }
 
         dataProvider.loadData(function(response) {
@@ -26,8 +26,11 @@ function PrepareJsController($scope, dataProvider) {
             if (data.cn) {
                 $scope.recipients.push({ name: data.cn, uid: data.uid });
             } else if(recipient.indexOf("@") > -1) {
-                $scope.authentication = false;
-                $scope.recipients.push({ name: recipient });
+                if($scope.authentication) {
+                    $scope.showPopup();
+                } else {
+                    $scope.recipients.push({ name: recipient });
+                }
             }
         }, "/filedrop/api/ldap/" + recipient);
 
@@ -40,16 +43,6 @@ function PrepareJsController($scope, dataProvider) {
         if (index > -1) {
             $scope.recipients.splice(index, 1);
         }
-
-        let auth = true;
-
-        for(let r of $scope.recipients) {
-            if(typeof r === "string" && r.indexOf("@") > -1) {
-                auth = false;
-            }
-        }
-
-        $scope.authentication = auth;
     };
 
     $scope.getRecipients = function () {
@@ -67,8 +60,12 @@ function PrepareJsController($scope, dataProvider) {
     };
 
     $scope.userHasMultipleEmails = function() {
-        return $scope.senderEmails.length >= 2;
+        return $scope.senderEmails.length > 1;
     };
+
+    $scope.showPopup = function() {
+        $("#prepareModal").modal();
+    }
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);

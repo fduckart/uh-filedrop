@@ -1,6 +1,5 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
->
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
 <body ng-app="filedropApp">
 <nav th:replace="menubar :: copy"></nav>
@@ -46,7 +45,7 @@
                             <input type="hidden" name="sender" ng-value="sender">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation" id="validationRequired"
-                                    ng-value="true" ng-model="authentication" ng-disabled="!authentication">
+                                    ng-value="true" ng-model="authentication">
                                 <label class="form-check-label" for="validationRequired">
                                     Yes, require recipient to log in using the UH Login (recommended).
                                 </label>
@@ -54,7 +53,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation"
                                     id="validationNotRequired"
-                                    ng-value="false" ng-model="authentication" ng-disabled="!authentication">
+                                    ng-value="false" ng-model="authentication">
                                 <label class="form-check-label" for="validationNotRequired">
                                     No login required (unsecure download available to anyone).
                                 </label>
@@ -90,6 +89,8 @@
             </div>
         </div>
     </div>
+
+    <div th:replace="user/prepare-modal :: copy"></div>
 </div>
 
 <div th:replace="footer :: copy"></div>
