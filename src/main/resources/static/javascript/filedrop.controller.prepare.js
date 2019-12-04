@@ -7,7 +7,7 @@ function PrepareJsController($scope, dataProvider) {
 
         if (helpdesk) {
             $scope.recipient = "help@hawaii.edu";
-            $scope.addRecipient();
+            $scope.addRecipient($scope.recipient);
         }
 
         dataProvider.loadData(function(response) {
@@ -25,9 +25,12 @@ function PrepareJsController($scope, dataProvider) {
             let data = response.data;
             if (data.cn) {
                 $scope.recipients.push({ name: data.cn, uid: data.uid });
-            } else {
-                $scope.authentication = false;
-                $scope.recipients.push({ name: recipient });
+            } else if(recipient.indexOf("@") > -1) {
+                if($scope.authentication) {
+                    $scope.showPopup();
+                } else {
+                    $scope.recipients.push({ name: recipient });
+                }
             }
         }, "/filedrop/api/ldap/" + recipient);
 
@@ -36,6 +39,7 @@ function PrepareJsController($scope, dataProvider) {
 
     $scope.removeRecipient = function (recipient) {
         let index = $scope.recipients.indexOf(recipient);
+
         if (index > -1) {
             $scope.recipients.splice(index, 1);
         }
@@ -51,12 +55,16 @@ function PrepareJsController($scope, dataProvider) {
 
     $scope.hasRecipient = function (recipient) {
         return $scope.recipients.includes($scope.recipients.find(function (r) {
-            return r.uid === recipient || r.name === recipient;
+            return r.uid.toUpperCase() === recipient.toUpperCase() || r.name.toUpperCase() === recipient.toUpperCase();
         }));
     };
 
     $scope.userHasMultipleEmails = function() {
-        return $scope.senderEmails.length >= 2;
+        return $scope.senderEmails.length > 1;
+    };
+
+    $scope.showPopup = function() {
+        $("#prepareModal").modal();
     };
 }
 
