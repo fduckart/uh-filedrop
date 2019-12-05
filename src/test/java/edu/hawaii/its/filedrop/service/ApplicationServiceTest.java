@@ -1,6 +1,5 @@
 package edu.hawaii.its.filedrop.service;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.junit.Test;
@@ -11,21 +10,15 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.AdministratorRepository;
-import edu.hawaii.its.filedrop.type.Administrator;
 import edu.hawaii.its.filedrop.type.Office;
-import edu.hawaii.its.filedrop.type.Role;
 
-import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -98,68 +91,4 @@ public class ApplicationServiceTest {
         assertSame(oZ, office);
         assertSame(oZ, c0);
     }
-
-    @Test
-    public void findAdministrators() {
-        List<Administrator> admins = applicationService.findAdministrators();
-        assertNotNull(admins);
-        assertFalse(admins.isEmpty());
-    }
-
-    @Test
-    public void isAdministrator() {
-        List<Administrator> administratorsS = applicationService.findAdministrators();
-        long administratorCount = administratorsS.size();
-        assertThat(administratorCount, equalTo(8L));
-        for (Administrator c : administratorsS) {
-            String uhUuid = c.getPerson().getUhUuid();
-            assertTrue(applicationService.isAdministrator(uhUuid));
-            assertEquals(c.getRoleId(), c.getRole().getId());
-            assertThat(c.getRoleId(), anyOf(
-                equalTo(Role.SecurityRole.ADMINISTRATOR.value()),
-                equalTo(Role.SecurityRole.SUPERUSER.value())));
-        }
-
-        List<Administrator> administratorsR = administratorRepository.findAll();
-        for (Administrator c : administratorsR) {
-            String uhUuid = c.getPerson().getUhUuid();
-            assertTrue(applicationService.isAdministrator(uhUuid));
-            assertEquals(c.getRoleId(), c.getRole().getId());
-            assertThat(c.getRoleId(), anyOf(
-                equalTo(Role.SecurityRole.ADMINISTRATOR.value()),
-                equalTo(Role.SecurityRole.SUPERUSER.value())));
-        }
-
-        long repoSize = administratorRepository.findAll().size();
-        assertThat(repoSize, equalTo(administratorCount));
-
-        for (int i = 0; i < repoSize; i++) {
-            Administrator cS = administratorsS.get(i);
-            Administrator cR = administratorsR.get(i);
-            assertThat(cS, equalTo(cR));
-        }
-
-        List<Administrator> administratorsX = personService.findAdministrators();
-        long repoSizeTwo = administratorsX.size();
-        assertThat(repoSize, equalTo(repoSizeTwo));
-
-        for (int i = 0; i < repoSize; i++) {
-            Administrator cS = administratorsS.get(i);
-            Administrator cX = administratorsX.get(i);
-            assertThat(cS, equalTo(cX));
-        }
-
-        List<Integer> roleIds = Arrays.asList(13, 14);
-        List<Administrator> administratorsY =
-                administratorRepository.findByRoleIdInOrderByOfficeIdAscIdAsc(roleIds);
-        long repoSizeThree = administratorsY.size();
-        assertThat(repoSize, equalTo(repoSizeThree));
-
-        for (int i = 0; i < repoSize; i++) {
-            Administrator cS = administratorsS.get(i);
-            Administrator cY = administratorsY.get(i);
-            assertThat(cS, equalTo(cY));
-        }
-    }
-
 }

@@ -5,7 +5,7 @@
 <nav th:replace="menubar :: copy"></nav>
 
 <div class="container" ng-controller="PrepareJsController"
-    th:attr="ng-init='init(\'' + ${user} + '\',' + ${helpdesk} + ');'">
+    th:attr="ng-init='init(\'' + ${user} + '\',' + ${helpdesk} + ',\'' + ${recipients} + '\',\'' + ${expiration} + '\',' + ${authentication} +');'">
     <div class="card border-success">
         <div class="card-body">
             <div class="col-sm-12 mb-3">
@@ -64,7 +64,7 @@
                         <div class="col-sm-12">
                             <label for="expiration" class="filedrop-label">Expiration Timer</label>
                             <div class="col-sm-4 px-0">
-                                <select class="custom-select" name="expiration" id="expiration">
+                                <select class="custom-select" name="expiration" id="expiration" ng-model="expiration">
                                     <option value="1">1 day</option>
                                     <option value="2">2 days</option>
                                     <option value="3">3 days</option>
@@ -80,7 +80,7 @@
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <label for="message" class="filedrop-label">Optional Message</label>
-                            <textarea class="form-control" name="message" id="message" rows="5"></textarea>
+                            <textarea class="form-control" name="message" id="message" rows="3"></textarea>
                         </div>
                     </div>
                     <input type="hidden" name="recipients" ng-value="getRecipients()">

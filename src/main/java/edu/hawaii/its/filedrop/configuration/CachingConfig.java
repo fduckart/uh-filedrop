@@ -18,9 +18,6 @@ public class CachingConfig {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
         cacheManager.setCaches(Arrays.asList(
                 new ConcurrentMapCache("default"),
-                new ConcurrentMapCache("applicationTypes"),
-                new ConcurrentMapCache("applicationTypesById"),
-                new ConcurrentMapCache("applicationRoleById"),
                 new ConcurrentMapCache("campuses"),
                 new ConcurrentMapCache("campusesAll"),
                 new ConcurrentMapCache("campusesActualAll"),

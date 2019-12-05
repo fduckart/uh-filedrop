@@ -1,13 +1,29 @@
 function PrepareJsController($scope, dataProvider) {
-    $scope.init = function (sender, helpdesk) {
+    $scope.init = function (sender, helpdesk, recipients, expiration, authentication) {
         $scope.sender = sender;
         $scope.recipients = [];
         $scope.authentication = true;
         $scope.senderEmails = [];
+        $scope.expiration = "5";
 
         if (helpdesk) {
             $scope.recipient = "help@hawaii.edu";
             $scope.addRecipient($scope.recipient);
+        }
+
+        if (recipients !== "null") {
+            let recipientsSub = recipients.substring(1, recipients.length - 1).split(",");
+            for(let r of recipientsSub) {
+                $scope.addRecipient(r);
+            }
+        }
+
+        if(expiration !== "null") {
+            $scope.expiration = expiration;
+        }
+
+        if(authentication !== null) {
+            $scope.authentication = authentication;
         }
 
         dataProvider.loadData(function(response) {
@@ -55,7 +71,7 @@ function PrepareJsController($scope, dataProvider) {
 
     $scope.hasRecipient = function (recipient) {
         return $scope.recipients.includes($scope.recipients.find(function (r) {
-            return r.uid.toUpperCase() === recipient.toUpperCase() || r.name.toUpperCase() === recipient.toUpperCase();
+            return (r.uid ? r.uid.toUpperCase() === recipient.toUpperCase() : false) || r.name.toUpperCase() === recipient.toUpperCase();
         }));
     };
 

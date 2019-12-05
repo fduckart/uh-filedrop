@@ -252,4 +252,42 @@ public class FileDropServiceTest {
         assertEquals(2,
                 fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());
     }
+
+
+    @Test
+    public void revertToTask() {
+        User user = userContextService.getCurrentUser();
+        assertNotNull(user);
+
+        fileDropService.startUploadProcess(user);
+
+        String[] recipients = { "test", "lukemcd9" };
+
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setUploader(user.getUid());
+        fileDrop.setUploaderFullName(user.getName());
+        fileDrop.setUploadKey("test-ul-key");
+        fileDrop.setDownloadKey("test-dl-key");
+        fileDrop.setEncryptionKey("test-enc-key");
+        fileDrop.setRecipient(Arrays.toString(recipients));
+        fileDrop.setValid(true);
+        fileDrop.setAuthenticationRequired(true);
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileDropId", fileDrop.getId());
+        workflowService.addProcessVariables(
+                workflowService.getCurrentTask(user).getProcessInstanceId(), args
+        );
+
+        fileDropService.addRecipients(user, recipients);
+
+        assertEquals("filesTask", workflowService.getCurrentTask(user).getTaskDefinitionKey());
+
+        workflowService.revertTask(user, "recipientsTask");
+
+        assertEquals("recipientsTask", workflowService.getCurrentTask(user).getTaskDefinitionKey());
+    }
 }

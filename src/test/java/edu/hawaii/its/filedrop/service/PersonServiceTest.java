@@ -11,10 +11,14 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.repository.AdministratorRepository;
 import edu.hawaii.its.filedrop.repository.PersonRepository;
+import edu.hawaii.its.filedrop.type.Administrator;
 import edu.hawaii.its.filedrop.type.Person;
 import edu.hawaii.its.filedrop.type.PersonIdentifiable;
+import edu.hawaii.its.filedrop.type.Role;
 
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.junit.Assert.assertEquals;
@@ -36,6 +40,9 @@ public class PersonServiceTest {
 
     @Autowired
     private PersonRepository personRepository;
+
+    @Autowired
+    private AdministratorRepository administratorRepository;
 
     @Test
     public void findAll() {
@@ -167,7 +174,53 @@ public class PersonServiceTest {
 
     @Test
     public void findAdministrators() {
-        assertTrue(personService.findAdministrators().size() > 0);
+        List<Administrator> admins = personService.findAdministrators();
+        assertNotNull(admins);
+        assertFalse(admins.isEmpty());
+    }
+
+    @Test
+    public void isAdministrator() {
+        List<Administrator> administratorsS = personService.findAdministrators();
+        long administratorCount = administratorsS.size();
+        assertThat(administratorCount, equalTo(8L));
+        for (Administrator c : administratorsS) {
+            String uhUuid = c.getPerson().getUhUuid();
+            assertTrue(personService.isAdministrator(uhUuid));
+            assertEquals(c.getRoleId(), c.getRole().getId());
+            assertThat(c.getRoleId(), anyOf(
+                    equalTo(Role.SecurityRole.ADMINISTRATOR.value()),
+                    equalTo(Role.SecurityRole.SUPERUSER.value())));
+        }
+
+        List<Administrator> administratorsR = administratorRepository.findAll();
+        for (Administrator c : administratorsR) {
+            String uhUuid = c.getPerson().getUhUuid();
+            assertTrue(personService.isAdministrator(uhUuid));
+            assertEquals(c.getRoleId(), c.getRole().getId());
+            assertThat(c.getRoleId(), anyOf(
+                    equalTo(Role.SecurityRole.ADMINISTRATOR.value()),
+                    equalTo(Role.SecurityRole.SUPERUSER.value())));
+        }
+
+        long repoSize = administratorRepository.findAll().size();
+        assertThat(repoSize, equalTo(administratorCount));
+
+        for (int i = 0; i < repoSize; i++) {
+            Administrator cS = administratorsS.get(i);
+            Administrator cR = administratorsR.get(i);
+            assertThat(cS, equalTo(cR));
+        }
+
+        List<Administrator> administratorsX = personService.findAdministrators();
+        long repoSizeTwo = administratorsX.size();
+        assertThat(repoSize, equalTo(repoSizeTwo));
+
+        for (int i = 0; i < repoSize; i++) {
+            Administrator cS = administratorsS.get(i);
+            Administrator cX = administratorsX.get(i);
+            assertThat(cS, equalTo(cX));
+        }
     }
 
 }

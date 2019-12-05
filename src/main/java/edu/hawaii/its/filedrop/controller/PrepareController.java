@@ -73,25 +73,37 @@ public class PrepareController {
             logger.debug("User added recipients: " + Arrays.toString(recipients));
         }
 
-        FileDrop fileDrop = new FileDrop();
-        fileDrop.setRecipient(Arrays.toString(recipients));
-        fileDrop.setEncryptionKey(Strings.generateRandomString());
-        fileDrop.setDownloadKey(Strings.generateRandomString());
-        fileDrop.setUploadKey(Strings.generateRandomString());
-        fileDrop.setUploader(user.getUsername());
-        fileDrop.setUploaderFullName(user.getName());
-        fileDrop.setCreated(LocalDateTime.now());
-        fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
-        fileDrop.setValid(validation);
-        fileDrop.setAuthenticationRequired(validation);
+        FileDrop fileDrop;
+
+        if (workflowService.getProcessVariables(workflowService.getCurrentTask(user)).containsKey("fileDropId")) {
+            logger.debug(fileDropService.findFileDrop(fileDropService.getFileDropId(user)));
+            fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(user));
+            fileDrop.setRecipient(Arrays.toString(recipients));
+            fileDrop.setValid(validation);
+            fileDrop.setAuthenticationRequired(validation);
+            fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
+        } else {
+            fileDrop = new FileDrop();
+            fileDrop.setRecipient(Arrays.toString(recipients));
+            fileDrop.setEncryptionKey(Strings.generateRandomString());
+            fileDrop.setDownloadKey(Strings.generateRandomString());
+            fileDrop.setUploadKey(Strings.generateRandomString());
+            fileDrop.setUploader(user.getUsername());
+            fileDrop.setUploaderFullName(user.getName());
+            fileDrop.setCreated(LocalDateTime.now());
+            fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
+            fileDrop.setValid(validation);
+            fileDrop.setAuthenticationRequired(validation);
+        }
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
-        fileDropService.addRecipients(user, recipients);
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
         args.put("fileDropDownloadKey", fileDrop.getDownloadKey());
         workflowService.addProcessVariables(workflowService.getCurrentTask(user), args);
+
+        fileDropService.addRecipients(user, recipients);
 
         logger.debug(user.getUsername() + " created new " + fileDrop);
         logger.debug("Sender: " + sender);
