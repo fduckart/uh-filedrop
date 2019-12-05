@@ -11,7 +11,7 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.service.ApplicationService;
+import edu.hawaii.its.filedrop.service.PersonService;
 import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ADMINISTRATOR;
@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 public class AuthorizationServiceTest {
 
     @Autowired
-    private ApplicationService applicationService;
+    private PersonService personService;
 
     @Autowired
     private AuthorizationService authorizationService;
@@ -51,7 +51,7 @@ public class AuthorizationServiceTest {
         assertTrue(roleHolder.contains(ADMINISTRATOR));
 
         roleHolder = new SecurityRoleHolder();
-        Set<SecurityRole> roles = applicationService.findSystemRoles("17958670");
+        Set<SecurityRole> roles = personService.findSystemRoles("17958670");
         for (SecurityRole r : roles) {
             roleHolder.add(r);
         }
@@ -95,7 +95,7 @@ public class AuthorizationServiceTest {
         assertFalse(roleHolder.contains(ADMINISTRATOR));
 
         roleHolder = new SecurityRoleHolder();
-        roles = applicationService.findSystemRoles("10000002");
+        roles = personService.findSystemRoles("10000002");
         for (SecurityRole r : roles) {
             roleHolder.add(r);
         }
@@ -107,7 +107,7 @@ public class AuthorizationServiceTest {
         assertFalse(roleHolder.contains(SUPERUSER));
 
         roleHolder = new SecurityRoleHolder();
-        roles = applicationService.findSystemRoles("10000003");
+        roles = personService.findSystemRoles("10000003");
         for (SecurityRole r : roles) {
             roleHolder.add(r);
         }
@@ -119,7 +119,7 @@ public class AuthorizationServiceTest {
         assertFalse(roleHolder.contains(SUPERUSER));
 
         roleHolder = new SecurityRoleHolder();
-        roles = applicationService.findSystemRoles("17958670");
+        roles = personService.findSystemRoles("17958670");
         for (SecurityRole r : roles) {
             roleHolder.add(r);
         }
@@ -131,7 +131,7 @@ public class AuthorizationServiceTest {
         assertTrue(roleHolder.contains(SUPERUSER));
 
         // Non-existent uhuuid.
-        roles = applicationService.findSystemRoles("ABCDEFGH");
+        roles = personService.findSystemRoles("ABCDEFGH");
         roleHolder = new SecurityRoleHolder();
         for (SecurityRole r : roles) {
             roleHolder.add(r);

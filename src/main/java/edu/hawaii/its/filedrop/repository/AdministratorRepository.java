@@ -1,6 +1,5 @@
 package edu.hawaii.its.filedrop.repository;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,8 +24,6 @@ public interface AdministratorRepository extends JpaRepository<Administrator, In
             + "and a.person.uhUuid = ?1 "
             + "order by a.role")
     List<Administrator> findAllByPersonUhUuid(String uhUuid);
-
-    public List<Administrator> findByRoleIdInOrderByOfficeIdAscIdAsc(Collection<Integer> roleIds);
 
     @Query(value = "select c from Administrator c "
             + "where c.roleId = 13 or c.roleId = 14 "

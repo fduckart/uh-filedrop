@@ -1,6 +1,8 @@
 package edu.hawaii.its.filedrop.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -15,6 +17,7 @@ import edu.hawaii.its.filedrop.repository.PersonRepository;
 import edu.hawaii.its.filedrop.type.Administrator;
 import edu.hawaii.its.filedrop.type.Person;
 import edu.hawaii.its.filedrop.type.PersonIdentifiable;
+import edu.hawaii.its.filedrop.type.Role;
 
 @Service
 public class PersonService {
@@ -95,6 +98,30 @@ public class PersonService {
     @Transactional(readOnly = true)
     public List<Administrator> findAdministrators() {
         return administratorRepository.findAdministrators();
+    }
+
+    public Set<Role.SecurityRole> findSystemRoles(String uhUuid) {
+
+        Set<Role.SecurityRole> roleSet = new TreeSet<>();
+
+        List<Administrator> admins = administratorRepository.findAllByPersonUhUuid(uhUuid);
+        for (Administrator a : admins) {
+            roleSet.add(toSecurityRole(a.getRole()));
+        }
+
+        return roleSet;
+    }
+
+    private Role.SecurityRole toSecurityRole(Role role) {
+        return Role.SecurityRole.valueOf(role.getSecurityRole());
+    }
+
+    public boolean isAdministrator(String uhUuid) {
+        return administratorRepository.isAdministrator(uhUuid);
+    }
+
+    public boolean isSuperuser(String uhUuid) {
+        return administratorRepository.isSuperuser(uhUuid);
     }
 
 }
