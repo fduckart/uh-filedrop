@@ -41,6 +41,14 @@ public class WorkflowService {
         runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "stop");
     }
 
+    public void revertTask(User user, String previousTask) {
+        Task task = getCurrentTask(user);
+        runtimeService.createChangeActivityStateBuilder()
+                .processInstanceId(task.getProcessInstanceId())
+                .moveActivityIdTo(task.getTaskDefinitionKey(), previousTask)
+                .changeState();
+    }
+
     public boolean atTask(User user, String taskName) {
         return hasTask(user) && getCurrentTask(user).getName().equalsIgnoreCase(taskName);
     }

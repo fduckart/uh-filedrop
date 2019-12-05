@@ -67,12 +67,13 @@
                 <div class="col-sm-12">
                     <p ng-class="isUploadLarge() ? 'text-danger' : ''" ng-if="uploadSize > 0">Upload size: {{uploadSize
                         | bytes}} / {{maxUploadSize | bytes}} </p>
-                    <button class="btn" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'" type="submit"
+                    <button class="btn pull-right" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'" type="submit"
                         ng-disabled="isUploadLarge()" form="filesForm">Submit
                     </button>
                     <p class="text-danger d-inline-block" ng-if="isUploadLarge()">Upload size is too
                         <strong>large</strong>.
                     </p>
+                    <a th:href="@{/prepare/}" class="btn btn-primary">Back</a>
                 </div>
             </div>
         </div>
