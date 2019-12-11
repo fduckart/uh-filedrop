@@ -76,7 +76,6 @@ public class PrepareController {
         FileDrop fileDrop;
 
         if (workflowService.getProcessVariables(workflowService.getCurrentTask(user)).containsKey("fileDropId")) {
-            logger.debug(fileDropService.findFileDrop(fileDropService.getFileDropId(user)));
             fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(user));
             fileDrop.setRecipient(Arrays.toString(recipients));
             fileDrop.setValid(validation);
