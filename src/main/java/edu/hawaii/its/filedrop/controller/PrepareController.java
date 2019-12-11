@@ -63,19 +63,19 @@ public class PrepareController {
 
         User user = currentUser();
 
-        if(recipients.length == 0) {
+        if (recipients.length == 0) {
             recipients = new String[1];
             recipients[0] = currentUser().getUsername();
         }
 
-        if(logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("User: " + currentUser());
             logger.debug("User added recipients: " + Arrays.toString(recipients));
         }
 
         FileDrop fileDrop;
 
-        if (workflowService.getProcessVariables(workflowService.getCurrentTask(user)).containsKey("fileDropId")) {
+        if (workflowService.hasFileDrop(user)) {
             fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(user));
             fileDrop.setRecipient(Arrays.toString(recipients));
             fileDrop.setValid(validation);

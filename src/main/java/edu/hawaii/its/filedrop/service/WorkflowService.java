@@ -80,4 +80,12 @@ public class WorkflowService {
     public Map<String, Object> getProcessVariables(Task task) {
         return getProcessVariables(task.getProcessInstanceId());
     }
+
+    public Map<String, Object> getProcessVariables(User user) {
+        return getProcessVariables(getCurrentTask(user));
+    }
+
+    public boolean hasFileDrop(User user) {
+        return getProcessVariables(getCurrentTask(user)).containsKey("fileDropId");
+    }
 }

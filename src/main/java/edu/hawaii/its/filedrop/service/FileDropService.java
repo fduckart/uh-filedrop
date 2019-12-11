@@ -46,7 +46,7 @@ public class FileDropService {
     }
 
     public Integer getFileDropId(User user) {
-        return (Integer) workflowService.getProcessVariables(workflowService.getCurrentTask(user)).get("fileDropId");
+        return (Integer) workflowService.getProcessVariables(user).get("fileDropId");
     }
 
     public void addRecipients(User user, String... recipients) {
