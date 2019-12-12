@@ -3,9 +3,7 @@ package edu.hawaii.its.filedrop.controller;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,6 +25,7 @@ import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
+import edu.hawaii.its.filedrop.service.ProcessVariableHolder;
 import edu.hawaii.its.filedrop.service.WorkflowService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
@@ -97,10 +96,11 @@ public class PrepareController {
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
-        Map<String, Object> args = new HashMap<>();
-        args.put("fileDropId", fileDrop.getId());
-        args.put("fileDropDownloadKey", fileDrop.getDownloadKey());
-        workflowService.addProcessVariables(workflowService.getCurrentTask(user), args);
+        ProcessVariableHolder processVariableHolder = new ProcessVariableHolder();
+        processVariableHolder.add("fileDropId", fileDrop.getId());
+        processVariableHolder.add("fileDropDownloadKey", fileDrop.getDownloadKey());
+
+        workflowService.addProcessVariables(workflowService.getCurrentTask(user), processVariableHolder.getMap());
 
         fileDropService.addRecipients(user, recipients);
 
@@ -121,7 +121,8 @@ public class PrepareController {
 
         logger.debug("User at addFiles.");
 
-        Map<String, Object> processVariables = workflowService.getProcessVariables(currentTask);
+        ProcessVariableHolder processVariables =
+                new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
         String[] recipients = (String[]) processVariables.get("recipients");
         List<String> recipientsList = Arrays.stream(recipients).map(recipient -> {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
@@ -133,7 +134,7 @@ public class PrepareController {
 
         model.addAttribute("recipients", recipientsList);
         model.addAttribute("maxUploadSize", maxUploadSize);
-        model.addAttribute("downloadKey", workflowService.getProcessVariables(currentTask).get("fileDropDownloadKey"));
+        model.addAttribute("downloadKey", processVariables.get("fileDropDownloadKey"));
         return "user/files";
     }
 
@@ -147,7 +148,8 @@ public class PrepareController {
         fileSet.setComment(comment);
 
         Task currentTask = workflowService.getCurrentTask(currentUser());
-        Map<String, Object> processVariables = workflowService.getProcessVariables(currentTask);
+        ProcessVariableHolder processVariables =
+                new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
         Integer fileDropId = (Integer) processVariables.get("fileDropId");
         fileSet.setFileDrop(fileDropService.findFileDrop(fileDropId));
         fileDropService.saveFileSet(fileSet);
