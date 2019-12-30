@@ -1,5 +1,6 @@
 function PrepareJsController($scope, dataProvider) {
     $scope.init = function (sender, helpdesk, recipients, expiration, authentication) {
+        $scope.recipient = "";
         $scope.sender = sender;
         $scope.recipients = [];
         $scope.authentication = true;
@@ -22,13 +23,13 @@ function PrepareJsController($scope, dataProvider) {
             $scope.expiration = expiration;
         }
 
-        if(authentication !== null) {
+        if (authentication !== null) {
             $scope.authentication = authentication;
         }
 
         dataProvider.loadData(function(response) {
-           let data = response.data;
-           $scope.senderEmails = data.mails;
+            let data = response.data;
+            $scope.senderEmails = data.mails;
         }, "/filedrop/api/ldap/" + sender);
     };
 
@@ -80,8 +81,11 @@ function PrepareJsController($scope, dataProvider) {
     };
 
     $scope.showPopup = function() {
-        $("#prepareModal").modal();
+        $("#prepareModal")
+        .modal();
     };
+
+    $scope.disabled = () => $scope.recipient.length === 0 && $scope.recipients.length === 0;
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);

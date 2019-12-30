@@ -84,7 +84,9 @@
                         </div>
                     </div>
                     <input type="hidden" name="recipients" ng-value="getRecipients()">
-                    <button class="btn btn-primary pull-right" aria-label="" type="submit">Next</button>
+                    <button class="btn btn-primary pull-right" aria-label="" type="submit"
+                        ng-disabled="disabled()">Next
+                    </button>
                 </form>
             </div>
         </div>
