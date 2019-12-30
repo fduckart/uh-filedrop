@@ -223,6 +223,8 @@ public class FileDropServiceTest {
                 workflowService.getCurrentTask(user).getProcessInstanceId(), args
         );
 
+        assertTrue(workflowService.hasFileDrop(user));
+
         fileDropService.addRecipients(user, recipients);
 
         FileSet fileSet = new FileSet();
@@ -230,8 +232,7 @@ public class FileDropServiceTest {
         fileSet.setType("image/png");
         fileSet.setComment("Test image png");
 
-        Map<String, Object> vars =
-                workflowService.getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId());
+        Map<String, Object> vars = workflowService.getProcessVariables(user);
 
         fileSet.setFileDrop(fileDropService.findFileDrop((Integer) vars.get("fileDropId")));
 
@@ -278,9 +279,7 @@ public class FileDropServiceTest {
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
-        workflowService.addProcessVariables(
-                workflowService.getCurrentTask(user).getProcessInstanceId(), args
-        );
+        workflowService.addProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId(), args);
 
         fileDropService.addRecipients(user, recipients);
 
