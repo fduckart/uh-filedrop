@@ -87,20 +87,29 @@ public class HomeController {
     public String prepare(Model model, @RequestParam(value = "helpdesk", required = false) Boolean helpdesk) {
         logger.debug("User at prepare.");
 
-        Task currentTask = workflowService.getCurrentTask(userContextService.getCurrentUser());
+        Task currentTask = workflowService.getCurrentTask(currentUser());
 
         if (currentTask != null && currentTask.getTaskDefinitionKey().equalsIgnoreCase("filesTask")) {
-            FileDrop fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(userContextService.getCurrentUser()));
+            FileDrop fileDrop =
+                    fileDropService.findFileDrop(fileDropService.getFileDropId(currentUser()));
             model.addAttribute("expiration", ChronoUnit.DAYS.between(fileDrop.getCreated(), fileDrop.getExpiration()));
             model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
-            workflowService.revertTask(userContextService.getCurrentUser(), "recipientsTask");
-            model.addAttribute("recipients", Arrays.toString((String[])workflowService.getProcessVariables(currentTask).get("recipients")));
+            workflowService.revertTask(currentUser(), "recipientsTask");
+            model.addAttribute("recipients",
+                    Arrays.toString((String[]) workflowService.getProcessVariables(currentTask).get("recipients")));
         } else {
-            fileDropService.startUploadProcess(userContextService.getCurrentUser());
+            fileDropService.startUploadProcess(currentUser());
         }
 
-        model.addAttribute("user", userContextService.getCurrentUser().getUsername() + "@hawaii.edu");
+        model.addAttribute("user", currentUser().getUsername() + "@hawaii.edu");
         model.addAttribute("helpdesk", helpdesk);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("User: " + currentUser());
+            logger.debug("Helpdesk: " + helpdesk);
+            logger.debug("Current Task: " + currentTask);
+        }
+
         return "user/prepare";
     }
 
@@ -115,7 +124,7 @@ public class HomeController {
     @PostMapping("/user/data")
     public String userData() {
         logger.debug("User at user/data.");
-        emailService.send(userContextService.getCurrentUser());
+        emailService.send(currentUser());
         return "redirect:/user";
     }
 
@@ -149,8 +158,7 @@ public class HomeController {
     public String adminUser(Model model) {
         logger.debug("User at /user.");
 
-        User user = userContextService.getCurrentUser();
-        model.addAttribute("user", user);
+        model.addAttribute("user", currentUser());
 
         return "user/user";
     }
@@ -166,6 +174,10 @@ public class HomeController {
 
     public void setEmailService(EmailService emailService) {
         this.emailService = emailService;
+    }
+
+    private User currentUser() {
+        return userContextService.getCurrentUser();
     }
 
 }
