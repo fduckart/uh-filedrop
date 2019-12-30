@@ -54,6 +54,39 @@ public class PrepareController {
     private String maxUploadSize;
 
     @PreAuthorize("hasRole('UH')")
+    @GetMapping(value = { "/prepare" })
+    public String prepare(Model model, @RequestParam(value = "helpdesk", required = false) Boolean helpdesk) {
+        logger.debug("User at prepare.");
+
+        Task currentTask = workflowService.getCurrentTask(currentUser());
+
+        if (currentTask != null && currentTask.getTaskDefinitionKey().equalsIgnoreCase("filesTask")) {
+            FileDrop fileDrop =
+                    fileDropService.findFileDrop(fileDropService.getFileDropId(currentUser()));
+            model.addAttribute("expiration", ChronoUnit.DAYS.between(fileDrop.getCreated(), fileDrop.getExpiration()));
+            model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
+            workflowService.revertTask(currentUser(), "recipientsTask");
+            ProcessVariableHolder processVariableHolder =
+                    new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
+            String recipients = Arrays.toString((String[]) processVariableHolder.get("recipients"));
+            model.addAttribute("recipients", recipients);
+        } else {
+            fileDropService.startUploadProcess(currentUser());
+        }
+
+        model.addAttribute("user", currentUser().getUsername() + "@hawaii.edu");
+        model.addAttribute("helpdesk", helpdesk);
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("User: " + currentUser());
+            logger.debug("Helpdesk: " + helpdesk);
+            logger.debug("Current Task: " + currentTask);
+        }
+
+        return "user/prepare";
+    }
+
+    @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
     public String addRecipients(@RequestParam("sender") String sender,
             @RequestParam("validation") Boolean validation,

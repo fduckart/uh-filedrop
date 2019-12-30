@@ -1,12 +1,8 @@
 package edu.hawaii.its.filedrop.controller;
 
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
@@ -23,7 +18,6 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 import edu.hawaii.its.filedrop.service.WorkflowService;
-import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.Message;
 
 @Controller
@@ -80,37 +74,6 @@ public class HomeController {
         model.addAttribute("maxSize", FileUtils.byteCountToDisplaySize(maxSize));
 
         return "home";
-    }
-
-    @PreAuthorize("hasRole('UH')")
-    @GetMapping(value = { "/prepare" })
-    public String prepare(Model model, @RequestParam(value = "helpdesk", required = false) Boolean helpdesk) {
-        logger.debug("User at prepare.");
-
-        Task currentTask = workflowService.getCurrentTask(currentUser());
-
-        if (currentTask != null && currentTask.getTaskDefinitionKey().equalsIgnoreCase("filesTask")) {
-            FileDrop fileDrop =
-                    fileDropService.findFileDrop(fileDropService.getFileDropId(currentUser()));
-            model.addAttribute("expiration", ChronoUnit.DAYS.between(fileDrop.getCreated(), fileDrop.getExpiration()));
-            model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
-            workflowService.revertTask(currentUser(), "recipientsTask");
-            model.addAttribute("recipients",
-                    Arrays.toString((String[]) workflowService.getProcessVariables(currentTask).get("recipients")));
-        } else {
-            fileDropService.startUploadProcess(currentUser());
-        }
-
-        model.addAttribute("user", currentUser().getUsername() + "@hawaii.edu");
-        model.addAttribute("helpdesk", helpdesk);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("User: " + currentUser());
-            logger.debug("Helpdesk: " + helpdesk);
-            logger.debug("Current Task: " + currentTask);
-        }
-
-        return "user/prepare";
     }
 
     @PreAuthorize("isAuthenticated()")
