@@ -85,7 +85,7 @@ function PrepareJsController($scope, dataProvider) {
         .modal();
     };
 
-    $scope.disabled = () => $scope.recipient.length === 0 && $scope.recipients.length === 0;
+    $scope.disabled = () => $scope.recipient.length > 0 && $scope.recipients.length === 0;
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);
