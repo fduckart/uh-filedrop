@@ -1,12 +1,8 @@
 package edu.hawaii.its.filedrop.controller;
 
-import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
-
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +10,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
@@ -23,7 +18,6 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 import edu.hawaii.its.filedrop.service.WorkflowService;
-import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.Message;
 
 @Controller
@@ -82,28 +76,6 @@ public class HomeController {
         return "home";
     }
 
-    @PreAuthorize("hasRole('UH')")
-    @GetMapping(value = { "/prepare" })
-    public String prepare(Model model, @RequestParam(value = "helpdesk", required = false) Boolean helpdesk) {
-        logger.debug("User at prepare.");
-
-        Task currentTask = workflowService.getCurrentTask(userContextService.getCurrentUser());
-
-        if (currentTask != null && currentTask.getTaskDefinitionKey().equalsIgnoreCase("filesTask")) {
-            FileDrop fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(userContextService.getCurrentUser()));
-            model.addAttribute("expiration", ChronoUnit.DAYS.between(fileDrop.getCreated(), fileDrop.getExpiration()));
-            model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
-            workflowService.revertTask(userContextService.getCurrentUser(), "recipientsTask");
-            model.addAttribute("recipients", Arrays.toString((String[])workflowService.getProcessVariables(currentTask).get("recipients")));
-        } else {
-            fileDropService.startUploadProcess(userContextService.getCurrentUser());
-        }
-
-        model.addAttribute("user", userContextService.getCurrentUser().getUsername() + "@hawaii.edu");
-        model.addAttribute("helpdesk", helpdesk);
-        return "user/prepare";
-    }
-
     @PreAuthorize("isAuthenticated()")
     @GetMapping(value = "/login")
     public String login() {
@@ -115,7 +87,7 @@ public class HomeController {
     @PostMapping("/user/data")
     public String userData() {
         logger.debug("User at user/data.");
-        emailService.send(userContextService.getCurrentUser());
+        emailService.send(currentUser());
         return "redirect:/user";
     }
 
@@ -149,8 +121,7 @@ public class HomeController {
     public String adminUser(Model model) {
         logger.debug("User at /user.");
 
-        User user = userContextService.getCurrentUser();
-        model.addAttribute("user", user);
+        model.addAttribute("user", currentUser());
 
         return "user/user";
     }
@@ -166,6 +137,10 @@ public class HomeController {
 
     public void setEmailService(EmailService emailService) {
         this.emailService = emailService;
+    }
+
+    private User currentUser() {
+        return userContextService.getCurrentUser();
     }
 
 }
