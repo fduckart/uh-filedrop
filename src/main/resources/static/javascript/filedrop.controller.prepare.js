@@ -5,7 +5,7 @@ function PrepareJsController($scope, dataProvider) {
         $scope.recipients = [];
         $scope.authentication = true;
         $scope.senderEmails = [];
-        $scope.expiration = "5";
+        $scope.expiration = "7200";
 
         if (helpdesk) {
             $scope.recipient = "help@hawaii.edu";
