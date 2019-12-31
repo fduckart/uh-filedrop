@@ -8,20 +8,21 @@ function UploadJsController($scope, Upload, $window) {
 
     $scope.submit = function () {
         if ($scope.files && $scope.files.length) {
-            for (let i = 0; i < $scope.files.length; i++) {
+            $scope.files.map((file, index) => {
                 Upload.upload({
-                    url: "/filedrop/prepare/files",
+                    url: "/filedrop/prepare/files/" + $scope.downloadKey,
                     data: {
-                        comment: $scope.files[i].comment,
-                        file: $scope.files[i]
+                        comment: file.comment,
+                        file
                     },
                     arrayKey: ""
-                }).then(function () {
-                    if (i === ($scope.files.length - 1)) {
-                        $window.location.href = "/filedrop/dl/" + $scope.downloadKey;
-                    }
-                });
-            }
+                })
+                      .then(() => {
+                          if (index === ($scope.files.length - 1)) {
+                              $window.location.href = "/filedrop/dl/" + $scope.downloadKey;
+                          }
+                      });
+            });
         }
     };
 

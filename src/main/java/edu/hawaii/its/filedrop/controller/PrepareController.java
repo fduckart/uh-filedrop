@@ -146,6 +146,7 @@ public class PrepareController {
         fileSet.setFileDrop(fileDrop);
         fileDropService.saveFileSet(fileSet);
 
+        logger.debug(fileDrop.getUploader() + " uploaded: " + fileSet);
     }
 
     @GetMapping(value = "/helpdesk/successful")
