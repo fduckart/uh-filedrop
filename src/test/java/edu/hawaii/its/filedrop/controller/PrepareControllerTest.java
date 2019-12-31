@@ -207,7 +207,7 @@ public class PrepareControllerTest {
         assertEquals("test", fileSets.get(0).getComment());
 
         mockMvc.perform(get("/helpdesk/successful"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/files-uploaded-helpdesk"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
     }
 }

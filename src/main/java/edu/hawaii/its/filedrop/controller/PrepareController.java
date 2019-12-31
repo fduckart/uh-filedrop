@@ -150,8 +150,9 @@ public class PrepareController {
     }
 
     @GetMapping(value = "/helpdesk/successful")
-    public String helpdeskSuccessful() {
-        return "user/files-uploaded-helpdesk";
+    public String helpdeskSuccessful(RedirectAttributes redirectAttributes) {
+        redirectAttributes.addFlashAttribute("uploaded", true);
+        return "redirect:/";
     }
 
     @PreAuthorize("hasRole('UH')")
