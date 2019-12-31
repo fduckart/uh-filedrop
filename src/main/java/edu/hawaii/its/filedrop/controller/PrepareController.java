@@ -63,12 +63,12 @@ public class PrepareController {
         if (currentTask != null && currentTask.getTaskDefinitionKey().equalsIgnoreCase("filesTask")) {
             FileDrop fileDrop =
                     fileDropService.findFileDrop(fileDropService.getFileDropId(currentUser()));
-            model.addAttribute("expiration", ChronoUnit.DAYS.between(fileDrop.getCreated(), fileDrop.getExpiration()));
-            model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
             workflowService.revertTask(currentUser(), "recipientsTask");
             ProcessVariableHolder processVariableHolder =
                     new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
             String recipients = Arrays.toString((String[]) processVariableHolder.get("recipients"));
+            model.addAttribute("expiration", processVariableHolder.get("expirationLength"));
+            model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
             model.addAttribute("recipients", recipients);
         } else {
             fileDropService.startUploadProcess(currentUser());
@@ -112,7 +112,6 @@ public class PrepareController {
             fileDrop.setRecipient(Arrays.toString(recipients));
             fileDrop.setValid(validation);
             fileDrop.setAuthenticationRequired(validation);
-            fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
         } else {
             fileDrop = new FileDrop();
             fileDrop.setRecipient(Arrays.toString(recipients));
@@ -121,8 +120,6 @@ public class PrepareController {
             fileDrop.setUploadKey(Strings.generateRandomString());
             fileDrop.setUploader(user.getUsername());
             fileDrop.setUploaderFullName(user.getName());
-            fileDrop.setCreated(LocalDateTime.now());
-            fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.DAYS));
             fileDrop.setValid(validation);
             fileDrop.setAuthenticationRequired(validation);
         }
@@ -132,6 +129,7 @@ public class PrepareController {
         ProcessVariableHolder processVariableHolder = new ProcessVariableHolder();
         processVariableHolder.add("fileDropId", fileDrop.getId());
         processVariableHolder.add("fileDropDownloadKey", fileDrop.getDownloadKey());
+        processVariableHolder.add("expirationLength", expiration);
 
         workflowService.addProcessVariables(workflowService.getCurrentTask(user), processVariableHolder.getMap());
 
@@ -184,7 +182,12 @@ public class PrepareController {
         ProcessVariableHolder processVariables =
                 new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
         Integer fileDropId = (Integer) processVariables.get("fileDropId");
-        fileSet.setFileDrop(fileDropService.findFileDrop(fileDropId));
+        FileDrop fileDrop = fileDropService.findFileDrop(fileDropId);
+        Integer expiration = (Integer) processVariables.get("expirationLength");
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.MINUTES));
+        fileDropService.saveFileDrop(fileDrop);
+        fileSet.setFileDrop(fileDrop);
         fileDropService.saveFileSet(fileSet);
 
         logger.debug(currentUser().getUsername() + " uploaded: " + fileSet);

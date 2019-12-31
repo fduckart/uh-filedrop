@@ -65,14 +65,16 @@
                             <label for="expiration" class="filedrop-label">Expiration Timer</label>
                             <div class="col-sm-4 px-0">
                                 <select class="custom-select" name="expiration" id="expiration" ng-model="expiration">
-                                    <option value="1">1 day</option>
-                                    <option value="2">2 days</option>
-                                    <option value="3">3 days</option>
-                                    <option value="4">4 days</option>
-                                    <option value="5" selected>5 days</option>
-                                    <option value="6">6 days</option>
-                                    <option value="7">7 days</option>
-                                    <option value="14">14 days</option>
+                                    <option value="30">30 minutes</option>
+                                    <option value="60">1 hour</option>
+                                    <option value="144">1 day</option>
+                                    <option value="2880">2 days</option>
+                                    <option value="4320">3 days</option>
+                                    <option value="5760">4 days</option>
+                                    <option value="7200" selected>5 days</option>
+                                    <option value="8640">6 days</option>
+                                    <option value="10080">7 days</option>
+                                    <option value="20160">14 days</option>
                                 </select>
                             </div>
                         </div>
@@ -84,8 +86,8 @@
                         </div>
                     </div>
                     <input type="hidden" name="recipients" ng-value="getRecipients()">
-                    <button class="btn btn-primary pull-right" aria-label="" type="submit"
-                        ng-disabled="disabled()">Next
+                    <button class="btn btn-primary pull-right" aria-label="" type="submit" ng-disabled="disabled()">
+                        Next
                     </button>
                 </form>
             </div>
