@@ -14,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
@@ -38,6 +39,9 @@ public class PrepareControllerTest {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @Autowired
+    private FileDropRepository fileDropRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -164,5 +168,46 @@ public class PrepareControllerTest {
         assertEquals("test.txt", fileSets.get(0).getFileName());
         assertEquals("text/plain", fileSets.get(0).getType());
         assertEquals("test comment", fileSets.get(0).getComment());
+    }
+
+    @Test
+    public void helpdeskTest() throws Exception {
+        mockMvc.perform(get("/helpdesk"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare-helpdesk"));
+
+        mockMvc.perform(post("/helpdesk")
+                .param("sender", "Test")
+                .param("expiration", "30"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/helpdesk/files/{downloadKey}"));
+
+        FileDrop fileDrop =
+                fileDropRepository.findAll().stream().filter(fd -> fd.getUploader().equals("Test"))
+                        .findFirst().orElse(null);
+
+        mockMvc.perform(get("/helpdesk/files/" + fileDrop.getDownloadKey()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("downloadKey", "maxUploadSize", "recipients"));
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "test data".getBytes());
+
+        mockMvc.perform(multipart("/helpdesk/files/" + fileDrop.getDownloadKey())
+                .file(mockMultipartFile)
+                .param("comment", "test")
+                .param("expiration", "30"))
+                .andExpect(status().isOk());
+
+        List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
+        assertFalse(fileSets.isEmpty());
+        assertEquals(1, fileSets.size());
+        assertEquals("test.txt", fileSets.get(0).getFileName());
+        assertEquals("text/plain", fileSets.get(0).getType());
+        assertEquals("test", fileSets.get(0).getComment());
+
+        mockMvc.perform(get("/helpdesk/successful"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/files-uploaded-helpdesk"));
     }
 }

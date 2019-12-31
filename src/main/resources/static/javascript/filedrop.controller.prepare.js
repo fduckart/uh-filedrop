@@ -1,5 +1,5 @@
 function PrepareJsController($scope, dataProvider) {
-    $scope.init = function (sender, helpdesk, recipients, expiration, authentication) {
+    $scope.init = function(sender, recipients, expiration, authentication) {
         $scope.recipient = "";
         $scope.sender = sender;
         $scope.recipients = [];
@@ -7,19 +7,15 @@ function PrepareJsController($scope, dataProvider) {
         $scope.senderEmails = [];
         $scope.expiration = "7200";
 
-        if (helpdesk) {
-            $scope.recipient = "help@hawaii.edu";
-            $scope.addRecipient($scope.recipient);
-        }
-
         if (recipients !== "null") {
-            let recipientsSub = recipients.substring(1, recipients.length - 1).split(",");
-            for(let r of recipientsSub) {
+            let recipientsSub = recipients.substring(1, recipients.length - 1)
+                                          .split(",");
+            for (let r of recipientsSub) {
                 $scope.addRecipient(r);
             }
         }
 
-        if(expiration !== "null") {
+        if (expiration !== "null") {
             $scope.expiration = expiration;
         }
 
@@ -51,7 +47,7 @@ function PrepareJsController($scope, dataProvider) {
             }
         }, "/filedrop/api/ldap/" + recipient);
 
-        $scope.recipient = '';
+        $scope.recipient = "";
     };
 
     $scope.removeRecipient = function (recipient) {

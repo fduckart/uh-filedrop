@@ -3,6 +3,7 @@ package edu.hawaii.its.filedrop.controller;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -15,10 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
@@ -55,7 +58,7 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = { "/prepare" })
-    public String prepare(Model model, @RequestParam(value = "helpdesk", required = false) Boolean helpdesk) {
+    public String prepare(Model model) {
         logger.debug("User at prepare.");
 
         Task currentTask = workflowService.getCurrentTask(currentUser());
@@ -75,15 +78,79 @@ public class PrepareController {
         }
 
         model.addAttribute("user", currentUser().getUsername() + "@hawaii.edu");
-        model.addAttribute("helpdesk", helpdesk);
 
         if (logger.isDebugEnabled()) {
             logger.debug("User: " + currentUser());
-            logger.debug("Helpdesk: " + helpdesk);
             logger.debug("Current Task: " + currentTask);
         }
 
         return "user/prepare";
+    }
+
+    @GetMapping(value = "/helpdesk")
+    public String prepareHelpdesk() {
+        logger.debug("User at prepare-helpdesk");
+        return "user/prepare-helpdesk";
+    }
+
+    @PostMapping(value = "/helpdesk")
+    public String addHelpdesk(@RequestParam("sender") String sender, @RequestParam("expiration") Integer expiration,
+            RedirectAttributes redirectAttributes) {
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setUploader(sender);
+        fileDrop.setUploaderFullName(sender);
+        fileDrop.setAuthenticationRequired(true);
+        fileDrop.setRecipient("[help]");
+        fileDrop.setEncryptionKey(Strings.generateRandomString());
+        fileDrop.setDownloadKey(Strings.generateRandomString());
+        fileDrop.setUploadKey(Strings.generateRandomString());
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.MINUTES));
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
+
+        logger.debug("Sender: " + sender);
+        logger.debug("Expiration: " + expiration);
+        logger.debug("Download Key: " + fileDrop.getDownloadKey());
+
+        redirectAttributes.addAttribute("downloadKey", fileDrop.getDownloadKey())
+                .addFlashAttribute("expiration", expiration);
+        return "redirect:/helpdesk/files/{downloadKey}";
+    }
+
+    @GetMapping(value = "/helpdesk/files/{downloadKey}")
+    public String addFileHelpDesk(Model model, @PathVariable("downloadKey") String downloadKey) {
+
+        List<String> recipients = Collections.singletonList("ITS Help Desk");
+        model.addAttribute("maxUploadSize", maxUploadSize);
+        model.addAttribute("downloadKey", downloadKey);
+        model.addAttribute("recipients", recipients);
+
+        return "user/files-helpdesk";
+    }
+
+    @PostMapping(value = "/helpdesk/files/{downloadKey}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public void uploadFilesHelpdesk(@PathVariable("downloadKey") String downloadKey, @RequestParam MultipartFile file,
+            @RequestParam("comment") String comment, @RequestParam("expiration") String expirationStr) {
+        FileSet fileSet = new FileSet();
+        fileSet.setFileName(file.getOriginalFilename());
+        fileSet.setType(file.getContentType());
+        fileSet.setComment(comment);
+
+        Integer expiration = Integer.valueOf(expirationStr);
+        FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.MINUTES));
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
+
+        fileSet.setFileDrop(fileDrop);
+        fileDropService.saveFileSet(fileSet);
+
+    }
+
+    @GetMapping(value = "/helpdesk/successful")
+    public String helpdeskSuccessful() {
+        return "user/files-uploaded-helpdesk";
     }
 
     @PreAuthorize("hasRole('UH')")
