@@ -45,7 +45,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("Test Entry");
         whitelist.setRegistrant("Some Person");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.now();
+        LocalDate localDate = LocalDate.of(2019, 12, 31);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         assertEquals(Integer.valueOf(999), whitelist.getId());
@@ -57,7 +57,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("Test Entry");
         whitelist.setRegistrant("Some Person");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.now();
+        LocalDate localDate = LocalDate.of(2019, 12, 31);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelistService.addWhitelist(whitelist);
@@ -75,6 +75,8 @@ public class WhitelistServiceTest {
     @Test
     public void addWhitelistLdapTest() {
         Whitelist whitelist = whitelistService.addWhitelist(new LdapPersonEmpty(), new LdapPersonEmpty());
+        whitelist.setCreated(LocalDate.of(2019, 12, 31));
+        whitelist = whitelistService.addWhitelist(whitelist);
         whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertNotNull(whitelist);
         assertEquals("", whitelist.getEntry());
@@ -111,7 +113,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("New Person");
         whitelist.setRegistrant("Same Old Mistakes");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.now();
+        LocalDate localDate = LocalDate.of(2019, 12, 31);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
 
@@ -132,7 +134,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("Gavin Dance");
         whitelist.setRegistrant("Jon Mess");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.now();
+        LocalDate localDate = LocalDate.of(2019, 12, 31);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelist = whitelistService.addWhitelist(whitelist);
@@ -152,7 +154,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("Tame Impala");
         whitelist.setRegistrant("Kevin Parker");
         whitelist.setCheck(threshold);
-        LocalDate localDate = LocalDate.now();
+        LocalDate localDate = LocalDate.of(2019, 12, 31);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelist = whitelistService.addWhitelist(whitelist);
