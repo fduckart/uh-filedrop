@@ -7,6 +7,16 @@
 
     <!--  Content container -->
     <div class="container mb-sm-5">
+        <div class="row justify-content-center" th:if="${uploaded}">
+            <div class="col-sm-8">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    File(s) uploaded <strong>successfully</strong>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            </div>
+        </div>
         <div class="row justify-content-center">
             <div class="col-sm-12">
                 <p class="lead text-center" th:utext="${gatemessage}"></p>

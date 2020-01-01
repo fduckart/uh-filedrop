@@ -1,53 +1,40 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
-<body ng-app="filedropApp">
+<body>
 <nav th:replace="menubar :: copy"></nav>
 
-<div class="container" ng-controller="PrepareJsController"
-    th:attr="ng-init='init(\'' + ${user} + '\',\'' + ${recipients} + '\',\'' + ${expiration} + '\',' + ${authentication} +');'">
+<div class="container">
     <div class="card border-success">
         <div class="card-body">
-            <div class="col-sm-12 mb-3">
-                <label for="email" class="filedrop-label">Sender</label>
-                <div class="input-group">
-                    <input name="email" class="form-control" type="text" disabled th:value="${user}"
-                        ng-if="!userHasMultipleEmails()">
-                    <select name="email" id="email" class="custom-select" ng-model="sender"
-                        ng-if="userHasMultipleEmails()">
-                        <option ng-repeat="email in senderEmails" value="{{ email }}">{{ email }}</option>
-                    </select>
-                </div>
-            </div>
-            <div class="col-sm-12 mb-3">
-                <label for="recipient" class="filedrop-label">Recipients</label>
-                <ul class="list-inline">
-                    <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
-                        <button type="button" class="btn btn-outline-dark btn-sm"
-                            ng-click="removeRecipient(r)" aria-label="Recipient name">
-                            {{ r.name }} <span class="badge badge-danger">&times;</span>
-                        </button>
-                    </li>
-                </ul>
-                <form ng-submit="addRecipient(recipient)">
-                    <div class="input-group">
-                        <input class="form-control" id="recipient" type="text" name="recipient"
-                            ng-model="recipient">
-                        <button type="submit"
-                            class="btn btn-primary ml-2 d-inline-block">Add Recipient
-                        </button>
-                    </div>
-                </form>
-            </div>
             <div class="col-sm-12">
-                <form th:action="@{/prepare/}" method="POST" ng-submit="addRecipient()">
+                <form th:action="@{/helpdesk}" method="POST">
+                    <div class="form-row mb-3">
+                        <div class="col-sm-12">
+                            <label for="sender" class="filedrop-label">Sender</label>
+                            <input class="form-control" type="text" id="sender" name="sender">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="col-sm-12">
+                            <label for="recipient" class="filedrop-label">Recipients</label>
+                            <input id="recipient" name="recipient" type="hidden" value="help">
+                            <ul class="list-inline">
+                                <li class="mr-2 my-1 list-inline-item">
+                                    <button type="button" class="btn btn-outline-dark btn-sm" disabled
+                                        aria-label="Recipient name">
+                                        ITS Help Desk
+                                    </button>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <label for="validationRequired" class="filedrop-label">Require Authentication</label>
-                            <input type="hidden" name="sender" ng-value="sender">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation" id="validationRequired"
-                                    ng-value="true" ng-model="authentication">
+                                    value="true" checked disabled>
                                 <label class="form-check-label" for="validationRequired">
                                     Yes, require recipient to log in using the UH Login (recommended).
                                 </label>
@@ -55,7 +42,7 @@
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation"
                                     id="validationNotRequired"
-                                    ng-value="false" ng-model="authentication">
+                                    value="false" disabled>
                                 <label class="form-check-label" for="validationNotRequired">
                                     No login required (unsecure download available to anyone).
                                 </label>
@@ -66,14 +53,14 @@
                         <div class="col-sm-12">
                             <label for="expiration" class="filedrop-label">Expiration Timer</label>
                             <div class="col-sm-4 px-0">
-                                <select class="custom-select" name="expiration" id="expiration" ng-model="expiration">
+                                <select class="custom-select" name="expiration" id="expiration">
                                     <option value="30">30 minutes</option>
                                     <option value="60">1 hour</option>
-                                    <option value="1440">1 day</option>
+                                    <option value="1440" selected>1 day</option>
                                     <option value="2880">2 days</option>
                                     <option value="4320">3 days</option>
                                     <option value="5760">4 days</option>
-                                    <option value="7200" selected>5 days</option>
+                                    <option value="7200">5 days</option>
                                     <option value="8640">6 days</option>
                                     <option value="10080">7 days</option>
                                     <option value="20160">14 days</option>
@@ -87,10 +74,7 @@
                             <textarea class="form-control" name="message" id="message" rows="3"></textarea>
                         </div>
                     </div>
-                    <input type="hidden" name="recipients" ng-value="getRecipients()">
-                    <button class="btn btn-primary pull-right" aria-label="" type="submit" ng-disabled="disabled()">
-                        Next
-                    </button>
+                    <button class="btn btn-primary pull-right" aria-label="" type="submit">Next</button>
                 </form>
             </div>
         </div>
