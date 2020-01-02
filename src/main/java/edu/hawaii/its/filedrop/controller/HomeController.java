@@ -14,11 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.EmailService;
-import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
-import edu.hawaii.its.filedrop.service.WorkflowService;
 import edu.hawaii.its.filedrop.type.Message;
+import edu.hawaii.its.filedrop.util.Files;
 
 @Controller
 public class HomeController {
@@ -49,12 +48,6 @@ public class HomeController {
     @Autowired
     private SpaceCheckService spaceCheckService;
 
-    @Autowired
-    private FileDropService fileDropService;
-
-    @Autowired
-    private WorkflowService workflowService;
-
     @GetMapping(value = { "/", "/home" })
     public String home(Model model) {
         logger.debug("User at home.");
@@ -65,13 +58,11 @@ public class HomeController {
         model.addAttribute("isCasRenew", isCasSendRenew);
 
         boolean spaceFull = !spaceCheckService.isFreeSpaceAvailable();
-        model.addAttribute("spaceFull", spaceFull);
-
         int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.GATE_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("gatemessage", message.getText());
 
-        model.addAttribute("maxSize", FileUtils.byteCountToDisplaySize(maxSize));
+        model.addAttribute("maxSize", Files.byteCountToDisplaySize(maxSize));
 
         return "home";
     }

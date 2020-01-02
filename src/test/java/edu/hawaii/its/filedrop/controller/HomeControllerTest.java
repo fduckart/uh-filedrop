@@ -82,7 +82,6 @@ public class HomeControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
-                .andExpect(model().attribute("spaceFull", equalTo(false)))
                 .andExpect(model().attribute("gatemessage", equalTo("Welcome to the University of Hawai'i FileDrop application.")));
     }
 
@@ -92,7 +91,6 @@ public class HomeControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
-                .andExpect(model().attribute("spaceFull", equalTo(true)))
                 .andExpect(model().attribute("gatemessage", equalTo("FileDrop is currently unavailable.")));
         spaceCheckService.update();
     }

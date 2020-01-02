@@ -9,7 +9,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.repository.AdministratorRepository;
 import edu.hawaii.its.filedrop.type.Office;
 
 import static org.hamcrest.CoreMatchers.containsString;
@@ -25,13 +24,7 @@ import static org.junit.Assert.assertThat;
 public class ApplicationServiceTest {
 
     @Autowired
-    private AdministratorRepository administratorRepository;
-
-    @Autowired
     private ApplicationService applicationService;
-
-    @Autowired
-    private PersonService personService;
 
     @Test
     public void findOffices() {
