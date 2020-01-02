@@ -10,7 +10,7 @@ function UploadJsController($scope, Upload, $window) {
         if ($scope.files && $scope.files.length) {
             $scope.files.map((file, index) => {
                 Upload.upload({
-                    url: "/filedrop/prepare/files/" + $scope.downloadKey,
+                    url: "/filedrop/prepare/files/",
                     data: {
                         comment: file.comment,
                         file
