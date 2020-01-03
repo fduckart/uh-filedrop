@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">FileDrop</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div>
+    <div>
+        <h1 style="color: red; text-align: center; font-size: 150%">Files are available for you to download</h1>
+    </div>
+    <p>
+        Someone has used the University of Hawaii FileDrop service to send you one or more files. Rather than using
+        email
+        attachments, you can retrieve the file by clicking on the link below or by copying and pasting the URL into your
+        web
+        browser. The files are available for a limited time, and will be automatically removed after the time indicated
+        below.
+    </p>
+    <table style="margin: 1em auto 1em auto; width: 80%; border-collapse: separate; border-spacing: 0.5em">
+        <tbody>
+        <tr>
+            <td>Uploaded by:</td>
+            <td><a th:href="'mailto:' + ${sender}" th:text="${sender}"></a></td>
+        </tr>
+        <tr>
+            <td>Total size:</td>
+            <td th:text="${size} + ' bytes'"></td>
+        </tr>
+        <tr>
+            <td>Available until:</td>
+            <td th:text="${#temporals.format(expiration, 'E, dd MMMM yyyy HH:mm z')}"></td>
+        </tr>
+        </tbody>
+    </table>
+    <p>The uploader has provided the following comment:</p>
+    <div style="padding: 1em; margin: 1em 2em 1em 2em; border: 1px solid red;">
+        <p th:text="${comment}"></p>
+    </div>
+    <p>To download the files, visit this site:</p>
+    <div style="text-align: center; margin: 2em">
+        <a th:href="${downloadURL}" target="_blank" th:text="${downloadURL}"></a>
+    </div>
+</div>
+</body>
+</html>

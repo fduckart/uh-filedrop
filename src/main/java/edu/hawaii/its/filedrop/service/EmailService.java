@@ -7,7 +7,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
 
@@ -25,6 +29,9 @@ public class EmailService {
     private String from;
 
     @Autowired
+    private TemplateEngine htmlTemplateEngine;
+
+    @Autowired
     public EmailService(JavaMailSender javaMailSender) {
         this.javaMailSender = javaMailSender;
     }
@@ -35,6 +42,23 @@ public class EmailService {
 
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
+    }
+
+    public void sendTemplate(String sender, String receiver, String subject, String template, Context context) {
+        logger.info("Sending email from sendTemplate(sender, receiver, template)");
+        if (isEnabled && sender != null && receiver != null) {
+            String htmlContent = htmlTemplateEngine.process(template, context);
+
+            MimeMessagePreparator msg = mimeMessage -> {
+                MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
+                messageHelper.setFrom(from);
+                messageHelper.setTo(receiver);
+                messageHelper.setSubject(subject);
+                messageHelper.setText(htmlContent, true);
+            };
+
+            javaMailSender.send(msg);
+        }
     }
 
     public void send(User user) {
@@ -56,4 +80,7 @@ public class EmailService {
         }
     }
 
+    public String getFrom() {
+        return from;
+    }
 }
