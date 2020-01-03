@@ -8,7 +8,8 @@ function UploadJsController($scope, Upload, $window) {
 
     $scope.submit = function () {
         if ($scope.files && $scope.files.length) {
-            $scope.files.map((file, index) => {
+            let count = 0;
+            $scope.files.map(file => {
                 Upload.upload({
                     url: "/filedrop/prepare/files/",
                     data: {
@@ -18,8 +19,9 @@ function UploadJsController($scope, Upload, $window) {
                     arrayKey: ""
                 })
                       .then(() => {
-                          if (index === ($scope.files.length - 1)) {
-                              $window.location.href = "/filedrop/dl/" + $scope.downloadKey;
+                          count++;
+                          if (count === $scope.files.length) {
+                              $window.location.href = "/filedrop/complete/" + $scope.downloadKey;
                           }
                       });
             });

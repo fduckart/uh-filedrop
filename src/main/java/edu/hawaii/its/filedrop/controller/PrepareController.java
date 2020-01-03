@@ -262,6 +262,21 @@ public class PrepareController {
         logger.debug(currentUser().getUsername() + " uploaded: " + fileSet);
     }
 
+    @GetMapping(value = "/complete/{downloadKey}")
+    public String completeFileDrop(@PathVariable String downloadKey) {
+        Task currentTask = workflowService.getCurrentTask(currentUser());
+        FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
+        ProcessVariableHolder processVariableHolder = new ProcessVariableHolder(currentTask.getProcessVariables());
+        boolean isUploader = fileDrop.getUploader().equals(currentUser().getUsername());
+
+        if (currentTask != null && currentTask.getName().equals("addFiles") && isUploader) {
+            logger.debug(currentUser().getUsername() + " completed " + fileDrop + " " + currentTask);
+            workflowService.completeCurrentTask(currentUser());
+        }
+
+        return "redirect:/dl/" + downloadKey;
+    }
+
     private User currentUser() {
         return userContextService.getCurrentUser();
     }
