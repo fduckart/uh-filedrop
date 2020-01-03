@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import edu.hawaii.its.filedrop.access.User;
@@ -52,17 +53,11 @@ public class HomeController {
     public String home(Model model) {
         logger.debug("User at home.");
 
-        model.addAttribute("maxSize", maxSize);
-        model.addAttribute("urlBase", urlBase);
-        model.addAttribute("casUrlLogin", casUrlLogin);
-        model.addAttribute("isCasRenew", isCasSendRenew);
-
         boolean spaceFull = !spaceCheckService.isFreeSpaceAvailable();
         int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.GATE_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("gatemessage", message.getText());
 
-        model.addAttribute("maxSize", Files.byteCountToDisplaySize(maxSize));
 
         return "home";
     }
@@ -134,4 +129,8 @@ public class HomeController {
         return userContextService.getCurrentUser();
     }
 
+    @ModelAttribute("maxSize")
+    public String maxSizeDisplay() {
+        return Files.byteCountToDisplaySize(maxSize);
+    }
 }
