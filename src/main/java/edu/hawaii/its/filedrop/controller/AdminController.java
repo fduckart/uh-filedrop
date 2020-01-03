@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -19,7 +20,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.thymeleaf.context.Context;
 
+import edu.hawaii.its.filedrop.access.User;
+import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.EmailService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
 import edu.hawaii.its.filedrop.service.LdapService;
@@ -42,6 +47,12 @@ public class AdminController {
 
     @Autowired
     private WhitelistService whitelistService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private UserContextService userContextService;
 
     @GetMapping("/admin")
     public String admin() {
@@ -104,6 +115,46 @@ public class AdminController {
         return "admin/whitelist";
     }
 
+    @GetMapping("/admin/email")
+    public String email() {
+        logger.debug("User at admin/email.");
+        return "admin/emails";
+    }
+
+    @PostMapping("/admin/email")
+    public String sendEmailTemplate(@RequestParam("template") String template) {
+        Context context = new Context();
+        String subject = "FileDrop Test Email";
+
+        switch (template) {
+            case "receiver":
+                subject = "Files are available for you at the UH FileDrop Service";
+                context.setVariable("sender", emailService.getFrom());
+                context.setVariable("size", 1000);
+                context.setVariable("expiration", LocalDateTime.now());
+                context.setVariable("comment", "This is a test");
+                context.setVariable("downloadURL", "https://www.hawaii.edu/filedrop");
+                break;
+            case "uploader":
+                subject = "Your files have been received by the UH FileDrop Service";
+                context.setVariable("sender", emailService.getFrom());
+                context.setVariable("expiration", LocalDateTime.now());
+                context.setVariable("recipientEmail", "lukemcd9@hawaii.edu");
+                context.setVariable("recipientName", "Luke A N McDonald");
+                context.setVariable("downloadURL", "https://www.hawaii.edu/filedrop");
+                break;
+            case "whitelist":
+                subject = "FileDrop Whitelist";
+                break;
+            default:
+        }
+
+        emailService.sendTemplate(emailService.getFrom(), currentUser().getAttribute("uhEmail"), subject,
+                "mail/" + template, context);
+
+        return "redirect:/admin/email";
+    }
+
     @GetMapping("/api/admin/whitelist")
     public ResponseEntity<List<Whitelist>> getWhiteList() {
         logger.debug("User at api/admin/whitelist");
@@ -132,6 +183,10 @@ public class AdminController {
         Whitelist whitelist = whitelistService.findWhiteList(whitelistId);
         whitelistService.deleteWhitelist(whitelist);
         logger.debug("User deleted Whitelist: " + whitelist);
+    }
+
+    private User currentUser() {
+        return userContextService.getCurrentUser();
     }
 
 }
