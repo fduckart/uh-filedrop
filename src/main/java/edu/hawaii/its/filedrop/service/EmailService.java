@@ -10,7 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
@@ -29,7 +29,7 @@ public class EmailService {
     private String from;
 
     @Autowired
-    private TemplateEngine htmlTemplateEngine;
+    private ITemplateEngine htmlTemplateEngine;
 
     @Autowired
     public EmailService(JavaMailSender javaMailSender) {
@@ -45,7 +45,7 @@ public class EmailService {
     }
 
     public void sendTemplate(String sender, String receiver, String subject, String template, Context context) {
-        logger.info("Sending email from sendTemplate(sender, receiver, template)");
+        logger.info("Sending email from sendTemplate(sender, receiver, subject, template, context)");
         if (isEnabled && sender != null && receiver != null) {
             String htmlContent = htmlTemplateEngine.process(template, context);
 
