@@ -37,13 +37,13 @@ public class EmailServiceTest {
     public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
 
     @Before
-    public void setup() {
+    public void setUp() {
         server.start();
         emailService.setEnabled(true);
     }
 
     @After
-    public void destroy() {
+    public void tearDown() {
         server.stop();
         emailService.setEnabled(false);
     }

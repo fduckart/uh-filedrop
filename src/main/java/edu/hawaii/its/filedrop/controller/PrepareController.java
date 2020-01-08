@@ -266,7 +266,6 @@ public class PrepareController {
     public String completeFileDrop(@PathVariable String downloadKey) {
         Task currentTask = workflowService.getCurrentTask(currentUser());
         FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
-        ProcessVariableHolder processVariableHolder = new ProcessVariableHolder(currentTask.getProcessVariables());
         boolean isUploader = fileDrop.getUploader().equals(currentUser().getUsername());
 
         if (currentTask != null && currentTask.getName().equals("addFiles") && isUploader) {

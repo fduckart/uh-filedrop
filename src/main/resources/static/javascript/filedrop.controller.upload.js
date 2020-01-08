@@ -9,7 +9,7 @@ function UploadJsController($scope, Upload, $window) {
     $scope.submit = function () {
         if ($scope.files && $scope.files.length) {
             let count = 0;
-            $scope.files.map(file => {
+            $scope.files.map((file) => {
                 Upload.upload({
                     url: "/filedrop/prepare/files/",
                     data: {
