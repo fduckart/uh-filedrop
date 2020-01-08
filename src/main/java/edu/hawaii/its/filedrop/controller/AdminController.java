@@ -30,6 +30,7 @@ import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.WhitelistService;
+import edu.hawaii.its.filedrop.type.Mail;
 import edu.hawaii.its.filedrop.type.Message;
 import edu.hawaii.its.filedrop.type.Whitelist;
 
@@ -122,10 +123,13 @@ public class AdminController {
     }
 
     @PostMapping("/admin/email")
-    public String sendEmailTemplate(@RequestParam("template") String template) {
+    public String sendEmailTemplate(@RequestParam("template") String template,
+            @RequestParam(value = "recipient", required = false) String recipient) {
         Context context = new Context();
         String subject = "FileDrop Test Email";
-
+        Mail mail = new Mail();
+        mail.setFrom(emailService.getFrom());
+        mail.setTo(recipient != null ? recipient : currentUser().getAttribute("uhEmail"));
         switch (template) {
             case "receiver":
                 subject = "Files are available for you at the UH FileDrop Service";
@@ -139,8 +143,8 @@ public class AdminController {
                 subject = "Your files have been received by the UH FileDrop Service";
                 context.setVariable("sender", emailService.getFrom());
                 context.setVariable("expiration", LocalDateTime.now());
-                context.setVariable("recipientEmail", "lukemcd9@hawaii.edu");
-                context.setVariable("recipientName", "Luke A N McDonald");
+                context.setVariable("recipientEmail", currentUser().getAttribute("uhEmail"));
+                context.setVariable("recipientName", currentUser().getAttribute("cn"));
                 context.setVariable("downloadURL", "https://www.hawaii.edu/filedrop");
                 break;
             case "whitelist":
@@ -148,9 +152,8 @@ public class AdminController {
                 break;
             default:
         }
-
-        emailService.sendTemplate(emailService.getFrom(), currentUser().getAttribute("uhEmail"), subject,
-                "mail/" + template, context);
+        mail.setSubject(subject);
+        emailService.sendTemplate(mail, "mail/" + template, context);
 
         return "redirect:/admin/email";
     }

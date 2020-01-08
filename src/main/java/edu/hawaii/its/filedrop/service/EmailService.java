@@ -13,13 +13,14 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
-import edu.hawaii.its.filedrop.access.User;
+import edu.hawaii.its.filedrop.type.Mail;
 
 @Service
 public class EmailService {
 
     private static final Log logger = LogFactory.getLog(EmailService.class);
 
+    @Autowired
     private JavaMailSender javaMailSender;
 
     @Value("${app.mail.enabled}")
@@ -31,9 +32,9 @@ public class EmailService {
     @Autowired
     private ITemplateEngine htmlTemplateEngine;
 
-    @Autowired
-    public EmailService(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
+    // Constructor
+    public EmailService() {
+        // empty
     }
 
     public boolean isEnabled() {
@@ -44,16 +45,16 @@ public class EmailService {
         this.isEnabled = isEnabled;
     }
 
-    public void sendTemplate(String sender, String receiver, String subject, String template, Context context) {
-        logger.info("Sending email from sendTemplate(sender, receiver, subject, template, context)");
-        if (isEnabled && sender != null && receiver != null) {
+    public void sendTemplate(Mail mail, String template, Context context) {
+        logger.info("Sending email from sendTemplate(mail, template, context)");
+        if (isEnabled && mail.getFrom() != null && mail.getTo() != null) {
             String htmlContent = htmlTemplateEngine.process(template, context);
 
             MimeMessagePreparator msg = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
-                messageHelper.setFrom(from);
-                messageHelper.setTo(receiver);
-                messageHelper.setSubject(subject);
+                messageHelper.setFrom(mail.getFrom());
+                messageHelper.setTo(mail.getTo());
+                messageHelper.setSubject(mail.getSubject());
                 messageHelper.setText(htmlContent, true);
             };
 
@@ -61,17 +62,14 @@ public class EmailService {
         }
     }
 
-    public void send(User user) {
+    public void send(Mail mail) {
         logger.info("Sending email from send(user)...");
-        if (isEnabled && user != null) {
+        if (isEnabled && mail.getTo() != null) {
             SimpleMailMessage msg = new SimpleMailMessage();
-            msg.setTo(user.getAttribute("eduPersonPrincipalName"));
-
-            msg.setFrom(from);
-            String text = "Test from the UH FileDrop Application."
-                    + "\n\nYour basic User information:\n" + user;
-            msg.setText(text);
-            msg.setSubject("Testing from Spring Boot");
+            msg.setTo(mail.getTo());
+            msg.setFrom(mail.getFrom());
+            msg.setText(mail.getContent());
+            msg.setSubject(mail.getSubject());
             try {
                 javaMailSender.send(msg);
             } catch (MailException ex) {

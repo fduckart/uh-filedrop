@@ -17,6 +17,7 @@ import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.EmailService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
+import edu.hawaii.its.filedrop.type.Mail;
 import edu.hawaii.its.filedrop.type.Message;
 import edu.hawaii.its.filedrop.util.Files;
 
@@ -73,7 +74,13 @@ public class HomeController {
     @PostMapping("/user/data")
     public String userData() {
         logger.debug("User at user/data.");
-        emailService.send(currentUser());
+        Mail mail = new Mail();
+        mail.setFrom(emailService.getFrom());
+        mail.setTo(currentUser().getAttribute("uhEmail"));
+        mail.setSubject("Testing from Spring Boot");
+        mail.setContent("Test from the UH FileDrop Application."
+                + "\n\nYour basic User information:\n" + currentUser());
+        emailService.send(mail);
         return "redirect:/user";
     }
 
@@ -119,10 +126,6 @@ public class HomeController {
 
     public EmailService getEmailService() {
         return emailService;
-    }
-
-    public void setEmailService(EmailService emailService) {
-        this.emailService = emailService;
     }
 
     private User currentUser() {
