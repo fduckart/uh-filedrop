@@ -13,16 +13,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.service.EmailService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -190,23 +187,10 @@ public class HomeControllerTest {
     @Test
     @WithMockUhUser(username = "beno")
     public void userDataViaUhUser() throws Exception {
-
-        assertFalse(sendRan);
-
-        homeController.setEmailService(new EmailService(null) {
-            @Override
-            public void send(User user) {
-                assertThat(user.getUid(), equalTo("beno"));
-                sendRan = true;
-            }
-        });
-
         // Anonymous users not allowed here.
         mockMvc.perform(post("/user/data").with(csrf()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/user"));
-
-        assertTrue(sendRan);
     }
 
     @Test

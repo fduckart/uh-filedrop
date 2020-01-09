@@ -168,6 +168,10 @@ public class PrepareControllerTest {
         assertEquals("test.txt", fileSets.get(0).getFileName());
         assertEquals("text/plain", fileSets.get(0).getType());
         assertEquals("test comment", fileSets.get(0).getComment());
+
+        mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
     }
 
     @Test

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">FileDrop</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div>
+    <div>
+        <h1 style="color: red; text-align: center; font-size: 150%;">Your upload via the UH FileDrop service was
+            successful</h1>
+    </div>
+    <p>
+        Your upload to the UH FileDrop service was successful. The files will be available for download until
+        <span th:text="${#temporals.format(expiration, 'E, dd MMMM yyyy HH:mm z')}"></span>, after which time they will
+        be automatically
+        deleted.
+    </p>
+    <p>Recipient:</p>
+    <pre><span th:text="${recipientName}"></span> [<a th:href="'mailto:' + ${recipientEmail}"
+        th:text="${recipientEmail}"></a>]</pre>
+    <p>The download URL for the files is:</p>
+    <div style="text-align: center; margin: 2em">
+        <a th:href="${downloadURL}" target="_blank" th:text="${downloadURL}"></a>
+    </div>
+    <p>
+        Thank you for using the UH FileDrop service. Please feel free to send us any feedback you have regarding the
+        service via the feedback form.
+    </p>
+</div>
+</body>
+</html>

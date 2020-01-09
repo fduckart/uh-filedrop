@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.ServerSetup;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.WhitelistService;
@@ -57,6 +60,9 @@ public class AdminControllerTest {
 
     @Autowired
     private WhitelistService whitelistService;
+
+    @Rule
+    public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
 
     private MockMvc mockMvc;
 
@@ -310,4 +316,37 @@ public class AdminControllerTest {
                 .andExpect(status().isOk());
     }
 
+    @Test
+    @WithMockUhAdmin
+    public void email() throws Exception {
+        server.start();
+        mockMvc.perform(get("/admin/email"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/emails"));
+
+        mockMvc.perform(post("/admin/email")
+                .param("template", "receiver")
+                .param("recipient", "admin@example.com"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/email"));
+
+        mockMvc.perform(post("/admin/email")
+                .param("template", "uploader")
+                .param("recipient", "admin@example.com"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/email"));
+
+        mockMvc.perform(post("/admin/email")
+                .param("template", "whitelist")
+                .param("recipient", "admin@example.com"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/email"));
+
+        mockMvc.perform(post("/admin/email")
+                .param("template", "test"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/email"));
+
+        server.stop();
+    }
 }
