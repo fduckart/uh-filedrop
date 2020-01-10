@@ -1,4 +1,4 @@
-package edu.hawaii.its.filedrop.service;
+package edu.hawaii.its.filedrop.service.mail;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -12,8 +12,6 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
-
-import edu.hawaii.its.filedrop.type.Mail;
 
 @Service
 public class EmailService {

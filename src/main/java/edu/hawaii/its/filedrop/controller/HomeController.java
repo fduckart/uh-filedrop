@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.service.EmailService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
-import edu.hawaii.its.filedrop.type.Mail;
+import edu.hawaii.its.filedrop.service.mail.EmailService;
+import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.Message;
 import edu.hawaii.its.filedrop.util.Files;
 
