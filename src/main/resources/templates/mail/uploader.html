@@ -11,10 +11,10 @@
             successful</h1>
     </div>
     <p>
-        Your upload to the UH FileDrop service was successful. The files will be available for download until
-        <span th:text="${#temporals.format(expiration, 'E, dd MMMM yyyy HH:mm z')}"></span>, after which time they will
-        be automatically
-        deleted.
+        Your upload to the UH FileDrop service was successful.
+        The files will be available for download until
+        <span th:text="${#temporals.format(expiration, 'E, dd MMMM yyyy HH:mm z')}"></span>,
+        after which time they will be automatically deleted.
     </p>
     <p>Recipient:</p>
     <pre><span th:text="${recipientName}"></span> [<a th:href="'mailto:' + ${recipientEmail}"

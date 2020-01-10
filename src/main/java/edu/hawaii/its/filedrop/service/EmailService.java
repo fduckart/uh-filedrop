@@ -45,8 +45,8 @@ public class EmailService {
         this.isEnabled = isEnabled;
     }
 
-    public void sendTemplate(Mail mail, String template, Context context) {
-        logger.info("Sending email from sendTemplate(mail, template, context)");
+    public void send(Mail mail, String template, Context context) {
+        logger.info("Sending email from send(mail, template, context)");
         if (isEnabled && mail.getFrom() != null && mail.getTo() != null) {
             String htmlContent = htmlTemplateEngine.process(template, context);
 
