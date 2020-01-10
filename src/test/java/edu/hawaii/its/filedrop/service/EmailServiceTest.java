@@ -31,7 +31,6 @@ public class EmailServiceTest {
 
     @Autowired
     private EmailService emailService;
-    private static boolean sendRan = false;
 
     @Rule
     public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
@@ -100,7 +99,7 @@ public class EmailServiceTest {
         context.setVariable("comment", "This is a test");
         context.setVariable("downloadURL", "https://google.com");
 
-        emailService.sendTemplate(mail, "mail/receiver", context);
+        emailService.send(mail, "mail/receiver", context);
 
         MimeMessage[] receivedMessages = server.getReceivedMessages();
         assertThat(receivedMessages.length, equalTo(1));

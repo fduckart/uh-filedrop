@@ -153,7 +153,7 @@ public class AdminController {
             default:
         }
         mail.setSubject(subject);
-        emailService.sendTemplate(mail, "mail/" + template, context);
+        emailService.send(mail, "mail/" + template, context);
 
         return "redirect:/admin/email";
     }

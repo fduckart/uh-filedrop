@@ -34,8 +34,6 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 public class HomeControllerTest {
 
-    private static boolean sendRan = false;
-
     @Value("${url.home}")
     private String homeUrl;
 
@@ -58,8 +56,6 @@ public class HomeControllerTest {
 
     @Before
     public void setUp() {
-        sendRan = false;
-
         // Make sure the email service does not send emails.
         homeController.getEmailService().setEnabled(false);
         assertFalse(homeController.getEmailService().isEnabled());
