@@ -1,4 +1,4 @@
-package edu.hawaii.its.filedrop.type;
+package edu.hawaii.its.filedrop.service.mail;
 
 import org.junit.Before;
 import org.junit.Test;

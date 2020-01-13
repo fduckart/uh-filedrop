@@ -24,13 +24,13 @@ import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.service.EmailService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.WhitelistService;
-import edu.hawaii.its.filedrop.type.Mail;
+import edu.hawaii.its.filedrop.service.mail.EmailService;
+import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.Message;
 import edu.hawaii.its.filedrop.type.Whitelist;
 

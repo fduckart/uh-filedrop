@@ -1,4 +1,4 @@
-package edu.hawaii.its.filedrop.type;
+package edu.hawaii.its.filedrop.service.mail;
 
 public class Mail {
 
