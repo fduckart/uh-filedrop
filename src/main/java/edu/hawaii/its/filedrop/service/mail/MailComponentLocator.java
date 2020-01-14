@@ -7,6 +7,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.Assert;
 
 @Component
 public class MailComponentLocator {
@@ -21,14 +22,16 @@ public class MailComponentLocator {
         logger.info("init; starting...");
 
         for (String key : mails.keySet()) {
-            logger.info("init; MailTemplate(key=" + key + "): " + mails.get(key).getClass().getCanonicalName());
+            logger.info("init; MailTemplate(key=" + key + "): " + mails.get(key));
         }
+
+        Assert.notNull(mails.get("empty"), "EmptyMail couldn't be loaded.");
 
         logger.info("init; finished.");
     }
 
     public MailTemplate find(String key) {
-        return mails.get(key);
+        return mails.getOrDefault(key, mails.get("empty"));
     }
 
     public Map<String, MailTemplate> getMails() {

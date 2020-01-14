@@ -9,4 +9,9 @@ public class UploaderMail implements MailTemplate {
     public String getSubject() {
         return "Your files have been received by the UH FileDrop Service";
     }
+
+    @Override
+    public String toString() {
+        return "UploaderMail [subject=" + getSubject() + "]";
+    }
 }
