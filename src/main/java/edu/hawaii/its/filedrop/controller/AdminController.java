@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -123,38 +122,12 @@ public class AdminController {
     }
 
     @PostMapping("/admin/email")
-    public String sendEmailTemplate(@RequestParam("template") String template,
-            @RequestParam(value = "recipient", required = false) String recipient) {
-        Context context = new Context();
-        String subject = "FileDrop Test Email";
+    public String sendEmailTemplate(@RequestParam("template") String template) {
+        LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(currentUser().getUhuuid());
         Mail mail = new Mail();
         mail.setFrom(emailService.getFrom());
-        mail.setTo(recipient != null ? recipient : currentUser().getAttribute("uhEmail"));
-        switch (template) {
-            case "receiver":
-                subject = "Files are available for you at the UH FileDrop Service";
-                context.setVariable("sender", emailService.getFrom());
-                context.setVariable("size", 1000);
-                context.setVariable("expiration", LocalDateTime.now());
-                context.setVariable("comment", "This is a test");
-                context.setVariable("downloadURL", "https://www.hawaii.edu/filedrop");
-                break;
-            case "uploader":
-                subject = "Your files have been received by the UH FileDrop Service";
-                context.setVariable("sender", emailService.getFrom());
-                context.setVariable("expiration", LocalDateTime.now());
-                context.setVariable("recipientEmail", currentUser().getAttribute("uhEmail"));
-                context.setVariable("recipientName", currentUser().getAttribute("cn"));
-                context.setVariable("downloadURL", "https://www.hawaii.edu/filedrop");
-                break;
-            case "whitelist":
-                subject = "FileDrop Whitelist";
-                break;
-            default:
-        }
-        mail.setSubject(subject);
-        emailService.send(mail, "mail/" + template, context);
-
+        mail.setTo(ldapPerson.getMails().get(0));
+        emailService.send(mail, template, new Context());
         return "redirect:/admin/email";
     }
 

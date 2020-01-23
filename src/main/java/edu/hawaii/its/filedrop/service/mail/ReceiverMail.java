@@ -12,6 +12,6 @@ public class ReceiverMail implements MailTemplate {
 
     @Override
     public String toString() {
-        return "EmptyMail [ReceiverMail=" + getSubject() + "]";
+        return "ReceiverMail [subject=" + getSubject() + "]";
     }
 }

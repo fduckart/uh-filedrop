@@ -1,5 +1,8 @@
 package edu.hawaii.its.filedrop.service.mail;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,9 @@ import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
+
+import edu.hawaii.its.filedrop.service.LdapPerson;
+import edu.hawaii.its.filedrop.type.FileDrop;
 
 @Service
 public class EmailService {
@@ -30,6 +36,12 @@ public class EmailService {
     @Autowired
     private ITemplateEngine htmlTemplateEngine;
 
+    @Autowired
+    private MailComponentLocator mailComponentLocator;
+
+    @Value("${url.base}")
+    private String url;
+
     // Constructor
     public EmailService() {
         // empty
@@ -46,13 +58,13 @@ public class EmailService {
     public void send(Mail mail, String template, Context context) {
         logger.info("Sending email from send(mail, template, context)");
         if (isEnabled && mail.getFrom() != null && mail.getTo() != null) {
-            String htmlContent = htmlTemplateEngine.process(template, context);
-
+            String htmlContent = htmlTemplateEngine.process("mail/" + template, context);
+            MailTemplate mailTemplate = mailComponentLocator.find(template);
             MimeMessagePreparator msg = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom(mail.getFrom());
                 messageHelper.setTo(mail.getTo());
-                messageHelper.setSubject(mail.getSubject());
+                messageHelper.setSubject(mailTemplate.getSubject());
                 messageHelper.setText(htmlContent, true);
             };
 
@@ -74,6 +86,21 @@ public class EmailService {
                 logger.error("Error", ex);
             }
         }
+    }
+
+    public Map<String, Object> getFileDropContext(String key, FileDrop fileDrop, LdapPerson recipient) {
+        Map<String, Object> contextMap = new HashMap<>();
+
+        contextMap.put("sender", fileDrop.getUploader());
+        contextMap.put("downloadURL", url + "/dl/" + fileDrop.getDownloadKey());
+        contextMap.put("expiration", fileDrop.getExpiration());
+
+        if (key.equals("uploader")) {
+            contextMap.put("recipientEmail", recipient.getMails().get(0));
+            contextMap.put("recipientName", recipient.getCn());
+        }
+
+        return contextMap;
     }
 
     public String getFrom() {
