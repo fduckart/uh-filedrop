@@ -173,7 +173,7 @@ public class PrepareControllerTest {
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
-        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        FileDrop fileDrop = fileDropService.findFileDrop(4);
         assertNotNull(fileDrop);
 
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
@@ -190,6 +190,57 @@ public class PrepareControllerTest {
         MimeMessage[] receivedMessages = server.getReceivedMessages();
         assertThat(receivedMessages.length, equalTo(2));
         assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
+        assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
+        assertThat(receivedMessages[1].getContent().toString(), containsString("jwlennon@hawaii.edu"));
+    }
+
+    @Test
+    @WithMockUhUser(username = "jwlennon", name = "John W Lennon", email = "jwlennon@hawaii.edu")
+    public void addFilesNonUhTest() throws Exception {
+
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "jwlennon@hawaii.edu")
+                .param("recipients", "test2@test.com")
+                .param("validation", "false")
+                .param("expiration", "5")
+                .param("message", "Test Message"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare/files"));
+
+        mockMvc.perform(get("/prepare/files"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("recipients"));
+
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
+                "text/plain", "test data".getBytes());
+
+        mockMvc.perform(multipart("/prepare/files")
+                .file(mockMultipartFile)
+                .param("comment", "test comment")
+                .characterEncoding("UTF-8"))
+                .andExpect(status().isOk());
+
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        assertNotNull(fileDrop);
+
+        List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
+        assertFalse(fileSets.isEmpty());
+        assertEquals(1, fileSets.size());
+        assertEquals("test.txt", fileSets.get(0).getFileName());
+        assertEquals("text/plain", fileSets.get(0).getType());
+        assertEquals("test comment", fileSets.get(0).getComment());
+
+        mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
+
+        MimeMessage[] receivedMessages = server.getReceivedMessages();
+        assertThat(receivedMessages.length, equalTo(2));
+        assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("test2@test.com"));
         assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
         assertThat(receivedMessages[1].getContent().toString(), containsString("jwlennon@hawaii.edu"));
     }
