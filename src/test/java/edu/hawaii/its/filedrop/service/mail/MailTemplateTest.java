@@ -22,7 +22,7 @@ public class MailTemplateTest {
     @Test
     public void construct() {
         assertNotNull(mailComponentLocator);
-        assertThat(mailComponentLocator.getMails().size(), equalTo(3));
+        assertThat(mailComponentLocator.getMails().size(), equalTo(4));
     }
 
     @Test
@@ -38,5 +38,13 @@ public class MailTemplateTest {
         mailTemplate = mailComponentLocator.find("whitelist");
         assertNotNull(mailTemplate);
         assertThat(mailTemplate.getSubject(), equalTo("FileDrop Whitelist"));
+
+        mailTemplate = mailComponentLocator.find("empty");
+        assertNotNull(mailTemplate);
+        assertThat(mailTemplate.getSubject(), equalTo("Empty Email"));
+
+        mailTemplate = mailComponentLocator.find("test");
+        assertNotNull(mailTemplate);
+        assertThat(mailTemplate.getSubject(), equalTo("Empty Email"));
     }
 }

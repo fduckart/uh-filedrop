@@ -1,8 +1,10 @@
 package edu.hawaii.its.filedrop.controller;
 
 import java.util.List;
+import javax.mail.internet.MimeMessage;
 
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +14,8 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.ServerSetup;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
@@ -19,10 +23,13 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -48,6 +55,9 @@ public class PrepareControllerTest {
 
     private MockMvc mockMvc;
 
+    @Rule
+    public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
+
     @Before
     public void construct() {
         mockMvc = webAppContextSetup(context)
@@ -64,17 +74,17 @@ public class PrepareControllerTest {
 
         mockMvc.perform(post("/prepare")
                 .param("sender", "test")
-                .param("recipients", "test", "test2")
-                .param("validation", "true")
-                .param("expiration", "5"))
+                .param("recipients", "jwlennon@hawaii.edu", "test2")
+                .param("validation", "false")
+                .param("expiration", "5")
+                .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare/files"));
-
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/files"))
-                .andExpect(model().attribute("recipients", contains("test", "test2")));
+                .andExpect(model().attribute("recipients", contains("John W Lennon", "test2")));
     }
 
     @Test
@@ -88,7 +98,8 @@ public class PrepareControllerTest {
                 .param("sender", "jwlennon@hawaii.edu")
                 .param("recipients", "test", "jwlennon")
                 .param("validation", "true")
-                .param("expiration", "5"))
+                .param("expiration", "5")
+                .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare/files"));
 
@@ -99,7 +110,7 @@ public class PrepareControllerTest {
     }
 
     @Test
-    @WithMockUhUser(username = "jwlennon", name = "John W Lennon")
+    @WithMockUhUser(username = "jwlennon", name = "John W Lennon", email = "jwlennon@hawaii.edu")
     public void addNoRecipients() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
@@ -109,7 +120,8 @@ public class PrepareControllerTest {
                 .param("sender", "jwlennon@hawaii.edu")
                 .param("recipients", "")
                 .param("validation", "true")
-                .param("expiration", "5"))
+                .param("expiration", "5")
+                .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare/files"));
 
@@ -132,17 +144,19 @@ public class PrepareControllerTest {
     }
 
     @Test
-    @WithMockUhUser
+    @WithMockUhUser(username = "jwlennon", name = "John W Lennon", email = "jwlennon@hawaii.edu")
     public void addFilesTest() throws Exception {
+
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "test")
-                .param("recipients", "test", "test2")
+                .param("sender", "jwlennon@hawaii.edu")
+                .param("recipients", "krichards@example.com")
                 .param("validation", "true")
-                .param("expiration", "5"))
+                .param("expiration", "5")
+                .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare/files"));
 
@@ -159,7 +173,7 @@ public class PrepareControllerTest {
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
-        FileDrop fileDrop = fileDropService.findFileDrop(2);
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
         assertNotNull(fileDrop);
 
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
@@ -172,6 +186,12 @@ public class PrepareControllerTest {
         mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
+
+        MimeMessage[] receivedMessages = server.getReceivedMessages();
+        assertThat(receivedMessages.length, equalTo(2));
+        assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
+        assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
+        assertThat(receivedMessages[1].getContent().toString(), containsString("jwlennon@hawaii.edu"));
     }
 
     @Test

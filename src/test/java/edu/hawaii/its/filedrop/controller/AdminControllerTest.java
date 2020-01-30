@@ -341,12 +341,6 @@ public class AdminControllerTest {
                 .param("recipient", "admin@example.com"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/email"));
-
-        mockMvc.perform(post("/admin/email")
-                .param("template", "test"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/email"));
-
         server.stop();
     }
 }

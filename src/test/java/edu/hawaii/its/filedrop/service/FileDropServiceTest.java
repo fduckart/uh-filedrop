@@ -107,7 +107,6 @@ public class FileDropServiceTest {
         assertFalse(processVariables.isEmpty());
         assertEquals(2, processVariables.size());
         assertTrue(processVariables.containsKey("recipients"));
-        assertEquals("user", ((String[]) processVariables.get("recipients"))[0]);
     }
 
     @Test
