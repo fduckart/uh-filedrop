@@ -161,7 +161,7 @@ public class FileDrop {
 
     @Transient
     public List<String> getRecipients() {
-        String recipient = this.recipient.substring(1, this.recipient.length() - 2);
+        String recipient = this.recipient.substring(1, this.recipient.length() - 1);
         return Arrays.asList(recipient.split(", "));
     }
 
