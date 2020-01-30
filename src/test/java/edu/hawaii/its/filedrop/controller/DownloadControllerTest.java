@@ -66,7 +66,8 @@ public class DownloadControllerTest {
 
         mockMvc.perform(post("/prepare")
                 .param("sender", "test")
-                .param("recipients", "test", "test2")
+                .param("recipients", "test@test.com", "test2@test.com")
+                .param("message", "test")
                 .param("validation", "true")
                 .param("expiration", "5"))
                 .andExpect(status().is3xxRedirection())
@@ -85,7 +86,7 @@ public class DownloadControllerTest {
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
-        FileDrop fileDrop = fileDropService.findFileDrop(2);
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
         fileDrop.setDownloadKey("test");
         fileDropService.saveFileDrop(fileDrop);
         assertNotNull(fileDrop);

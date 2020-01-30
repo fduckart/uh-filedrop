@@ -15,4 +15,6 @@ public @interface WithMockUhUser {
     String uhuuid() default "12345678";
 
     String name() default "User";
+
+    String email() default "user@test.edu";
 }

@@ -1,5 +1,6 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Map;
@@ -29,8 +30,10 @@ public class WithMockAdminSecurityContextFactory
 
         User user = new User(uhUser.username(), uhUser.uhuuid(), authorities);
 
-        Map<String, String> attrsMap = new HashMap<>();
+        Map<String, Object> attrsMap = new HashMap<>();
         attrsMap.put("cn", uhUser.name());
+        attrsMap.put("uhEmail", uhUser.email());
+        attrsMap.put("mails", Collections.singletonList(uhUser.email()));
         UhAttributes attributes = new UhCasAttributes(attrsMap);
         user.setAttributes(attributes);
 

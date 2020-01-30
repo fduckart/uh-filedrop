@@ -15,4 +15,6 @@ public @interface WithMockUhAdmin {
     String uhuuid() default "12345679";
 
     String name() default "Admin";
+
+    String email() default "admin@test.edu";
 }

@@ -13,10 +13,9 @@
                 <div class="input-group">
                     <input name="email" class="form-control" type="text" disabled th:value="${user}"
                         ng-if="!userHasMultipleEmails()">
-                    <select name="email" id="email" class="custom-select" ng-model="sender"
-                        ng-if="userHasMultipleEmails()">
-                        <option ng-repeat="email in senderEmails" value="{{ email }}">{{ email }}</option>
-                    </select>
+
+                    <select class="custom-select" name="email" id="email" ng-model="sender"
+                        ng-options="mail.value as mail.display for mail in senderEmails"></select>
                 </div>
             </div>
             <div class="col-sm-12 mb-3">

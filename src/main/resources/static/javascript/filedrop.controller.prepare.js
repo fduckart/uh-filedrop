@@ -1,4 +1,4 @@
-function PrepareJsController($scope, dataProvider) {
+function PrepareJsController($scope, dataProvider, $http) {
     $scope.init = function(sender, recipients, expiration, authentication) {
         $scope.recipient = "";
         $scope.sender = sender;
@@ -23,10 +23,13 @@ function PrepareJsController($scope, dataProvider) {
             $scope.authentication = authentication;
         }
 
-        dataProvider.loadData(function(response) {
-            let data = response.data;
-            $scope.senderEmails = data.mails;
-        }, "/filedrop/api/ldap/" + sender);
+        $http({
+            method: "GET",
+            url: "/filedrop/api/ldap/" + $scope.sender
+        })
+        .then((response) => {
+            response.data.mails.map(mail => $scope.senderEmails.push({ display: mail, value: mail }));
+        });
     };
 
     $scope.addRecipient = function (recipient) {
@@ -37,9 +40,9 @@ function PrepareJsController($scope, dataProvider) {
         dataProvider.loadData(function (response) {
             let data = response.data;
             if (data.cn) {
-                $scope.recipients.push({ name: data.cn, uid: data.uid });
-            } else if(recipient.indexOf("@") > -1) {
-                if($scope.authentication) {
+                $scope.recipients.push({ name: data.cn, mail: data.mails[0] });
+            } else if (recipient.indexOf("@") > -1) {
+                if ($scope.authentication) {
                     $scope.showPopup();
                 } else {
                     $scope.recipients.push({ name: recipient });
@@ -61,7 +64,7 @@ function PrepareJsController($scope, dataProvider) {
     $scope.getRecipients = function () {
         let recipients = [];
         $scope.recipients.forEach(function (recipient) {
-            recipients.push(recipient.uid ? recipient.uid : recipient.name);
+            recipients.push(recipient.mail ? recipient.mail : recipient.name);
         });
         return recipients.join(",");
     };

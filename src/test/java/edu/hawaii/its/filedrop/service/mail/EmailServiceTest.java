@@ -2,6 +2,8 @@ package edu.hawaii.its.filedrop.service.mail;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Locale;
+import java.util.Map;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -18,6 +20,8 @@ import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetup;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.type.FileDrop;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -33,6 +37,9 @@ public class EmailServiceTest {
 
     @Rule
     public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
+
+    @Autowired
+    private FileDropService fileDropService;
 
     @Before
     public void setUp() {
@@ -98,12 +105,39 @@ public class EmailServiceTest {
         context.setVariable("comment", "This is a test");
         context.setVariable("downloadURL", "https://google.com");
 
-        emailService.send(mail, "mail/receiver", context);
+        emailService.send(mail, "receiver", context);
 
         MimeMessage[] receivedMessages = server.getReceivedMessages();
         assertThat(receivedMessages.length, equalTo(1));
         assertThat(receivedMessages[0].getFrom()[0].toString(), equalTo("test2@google.com"));
         assertThat(receivedMessages[0].getAllRecipients()[0].toString(), equalTo("test@google.com"));
         assertThat(receivedMessages[0].getContent().toString(), containsString("9999 bytes"));
+    }
+
+    @Test
+    public void sendTemplateFileDrop() throws MessagingException, IOException {
+        assertTrue(emailService.isEnabled());
+
+        Mail mail = new Mail();
+        mail.setFrom("jwlennon@hawaii.edu");
+        mail.setTo("krichards@example.com");
+        mail.setSubject("Test Email");
+
+        FileDrop fileDrop = fileDropService.findFileDrop(2);
+
+        Context context = new Context(Locale.ENGLISH, emailService.getFileDropContext("receiver", fileDrop));
+
+        emailService.send(mail, "receiver", context);
+
+        MimeMessage[] receivedMessages = server.getReceivedMessages();
+        assertThat(receivedMessages.length, equalTo(1));
+        assertThat(receivedMessages[0].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
+        assertThat(receivedMessages[0].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
+        assertThat(receivedMessages[0].getContent().toString(), containsString("jwlennon@hawaii.edu"));
+
+        context = new Context(Locale.ENGLISH, emailService.getFileDropContext("uploader", fileDrop));
+        Map<String, String> recipients = (Map<String, String>) context.getVariable("recipients");
+        assertThat(recipients.size(), equalTo(1));
+        assertThat(recipients.get("krichards@example.com"), equalTo("Keith Richards"));
     }
 }
