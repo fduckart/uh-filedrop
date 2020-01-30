@@ -16,9 +16,13 @@
         <span th:text="${#temporals.format(expiration, 'E, dd MMMM yyyy HH:mm z')}"></span>,
         after which time they will be automatically deleted.
     </p>
-    <p>Recipient:</p>
-    <pre><span th:text="${recipientName}"></span> [<a th:href="'mailto:' + ${recipientEmail}"
-        th:text="${recipientEmail}"></a>]</pre>
+    <p>Recipient(s):</p>
+
+    <pre th:each="recipient : ${recipients}">
+        <span th:text="${recipient.value}"></span>
+        [<a th:href="'mailto:' + ${recipient.key}" th:text="${recipient.key}"></a>]
+    </pre>
+
     <p>The download URL for the files is:</p>
     <div style="text-align: center; margin: 2em">
         <a th:href="${downloadURL}" target="_blank" th:text="${downloadURL}"></a>
