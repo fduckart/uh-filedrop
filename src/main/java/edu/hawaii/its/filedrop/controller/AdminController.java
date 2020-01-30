@@ -123,10 +123,9 @@ public class AdminController {
 
     @PostMapping("/admin/email")
     public String sendEmailTemplate(@RequestParam("template") String template) {
-        LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(currentUser().getUhuuid());
         Mail mail = new Mail();
         mail.setFrom(emailService.getFrom());
-        mail.setTo(ldapPerson.getMails().get(0));
+        mail.setTo(currentUser().getAttributes().getValue("uhEmail"));
         emailService.send(mail, template, new Context());
         return "redirect:/admin/email";
     }

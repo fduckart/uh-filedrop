@@ -5,6 +5,8 @@ import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
@@ -30,6 +33,8 @@ import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.ProcessVariableHolder;
 import edu.hawaii.its.filedrop.service.WorkflowService;
+import edu.hawaii.its.filedrop.service.mail.EmailService;
+import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.util.Strings;
@@ -53,6 +58,9 @@ public class PrepareController {
     @Autowired
     private LdapService ldapService;
 
+    @Autowired
+    private EmailService emailService;
+
     @Value("${app.max.size}")
     private String maxUploadSize;
 
@@ -73,6 +81,7 @@ public class PrepareController {
             model.addAttribute("expiration", processVariableHolder.get("expirationLength"));
             model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
             model.addAttribute("recipients", recipients);
+            model.addAttribute("comment", processVariableHolder.get("message"));
         } else {
             fileDropService.startUploadProcess(currentUser());
         }
@@ -160,13 +169,14 @@ public class PrepareController {
     public String addRecipients(@RequestParam("sender") String sender,
             @RequestParam("validation") Boolean validation,
             @RequestParam("expiration") Integer expiration,
-            @RequestParam("recipients") String[] recipients) {
+            @RequestParam("recipients") String[] recipients,
+            @RequestParam("message") String message) {
 
         User user = currentUser();
 
         if (recipients.length == 0) {
             recipients = new String[1];
-            recipients[0] = currentUser().getUsername();
+            recipients[0] = currentUser().getAttribute("uhEmail");
         }
 
         if (logger.isDebugEnabled()) {
@@ -199,6 +209,9 @@ public class PrepareController {
         processVariableHolder.add("fileDropId", fileDrop.getId());
         processVariableHolder.add("fileDropDownloadKey", fileDrop.getDownloadKey());
         processVariableHolder.add("expirationLength", expiration);
+        processVariableHolder.add("sender", sender);
+        processVariableHolder.add("message", message);
+        processVariableHolder.add("size", 0L);
 
         workflowService.addProcessVariables(workflowService.getCurrentTask(user), processVariableHolder.getMap());
 
@@ -253,11 +266,15 @@ public class PrepareController {
         Integer fileDropId = (Integer) processVariables.get("fileDropId");
         FileDrop fileDrop = fileDropService.findFileDrop(fileDropId);
         Integer expiration = (Integer) processVariables.get("expirationLength");
+        Long size = (Long) processVariables.get("size");
+
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.MINUTES));
         fileDropService.saveFileDrop(fileDrop);
         fileSet.setFileDrop(fileDrop);
         fileDropService.saveFileSet(fileSet);
+
+        workflowService.addProcessVariables(currentTask, Collections.singletonMap("size", size + file.getSize()));
 
         logger.debug(currentUser().getUsername() + " uploaded: " + fileSet);
     }
@@ -267,6 +284,34 @@ public class PrepareController {
         Task currentTask = workflowService.getCurrentTask(currentUser());
         FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
         boolean isUploader = fileDrop.getUploader().equals(currentUser().getUsername());
+        ProcessVariableHolder processVariables =
+                new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
+
+        String sender = (String) processVariables.get("sender");
+        Mail mail = new Mail();
+        mail.setTo(sender);
+        mail.setFrom(emailService.getFrom());
+
+        Map<String, Object> fileDropContext = emailService.getFileDropContext("uploader", fileDrop);
+        emailService.send(mail, "uploader", new Context(Locale.ENGLISH, fileDropContext));
+
+        mail.setFrom(sender);
+
+        for (String recipient : fileDrop.getRecipients()) {
+            LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
+
+            if (ldapPerson.isValid()) {
+                mail.setTo(ldapPerson.getMails().get(0));
+            } else {
+                mail.setTo(recipient);
+            }
+
+            fileDropContext = emailService.getFileDropContext("receiver", fileDrop);
+            fileDropContext.put("comment", processVariables.get("message"));
+            fileDropContext.put("size", processVariables.get("size"));
+            fileDropContext.put("sender", processVariables.get("sender"));
+            emailService.send(mail, "receiver", new Context(Locale.ENGLISH, fileDropContext));
+        }
 
         if (currentTask != null && currentTask.getName().equals("addFiles") && isUploader) {
             logger.debug(currentUser().getUsername() + " completed " + fileDrop + " " + currentTask);
