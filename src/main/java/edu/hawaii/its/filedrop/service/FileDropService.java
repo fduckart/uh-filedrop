@@ -52,10 +52,6 @@ public class FileDropService {
     public void addRecipients(User user, String... recipients) {
         if (workflowService.atTask(user, "addRecipients")) {
             Task recipientTask = workflowService.getCurrentTask(user);
-            if (recipients.length == 0) {
-                recipients = new String[1];
-                recipients[0] = user.getUsername();
-            }
             logger.debug(user.getUsername() + " added recipients: " + Arrays.toString(recipients));
             workflowService.addProcessVariables(recipientTask, Collections.singletonMap("recipients", recipients));
             workflowService.completeCurrentTask(user);

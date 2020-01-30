@@ -17,6 +17,7 @@ import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.service.LdapPerson;
+import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 
 @Service
@@ -38,6 +39,9 @@ public class EmailService {
 
     @Autowired
     private MailComponentLocator mailComponentLocator;
+
+    @Autowired
+    private LdapService ldapService;
 
     @Value("${url.base}")
     private String url;
@@ -88,7 +92,7 @@ public class EmailService {
         }
     }
 
-    public Map<String, Object> getFileDropContext(String key, FileDrop fileDrop, LdapPerson recipient) {
+    public Map<String, Object> getFileDropContext(String key, FileDrop fileDrop) {
         Map<String, Object> contextMap = new HashMap<>();
 
         contextMap.put("sender", fileDrop.getUploader());
@@ -96,8 +100,18 @@ public class EmailService {
         contextMap.put("expiration", fileDrop.getExpiration());
 
         if (key.equals("uploader")) {
-            contextMap.put("recipientEmail", recipient.getMails().get(0));
-            contextMap.put("recipientName", recipient.getCn());
+            Map<String, String> recipientMap = new HashMap<>();
+
+            fileDrop.getRecipients().forEach(recipient -> {
+                LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
+                if (ldapPerson.isValid()) {
+                    recipientMap.put(recipient, ldapPerson.getCn());
+                } else {
+                    recipientMap.put(recipient, recipient);
+                }
+            });
+
+            contextMap.put("recipients", recipientMap);
         }
 
         return contextMap;
