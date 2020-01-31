@@ -28,7 +28,7 @@ function PrepareJsController($scope, dataProvider, $http) {
             url: "/filedrop/api/ldap/" + $scope.sender
         })
         .then((response) => {
-            response.data.mails.map(mail => $scope.senderEmails.push({ display: mail, value: mail }));
+            response.data.mails.map((mail) => $scope.senderEmails.push({ display: mail, value: mail }));
         });
     };
 
