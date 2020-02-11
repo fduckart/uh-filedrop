@@ -2,19 +2,30 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
 <body ng-app="filedropApp">
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var user = [[${user}]];
+    var fileDrop = {
+        recipients: [[${recipients}]],
+        expiration: [[${expiration}]],
+        authentication: [[${authentication}]],
+        message: [[${message}]]
+    };
+    /*]]>*/
+</script>
 <nav th:replace="menubar :: copy"></nav>
 
-<div class="container" ng-controller="PrepareJsController"
-    th:attr="ng-init='init(\'' + ${user} + '\',\'' + ${recipients} + '\',\'' + ${expiration} + '\',' + ${authentication} +');'">
+<div class="container" ng-controller="PrepareJsController" ng-init="init()">
     <div class="card border-success">
         <div class="card-body">
             <div class="col-sm-12 mb-3">
                 <label for="email" class="filedrop-label">Sender</label>
                 <div class="input-group">
-                    <input name="email" class="form-control" type="text" disabled th:value="${user}"
+                    <input name="email" class="form-control" type="text" disabled ng-value="sender"
                         ng-if="!userHasMultipleEmails()">
 
-                    <select class="custom-select" name="email" id="email" ng-model="sender"
+                    <select ng-if="userHasMultipleEmails()" class="custom-select" name="email" id="email"
+                        ng-model="sender"
                         ng-options="mail.value as mail.display for mail in senderEmails"></select>
                 </div>
             </div>
@@ -83,7 +94,8 @@
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <label for="message" class="filedrop-label">Optional Message</label>
-                            <textarea class="form-control" name="message" id="message" rows="3"></textarea>
+                            <textarea class="form-control" name="message" id="message" rows="3"
+                                ng-model="message"></textarea>
                         </div>
                     </div>
                     <input type="hidden" name="recipients" ng-value="getRecipients()">

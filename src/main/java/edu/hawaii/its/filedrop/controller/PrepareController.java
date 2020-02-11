@@ -81,12 +81,12 @@ public class PrepareController {
             model.addAttribute("expiration", processVariableHolder.get("expirationLength"));
             model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
             model.addAttribute("recipients", recipients);
-            model.addAttribute("comment", processVariableHolder.get("message"));
+            model.addAttribute("message", processVariableHolder.get("message"));
         } else {
             fileDropService.startUploadProcess(currentUser());
         }
 
-        model.addAttribute("user", currentUser().getUsername() + "@hawaii.edu");
+        model.addAttribute("user", ldapService.findByUhUuidOrUidOrMail(currentUser().getUhuuid()));
 
         if (logger.isDebugEnabled()) {
             logger.debug("User: " + currentUser());

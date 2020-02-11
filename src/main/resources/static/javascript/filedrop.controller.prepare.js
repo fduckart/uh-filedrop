@@ -1,35 +1,24 @@
-function PrepareJsController($scope, dataProvider, $http) {
-    $scope.init = function(sender, recipients, expiration, authentication) {
+function PrepareJsController($scope, dataProvider, $http, $window) {
+    $scope.init = function() {
         $scope.recipient = "";
-        $scope.sender = sender;
+        $scope.sender = $scope.currentUser().mails[0];
         $scope.recipients = [];
-        $scope.authentication = true;
-        $scope.senderEmails = [];
-        $scope.expiration = "7200";
+        $scope.recipientsStr = $scope.getFileDrop().recipients ?
+            $scope.getFileDrop().recipients : [];
+        $scope.authentication = $scope.getFileDrop().authentication !== null ?
+            $scope.getFileDrop().authentication : true;
+        $scope.senderEmails = $scope.getEmails();
+        $scope.expiration = $scope.getFileDrop().expiration ?
+            $scope.getFileDrop().expiration.toString() : "7200";
+        $scope.message = $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
 
-        if (recipients !== "null") {
-            let recipientsSub = recipients.substring(1, recipients.length - 1)
-                                          .split(",");
+        if ($scope.recipientsStr && $scope.recipientsStr.length > 0) {
+            let recipientsSub = $scope.recipientsStr.substring(1, $scope.recipientsStr.length - 1)
+                                      .split(",");
             for (let r of recipientsSub) {
                 $scope.addRecipient(r);
             }
         }
-
-        if (expiration !== "null") {
-            $scope.expiration = expiration;
-        }
-
-        if (authentication !== null) {
-            $scope.authentication = authentication;
-        }
-
-        $http({
-            method: "GET",
-            url: "/filedrop/api/ldap/" + $scope.sender
-        })
-        .then((response) => {
-            response.data.mails.map((mail) => $scope.senderEmails.push({ display: mail, value: mail }));
-        });
     };
 
     $scope.addRecipient = function (recipient) {
@@ -85,6 +74,18 @@ function PrepareJsController($scope, dataProvider, $http) {
     };
 
     $scope.disabled = () => $scope.recipient.length > 0;
+
+    $scope.currentUser = () => $window.user;
+
+    $scope.getFileDrop = () => $window.fileDrop;
+
+    $scope.getEmails = function() {
+        let emails = [];
+        for (let mail of $scope.currentUser().mails) {
+            emails.push({ value: mail, display: mail });
+        }
+        return emails;
+    };
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);
