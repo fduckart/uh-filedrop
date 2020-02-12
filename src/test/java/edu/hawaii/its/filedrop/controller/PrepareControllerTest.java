@@ -246,6 +246,15 @@ public class PrepareControllerTest {
     }
 
     @Test
+    @WithMockUhUser
+    public void completeNotUploaderTest() throws Exception {
+        FileDrop fileDrop = fileDropService.findFileDrop(1);
+        mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
+    }
+
+    @Test
     public void helpdeskTest() throws Exception {
         mockMvc.perform(get("/helpdesk"))
                 .andExpect(status().isOk())
