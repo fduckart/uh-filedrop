@@ -25,6 +25,7 @@ import edu.hawaii.its.filedrop.type.FileSet;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -249,6 +250,7 @@ public class PrepareControllerTest {
     @WithMockUhUser
     public void completeNotUploaderTest() throws Exception {
         FileDrop fileDrop = fileDropService.findFileDrop(1);
+        assertThat(fileDrop.getUploader(), not(equalTo("user")));
         mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
