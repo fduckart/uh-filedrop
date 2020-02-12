@@ -34,6 +34,9 @@ public class FileSet implements Serializable {
     @Column(name = "comment", nullable = false)
     private String comment;
 
+    @Column(name = "size", nullable = false)
+    private Long size;
+
     //Constructor
     public FileSet() {
         //Empty
@@ -79,6 +82,14 @@ public class FileSet implements Serializable {
         this.comment = comment;
     }
 
+    public Long getSize() {
+        return size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
     @Override
     public String toString() {
         return "FileSet [id=" + id
@@ -86,6 +97,7 @@ public class FileSet implements Serializable {
                 + ", fileName=" + fileName
                 + ", type=" + type
                 + ", comment=" + comment
+                + ", size=" + size
                 + "]";
     }
 }
