@@ -1,5 +1,6 @@
 package edu.hawaii.its.filedrop.service;
 
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,6 +35,9 @@ public class FileDropService {
     @Autowired
     private FileSetRepository fileSetRepository;
 
+    @Autowired
+    private FileSystemStorageService fileSystemStorageService;
+
     public void startUploadProcess(User user) {
         if (workflowService.hasTask(user)) {
             Integer fileDropId = getFileDropId(user);
@@ -58,11 +62,26 @@ public class FileDropService {
         }
     }
 
-    public void uploadFile(User user, List<MultipartFile> files) {
+    public void uploadFile(User user, MultipartFile file, String comment, FileDrop fileDrop) {
         if (workflowService.atTask(user, "addFiles")) {
-            logger.debug(user.getUsername() + " uploaded files.");
-            Task filesTask = workflowService.getCurrentTask(user);
-            workflowService.addProcessVariables(filesTask, Collections.singletonMap("files", files));
+            FileSet fileSet = new FileSet();
+            fileSet.setFileName(file.getOriginalFilename());
+            fileSet.setType(file.getContentType());
+            fileSet.setComment(comment);
+            fileSet.setFileDrop(fileDrop);
+            fileSet.setSize(file.getSize());
+            saveFileSet(fileSet);
+
+            fileSystemStorageService.storeFileSet(file, Paths.get(fileDrop.getDownloadKey(),
+                    fileSet.getId().toString()));
+
+            logger.debug(user.getUsername() + " uploaded " + fileSet);
+        }
+    }
+
+    public void completeFileDrop(User user, FileDrop fileDrop) {
+        if (workflowService.atTask(user, "addFiles")) {
+            logger.debug(user.getUsername() + " completed " + fileDrop);
             workflowService.completeCurrentTask(user);
         }
     }

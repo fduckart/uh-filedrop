@@ -29,6 +29,7 @@ import org.thymeleaf.context.Context;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.FileSystemStorageService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.ProcessVariableHolder;
@@ -60,6 +61,9 @@ public class PrepareController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private FileSystemStorageService storageService;
 
     @Value("${app.max.size}")
     private String maxUploadSize;
@@ -211,7 +215,6 @@ public class PrepareController {
         processVariableHolder.add("expirationLength", expiration);
         processVariableHolder.add("sender", sender);
         processVariableHolder.add("message", message);
-        processVariableHolder.add("size", 0L);
 
         workflowService.addProcessVariables(workflowService.getCurrentTask(user), processVariableHolder.getMap());
 
@@ -255,28 +258,18 @@ public class PrepareController {
     @PostMapping(value = "/prepare/files")
     @ResponseStatus(value = HttpStatus.OK)
     public void uploadFiles(@RequestParam MultipartFile file, @RequestParam String comment) {
-        FileSet fileSet = new FileSet();
-        fileSet.setFileName(file.getOriginalFilename());
-        fileSet.setType(file.getContentType());
-        fileSet.setComment(comment);
-
         Task currentTask = workflowService.getCurrentTask(currentUser());
         ProcessVariableHolder processVariables =
                 new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
         Integer fileDropId = (Integer) processVariables.get("fileDropId");
         FileDrop fileDrop = fileDropService.findFileDrop(fileDropId);
         Integer expiration = (Integer) processVariables.get("expirationLength");
-        Long size = (Long) processVariables.get("size");
 
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(fileDrop.getCreated().plus(expiration, ChronoUnit.MINUTES));
-        fileDropService.saveFileDrop(fileDrop);
-        fileSet.setFileDrop(fileDrop);
-        fileDropService.saveFileSet(fileSet);
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
 
-        workflowService.addProcessVariables(currentTask, Collections.singletonMap("size", size + file.getSize()));
-
-        logger.debug(currentUser().getUsername() + " uploaded: " + fileSet);
+        fileDropService.uploadFile(currentUser(), file, comment, fileDrop);
     }
 
     @GetMapping(value = "/complete/{downloadKey}")
@@ -284,6 +277,11 @@ public class PrepareController {
         Task currentTask = workflowService.getCurrentTask(currentUser());
         FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
         boolean isUploader = fileDrop.getUploader().equals(currentUser().getUsername());
+
+        if(!isUploader) {
+            return "redirect:/dl/" + downloadKey;
+        }
+
         ProcessVariableHolder processVariables =
                 new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
 
@@ -297,6 +295,12 @@ public class PrepareController {
 
         mail.setFrom(sender);
 
+        long size = 0;
+
+        for(FileSet fileSet : fileDrop.getFileSet()) {
+            size += fileSet.getSize();
+        }
+
         for (String recipient : fileDrop.getRecipients()) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
 
@@ -308,15 +312,11 @@ public class PrepareController {
 
             fileDropContext = emailService.getFileDropContext("receiver", fileDrop);
             fileDropContext.put("comment", processVariables.get("message"));
-            fileDropContext.put("size", processVariables.get("size"));
+            fileDropContext.put("size", size);
             fileDropContext.put("sender", processVariables.get("sender"));
             emailService.send(mail, "receiver", new Context(Locale.ENGLISH, fileDropContext));
         }
-
-        if (currentTask != null && currentTask.getName().equals("addFiles") && isUploader) {
-            logger.debug(currentUser().getUsername() + " completed " + fileDrop + " " + currentTask);
-            workflowService.completeCurrentTask(currentUser());
-        }
+        fileDropService.completeFileDrop(currentUser(), fileDrop);
 
         return "redirect:/dl/" + downloadKey;
     }
