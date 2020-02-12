@@ -63,7 +63,7 @@ public class FileDropService {
     }
 
     public void uploadFile(User user, MultipartFile file, String comment, FileDrop fileDrop) {
-        if (workflowService.atTask(user, "addFiles")) {
+        if (workflowService.atTask(user, "addFiles") && file != null) {
             FileSet fileSet = new FileSet();
             fileSet.setFileName(file.getOriginalFilename());
             fileSet.setType(file.getContentType());

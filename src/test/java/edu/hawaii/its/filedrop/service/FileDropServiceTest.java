@@ -55,6 +55,7 @@ public class FileDropServiceTest {
 
         assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
         fileDropService.uploadFile(user, null, null, null);
+        fileDropService.completeFileDrop(user, null);
 
         assertNull(workflowService.getCurrentTask(user));
     }
@@ -86,7 +87,7 @@ public class FileDropServiceTest {
 
         assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
         fileDropService.uploadFile(user, null, null, null);
-
+        fileDropService.completeFileDrop(user, null);
         assertNull(workflowService.getCurrentTask(user));
     }
 
