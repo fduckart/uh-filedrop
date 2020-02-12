@@ -62,9 +62,6 @@ public class PrepareController {
     @Autowired
     private EmailService emailService;
 
-    @Autowired
-    private FileSystemStorageService storageService;
-
     @Value("${app.max.size}")
     private String maxUploadSize;
 
