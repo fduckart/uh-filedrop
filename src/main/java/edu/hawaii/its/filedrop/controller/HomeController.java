@@ -119,6 +119,11 @@ public class HomeController {
         return "user/user";
     }
 
+    @GetMapping("/help/permissions")
+    public String permissions() {
+        return "help/permissions";
+    }
+
     @GetMapping(value = "/404")
     public String invalid() {
         return "redirect:/";
