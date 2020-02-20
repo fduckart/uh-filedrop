@@ -25,6 +25,7 @@ import edu.hawaii.its.filedrop.type.FileSet;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -243,6 +244,16 @@ public class PrepareControllerTest {
         assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("test2@test.com"));
         assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
         assertThat(receivedMessages[1].getContent().toString(), containsString("jwlennon@hawaii.edu"));
+    }
+
+    @Test
+    @WithMockUhUser
+    public void completeNotUploaderTest() throws Exception {
+        FileDrop fileDrop = fileDropService.findFileDrop(1);
+        assertThat(fileDrop.getUploader(), not(equalTo("user")));
+        mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
     }
 
     @Test

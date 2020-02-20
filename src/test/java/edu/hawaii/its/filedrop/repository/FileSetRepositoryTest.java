@@ -54,6 +54,7 @@ public class FileSetRepositoryTest {
         fileSet.setFileDrop(fileDrop);
         fileSet.setComment("test fileset");
         fileSet.setType("image/png");
+        fileSet.setSize(0L);
 
         fileSetRepository.save(fileSet);
 
