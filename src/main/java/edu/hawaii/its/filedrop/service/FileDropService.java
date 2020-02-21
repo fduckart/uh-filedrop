@@ -2,7 +2,6 @@ package edu.hawaii.its.filedrop.service;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -20,6 +19,7 @@ import edu.hawaii.its.filedrop.type.FileSet;
 
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
 
 @Service
 public class FileDropService {
@@ -57,7 +57,8 @@ public class FileDropService {
         if (workflowService.atTask(user, "addRecipients")) {
             Task recipientTask = workflowService.getCurrentTask(user);
             logger.debug(user.getUsername() + " added recipients: " + Arrays.toString(recipients));
-            workflowService.addProcessVariables(recipientTask, Collections.singletonMap("recipients", recipients));
+            FileDrop fileDrop = findFileDrop(getFileDropId(user));
+            fileDrop.setRecipient(Arrays.toString(recipients));
             workflowService.completeCurrentTask(user);
         }
     }
@@ -106,7 +107,11 @@ public class FileDropService {
         return fileDropRepository.findOne(withId(id)).orElse(null);
     }
 
-    public FileDrop findFileDrop(String key) {
+    public FileDrop findFileDropDownloadKey(String key) {
         return fileDropRepository.findOne(withDownloadKey(key)).orElse(null);
+    }
+
+    public FileDrop findFileDropUploadKey(String key) {
+        return fileDropRepository.findOne(withUploadKey(key)).orElse(null);
     }
 }
