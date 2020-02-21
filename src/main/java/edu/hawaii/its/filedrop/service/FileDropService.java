@@ -2,6 +2,7 @@ package edu.hawaii.its.filedrop.service;
 
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -57,8 +58,7 @@ public class FileDropService {
         if (workflowService.atTask(user, "addRecipients")) {
             Task recipientTask = workflowService.getCurrentTask(user);
             logger.debug(user.getUsername() + " added recipients: " + Arrays.toString(recipients));
-            FileDrop fileDrop = findFileDrop(getFileDropId(user));
-            fileDrop.setRecipient(Arrays.toString(recipients));
+            workflowService.addProcessVariables(recipientTask, Collections.singletonMap("recipients", recipients));
             workflowService.completeCurrentTask(user);
         }
     }

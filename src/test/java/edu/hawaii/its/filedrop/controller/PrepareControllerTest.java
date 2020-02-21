@@ -80,7 +80,7 @@ public class PrepareControllerTest {
                 .param("expiration", "5")
                 .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/prepare/files"));
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())
@@ -102,7 +102,7 @@ public class PrepareControllerTest {
                 .param("expiration", "5")
                 .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/prepare/files"));
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())
@@ -124,7 +124,7 @@ public class PrepareControllerTest {
                 .param("expiration", "5")
                 .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/prepare/files"));
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())
@@ -139,7 +139,7 @@ public class PrepareControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/prepare"));
 
-        mockMvc.perform(get("/prepare/files"))
+        mockMvc.perform(get("/prepare/files/uploadKey"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
     }
@@ -159,7 +159,7 @@ public class PrepareControllerTest {
                 .param("expiration", "5")
                 .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/prepare/files"));
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())
@@ -210,7 +210,7 @@ public class PrepareControllerTest {
                 .param("expiration", "5")
                 .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/prepare/files"));
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())
@@ -251,7 +251,7 @@ public class PrepareControllerTest {
     public void completeNotUploaderTest() throws Exception {
         FileDrop fileDrop = fileDropService.findFileDrop(1);
         assertThat(fileDrop.getUploader(), not(equalTo("user")));
-        mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
+        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
     }

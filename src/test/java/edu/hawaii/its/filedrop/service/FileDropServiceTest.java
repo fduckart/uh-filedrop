@@ -42,6 +42,7 @@ public class FileDropServiceTest {
     @WithMockUhUser
     public void testWithService() {
         User user = userContextService.getCurrentUser();
+        workflowService.stopProcess(user);
         assertNotNull(user);
 
         assertNull(workflowService.getCurrentTask(user));
