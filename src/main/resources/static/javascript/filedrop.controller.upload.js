@@ -1,9 +1,10 @@
 function UploadJsController($scope, Upload, $window) {
-    $scope.init = function (maxUploadSize, downloadKey) {
+    $scope.init = function() {
         $scope.files = [];
         $scope.uploadSize = 0;
-        $scope.maxUploadSize = maxUploadSize;
-        $scope.downloadKey = downloadKey;
+        $scope.maxUploadSize = $window.maxUploadSize;
+        $scope.uploadKey = $window.uploadKey;
+
     };
 
     $scope.submit = function () {
@@ -11,7 +12,7 @@ function UploadJsController($scope, Upload, $window) {
             let count = 0;
             $scope.files.map((file) => {
                 Upload.upload({
-                    url: "/filedrop/prepare/files/",
+                    url: "/filedrop/prepare/files/" + $scope.uploadKey,
                     data: {
                         comment: file.comment,
                         file
@@ -21,7 +22,7 @@ function UploadJsController($scope, Upload, $window) {
                       .then(() => {
                           count++;
                           if (count === $scope.files.length) {
-                              $window.location.href = "/filedrop/complete/" + $scope.downloadKey;
+                              $window.location.href = "/filedrop/complete/" + $scope.uploadKey;
                           }
                       });
             });

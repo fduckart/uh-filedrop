@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+<head th:replace="header :: copy"></head>
+<body>
+<nav th:replace="menubar :: copy"></nav>
+
+<!--   Content container -->
+<div class="container">
+    <div class="row">
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead>
+                <tr>
+                    <th></th>
+                    <th>Faculty (Recipients)</th>
+                    <th>Staff</th>
+                    <th>Student</th>
+                    <th>Department</th>
+                    <th>Affiliate</th>
+                    <th>Other</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>Faculty (Senders)</th>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                </tr>
+                <tr>
+                    <th>Staff</th>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                </tr>
+                <tr>
+                    <th>Student</th>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                </tr>
+                <tr>
+                    <th>Department</th>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                </tr>
+                <tr>
+                    <th>Affiliate</th>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                </tr>
+                <tr>
+                    <th>Other</th>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-check"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                    <td><i class="fa fa-ban"></i></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- / Contact container -->
+
+<div th:replace="footer :: copy"></div>
+</body>
+</html>

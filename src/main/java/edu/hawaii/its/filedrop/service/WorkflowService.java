@@ -38,7 +38,9 @@ public class WorkflowService {
 
     public void stopProcess(User user) {
         Task task = getCurrentTask(user);
-        runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "stop");
+        if (task != null) {
+            runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "stop");
+        }
     }
 
     public void revertTask(User user, String previousTask) {

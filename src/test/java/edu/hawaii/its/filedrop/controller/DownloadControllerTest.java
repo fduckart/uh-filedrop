@@ -16,6 +16,7 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
@@ -71,7 +72,7 @@ public class DownloadControllerTest {
                 .param("validation", "true")
                 .param("expiration", "5"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/prepare/files"));
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(get("/prepare/files"))
                 .andExpect(status().isOk())

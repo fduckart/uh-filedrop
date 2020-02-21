@@ -27,7 +27,7 @@ public class DownloadController {
 
     @GetMapping(value = "/dl/{downloadKey}")
     public String download(Model model, @PathVariable String downloadKey) {
-        FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
+        FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
         if (fileDrop == null) {
             model.addAttribute("error", "Download not found");
             return "user/download-error";
@@ -44,7 +44,7 @@ public class DownloadController {
     @GetMapping(value = "/sl/{downloadKey}")
     @PreAuthorize("isAuthenticated()")
     public String downloadSecure(Model model, @PathVariable String downloadKey) {
-        FileDrop fileDrop = fileDropService.findFileDrop(downloadKey);
+        FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
         logger.debug("downloadSecure; fileDrop: " + fileDrop + " User: " + currentUser().getUsername());
 
         if(!fileDropService.isAuthorized(fileDrop, currentUser().getUsername())) {

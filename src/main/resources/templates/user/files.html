@@ -3,9 +3,14 @@
 <head th:replace="header :: copy"></head>
 <body ng-app="filedropApp">
 <nav th:replace="menubar :: copy"></nav>
-
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var maxUploadSize = [[${maxUploadSize}]];
+    var uploadKey = [[${uploadKey}]];
+    /*]]>*/
+</script>
 <div class="container" ng-controller="UploadJsController"
-    th:attr="ng-init='init('+${maxUploadSize}+', \''+ ${downloadKey} + '\')'" ng-cloak>
+    ng-init="init()" ng-cloak>
     <div class="card border-success">
         <div class="card-body">
             <div class="row">

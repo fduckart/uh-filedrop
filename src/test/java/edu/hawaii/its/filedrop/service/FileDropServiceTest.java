@@ -42,6 +42,7 @@ public class FileDropServiceTest {
     @WithMockUhUser
     public void testWithService() {
         User user = userContextService.getCurrentUser();
+        workflowService.stopProcess(user);
         assertNotNull(user);
 
         assertNull(workflowService.getCurrentTask(user));
@@ -188,10 +189,12 @@ public class FileDropServiceTest {
     public void getFileDropTest() {
         FileDrop fileDrop = new FileDrop();
         fileDrop.setDownloadKey("test-key");
+        fileDrop.setUploadKey("test-key2");
 
         fileDropService.saveFileDrop(fileDrop);
 
-        assertEquals(fileDrop.getId(), fileDropService.findFileDrop("test-key").getId());
+        assertEquals(fileDrop.getId(), fileDropService.findFileDropDownloadKey("test-key").getId());
+        assertEquals(fileDrop.getId(), fileDropService.findFileDropUploadKey("test-key2").getId());
     }
 
     @Test

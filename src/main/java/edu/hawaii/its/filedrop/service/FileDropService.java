@@ -20,6 +20,7 @@ import edu.hawaii.its.filedrop.type.FileSet;
 
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
 
 @Service
 public class FileDropService {
@@ -106,7 +107,11 @@ public class FileDropService {
         return fileDropRepository.findOne(withId(id)).orElse(null);
     }
 
-    public FileDrop findFileDrop(String key) {
+    public FileDrop findFileDropDownloadKey(String key) {
         return fileDropRepository.findOne(withDownloadKey(key)).orElse(null);
+    }
+
+    public FileDrop findFileDropUploadKey(String key) {
+        return fileDropRepository.findOne(withUploadKey(key)).orElse(null);
     }
 }
