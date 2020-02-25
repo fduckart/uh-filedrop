@@ -122,8 +122,10 @@ public class PrepareController {
             fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(user));
             fileDrop.setValid(validation);
             fileDrop.setAuthenticationRequired(validation);
+            fileDrop.setRecipient(Arrays.toString(recipients));
         } else {
             fileDrop = new FileDrop();
+            fileDrop.setRecipient(Arrays.toString(recipients));
             fileDrop.setEncryptionKey(Strings.generateRandomString());
             fileDrop.setDownloadKey(Strings.generateRandomString());
             fileDrop.setUploadKey(Strings.generateRandomString());
@@ -155,7 +157,6 @@ public class PrepareController {
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = "/prepare/files/{uploadKey}")
     public String addFiles(Model model, @PathVariable String uploadKey) {
-        Task currentTask = workflowService.getCurrentTask(currentUser());
 
         if (workflowService.atTask(currentUser(), "addRecipients")) {
             return "redirect:/prepare";

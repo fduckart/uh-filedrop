@@ -20,6 +20,7 @@ import com.icegreen.greenmail.util.ServerSetup;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
@@ -54,6 +55,9 @@ public class PrepareControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private EmailService emailService;
+
     private MockMvc mockMvc;
 
     @Rule
@@ -64,6 +68,8 @@ public class PrepareControllerTest {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+
+        emailService.setEnabled(false);
     }
 
     @Test
@@ -82,10 +88,34 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        mockMvc.perform(get("/prepare/files"))
+        FileDrop fileDrop = fileDropService.findFileDrop(8);
+
+        mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/files"))
                 .andExpect(model().attribute("recipients", contains("John W Lennon", "test2")));
+
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "test")
+                .param("recipients", "jwlennon@hawaii.edu", "test2")
+                .param("validation", "false")
+                .param("expiration", "5")
+                .param("message", "Test Message"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
+
+        mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/files"))
+                .andExpect(model().attribute("recipients", contains("John W Lennon", "test2")));
+
+        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
     }
 
     @Test
@@ -104,10 +134,16 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        mockMvc.perform(get("/prepare/files"))
+        FileDrop fileDrop = fileDropService.findFileDrop(6);
+
+        mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/files"))
                 .andExpect(model().attribute("recipients", contains("test", "John W Lennon")));
+
+        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
     }
 
     @Test
@@ -126,10 +162,16 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        mockMvc.perform(get("/prepare/files"))
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+
+        mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/files"))
-                .andExpect(model().attribute("recipients", contains("John W Lennon")));
+                .andExpect(model().attribute("recipients", contains("test2@test.com")));
+
+        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
     }
 
     @Test
@@ -147,6 +189,7 @@ public class PrepareControllerTest {
     @Test
     @WithMockUhUser(username = "jwlennon", name = "John W Lennon", email = "jwlennon@hawaii.edu")
     public void addFilesTest() throws Exception {
+        emailService.setEnabled(true);
 
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
@@ -161,36 +204,36 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        mockMvc.perform(get("/prepare/files"))
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+
+        mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("recipients"));
 
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "test data".getBytes());
 
-        mockMvc.perform(multipart("/prepare/files")
+        mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
                 .file(mockMultipartFile)
                 .param("comment", "test comment")
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
-
-        FileDrop fileDrop = fileDropService.findFileDrop(4);
         assertNotNull(fileDrop);
 
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
         assertFalse(fileSets.isEmpty());
-        assertEquals(1, fileSets.size());
+        assertEquals(2, fileSets.size());
         assertEquals("test.txt", fileSets.get(0).getFileName());
         assertEquals("text/plain", fileSets.get(0).getType());
         assertEquals("test comment", fileSets.get(0).getComment());
 
-        mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
+        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
 
         MimeMessage[] receivedMessages = server.getReceivedMessages();
         assertThat(receivedMessages.length, equalTo(2));
-        assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
+        assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("test2@test.com"));
         assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
         assertThat(receivedMessages[1].getContent().toString(), containsString("jwlennon@hawaii.edu"));
     }
@@ -198,6 +241,7 @@ public class PrepareControllerTest {
     @Test
     @WithMockUhUser(username = "jwlennon", name = "John W Lennon", email = "jwlennon@hawaii.edu")
     public void addFilesNonUhTest() throws Exception {
+        emailService.setEnabled(true);
 
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
@@ -212,14 +256,16 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        mockMvc.perform(get("/prepare/files"))
+        FileDrop filedrop = fileDropService.findFileDrop(3);
+
+        mockMvc.perform(get("/prepare/files/" + filedrop.getUploadKey()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("recipients"));
 
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "test data".getBytes());
 
-        mockMvc.perform(multipart("/prepare/files")
+        mockMvc.perform(multipart("/prepare/files/" + filedrop.getUploadKey())
                 .file(mockMultipartFile)
                 .param("comment", "test comment")
                 .characterEncoding("UTF-8"))
@@ -235,7 +281,7 @@ public class PrepareControllerTest {
         assertEquals("text/plain", fileSets.get(0).getType());
         assertEquals("test comment", fileSets.get(0).getComment());
 
-        mockMvc.perform(get("/complete/" + fileDrop.getDownloadKey()))
+        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
 
