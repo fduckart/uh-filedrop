@@ -74,20 +74,21 @@ public class DownloadControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        mockMvc.perform(get("/prepare/files"))
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+
+        mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("recipients"));
 
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "test data".getBytes());
 
-        mockMvc.perform(multipart("/prepare/files")
+        mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
                 .file(mockMultipartFile)
                 .param("comment", "test comment")
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
-        FileDrop fileDrop = fileDropService.findFileDrop(3);
         fileDrop.setDownloadKey("test");
         fileDropService.saveFileDrop(fileDrop);
         assertNotNull(fileDrop);
