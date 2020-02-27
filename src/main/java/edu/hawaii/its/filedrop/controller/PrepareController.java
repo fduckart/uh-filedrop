@@ -1,7 +1,5 @@
 package edu.hawaii.its.filedrop.controller;
 
-import static java.util.stream.Collectors.toList;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -40,6 +38,8 @@ import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.util.Dates;
 import edu.hawaii.its.filedrop.util.Strings;
+
+import static java.util.stream.Collectors.toList;
 
 @Controller
 public class PrepareController {

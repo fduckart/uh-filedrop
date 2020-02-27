@@ -21,8 +21,8 @@ public class MailComponentLocator {
     public void init() {
         logger.info("init; starting...");
 
-        for (String key : mails.keySet()) {
-            logger.info("init; MailTemplate(key=" + key + "): " + mails.get(key));
+        for (Map.Entry<String, MailTemplate> entry : mails.entrySet()) {
+            logger.info("init; MailTemplate(key=" + entry.getKey() + "): " + entry.getValue());
         }
 
         Assert.notNull(mails.get("empty"), "EmptyMail couldn't be loaded.");
