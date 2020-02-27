@@ -1,24 +1,18 @@
-function PrepareJsController($scope, dataProvider, $http, $window) {
+function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     $scope.init = function() {
         $scope.recipient = "";
         $scope.sender = $scope.currentUser().mails[0];
         $scope.recipients = [];
-        $scope.recipientsStr = $scope.getFileDrop().recipients ?
-            $scope.getFileDrop().recipients : [];
-        $scope.authentication = $scope.getFileDrop().authentication !== null ?
-            $scope.getFileDrop().authentication : true;
+        $scope.loadRecipients();
+        $scope.authentication = $scope.getAuthentication();
         $scope.senderEmails = $scope.getEmails();
-        $scope.expiration = $scope.getFileDrop().expiration ?
-            $scope.getFileDrop().expiration.toString() : "7200";
-        $scope.message = $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
-
-        if ($scope.recipientsStr && $scope.recipientsStr.length > 0) {
-            let recipientsSub = $scope.recipientsStr.substring(1, $scope.recipientsStr.length - 1)
-                                      .split(",");
-            for (let r of recipientsSub) {
-                $scope.addRecipient(r);
-            }
-        }
+        $scope.expiration = $scope.getExpiration();
+        $scope.message = $scope.getMessage();
+        $log.debug("Current user:", $scope.currentUser().uid);
+        $log.debug("Recipients:", $scope.recipients);
+        $log.debug("Authentication:", $scope.authentication);
+        $log.debug("Expiration:", $scope.expiration);
+        $log.debug("Message:", $scope.message);
     };
 
     $scope.addRecipient = function (recipient) {
@@ -26,9 +20,10 @@ function PrepareJsController($scope, dataProvider, $http, $window) {
             return;
         }
 
-        dataProvider.loadData(function (response) {
+        dataProvider.loadData(function(response) {
             let data = response.data;
             if (data.cn) {
+                $log.debug($scope.currentUser().uid + " searched " + recipient + " and found " + data.cn);
                 $scope.recipients.push({ name: data.cn, mail: data.mails[0] });
             } else if (recipient.indexOf("@") > -1) {
                 if ($scope.authentication) {
@@ -86,6 +81,27 @@ function PrepareJsController($scope, dataProvider, $http, $window) {
         }
         return emails;
     };
+
+    $scope.loadRecipients = function() {
+        let recipientsStr = $scope.getFileDrop().recipients;
+        if (recipientsStr && recipientsStr.length > 0) {
+            let recipientsSub = recipientsStr.substring(1, recipientsStr.length - 1)
+                                             .split(",");
+            for (let r of recipientsSub) {
+                $scope.addRecipient(r);
+            }
+        }
+    };
+
+    $scope.getAuthentication = () => $scope.getFileDrop().authentication !== null ?
+        $scope.getFileDrop().authentication : true;
+
+    $scope.getExpiration = () => $scope.getFileDrop().expiration ?
+        $scope.getFileDrop()
+              .expiration
+              .toString() : "7200";
+
+    $scope.getMessage = () => $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);
