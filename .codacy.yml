@@ -1,0 +1,3 @@
+exclude_paths:
+  - 'src/main/resources/schema.sql'
+  - 'src/test/java/edu/hawaii/its/filedrop/**'

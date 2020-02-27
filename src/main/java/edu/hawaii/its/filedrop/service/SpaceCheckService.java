@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.service;
 
 import java.io.File;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
@@ -9,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 
 @Service
 public class SpaceCheckService {

@@ -1,5 +1,15 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.hamcrest.core.IsNot.not;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,13 +17,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.hamcrest.core.IsNot.not;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -31,6 +34,18 @@ public class SpaceCheckServiceTest {
         spaceCheckService.setMaxUploadSize(1L);
         assertThat(spaceCheckService.getMaxUploadSize(), not(equalTo(1L)));
         assertThat(spaceCheckService.getMaxUploadSize(), equalTo(1000000L));
+
+        spaceCheckService.setMaxUploadSize(maxUploadSize);
+
+        // Check a zero max upload size.
+        spaceCheckService.setMaxUploadSize(0);
+        try {
+            spaceCheckService.init();
+            fail("Should not reach here.");
+        } catch (Exception e) {
+            assertThat(e, instanceOf(IllegalArgumentException.class));
+            assertThat(e.getMessage(), containsString("maxUploadSize"));
+        }
 
         spaceCheckService.setMaxUploadSize(maxUploadSize);
     }

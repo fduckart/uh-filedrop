@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.service.mail;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -115,6 +116,10 @@ public class EmailService {
         }
 
         return contextMap;
+    }
+
+    public Context fileDropContext(String key, FileDrop fileDrop) {
+        return new Context(Locale.ENGLISH, getFileDropContext(key, fileDrop));
     }
 
     public String getFrom() {

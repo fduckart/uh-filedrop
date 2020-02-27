@@ -1,9 +1,16 @@
 package edu.hawaii.its.filedrop.service.mail;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+//import static org.hamcrest.CoreMatchers.not;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Locale;
 import java.util.Map;
+
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 
@@ -16,17 +23,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.context.Context;
+
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetup;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 @RunWith(SpringRunner.class)
@@ -125,7 +128,7 @@ public class EmailServiceTest {
 
         FileDrop fileDrop = fileDropService.findFileDrop(2);
 
-        Context context = new Context(Locale.ENGLISH, emailService.getFileDropContext("receiver", fileDrop));
+        Context context = emailService.fileDropContext("receiver", fileDrop);
 
         emailService.send(mail, "receiver", context);
 
@@ -136,8 +139,19 @@ public class EmailServiceTest {
         assertThat(receivedMessages[0].getContent().toString(), containsString("jwlennon@hawaii.edu"));
 
         context = new Context(Locale.ENGLISH, emailService.getFileDropContext("uploader", fileDrop));
-        Map<String, String> recipients = (Map<String, String>) context.getVariable("recipients");
+        @SuppressWarnings("unchecked")
+        Map<String, Object> recipients = (Map<String, Object>) context.getVariable("recipients");
         assertThat(recipients.size(), equalTo(1));
         assertThat(recipients.get("krichards@example.com"), equalTo("Keith Richards"));
+    }
+
+    @Test
+    public void misc() {
+        FileDrop fileDrop = fileDropService.findFileDrop(2);
+        Context context = emailService.fileDropContext("recipients", fileDrop);
+
+        @SuppressWarnings("unchecked")
+        Map<String, String> recipients = (Map<String, String>) context.getVariable("recipients");
+        assertThat(recipients, equalTo(null));
     }
 }

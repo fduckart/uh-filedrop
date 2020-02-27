@@ -1,5 +1,9 @@
 package edu.hawaii.its.filedrop.service;
 
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
+
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,10 +21,6 @@ import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
-
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
 
 @Service
 public class FileDropService {
@@ -113,5 +113,9 @@ public class FileDropService {
 
     public FileDrop findFileDropUploadKey(String key) {
         return fileDropRepository.findOne(withUploadKey(key)).orElse(null);
+    }
+
+    public List<FileDrop> findAllFileDrop() {
+        return fileDropRepository.findAll();
     }
 }

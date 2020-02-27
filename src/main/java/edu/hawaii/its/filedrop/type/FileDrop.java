@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,9 +59,9 @@ public class FileDrop {
     @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL)
     private Set<FileSet> fileSet;
 
-    // Constructor
+    // Constructor.
     public FileDrop() {
-        // Empty
+        // Empty.
     }
 
     public Integer getId() {

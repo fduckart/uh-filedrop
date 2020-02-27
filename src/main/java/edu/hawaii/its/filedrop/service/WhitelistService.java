@@ -44,6 +44,10 @@ public class WhitelistService {
         whitelistRepository.delete(whitelist);
     }
 
+    public long recordCount() {
+        return whitelistRepository.count();
+    }
+
     public int addCheck(Whitelist whitelist, int amount) {
         whitelist.setCheck(whitelist.getCheck() + amount);
         if (whitelist.getCheck() >= threshold) {
