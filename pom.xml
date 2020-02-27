@@ -6,8 +6,13 @@
   <groupId>edu.hawaii.its</groupId>
   <packaging>war</packaging>
   <artifactId>filedrop</artifactId>
-  <description>University of Hawaii FileDrop App.</description>
+  <description>University of Hawaii FileDrop Web Application.</description>
   <version>1.1</version>
+  <url>https://www.hawaii.edu/filedrop</url>
+  
+  <scm>
+    <url>https://github.com/fduckart/uh-filedrop</url>
+  </scm>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -31,6 +36,10 @@
     <jquery-version>3.2.0</jquery-version>
     <angularjs-version>1.7.8</angularjs-version>
     <angular-mocks-version>1.5.8</angular-mocks-version>
+    
+    <spotbugs.version>3.1.12.2</spotbugs.version>
+    <pmd.plugin.version>3.11.0</pmd.plugin.version>
+    <pmdVersion>6.12.0</pmdVersion>    
   </properties>
 
   <dependencies>
@@ -175,6 +184,12 @@
       <artifactId>greenmail-spring</artifactId>
       <version>1.5.11</version>
       <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-pmd-plugin</artifactId>
+      <version>${pmd.plugin.version}</version>
     </dependency>
 
 
@@ -392,6 +407,7 @@
                 <echo>$ ./mvnw -Dmaven.test.skip=true clean package</echo>
                 <echo>$ ./mvnw jasmine:test</echo>
                 <echo>$ ./mvnw clean test jacoco:report</echo>
+                <echo>$ ./mvnw clean compile site</echo>                
                 <echo>$ ./mvnw clean spring-boot:run</echo>
               </tasks>
             </configuration>
@@ -441,6 +457,54 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-site-plugin</artifactId>
+        <version>3.8.2</version>
+      </plugin>      
     </plugins>
   </build>
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-project-info-reports-plugin</artifactId>
+                <version>3.0.0</version>
+                <reportSets>
+                    <reportSet>
+                        <reports>
+                            <report>index</report>
+                            <report>scm</report>
+                        </reports>
+                    </reportSet>
+                </reportSets>
+            </plugin>
+            <plugin>
+                <groupId>com.github.spotbugs</groupId>
+                <artifactId>spotbugs-maven-plugin</artifactId>
+                <version>${spotbugs.version}</version>
+                <configuration>
+                    <effort>Max</effort>
+                    <threshold>Medium</threshold>
+                    <excludeFilterFile>src/test/resources/spotbugs/spotbugs-exclude-tenure.xml</excludeFilterFile>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${pmd.plugin.version}</version>
+                <configuration>
+                    <rulesets>
+                        <ruleset>src/test/resources/pmd/maven-pmd-plugin-default.xml</ruleset>
+                    </rulesets>
+                    <minimumTokens>200</minimumTokens>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>3.0.0</version>
+            </plugin>
+        </plugins>
+    </reporting>
 </project>

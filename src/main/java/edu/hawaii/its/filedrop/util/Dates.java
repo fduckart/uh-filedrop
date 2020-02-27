@@ -1,18 +1,24 @@
 package edu.hawaii.its.filedrop.util;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 public class Dates {
 
-    // Constructor
+    // Constructor.
     private Dates() {
-        // empty constructor
+        // Empty.
     }
 
     public static LocalDate add(LocalDate date, int days) {
         return date.plusDays(days);
+    }
+
+    public static LocalDateTime addMinutes(LocalDateTime dateTime, int minutes) {
+        return dateTime.plus(minutes, ChronoUnit.MINUTES);
     }
 
     private static ZoneId zoneId() {

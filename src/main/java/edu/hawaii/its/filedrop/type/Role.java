@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.io.Serializable;
+
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -177,7 +178,7 @@ public class Role implements Serializable {
 
     // ------------------------------------------------------------------------
 
-    public static enum SecurityRole implements Authority {
+    public enum SecurityRole implements Authority {
 
         ANONYMOUS(0),
         NON_UH(1),
@@ -188,7 +189,7 @@ public class Role implements Serializable {
         private final int value;
 
         // Private constructor.
-        private SecurityRole(int value) {
+        SecurityRole(int value) {
             this.value = value;
         }
 

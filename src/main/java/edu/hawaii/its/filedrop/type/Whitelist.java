@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.time.LocalDate;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -39,9 +40,9 @@ public class Whitelist {
     @Transient
     private String registrantName;
 
-    //Constructor
+    // Constructor.
     public Whitelist() {
-        //Empty
+        // Empty.
     }
 
     public Integer getId() {

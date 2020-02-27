@@ -1,29 +1,5 @@
 package edu.hawaii.its.filedrop.controller;
 
-import java.util.List;
-import javax.mail.internet.MimeMessage;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
-import com.icegreen.greenmail.junit.GreenMailRule;
-import com.icegreen.greenmail.util.ServerSetup;
-
-import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.repository.FileDropRepository;
-import edu.hawaii.its.filedrop.service.FileDropService;
-import edu.hawaii.its.filedrop.service.mail.EmailService;
-import edu.hawaii.its.filedrop.type.FileDrop;
-import edu.hawaii.its.filedrop.type.FileSet;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -41,10 +17,43 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import java.util.List;
+
+import javax.mail.internet.MimeMessage;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
+
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.ServerSetup;
+
+import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.repository.FileDropRepository;
+import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.mail.EmailService;
+import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileSet;
+
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class PrepareControllerTest {
+
+    @Value("${app.mail.help}")
+    private String helpName;
+
+    @Value("${app.mail.to.help}")
+    private String helpEmail;
 
     @Autowired
     private FileDropService fileDropService;
@@ -70,6 +79,12 @@ public class PrepareControllerTest {
                 .build();
 
         emailService.setEnabled(false);
+    }
+
+    @Test
+    public void helpDesk() {
+        assertThat(helpName, equalTo("Frank R Duckart"));
+        assertThat(helpEmail, equalTo("duckart@hawaii.edu"));
     }
 
     @Test

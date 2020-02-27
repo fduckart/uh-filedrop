@@ -17,7 +17,7 @@ public interface AdministratorRepository extends JpaRepository<Administrator, In
     @Query(value = "select a from Administrator a "
             + "where a.roleId = 13 or a.roleId = 14 "
             + "order by a.officeId, a.id")
-    public List<Administrator> findAll();
+    List<Administrator> findAll();
 
     @Query(value = "select a from Administrator a "
             + "where (a.roleId = 13 or a.roleId = 14) "
@@ -28,7 +28,7 @@ public interface AdministratorRepository extends JpaRepository<Administrator, In
     @Query(value = "select c from Administrator c "
             + "where c.roleId = 13 or c.roleId = 14 "
             + "order by c.officeId, c.id")
-    public List<Administrator> findAdministrators();
+    List<Administrator> findAdministrators();
 
     @Query(value = "select (count(a) > 0) from Administrator a "
             + "where (a.roleId = 13 or a.roleId = 14) "
