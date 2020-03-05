@@ -1,11 +1,17 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    var maxUploadSize = [[${maxUploadSize}]];
+    var uploadKey = [[${uploadKey}]];
+    var expiration = [[${expiration}]];
+    /*]]>*/
+</script>
 <body ng-app="filedropApp">
 <nav th:replace="menubar :: copy"></nav>
-
 <div class="container" ng-controller="UploadHelpdeskJsController"
-    th:attr="ng-init='init('+${maxUploadSize}+', \''+ ${downloadKey} + '\', ' + ${expiration} + ')'" ng-cloak>
+    ng-init="init()" ng-cloak>
     <div class="card border-success">
         <div class="card-body">
             <div class="row">
