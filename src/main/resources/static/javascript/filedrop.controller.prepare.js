@@ -24,7 +24,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
             let data = response.data;
             if (data.cn) {
                 $log.debug($scope.currentUser().uid + " searched " + recipient + " and found " + data.cn);
-                $scope.recipients.push({ name: data.cn, mail: data.mails[0] });
+                $scope.recipients.push({ name: data.cn, mail: data.mails[0], uid: data.uid });
             } else if (recipient.indexOf("@") > -1) {
                 if ($scope.authentication) {
                     $scope.showPopup();
