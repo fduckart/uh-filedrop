@@ -32,14 +32,6 @@
             </div>
             <div class="col-sm-12 mb-3">
                 <label for="recipient" class="filedrop-label">Recipients</label>
-                <ul class="list-inline">
-                    <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
-                        <button type="button" class="btn btn-outline-dark btn-sm"
-                            ng-click="removeRecipient(r)" aria-label="Recipient name">
-                            {{ r.name }} <span class="badge badge-danger">&times;</span>
-                        </button>
-                    </li>
-                </ul>
                 <form ng-submit="addRecipient(recipient)">
                     <div class="input-group">
                         <input class="form-control" id="recipient" type="text" name="recipient"
@@ -49,6 +41,14 @@
                         </button>
                     </div>
                 </form>
+                <ul class="list-inline mt-1">
+                    <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
+                        <button type="button" class="btn btn-outline-dark btn-sm"
+                            ng-click="removeRecipient(r)" aria-label="Recipient name">
+                            {{ r.name }} <span class="badge badge-danger">&times;</span>
+                        </button>
+                    </li>
+                </ul>
             </div>
             <div class="col-sm-12">
                 <form th:action="@{/prepare/}" method="POST" ng-submit="addRecipient()">
