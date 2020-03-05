@@ -351,7 +351,8 @@ public class PrepareControllerTest {
         assertEquals("text/plain", fileSets.get(0).getType());
         assertEquals("test", fileSets.get(0).getComment());
 
-        mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey()))
+        mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey())
+                .param("expiration", "30"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
     }
