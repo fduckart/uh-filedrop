@@ -486,7 +486,7 @@
                 <configuration>
                     <effort>Max</effort>
                     <threshold>Medium</threshold>
-                    <excludeFilterFile>src/test/resources/spotbugs/spotbugs-exclude-tenure.xml</excludeFilterFile>
+                    <excludeFilterFile>src/test/resources/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
                 </configuration>
             </plugin>
             <plugin>

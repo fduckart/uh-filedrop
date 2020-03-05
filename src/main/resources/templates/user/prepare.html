@@ -6,6 +6,7 @@
     /*<![CDATA[*/
     var user = [[${user}]];
     var fileDrop = {
+        sender: [[${sender}]],
         recipients: [[${recipients}]],
         expiration: [[${expiration}]],
         authentication: [[${authentication}]],
@@ -21,24 +22,16 @@
             <div class="col-sm-12 mb-3">
                 <label for="email" class="filedrop-label">Sender</label>
                 <div class="input-group">
-                    <input name="email" class="form-control" type="text" disabled ng-value="sender"
+                    <input name="email" class="form-control" type="text" disabled ng-value="sender.model"
                         ng-if="!userHasMultipleEmails()">
-
                     <select ng-if="userHasMultipleEmails()" class="custom-select" name="email" id="email"
-                        ng-model="sender"
-                        ng-options="mail.value as mail.display for mail in senderEmails"></select>
+                        ng-model="sender.model">
+                        <option ng-repeat="mail in sender.mails" value="{{mail}}">{{mail}}</option>
+                    </select>
                 </div>
             </div>
             <div class="col-sm-12 mb-3">
                 <label for="recipient" class="filedrop-label">Recipients</label>
-                <ul class="list-inline">
-                    <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
-                        <button type="button" class="btn btn-outline-dark btn-sm"
-                            ng-click="removeRecipient(r)" aria-label="Recipient name">
-                            {{ r.name }} <span class="badge badge-danger">&times;</span>
-                        </button>
-                    </li>
-                </ul>
                 <form ng-submit="addRecipient(recipient)">
                     <div class="input-group">
                         <input class="form-control" id="recipient" type="text" name="recipient"
@@ -48,13 +41,21 @@
                         </button>
                     </div>
                 </form>
+                <ul class="list-inline mt-1">
+                    <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
+                        <button type="button" class="btn btn-outline-dark btn-sm"
+                            ng-click="removeRecipient(r)" aria-label="Recipient name">
+                            {{ r.name }} <span class="badge badge-danger">&times;</span>
+                        </button>
+                    </li>
+                </ul>
             </div>
             <div class="col-sm-12">
                 <form th:action="@{/prepare/}" method="POST" ng-submit="addRecipient()">
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <label for="validationRequired" class="filedrop-label">Require Authentication</label>
-                            <input type="hidden" name="sender" ng-value="sender">
+                            <input type="hidden" name="sender" ng-value="sender.model">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation" id="validationRequired"
                                     ng-value="true" ng-model="authentication">

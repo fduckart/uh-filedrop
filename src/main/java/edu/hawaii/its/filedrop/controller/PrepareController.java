@@ -1,9 +1,6 @@
 package edu.hawaii.its.filedrop.controller;
 
-import static java.util.stream.Collectors.toList;
-
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -41,6 +38,8 @@ import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.util.Dates;
 import edu.hawaii.its.filedrop.util.Strings;
 
+import static java.util.stream.Collectors.toList;
+
 @Controller
 public class PrepareController {
 
@@ -70,10 +69,10 @@ public class PrepareController {
     @Value("${app.max.size}")
     private String maxUploadSize;
 
-    @GetMapping(value = "/helpdesk/files/{downloadKey}")
-    public String addFileHelpDesk(Model model, @PathVariable String downloadKey) {
+    @GetMapping(value = "/helpdesk/files/{uploadKey}")
+    public String addFileHelpDesk(Model model, @PathVariable String uploadKey) {
         model.addAttribute("maxUploadSize", maxUploadSize);
-        model.addAttribute("downloadKey", downloadKey);
+        model.addAttribute("uploadKey", uploadKey);
         model.addAttribute("recipients", Arrays.asList(helpName));
 
         return "user/files-helpdesk";
@@ -118,23 +117,19 @@ public class PrepareController {
         fileDrop.setEncryptionKey(Strings.generateRandomString());
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
-        LocalDateTime now = LocalDateTime.now();
-        fileDrop.setCreated(now);
-        fileDrop.setExpiration(Dates.addMinutes(now, expiration));
 
-        logger.debug("Now: " + now);
         logger.debug("Sender: " + sender);
         logger.debug("Recipient: " + fileDrop.getRecipient());
         logger.debug("Expiration: " + expiration);
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
-        logger.debug("Download Key: " + fileDrop.getDownloadKey());
+        logger.debug("Upload Key: " + fileDrop.getUploadKey());
 
-        redirectAttributes.addAttribute("downloadKey", fileDrop.getDownloadKey())
+        redirectAttributes.addAttribute("uploadKey", fileDrop.getUploadKey())
                 .addFlashAttribute("expiration", expiration);
 
-        return "redirect:/helpdesk/files/{downloadKey}";
+        return "redirect:/helpdesk/files/{uploadKey}";
     }
 
     @PreAuthorize("hasRole('UH')")
@@ -212,6 +207,14 @@ public class PrepareController {
         ProcessVariableHolder processVariables =
                 new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
 
+        Integer expiration = (Integer) processVariables.get("expirationLength");
+
+        LocalDateTime now = LocalDateTime.now();
+        fileDrop.setCreated(now);
+        fileDrop.setExpiration(Dates.addMinutes(now, expiration));
+        fileDrop.setValid(true);
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
+
         String sender = (String) processVariables.get("sender");
         Mail mail = new Mail();
         mail.setTo(sender);
@@ -253,8 +256,19 @@ public class PrepareController {
         return userContextService.getCurrentUser();
     }
 
-    @GetMapping(value = "/helpdesk/successful")
-    public String helpdeskSuccessful(RedirectAttributes redirectAttributes) {
+    @GetMapping(value = "/helpdesk/successful/{uploadKey}")
+    public String helpdeskSuccessful(RedirectAttributes redirectAttributes, @PathVariable String uploadKey,
+            @RequestParam String expiration) {
+        FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
+        LocalDateTime now = LocalDateTime.now();
+        fileDrop.setCreated(now);
+        fileDrop.setExpiration(Dates.addMinutes(now, Integer.parseInt(expiration)));
+        fileDrop.setValid(true);
+
+        Mail mail = new Mail();
+        mail.setTo(helpEmail);
+        mail.setFrom(fileDrop.getUploader());
+
         redirectAttributes.addFlashAttribute("uploaded", true);
         return "redirect:/";
     }
@@ -273,6 +287,7 @@ public class PrepareController {
             ProcessVariableHolder processVariableHolder =
                     new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
             String recipients = Arrays.toString(fileDrop.getRecipients().toArray());
+            model.addAttribute("sender", processVariableHolder.get("sender"));
             model.addAttribute("expiration", processVariableHolder.get("expirationLength"));
             model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
             model.addAttribute("recipients", recipients);
@@ -303,49 +318,29 @@ public class PrepareController {
     @ResponseStatus(value = HttpStatus.OK)
     public void uploadFiles(@RequestParam MultipartFile file, @RequestParam String comment,
             @PathVariable String uploadKey) {
-        Task currentTask = workflowService.getCurrentTask(currentUser());
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
-        ProcessVariableHolder processVariables =
-                new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
-        Integer expiration = (Integer) processVariables.get("expirationLength");
-
-        LocalDateTime now = LocalDateTime.now();
-        fileDrop.setCreated(now);
-        fileDrop.setExpiration(now.plus(expiration, ChronoUnit.MINUTES));
-        fileDrop = fileDropService.saveFileDrop(fileDrop);
-
         fileDropService.uploadFile(currentUser(), file, comment, fileDrop);
     }
 
-    @PostMapping(value = "/helpdesk/files/{downloadKey}")
+    @PostMapping(value = "/helpdesk/files/{uploadKey}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void uploadFilesHelpdesk(@PathVariable String downloadKey, @RequestParam MultipartFile file,
-            @RequestParam("comment") String comment, @RequestParam("expiration") String expirationStr) {
+    public void uploadFilesHelpdesk(@PathVariable String uploadKey, @RequestParam MultipartFile file,
+            @RequestParam("comment") String comment) {
         FileSet fileSet = new FileSet();
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());
         fileSet.setComment(comment);
 
-        Integer expiration = Integer.valueOf(expirationStr);
-        FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
-        LocalDateTime now = LocalDateTime.now();
-        fileDrop.setCreated(now);
-        fileDrop.setExpiration(now.plus(expiration, ChronoUnit.MINUTES));
-        fileDrop = fileDropService.saveFileDrop(fileDrop);
+        FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
 
         fileSet.setFileDrop(fileDrop);
         fileDropService.saveFileSet(fileSet);
 
-        Mail mail = new Mail();
-        mail.setTo(helpEmail);
-        mail.setFrom(fileDrop.getUploader());
-
         if (logger.isDebugEnabled()) {
-            logger.debug("uploadFilesHelpdesk; downloadKey: " + downloadKey);
+            logger.debug("uploadFilesHelpdesk; uploadKey: " + uploadKey);
             logger.debug("uploadFilesHelpdesk;    uploader: " + fileDrop.getUploader());
             logger.debug("uploadFilesHelpdesk;     fileSet: " + fileSet);
             logger.debug("uploadFilesHelpdesk;    fileDrop: " + fileDrop);
-            logger.debug("uploadFilesHelpdesk;        mail: " + mail);
         }
     }
 }

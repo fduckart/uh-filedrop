@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.service;
 
 import java.io.File;
-
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
@@ -17,7 +16,7 @@ public class SpaceCheckService {
     private static final Log logger = LogFactory.getLog(SpaceCheckService.class);
 
     @Value("app.scheduler.spacecheck.default-reserved-space")
-    public static long DEFAULT_RESERVED_SPACE = 1000000000;
+    public static final long DEFAULT_RESERVED_SPACE = 1000000000;
     private File root;
     private long bytesFree;
     private long bytesUsed;

@@ -1,5 +1,30 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.util.List;
+import javax.mail.internet.MimeMessage;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.web.context.WebApplicationContext;
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.ServerSetup;
+
+import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.repository.FileDropRepository;
+import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.mail.EmailService;
+import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileSet;
+
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -16,33 +41,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
-import java.util.List;
-
-import javax.mail.internet.MimeMessage;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.web.context.WebApplicationContext;
-
-import com.icegreen.greenmail.junit.GreenMailRule;
-import com.icegreen.greenmail.util.ServerSetup;
-
-import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.repository.FileDropRepository;
-import edu.hawaii.its.filedrop.service.FileDropService;
-import edu.hawaii.its.filedrop.service.mail.EmailService;
-import edu.hawaii.its.filedrop.type.FileDrop;
-import edu.hawaii.its.filedrop.type.FileSet;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -327,20 +325,20 @@ public class PrepareControllerTest {
                 .param("sender", "Test")
                 .param("expiration", "30"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/helpdesk/files/{downloadKey}"));
+                .andExpect(view().name("redirect:/helpdesk/files/{uploadKey}"));
 
         FileDrop fileDrop =
                 fileDropRepository.findAll().stream().filter(fd -> fd.getUploader().equals("Test"))
                         .findFirst().orElse(null);
 
-        mockMvc.perform(get("/helpdesk/files/" + fileDrop.getDownloadKey()))
+        mockMvc.perform(get("/helpdesk/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("downloadKey", "maxUploadSize", "recipients"));
+                .andExpect(model().attributeExists("uploadKey", "maxUploadSize", "recipients"));
 
         MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
                 "text/plain", "test data".getBytes());
 
-        mockMvc.perform(multipart("/helpdesk/files/" + fileDrop.getDownloadKey())
+        mockMvc.perform(multipart("/helpdesk/files/" + fileDrop.getUploadKey())
                 .file(mockMultipartFile)
                 .param("comment", "test")
                 .param("expiration", "30"))
@@ -353,7 +351,8 @@ public class PrepareControllerTest {
         assertEquals("text/plain", fileSets.get(0).getType());
         assertEquals("test", fileSets.get(0).getComment());
 
-        mockMvc.perform(get("/helpdesk/successful"))
+        mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey())
+                .param("expiration", "30"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
     }

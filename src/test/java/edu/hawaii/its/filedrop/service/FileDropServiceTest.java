@@ -21,6 +21,7 @@ import edu.hawaii.its.filedrop.type.FileSet;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -255,6 +256,7 @@ public class FileDropServiceTest {
         assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
         assertEquals(2,
                 fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());
+        assertNotEquals(fileDropService.findAllFileDrop().size(), 0);
     }
 
 
