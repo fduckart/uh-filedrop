@@ -1,18 +1,18 @@
 function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     $scope.init = function() {
         $scope.recipient = "";
-        $scope.sender = $scope.currentUser().mails[0];
         $scope.recipients = [];
         $scope.loadRecipients();
         $scope.authentication = $scope.getAuthentication();
-        $scope.senderEmails = $scope.getEmails();
         $scope.expiration = $scope.getExpiration();
         $scope.message = $scope.getMessage();
+        $log.debug("Sender:", $scope.sender);
         $log.debug("Current user:", $scope.currentUser().uid);
         $log.debug("Recipients:", $scope.recipients);
         $log.debug("Authentication:", $scope.authentication);
         $log.debug("Expiration:", $scope.expiration);
         $log.debug("Message:", $scope.message);
+        $log.debug("FileDrop Sender", $scope.getFileDrop().sender);
     };
 
     $scope.addRecipient = function (recipient) {
@@ -60,7 +60,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     };
 
     $scope.userHasMultipleEmails = function() {
-        return $scope.senderEmails.length > 1;
+        return $scope.currentUser().mails.length > 1;
     };
 
     $scope.showPopup = function() {
@@ -73,14 +73,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     $scope.currentUser = () => $window.user;
 
     $scope.getFileDrop = () => $window.fileDrop;
-
-    $scope.getEmails = function() {
-        let emails = [];
-        for (let mail of $scope.currentUser().mails) {
-            emails.push({ value: mail, display: mail });
-        }
-        return emails;
-    };
 
     $scope.loadRecipients = function() {
         let recipientsStr = $scope.getFileDrop().recipients;
@@ -102,6 +94,11 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
               .toString() : "7200";
 
     $scope.getMessage = () => $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
+
+    $scope.sender = {
+        model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.currentUser().mails[0],
+        mails: $scope.currentUser().mails
+    };
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);

@@ -6,6 +6,7 @@
     /*<![CDATA[*/
     var user = [[${user}]];
     var fileDrop = {
+        sender: [[${sender}]],
         recipients: [[${recipients}]],
         expiration: [[${expiration}]],
         authentication: [[${authentication}]],
@@ -21,12 +22,12 @@
             <div class="col-sm-12 mb-3">
                 <label for="email" class="filedrop-label">Sender</label>
                 <div class="input-group">
-                    <input name="email" class="form-control" type="text" disabled ng-value="sender"
+                    <input name="email" class="form-control" type="text" disabled ng-value="sender.model"
                         ng-if="!userHasMultipleEmails()">
-
                     <select ng-if="userHasMultipleEmails()" class="custom-select" name="email" id="email"
-                        ng-model="sender"
-                        ng-options="mail.value as mail.display for mail in senderEmails"></select>
+                        ng-model="sender.model">
+                        <option ng-repeat="mail in sender.mails" value="{{mail}}">{{mail}}</option>
+                    </select>
                 </div>
             </div>
             <div class="col-sm-12 mb-3">
@@ -54,7 +55,7 @@
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <label for="validationRequired" class="filedrop-label">Require Authentication</label>
-                            <input type="hidden" name="sender" ng-value="sender">
+                            <input type="hidden" name="sender" ng-value="sender.model">
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation" id="validationRequired"
                                     ng-value="true" ng-model="authentication">
