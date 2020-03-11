@@ -1,8 +1,15 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.nio.file.Paths;
+import java.util.Optional;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,7 +19,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.FileSystemStorageService;
 import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileSet;
 
 @Controller
 public class DownloadController {
@@ -21,6 +30,9 @@ public class DownloadController {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @Autowired
+    private FileSystemStorageService storageService;
 
     @Autowired
     private UserContextService userContextService;
@@ -47,13 +59,36 @@ public class DownloadController {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
         logger.debug("downloadSecure; fileDrop: " + fileDrop + " User: " + currentUser().getUsername());
 
-        if(!fileDropService.isAuthorized(fileDrop, currentUser().getUsername())) {
+        if (!fileDropService.isAuthorized(fileDrop, currentUser().getUsername())) {
             model.addAttribute("error", "You are not a recipient for this drop.");
             return "user/download-error";
         }
 
         model.addAttribute("fileDrop", fileDrop);
         return "user/download";
+    }
+
+    @GetMapping(value = "/dl/{downloadKey}/{fileName:.+}")
+    public ResponseEntity downloadFile(@PathVariable String downloadKey, @PathVariable String fileName) {
+        FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
+
+        if ((!fileDrop.isAuthenticationRequired()) || (fileDrop.isAuthenticationRequired()
+                && fileDropService.isAuthorized(fileDrop, currentUser().getUsername()))) {
+            Optional<FileSet> foundFileSet =
+                    fileDrop.getFileSet().stream().filter(fileS -> fileS.getFileName().equals(fileName)).findFirst();
+
+            if (foundFileSet.isPresent()) {
+                Resource resource = storageService.loadAsResource(
+                        Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString());
+
+                return ResponseEntity.ok()
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                        .body(resource);
+            }
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     private User currentUser() {
