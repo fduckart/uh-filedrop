@@ -1,10 +1,12 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -69,13 +71,20 @@ public class DownloadController {
     }
 
     @GetMapping(value = "/dl/{downloadKey}/{fileName:.+}")
-    public ResponseEntity downloadFile(@PathVariable String downloadKey, @PathVariable String fileName) {
+    public ResponseEntity<Resource> downloadFile(@PathVariable String downloadKey, @PathVariable String fileName)
+            throws IOException {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
+
+        if (fileDrop == null) {
+            return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
+                    .header(HttpHeaders.LOCATION, "/").build();
+        }
 
         if ((!fileDrop.isAuthenticationRequired()) || (fileDrop.isAuthenticationRequired()
                 && fileDropService.isAuthorized(fileDrop, currentUser().getUsername()))) {
             Optional<FileSet> foundFileSet =
-                    fileDrop.getFileSet().stream().filter(fileS -> fileS.getFileName().equals(fileName)).findFirst();
+                    fileDrop.getFileSet().stream().filter(fileSet -> fileSet.getFileName().equals(fileName))
+                            .findFirst();
 
             if (foundFileSet.isPresent()) {
                 Resource resource = storageService.loadAsResource(
@@ -85,10 +94,14 @@ public class DownloadController {
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                         .body(resource);
+            } else {
+                return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
+                        .header(HttpHeaders.LOCATION, "/dl/" + downloadKey).build();
             }
         }
 
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.SC_FORBIDDEN)
+                .header(HttpHeaders.LOCATION, "/dl/" + downloadKey).build();
     }
 
     private User currentUser() {
