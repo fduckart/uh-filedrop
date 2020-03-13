@@ -20,6 +20,7 @@ import org.springframework.security.cas.web.CasAuthenticationFilter;
 import org.springframework.security.cas.web.authentication.ServiceAuthenticationDetailsSource;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.AuthenticationUserDetailsService;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
@@ -31,6 +32,7 @@ import org.springframework.util.Assert;
 import edu.hawaii.its.filedrop.access.UserBuilder;
 import edu.hawaii.its.filedrop.access.UserDetailsServiceImpl;
 
+@EnableWebSecurity
 @ComponentScan(basePackages = "edu.hawaii.its.filedrop")
 @ConfigurationProperties(prefix = "cas")
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
