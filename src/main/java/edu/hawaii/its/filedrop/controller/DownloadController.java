@@ -90,15 +90,22 @@ public class DownloadController {
                 Resource resource = storageService.loadAsResource(
                         Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString());
 
+                logger.debug("downloadFile; fileDrop: " + fileDrop + ", fileSet: " + foundFileSet.get());
+
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
                         .body(resource);
             } else {
+
+                logger.debug("downloadFile; fileDrop: " + fileDrop + ", Could not find fileSet: " + fileName);
+
                 return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
                         .header(HttpHeaders.LOCATION, "/dl/" + downloadKey).build();
             }
         }
+
+        logger.debug("downloadFile; Could not find fileDrop with key: " + downloadKey);
 
         return ResponseEntity.status(HttpStatus.SC_FORBIDDEN)
                 .header(HttpHeaders.LOCATION, "/dl/" + downloadKey).build();
