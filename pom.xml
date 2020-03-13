@@ -34,6 +34,7 @@
 
     <bootstrap-version>4.3.1</bootstrap-version>
     <jquery-version>3.2.0</jquery-version>
+    <popper.js-version>1.14.3</popper.js-version>
     <angularjs-version>1.7.8</angularjs-version>
     <angular-mocks-version>1.5.8</angular-mocks-version>
     
@@ -270,7 +271,7 @@
     <dependency>
       <groupId>org.webjars</groupId>
       <artifactId>popper.js</artifactId>
-      <version>1.15.0</version>
+      <version>${popper.js-version}</version>
     </dependency>
     <dependency>
       <groupId>org.webjars.bower</groupId>
