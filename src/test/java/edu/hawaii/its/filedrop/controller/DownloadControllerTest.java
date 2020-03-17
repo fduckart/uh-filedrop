@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.annotation.DirtiesContext;
@@ -80,18 +81,18 @@ public class DownloadControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("recipients"));
 
-        MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
-                "text/plain", "test data".getBytes());
+        MockMultipartFile mockMultipartFile =
+                new MockMultipartFile("file", "test.txt", "text/plain", "test data".getBytes());
+
+        fileDrop.setDownloadKey("test");
+        fileDropService.saveFileDrop(fileDrop);
+        assertNotNull(fileDrop);
 
         mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
                 .file(mockMultipartFile)
                 .param("comment", "test comment")
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
-
-        fileDrop.setDownloadKey("test");
-        fileDropService.saveFileDrop(fileDrop);
-        assertNotNull(fileDrop);
 
         assertEquals("test", fileDrop.getDownloadKey());
 
@@ -104,6 +105,12 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/download"))
                 .andExpect(model().attributeExists("fileDrop"));
 
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + mockMultipartFile.getOriginalFilename())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/test3.jpg"))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -112,6 +119,9 @@ public class DownloadControllerTest {
         mockMvc.perform(get("/dl/downloadKey2"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("fileDrop"));
+
+        mockMvc.perform(get("/dl/downloadKey/test.txt"))
+                .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -125,5 +135,15 @@ public class DownloadControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/download-error"))
                 .andExpect(model().attribute("error", "You are not a recipient for this drop."));
+
+        mockMvc.perform(get("/dl/downloadKey/test.txt"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUhUser
+    public void downloadNullFileDrop() throws Exception {
+        mockMvc.perform(get("/dl/123/test.txt"))
+                .andExpect(status().is4xxClientError());
     }
 }

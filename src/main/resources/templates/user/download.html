@@ -8,18 +8,37 @@
 <div class="container">
     <div class="row">
         <div class="col-sm-12">
-            <span th:text="${fileDrop.getUploader()}"></span>
-            <span th:text="${fileDrop.getUploaderFullName()}"></span>
-            <span th:text="${fileDrop.getCreated()}"></span>
-            <span th:text="${fileDrop.getExpiration()}"></span>
-            <span th:text="${fileDrop.getUploadKey()}"></span>
-            <span th:text="${fileDrop.getDownloadKey()}"></span>
-            <span th:text="${fileDrop.getEncryptionKey()}"></span>
-            <ul th:each="fileSet : ${fileDrop.getFileSet()}">
-                <li th:text="${fileSet.getFileName()}"></li>
-                <li th:text="${fileSet.getType()}"></li>
-                <li th:text="${fileSet.getComment()}"></li>
-            </ul>
+            The following files are available for download. Click on the file name to begin downloading. <br><br>
+            <strong>NOTE:</strong> These files will be removed and no longer available for download after
+            <span th:text="${#temporals.format(fileDrop.getExpiration(), 'E, MMMM d, h:mm a z')}"></span>
+            <br><br>
+        </div>
+        <div class="col-sm-12">
+            <div class="table-responsive border border-dark">
+                <table class="table">
+                    <thead class="thead-light">
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">File name</th>
+                        <th scope="col">Size (bytes)</th>
+                        <th scope="col">Comment</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="fileSet : ${fileDrop.getFileSet()}">
+                        <th scope="row"><a
+                            th:href="@{/dl/{downloadKey}/{fileName}(downloadKey = ${fileDrop.getDownloadKey()}, fileName = ${fileSet.getFileName()})}"
+                            class="btn btn-outline-dark">
+                            <i class="fa fa-cloud-download"></i></a></th>
+                        <td><a
+                            th:href="@{/dl/{downloadKey}/{fileName}(downloadKey = ${fileDrop.getDownloadKey()}, fileName = ${fileSet.getFileName()})}"
+                            th:text="${fileSet.getFileName()}"></a></td>
+                        <td th:text="${fileSet.getSize()}"></td>
+                        <td th:text="${fileSet.getComment()}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </div>

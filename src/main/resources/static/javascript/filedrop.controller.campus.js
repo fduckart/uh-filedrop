@@ -7,8 +7,8 @@ function CampusJsController($scope, dataProvider) {
     };
 
     $scope.loadData = function () {
-        dataProvider.loadData(function (data) {
-            $scope.campuses = data;
+        dataProvider.loadData(function(response) {
+            $scope.campuses = response.data;
         }, URL_CAMPUS_LOAD);
     };
 }
