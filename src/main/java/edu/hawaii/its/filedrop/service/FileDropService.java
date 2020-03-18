@@ -39,6 +39,11 @@ public class FileDropService {
     @Autowired
     private FileSystemStorageService fileSystemStorageService;
 
+    public void expire(FileDrop fileDrop) {
+        fileDrop.setValid(false);
+        saveFileDrop(fileDrop);
+    }
+
     public void startUploadProcess(User user) {
         if (workflowService.hasTask(user)) {
             Integer fileDropId = getFileDropId(user);

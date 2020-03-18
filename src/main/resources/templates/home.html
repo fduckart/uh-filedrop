@@ -7,10 +7,9 @@
 
     <!--  Content container -->
     <div class="container mb-sm-5">
-        <div class="row justify-content-center" th:if="${uploaded}">
+        <div class="row justify-content-center" th:if="${message}">
             <div class="col-sm-8">
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    File(s) uploaded <strong>successfully</strong>
+                <div class="alert alert-success alert-dismissible fade show" role="alert" th:utext="${message}">
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>

@@ -39,6 +39,8 @@
                     </tbody>
                 </table>
             </div>
+            <br>
+            <a class="btn btn-danger" th:href="@{/expire/{downloadKey}(downloadKey = ${fileDrop.getDownloadKey()})}"><i class="fa fa-trash"></i> Expire Now</a>
         </div>
     </div>
 </div>

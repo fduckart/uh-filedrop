@@ -264,7 +264,7 @@ public class PrepareController {
         mail.setTo(helpEmail);
         mail.setFrom(fileDrop.getUploader());
 
-        redirectAttributes.addFlashAttribute("uploaded", true);
+        redirectAttributes.addFlashAttribute("message", "File(s) uploaded <strong>successfully</strong>");
         return "redirect:/";
     }
 
