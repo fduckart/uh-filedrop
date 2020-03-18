@@ -142,11 +142,6 @@ public class PrepareController {
 
         User user = currentUser();
 
-        if (recipients.length == 0) {
-            recipients = new String[1];
-            recipients[0] = currentUser().getAttribute("uhEmail");
-        }
-
         if (logger.isDebugEnabled()) {
             logger.debug("User: " + currentUser());
             logger.debug("User added recipients: " + Arrays.toString(recipients));
@@ -269,7 +264,7 @@ public class PrepareController {
         mail.setTo(helpEmail);
         mail.setFrom(fileDrop.getUploader());
 
-        redirectAttributes.addFlashAttribute("uploaded", true);
+        redirectAttributes.addFlashAttribute("message", "File(s) uploaded <strong>successfully</strong>");
         return "redirect:/";
     }
 

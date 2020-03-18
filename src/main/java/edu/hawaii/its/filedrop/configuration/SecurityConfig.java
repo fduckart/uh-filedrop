@@ -177,6 +177,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/404").permitAll()
                 .antMatchers("/dl/**").permitAll()
                 .antMatchers("/helpdesk/**").permitAll()
+                .antMatchers("/validate/**").permitAll()
                 .antMatchers("/holiday").hasRole("ADMINISTRATOR")
                 .antMatchers("/holidays").hasRole("ADMINISTRATOR")
                 .antMatchers("/holidaygrid").hasRole("ADMINISTRATOR")

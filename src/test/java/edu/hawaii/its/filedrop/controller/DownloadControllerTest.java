@@ -15,11 +15,10 @@ import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.FileSystemStorageService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 
 import static org.hamcrest.Matchers.containsString;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -36,6 +35,9 @@ public class DownloadControllerTest {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @Autowired
+    private FileSystemStorageService storageService;
 
     @Autowired
     private WebApplicationContext context;
@@ -75,7 +77,7 @@ public class DownloadControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        FileDrop fileDrop = fileDropService.findFileDrop(5);
 
         mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
@@ -84,17 +86,11 @@ public class DownloadControllerTest {
         MockMultipartFile mockMultipartFile =
                 new MockMultipartFile("file", "test.txt", "text/plain", "test data".getBytes());
 
-        fileDrop.setDownloadKey("test");
-        fileDropService.saveFileDrop(fileDrop);
-        assertNotNull(fileDrop);
-
         mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
                 .file(mockMultipartFile)
                 .param("comment", "test comment")
                 .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
-
-        assertEquals("test", fileDrop.getDownloadKey());
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
                 .andExpect(status().is3xxRedirection())
@@ -144,6 +140,110 @@ public class DownloadControllerTest {
     @WithMockUhUser
     public void downloadNullFileDrop() throws Exception {
         mockMvc.perform(get("/dl/123/test.txt"))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUhUser
+    public void expireErrorTest() throws Exception {
+        mockMvc.perform(get("/expire/test123"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/download-error"))
+                .andExpect(model().attribute("error", "Download not found"));
+
+        mockMvc.perform(get("/expire/downloadKey3"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/download-error"))
+                .andExpect(model().attribute("error", "You are not authorized to expire this drop"));
+    }
+
+    @Test
+    @WithMockUhUser(username = "kcobain")
+    public void expireTest() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "test")
+                .param("recipients", "user")
+                .param("message", "test")
+                .param("validation", "true")
+                .param("expiration", "5"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
+
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+
+        mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("recipients"));
+
+        MockMultipartFile mockMultipartFile =
+                new MockMultipartFile("file", "test.txt", "text/plain", "test data".getBytes());
+
+        mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
+                .file(mockMultipartFile)
+                .param("comment", "test comment")
+                .characterEncoding("UTF-8"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+
+        mockMvc.perform(get("/sl/" + fileDrop.getDownloadKey()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/download-error"))
+                .andExpect(model().attribute("error", "Download not found"));
+
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + mockMultipartFile.getOriginalFilename())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(status().is4xxClientError());
+    }
+
+    @Test
+    @WithMockUhUser(username = "dgrohl")
+    public void expireNoAuthTest() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "test")
+                .param("recipients", "user")
+                .param("message", "test")
+                .param("validation", "false")
+                .param("expiration", "5"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
+
+        FileDrop fileDrop = fileDropService.findFileDrop(4);
+
+        mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("recipients"));
+
+        MockMultipartFile mockMultipartFile =
+                new MockMultipartFile("file", "test.txt", "text/plain", "test data".getBytes());
+
+        mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
+                .file(mockMultipartFile)
+                .param("comment", "test comment")
+                .characterEncoding("UTF-8"))
+                .andExpect(status().isOk());
+
+        mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
+
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/download-error"))
+                .andExpect(model().attribute("error", "Download not found"));
+
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + mockMultipartFile.getOriginalFilename())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().is4xxClientError());
     }
 }

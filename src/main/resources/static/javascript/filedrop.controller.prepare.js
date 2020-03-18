@@ -2,6 +2,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     $scope.init = function() {
         $scope.recipient = "";
         $scope.recipients = [];
+        $scope.sendToSelf = false;
         $scope.loadRecipients();
         $scope.authentication = $scope.getAuthentication();
         $scope.expiration = $scope.getExpiration();
@@ -39,8 +40,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
 
     $scope.removeRecipient = function (recipient) {
         let index = $scope.recipients.indexOf(recipient);
-
-        if (index > -1) {
+        if (index > -1 && (!(recipient.name === $scope.currentUser().cn))) {
             $scope.recipients.splice(index, 1);
         }
     };
@@ -64,11 +64,19 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     };
 
     $scope.showPopup = function() {
-        $("#prepareModal")
-        .modal();
+        $("#prepareModal").modal();
     };
 
-    $scope.disabled = () => $scope.recipient.length > 0;
+    $scope.sendSelf = function(event) {
+        if (event.target.checked) {
+            $scope.addRecipient($scope.currentUser().uid);
+        } else {
+            let user = $scope.recipients.find((recipient) => recipient.uid === $scope.currentUser().uid);
+            $scope.recipients.splice($scope.recipients.indexOf(user), 1);
+        }
+    };
+
+    $scope.disabled = () => $scope.recipient.length > 0 || $scope.recipients.length === 0;
 
     $scope.currentUser = () => $window.user;
 
@@ -80,6 +88,9 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
             let recipientsSub = recipientsStr.substring(1, recipientsStr.length - 1)
                                              .split(",");
             for (let r of recipientsSub) {
+                if ($scope.currentUser().mails.includes(r)) {
+                    $scope.sendToSelf = true;
+                }
                 $scope.addRecipient(r);
             }
         }

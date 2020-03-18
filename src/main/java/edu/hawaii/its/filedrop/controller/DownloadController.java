@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
@@ -39,16 +40,39 @@ public class DownloadController {
     @Autowired
     private UserContextService userContextService;
 
-    @GetMapping(value = "/dl/{downloadKey}")
-    public String download(Model model, @PathVariable String downloadKey) {
+    @GetMapping(value = "/expire/{downloadKey}")
+    public String expire(Model model, RedirectAttributes redirectAttributes, @PathVariable String downloadKey) {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
+
         if (fileDrop == null) {
             model.addAttribute("error", "Download not found");
             return "user/download-error";
         }
 
+        if (!currentUser().getUsername().equals(fileDrop.getUploader())) {
+            model.addAttribute("error", "You are not authorized to expire this drop");
+            return "user/download-error";
+        }
+
+        fileDropService.expire(fileDrop);
+
+        logger.debug(currentUser().getUsername() + " expired: " + fileDrop);
+
+        redirectAttributes.addFlashAttribute("message", "Drop expired");
+        return "redirect:/";
+    }
+
+    @GetMapping(value = "/dl/{downloadKey}")
+    public String download(Model model, @PathVariable String downloadKey) {
+        FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
+
+        if (fileDrop == null || !fileDrop.isValid()) {
+            model.addAttribute("error", "Download not found");
+            return "user/download-error";
+        }
+
         if (fileDrop.isAuthenticationRequired()) {
-           return "redirect:/sl/" + fileDrop.getDownloadKey();
+            return "redirect:/sl/" + fileDrop.getDownloadKey();
         }
 
         model.addAttribute("fileDrop", fileDrop);
@@ -60,6 +84,11 @@ public class DownloadController {
     public String downloadSecure(Model model, @PathVariable String downloadKey) {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
         logger.debug("downloadSecure; fileDrop: " + fileDrop + " User: " + currentUser().getUsername());
+
+        if (fileDrop == null || !fileDrop.isValid()) {
+            model.addAttribute("error", "Download not found");
+            return "user/download-error";
+        }
 
         if (!fileDropService.isAuthorized(fileDrop, currentUser().getUsername())) {
             model.addAttribute("error", "You are not a recipient for this drop.");
@@ -75,7 +104,7 @@ public class DownloadController {
             throws IOException {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
 
-        if (fileDrop == null) {
+        if (fileDrop == null || !fileDrop.isValid()) {
             return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
                     .header(HttpHeaders.LOCATION, "/").build();
         }
