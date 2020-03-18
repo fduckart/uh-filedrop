@@ -32,6 +32,11 @@
             </div>
             <div class="col-sm-12 mb-3">
                 <label for="recipient" class="filedrop-label">Recipients</label>
+                <div class="custom-control custom-checkbox mb-3">
+                    <input type="checkbox" class="custom-control-input" id="sendCheck" ng-model="sendToSelf"
+                        ng-click="sendSelf($event)">
+                    <label for="sendCheck" class="custom-control-label">Send to self</label>
+                </div>
                 <form ng-submit="addRecipient(recipient)">
                     <div class="input-group">
                         <input class="form-control" id="recipient" type="text" name="recipient"
@@ -51,7 +56,7 @@
                 </ul>
             </div>
             <div class="col-sm-12">
-                <form th:action="@{/prepare/}" method="POST" ng-submit="addRecipient()">
+                <form th:action="@{/prepare/}" method="POST">
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <label for="validationRequired" class="filedrop-label">Require Authentication</label>
