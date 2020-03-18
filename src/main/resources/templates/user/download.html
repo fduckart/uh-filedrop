@@ -40,11 +40,31 @@
                 </table>
             </div>
             <br>
-            <a class="btn btn-danger" th:href="@{/expire/{downloadKey}(downloadKey = ${fileDrop.getDownloadKey()})}"><i class="fa fa-trash"></i> Expire Now</a>
+            <button class="btn btn-danger" data-toggle="modal" data-target="#expireModal">
+                <i class="fa fa-trash"></i> Expire Now
+            </button>
         </div>
     </div>
 </div>
-
+<div class="modal" tabindex="-1" role="dialog" id="expireModal" th:fragment="copy">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Expiration</h5>
+            </div>
+            <div class="modal-body">
+                <p>
+                    Are you sure you want to expire this drop? This <strong>can't</strong> be undone.
+                </p>
+            </div>
+            <div class="modal-footer">
+                <a type="button" class="btn btn-danger"
+                    th:href="@{/expire/{downloadKey}(downloadKey = ${fileDrop.getDownloadKey()})}">Yes</a>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
 <div th:replace="footer :: copy"></div>
 </body>
 </html>

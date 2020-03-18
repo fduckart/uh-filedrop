@@ -56,7 +56,7 @@ public class DownloadController {
 
         fileDropService.expire(fileDrop);
 
-        logger.debug(currentUser().getUsername() + " expired: " + fileDrop);
+        logger.debug("expire; " + currentUser().getUsername() + " expired: " + fileDrop);
 
         redirectAttributes.addFlashAttribute("message", "Drop expired");
         return "redirect:/";

@@ -43,8 +43,12 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     };
 
     $scope.removeRecipient = function(recipient) {
+        if (recipient.name === $scope.currentUser().cn) {
+            $scope.sendToSelf = false;
+        }
+
         let index = $scope.recipients.indexOf(recipient);
-        if (index > -1 && (!(recipient.name === $scope.currentUser().cn))) {
+        if (index > -1) {
             $scope.recipients.splice(index, 1);
         }
     };
