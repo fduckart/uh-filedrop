@@ -6,10 +6,10 @@ import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -99,20 +99,20 @@ public class DownloadController {
         return "user/download";
     }
 
-    @GetMapping(value = "/dl/{downloadKey}/{fileName:.+}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String downloadKey, @PathVariable String fileName)
+    @GetMapping(value = "/dl/{downloadKey}/{fileId}")
+    public ResponseEntity<Resource> downloadFile(@PathVariable String downloadKey, @PathVariable Integer fileId)
             throws IOException {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
 
         if (fileDrop == null || !fileDrop.isValid()) {
-            return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .header(HttpHeaders.LOCATION, "/").build();
         }
 
         if ((!fileDrop.isAuthenticationRequired()) || (fileDrop.isAuthenticationRequired()
                 && fileDropService.isAuthorized(fileDrop, currentUser().getUsername()))) {
             Optional<FileSet> foundFileSet =
-                    fileDrop.getFileSet().stream().filter(fileSet -> fileSet.getFileName().equals(fileName))
+                    fileDrop.getFileSet().stream().filter(fileSet -> fileSet.getId().equals(fileId))
                             .findFirst();
 
             if (foundFileSet.isPresent()) {
@@ -123,20 +123,21 @@ public class DownloadController {
 
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                        .header(HttpHeaders.CONTENT_DISPOSITION,
+                                "attachment; filename=\"" + foundFileSet.get().getFileName() + "\"")
                         .body(resource);
             } else {
 
-                logger.debug("downloadFile; fileDrop: " + fileDrop + ", Could not find fileSet: " + fileName);
+                logger.debug("downloadFile; fileDrop: " + fileDrop + ", Could not find fileSet: " + fileId);
 
-                return ResponseEntity.status(HttpStatus.SC_NOT_FOUND)
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
                         .header(HttpHeaders.LOCATION, "/dl/" + downloadKey).build();
             }
         }
 
         logger.debug("downloadFile; Could not find fileDrop with key: " + downloadKey);
 
-        return ResponseEntity.status(HttpStatus.SC_FORBIDDEN)
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .header(HttpHeaders.LOCATION, "/dl/" + downloadKey).build();
     }
 

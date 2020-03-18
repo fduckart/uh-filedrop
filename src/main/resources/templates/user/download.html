@@ -9,7 +9,7 @@
     <div class="row">
         <div class="col-sm-12">
             The following files are available for download. Click on the file name to begin downloading. <br><br>
-            <strong>NOTE:</strong> These files will be removed and no longer available for download after
+            These files will be removed and no longer available for download after
             <span th:text="${#temporals.format(fileDrop.getExpiration(), 'E, MMMM d, h:mm a z')}"></span>
             <br><br>
         </div>
@@ -27,11 +27,11 @@
                     <tbody>
                     <tr th:each="fileSet : ${fileDrop.getFileSet()}">
                         <th scope="row"><a
-                            th:href="@{/dl/{downloadKey}/{fileName}(downloadKey = ${fileDrop.getDownloadKey()}, fileName = ${fileSet.getFileName()})}"
-                            class="btn btn-outline-dark">
+                            th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
+                            class="btn btn-outline-dark btn-sm">
                             <i class="fa fa-cloud-download"></i></a></th>
                         <td><a
-                            th:href="@{/dl/{downloadKey}/{fileName}(downloadKey = ${fileDrop.getDownloadKey()}, fileName = ${fileSet.getFileName()})}"
+                            th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
                             th:text="${fileSet.getFileName()}"></a></td>
                         <td th:text="${fileSet.getSize()}"></td>
                         <td th:text="${fileSet.getComment()}"></td>
