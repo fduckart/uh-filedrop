@@ -71,7 +71,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
         if (event.target.checked) {
             $scope.addRecipient($scope.currentUser().uid);
         } else {
-            let user = $scope.recipients.find(recipient => recipient.uid === $scope.currentUser().uid);
+            let user = $scope.recipients.find(recipient => (recipient.uid === $scope.currentUser().uid));
             $scope.recipients.splice($scope.recipients.indexOf(user), 1);
         }
     };
