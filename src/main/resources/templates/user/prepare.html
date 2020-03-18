@@ -42,8 +42,8 @@
                         <input class="form-control" id="recipient" type="text" name="recipient"
                             ng-model="recipient">
                         <div class="input-group-append">
-                            <button class="btn btn-outline-secondary" ng-click="recipient = ''"
-                                ng-if="recipient.length > 0">
+                            <button type="reset" ng-if="recipient.length > 0" ng-click="clearRecipient()"
+                                class="btn btn-outline-secondary">
                                 &times;
                             </button>
 

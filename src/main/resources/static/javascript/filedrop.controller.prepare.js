@@ -21,6 +21,10 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
             return;
         }
 
+        if (recipient === $scope.currentUser().uid) {
+            $scope.sendToSelf = true;
+        }
+
         dataProvider.loadData(function(response) {
             let data = response.data;
             if (data.cn) {
@@ -35,26 +39,30 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
             }
         }, "/filedrop/api/ldap/" + recipient);
 
-        $scope.recipient = "";
+        $scope.clearRecipient();
     };
 
-    $scope.removeRecipient = function (recipient) {
+    $scope.removeRecipient = function(recipient) {
         let index = $scope.recipients.indexOf(recipient);
         if (index > -1 && (!(recipient.name === $scope.currentUser().cn))) {
             $scope.recipients.splice(index, 1);
         }
     };
 
-    $scope.getRecipients = function () {
+    $scope.clearRecipient = function() {
+        $scope.recipient = "";
+    };
+
+    $scope.getRecipients = function() {
         let recipients = [];
-        $scope.recipients.forEach(function (recipient) {
+        $scope.recipients.forEach(function(recipient) {
             recipients.push(recipient.mail ? recipient.mail : recipient.name);
         });
         return recipients.join(",");
     };
 
-    $scope.hasRecipient = function (recipient) {
-        return $scope.recipients.includes($scope.recipients.find(function (r) {
+    $scope.hasRecipient = function(recipient) {
+        return $scope.recipients.includes($scope.recipients.find(function(r) {
             return (r.uid ? r.uid.toUpperCase() === recipient.toUpperCase() : false) || r.name.toUpperCase() === recipient.toUpperCase();
         }));
     };
