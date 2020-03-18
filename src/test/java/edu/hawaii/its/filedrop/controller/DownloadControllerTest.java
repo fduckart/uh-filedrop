@@ -101,11 +101,11 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/download"))
                 .andExpect(model().attributeExists("fileDrop"));
 
-        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + mockMultipartFile.getOriginalFilename())
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/3")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().isOk());
 
-        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/test3.jpg"))
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/9999"))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -116,7 +116,7 @@ public class DownloadControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("fileDrop"));
 
-        mockMvc.perform(get("/dl/downloadKey/test.txt"))
+        mockMvc.perform(get("/dl/downloadKey/99999"))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -132,14 +132,14 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/download-error"))
                 .andExpect(model().attribute("error", "You are not a recipient for this drop."));
 
-        mockMvc.perform(get("/dl/downloadKey/test.txt"))
+        mockMvc.perform(get("/dl/downloadKey/999"))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     @WithMockUhUser
     public void downloadNullFileDrop() throws Exception {
-        mockMvc.perform(get("/dl/123/test.txt"))
+        mockMvc.perform(get("/dl/123/9999"))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -197,7 +197,7 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/download-error"))
                 .andExpect(model().attribute("error", "Download not found"));
 
-        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + mockMultipartFile.getOriginalFilename())
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/1")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().is4xxClientError());
     }
@@ -242,7 +242,7 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/download-error"))
                 .andExpect(model().attribute("error", "Download not found"));
 
-        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + mockMultipartFile.getOriginalFilename())
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/1")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().is4xxClientError());
     }

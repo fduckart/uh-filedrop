@@ -29,8 +29,8 @@ import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.util.Assert;
 
+import edu.hawaii.its.filedrop.access.CasUserDetailsService;
 import edu.hawaii.its.filedrop.access.UserBuilder;
-import edu.hawaii.its.filedrop.access.UserDetailsServiceImpl;
 
 @EnableWebSecurity
 @ComponentScan(basePackages = "edu.hawaii.its.filedrop")
@@ -117,7 +117,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     private AuthenticationUserDetailsService<CasAssertionAuthenticationToken> authenticationUserDetailsService() {
-        return new UserDetailsServiceImpl(userBuilder);
+        return new CasUserDetailsService(userBuilder);
     }
 
     private CasAuthenticationFilter casAuthenticationFilter() throws Exception {
