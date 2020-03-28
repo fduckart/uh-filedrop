@@ -35,6 +35,7 @@ import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
+import edu.hawaii.its.filedrop.type.Recipient;
 import edu.hawaii.its.filedrop.util.Dates;
 import edu.hawaii.its.filedrop.util.Strings;
 
@@ -89,13 +90,21 @@ public class PrepareController {
         logger.debug("User at addFiles.");
 
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
-        List<String> recipientsList = fileDrop.getRecipients().stream().map(recipient -> {
+
+        ProcessVariableHolder processVariableHolder =
+                new ProcessVariableHolder(workflowService.getProcessVariables(currentUser()));
+
+        String[] recipients = (String[]) processVariableHolder.get("recipients");
+
+        List<String> recipientsList = Arrays.stream(recipients).map(recipient -> {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
             if (ldapPerson.isValid()) {
                 return ldapPerson.getCn();
             }
             return recipient;
         }).collect(toList());
+
+        logger.debug("Recipients: " + recipientsList + " Recipients: " + fileDrop.getRecipients());
 
         model.addAttribute("recipients", recipientsList);
         model.addAttribute("maxUploadSize", maxUploadSize);
@@ -107,27 +116,30 @@ public class PrepareController {
     @PostMapping(value = "/helpdesk")
     public String addHelpdesk(@RequestParam String sender,
             @RequestParam Integer expiration,
+            @RequestParam String ticketNumber,
             RedirectAttributes redirectAttributes) {
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(sender);
         fileDrop.setUploaderFullName(sender);
         fileDrop.setAuthenticationRequired(true);
-        fileDrop.setRecipient(helpEmail);
         fileDrop.setEncryptionKey(Strings.generateRandomString());
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
 
         logger.debug("Sender: " + sender);
-        logger.debug("Recipient: " + fileDrop.getRecipient());
+        logger.debug("Recipient: " + fileDrop.getRecipients());
         logger.debug("Expiration: " + expiration);
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
+        fileDropService.addRecipients(fileDrop, helpEmail);
+
         logger.debug("Upload Key: " + fileDrop.getUploadKey());
 
         redirectAttributes.addAttribute("uploadKey", fileDrop.getUploadKey())
-                .addFlashAttribute("expiration", expiration);
+                .addFlashAttribute("expiration", expiration)
+                .addFlashAttribute("ticketNumber", ticketNumber);
 
         return "redirect:/helpdesk/files/{uploadKey}";
     }
@@ -153,10 +165,8 @@ public class PrepareController {
             fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(user));
             fileDrop.setValid(validation);
             fileDrop.setAuthenticationRequired(validation);
-            fileDrop.setRecipient(Arrays.toString(recipients));
         } else {
             fileDrop = new FileDrop();
-            fileDrop.setRecipient(Arrays.toString(recipients));
             fileDrop.setEncryptionKey(Strings.generateRandomString());
             fileDrop.setDownloadKey(Strings.generateRandomString());
             fileDrop.setUploadKey(Strings.generateRandomString());
@@ -167,6 +177,7 @@ public class PrepareController {
         }
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
+        fileDropService.addRecipients(currentUser(), recipients);
 
         ProcessVariableHolder processVariableHolder = new ProcessVariableHolder();
         processVariableHolder.add("fileDropId", fileDrop.getId());
@@ -203,12 +214,15 @@ public class PrepareController {
                 new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
 
         Integer expiration = (Integer) processVariables.get("expirationLength");
+        String[] recipients = (String[]) processVariables.get("recipients");
 
         LocalDateTime now = LocalDateTime.now();
         fileDrop.setCreated(now);
         fileDrop.setExpiration(Dates.addMinutes(now, expiration));
         fileDrop.setValid(true);
         fileDrop = fileDropService.saveFileDrop(fileDrop);
+
+        fileDropService.addRecipients(fileDrop, recipients);
 
         String sender = (String) processVariables.get("sender");
         Mail mail = new Mail();
@@ -225,13 +239,13 @@ public class PrepareController {
             size += fileSet.getSize();
         }
 
-        for (String recipient : fileDrop.getRecipients()) {
-            LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
+        for (Recipient recipient : fileDropService.findRecipients(fileDrop)) {
+            LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient.getName());
 
             if (ldapPerson.isValid()) {
                 mail.setTo(ldapPerson.getMails().get(0));
             } else {
-                mail.setTo(recipient);
+                mail.setTo(recipient.getName());
             }
 
             fileDropContext = emailService.getFileDropContext("receiver", fileDrop);
@@ -253,7 +267,7 @@ public class PrepareController {
 
     @GetMapping(value = "/helpdesk/successful/{uploadKey}")
     public String helpdeskSuccessful(RedirectAttributes redirectAttributes, @PathVariable String uploadKey,
-            @RequestParam String expiration) {
+            @RequestParam String expiration, @RequestParam String ticketNumber) {
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
         LocalDateTime now = LocalDateTime.now();
         fileDrop.setCreated(now);
@@ -263,6 +277,7 @@ public class PrepareController {
         Mail mail = new Mail();
         mail.setTo(helpEmail);
         mail.setFrom(fileDrop.getUploader());
+        mail.setSubject("FileDrop Helpdesk Ticket: " + ticketNumber);
 
         redirectAttributes.addFlashAttribute("message", "File(s) uploaded <strong>successfully</strong>");
         return "redirect:/";
@@ -281,7 +296,7 @@ public class PrepareController {
             workflowService.revertTask(currentUser(), "recipientsTask");
             ProcessVariableHolder processVariableHolder =
                     new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
-            String recipients = Arrays.toString(fileDrop.getRecipients().toArray());
+            String recipients = Arrays.toString((String[]) processVariableHolder.get("recipients"));
             model.addAttribute("sender", processVariableHolder.get("sender"));
             model.addAttribute("expiration", processVariableHolder.get("expirationLength"));
             model.addAttribute("authentication", fileDrop.isAuthenticationRequired());

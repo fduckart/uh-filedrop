@@ -2,7 +2,6 @@ package edu.hawaii.its.filedrop.service;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -214,12 +213,13 @@ public class FileDropServiceTest {
         fileDrop.setUploadKey("test-ul-key");
         fileDrop.setDownloadKey("test-dl-key");
         fileDrop.setEncryptionKey("test-enc-key");
-        fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setValid(true);
         fileDrop.setAuthenticationRequired(true);
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop = fileDropService.saveFileDrop(fileDrop);
+
+        fileDropService.addRecipients(fileDrop, recipients);
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
@@ -275,12 +275,13 @@ public class FileDropServiceTest {
         fileDrop.setUploadKey("test-ul-key");
         fileDrop.setDownloadKey("test-dl-key");
         fileDrop.setEncryptionKey("test-enc-key");
-        fileDrop.setRecipient(Arrays.toString(recipients));
         fileDrop.setValid(true);
         fileDrop.setAuthenticationRequired(true);
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop = fileDropService.saveFileDrop(fileDrop);
+
+        fileDropService.addRecipients(fileDrop, recipients);
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());

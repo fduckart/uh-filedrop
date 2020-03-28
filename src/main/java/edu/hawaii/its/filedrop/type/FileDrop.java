@@ -1,19 +1,17 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.time.LocalDateTime;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "filedrop")
@@ -39,8 +37,8 @@ public class FileDrop {
     @Column(name = "download_key", nullable = false, unique = true)
     private String downloadKey;
 
-    @Column(name = "recipient")
-    private String recipient;
+    @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private List<Recipient> recipients;
 
     @Column(name = "encrypt_key", nullable = false)
     private String encryptionKey;
@@ -112,12 +110,12 @@ public class FileDrop {
         this.downloadKey = downloadKey;
     }
 
-    public String getRecipient() {
-        return recipient;
+    public List<Recipient> getRecipients() {
+        return recipients;
     }
 
-    public void setRecipient(String recipient) {
-        this.recipient = recipient;
+    public void setRecipients(List<Recipient> recipients) {
+        this.recipients = recipients;
     }
 
     public String getEncryptionKey() {
@@ -160,18 +158,11 @@ public class FileDrop {
         this.fileSet = fileSet;
     }
 
-    @Transient
-    public List<String> getRecipients() {
-        String recipient = this.recipient.substring(1, this.recipient.length() - 1);
-        return Arrays.asList(recipient.split(", "));
-    }
-
     @Override
     public String toString() {
         return "FileDrop [id=" + id
                 + ", uploader=" + uploader
                 + ", uploaderFullName=" + uploaderFullName
-                + ", recipient=" + recipient
                 + ", uploadKey=" + uploadKey
                 + ", downloadKey=" + downloadKey
                 + ", encryptionKey=" + encryptionKey

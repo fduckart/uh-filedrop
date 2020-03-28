@@ -29,6 +29,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.empty;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -101,7 +102,7 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        FileDrop fileDrop = fileDropService.findFileDrop(8);
+        FileDrop fileDrop = fileDropService.findFileDrop(5);
 
         mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
@@ -147,7 +148,7 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        FileDrop fileDrop = fileDropService.findFileDrop(6);
+        FileDrop fileDrop = fileDropService.findFileDrop(5);
 
         mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
@@ -180,7 +181,7 @@ public class PrepareControllerTest {
         mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/files"))
-                .andExpect(model().attribute("recipients", contains("test2@test.com")));
+                .andExpect(model().attribute("recipients", empty()));
 
         mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
                 .andExpect(status().is3xxRedirection())
@@ -217,7 +218,7 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        FileDrop fileDrop = fileDropService.findFileDrop(4);
 
         mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
@@ -235,7 +236,7 @@ public class PrepareControllerTest {
 
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
         assertFalse(fileSets.isEmpty());
-        assertEquals(2, fileSets.size());
+        assertEquals(1, fileSets.size());
         assertEquals("test.txt", fileSets.get(0).getFileName());
         assertEquals("text/plain", fileSets.get(0).getType());
         assertEquals("test comment", fileSets.get(0).getComment());
@@ -246,7 +247,7 @@ public class PrepareControllerTest {
 
         MimeMessage[] receivedMessages = server.getReceivedMessages();
         assertThat(receivedMessages.length, equalTo(2));
-        assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("test2@test.com"));
+        assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
         assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
         assertThat(receivedMessages[1].getContent().toString(), containsString("jwlennon@hawaii.edu"));
     }
@@ -323,7 +324,8 @@ public class PrepareControllerTest {
 
         mockMvc.perform(post("/helpdesk")
                 .param("sender", "Test")
-                .param("expiration", "30"))
+                .param("expiration", "30")
+                .param("ticketNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/helpdesk/files/{uploadKey}"));
 
@@ -352,7 +354,8 @@ public class PrepareControllerTest {
         assertEquals("test", fileSets.get(0).getComment());
 
         mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey())
-                .param("expiration", "30"))
+                .param("expiration", "30")
+                .param("ticketNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
     }

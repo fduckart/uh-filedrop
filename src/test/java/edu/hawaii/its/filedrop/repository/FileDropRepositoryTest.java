@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
+import edu.hawaii.its.filedrop.type.Recipient;
 import edu.hawaii.its.filedrop.util.Strings;
 
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
@@ -38,6 +39,9 @@ public class FileDropRepositoryTest {
     @Autowired
     private FileSetRepository fileSetRepository;
 
+    @Autowired
+    private RecipientRepository recipientRepository;
+
     @Test
     public void specificationWithIdTest() {
         LocalDateTime created = LocalDateTime.now();
@@ -46,7 +50,6 @@ public class FileDropRepositoryTest {
         fileDrop.setId(1);
         fileDrop.setUploader("test");
         fileDrop.setUploaderFullName("Test 123");
-        fileDrop.setRecipient("tester");
         fileDrop.setCreated(created);
         fileDrop.setExpiration(expiration);
         fileDrop.setDownloadKey("download-key");
@@ -57,13 +60,19 @@ public class FileDropRepositoryTest {
 
         fileDropRepository.save(fileDrop);
 
+        Recipient recipient = new Recipient();
+        recipient.setName("tester");
+        recipient.setFileDrop(fileDrop);
+
+        recipientRepository.save(recipient);
+
         Optional<FileDrop> foundFileDrop = fileDropRepository.findOne(withId(1));
 
         assertTrue(foundFileDrop.isPresent());
         assertEquals("test", foundFileDrop.get().getUploader());
         assertEquals(1L, (long) foundFileDrop.get().getId());
         assertEquals("Test 123", foundFileDrop.get().getUploaderFullName());
-        assertEquals("tester", foundFileDrop.get().getRecipient());
+        assertTrue(foundFileDrop.get().getRecipients().size() > 0);
         assertEquals("download-key", foundFileDrop.get().getDownloadKey());
         assertEquals("upload-key", foundFileDrop.get().getUploadKey());
         assertEquals("enc-key", foundFileDrop.get().getEncryptionKey());

@@ -1,10 +1,7 @@
 package edu.hawaii.its.filedrop.service;
 
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
-
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -19,8 +16,14 @@ import org.springframework.web.multipart.MultipartFile;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.repository.FileSetRepository;
+import edu.hawaii.its.filedrop.repository.RecipientRepository;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
+import edu.hawaii.its.filedrop.type.Recipient;
+
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
 
 @Service
 public class FileDropService {
@@ -35,6 +38,9 @@ public class FileDropService {
 
     @Autowired
     private FileSetRepository fileSetRepository;
+
+    @Autowired
+    private RecipientRepository recipientRepository;
 
     @Autowired
     private FileSystemStorageService fileSystemStorageService;
@@ -93,7 +99,28 @@ public class FileDropService {
     }
 
     public boolean isAuthorized(FileDrop fileDrop, String user) {
-        return fileDrop.getRecipients().contains(user) || fileDrop.getUploader().equals(user);
+        return containsRecipient(fileDrop, user) || fileDrop.getUploader().equals(user);
+    }
+
+    public void addRecipients(FileDrop fileDrop, String... recipients) {
+        List<Recipient> recipientList = new ArrayList<>();
+
+        Arrays.stream(recipients).forEach(recipient -> {
+            Recipient recipientObj = new Recipient();
+            recipientObj.setName(recipient);
+            recipientObj.setFileDrop(fileDrop);
+
+            if (!containsRecipient(fileDrop, recipient)) {
+                recipientList.add(recipientObj);
+            }
+        });
+
+        recipientRepository.saveAll(recipientList);
+        saveFileDrop(fileDrop);
+    }
+
+    public boolean containsRecipient(FileDrop fileDrop, String recipient) {
+        return findRecipients(fileDrop).stream().anyMatch(recipientObj -> recipientObj.getName().equals(recipient));
     }
 
     public FileSet saveFileSet(FileSet fileSet) {
@@ -102,6 +129,10 @@ public class FileDropService {
 
     public List<FileSet> findFileSets(FileDrop fileDrop) {
         return fileSetRepository.findAllByFileDrop(fileDrop);
+    }
+
+    public List<Recipient> findRecipients(FileDrop fileDrop) {
+        return recipientRepository.findAllByFileDrop(fileDrop);
     }
 
     public FileDrop saveFileDrop(FileDrop fileDrop) {
