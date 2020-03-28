@@ -7,7 +7,6 @@ CREATE TABLE filedrop (
   created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   upload_key varchar(255) NOT NULL DEFAULT '',
   download_key varchar(255) NOT NULL DEFAULT '',
-  recipient varchar(255) DEFAULT NULL,
   encrypt_key varchar(255) NOT NULL DEFAULT '',
   valid_until datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   is_valid char(1) NOT NULL DEFAULT 'Y',
@@ -42,6 +41,16 @@ CREATE TABLE fileset (
   id int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id),
   CONSTRAINT fileset_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+DROP TABLE IF EXISTS recipient;
+
+CREATE TABLE recipient (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  filedrop_id int(11) NOT NULL,
+  name varchar(255) NOT NULL,
+  PRIMARY KEY (id),
+  CONSTRAINT recipient_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS qrtz_job_details;
