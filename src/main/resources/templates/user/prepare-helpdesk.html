@@ -12,9 +12,20 @@
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <label for="sender" class="filedrop-label">Sender</label>
-                            <input class="form-control" type="text" id="sender" name="sender" required>
+                            <input class="form-control" type="text" id="sender" name="sender" placeholder="Name..."
+                                required>
                         </div>
                     </div>
+
+                    <div class="form-row mb-3">
+                        <div class="col-sm-12">
+                            <label for="ticketNumber" class="filedrop-label">Ticket Number</label>
+                            <input class="form-control" type="text" id="ticketNumber" name="ticketNumber"
+                                placeholder="6 digit ticket number"
+                                required>
+                        </div>
+                    </div>
+
                     <div class="form-row">
                         <div class="col-sm-12">
                             <label for="recipient" class="filedrop-label">Recipients</label>
@@ -22,7 +33,7 @@
                             <ul class="list-inline">
                                 <li class="mr-2 my-1 list-inline-item">
                                     <button type="button" class="btn btn-outline-dark btn-sm" disabled
-                                            aria-label="Recipient name">
+                                        aria-label="Recipient name">
                                         <span th:utext="${recipient}"></span>
                                     </button>
                                 </li>
