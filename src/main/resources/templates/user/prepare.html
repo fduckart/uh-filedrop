@@ -39,14 +39,9 @@
                 </div>
                 <form ng-submit="addRecipient(recipient)">
                     <div class="input-group">
-                        <input class="form-control" id="recipient" type="text" name="recipient"
-                            ng-model="recipient">
+                        <input class="form-control" id="recipient" type="search" name="recipient" ng-model="recipient"
+                            placeholder="UH username...">
                         <div class="input-group-append">
-                            <button type="reset" ng-if="recipient.length > 0" ng-click="clearRecipient()"
-                                class="btn btn-outline-secondary">
-                                &times;
-                            </button>
-
                             <button type="submit"
                                 class="btn btn-primary ml-2 d-inline-block">Add Recipient
                             </button>

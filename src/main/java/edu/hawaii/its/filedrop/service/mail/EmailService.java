@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.ITemplateEngine;
 import org.thymeleaf.context.Context;
 
+import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.type.FileDrop;
@@ -43,6 +44,9 @@ public class EmailService {
 
     @Autowired
     private LdapService ldapService;
+
+    @Autowired
+    private FileDropService fileDropService;
 
     @Value("${url.base}")
     private String url;
@@ -103,12 +107,12 @@ public class EmailService {
         if (key.equals("uploader")) {
             Map<String, String> recipientMap = new HashMap<>();
 
-            fileDrop.getRecipients().forEach(recipient -> {
-                LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
+            fileDropService.findRecipients(fileDrop).forEach(recipient -> {
+                LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient.getName());
                 if (ldapPerson.isValid()) {
-                    recipientMap.put(recipient, ldapPerson.getCn());
+                    recipientMap.put(recipient.getName(), ldapPerson.getCn());
                 } else {
-                    recipientMap.put(recipient, recipient);
+                    recipientMap.put(recipient.getName(), recipient.getName());
                 }
             });
 

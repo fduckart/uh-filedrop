@@ -13,14 +13,18 @@
     <p>
         Your upload to the UH FileDrop service was successful.
         The files will be available for download until
-        <span th:text="${#temporals.format(expiration, 'E, dd MMMM yyyy HH:mm z')}"></span>,
+        <span th:text="${#temporals.format(expiration, 'E, dd MMMM yyyy h:mm a z')}"></span>,
         after which time they will be automatically deleted.
     </p>
     <p>Recipient(s):</p>
 
-    <pre th:each="recipient : ${recipients}">
-        <span th:text="${recipient.value}"></span> [<a th:href="'mailto:' + ${recipient.key}"
-        th:text="${recipient.key}"></a>]
+    <pre style="white-space:normal;">
+        <ul>
+            <li th:each="recipient : ${recipients}"><span th:text="${recipient.value}"></span> [<a
+                th:href="'mailto:' + ${recipient.key}"
+                th:text="${recipient.key}"></a>]
+            </li>
+        </ul>
     </pre>
 
     <p>The download URL for the files is:</p>

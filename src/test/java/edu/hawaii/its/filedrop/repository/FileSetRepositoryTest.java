@@ -13,6 +13,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
+import edu.hawaii.its.filedrop.type.Recipient;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -29,6 +30,9 @@ public class FileSetRepositoryTest {
     @Autowired
     private FileSetRepository fileSetRepository;
 
+    @Autowired
+    private RecipientRepository recipientRepository;
+
     @Test
     public void findFileSetTest() {
         LocalDateTime created = LocalDateTime.now();
@@ -37,7 +41,6 @@ public class FileSetRepositoryTest {
         fileDrop.setId(1);
         fileDrop.setUploader("test");
         fileDrop.setUploaderFullName("Test 123");
-        fileDrop.setRecipient("tester");
         fileDrop.setCreated(created);
         fileDrop.setExpiration(expiration);
         fileDrop.setDownloadKey("download-key");
@@ -46,7 +49,13 @@ public class FileSetRepositoryTest {
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);
 
-        fileDropRepository.save(fileDrop);
+        fileDrop = fileDropRepository.save(fileDrop);
+
+        Recipient recipient = new Recipient();
+        recipient.setName("tester");
+        recipient.setFileDrop(fileDrop);
+
+        recipientRepository.save(recipient);
 
         FileSet fileSet = new FileSet();
         fileSet.setId(1);
