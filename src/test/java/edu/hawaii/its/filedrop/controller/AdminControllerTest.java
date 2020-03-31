@@ -235,6 +235,23 @@ public class AdminControllerTest {
     }
 
     @Test
+    @WithMockUhAdmin
+    public void adminIcons() throws Exception {
+        mockMvc.perform(get("/admin/icons"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/icons"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void adminIconsViaAnonymous() throws Exception {
+        // Anonymous users not allowed into admin area.
+        mockMvc.perform(get("/admin/icons"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+    }
+
+    @Test
     @WithMockUhUser
     public void redirectWhitelist() throws Exception {
         mockMvc.perform(get("/admin/whitelist"))

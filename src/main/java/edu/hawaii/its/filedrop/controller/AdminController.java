@@ -84,6 +84,12 @@ public class AdminController {
         return "admin/gate-message";
     }
 
+    @GetMapping("/admin/icons")
+    public String icons() {
+        logger.debug("User at admin/icons.");
+        return "admin/icons";
+    }
+
     @GetMapping(value = { "/admin/application/role", "/admin/application/roles" })
     public String adminUserRole() {
         logger.debug("User at admin/application/role.");
