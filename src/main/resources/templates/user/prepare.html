@@ -32,17 +32,15 @@
             </div>
             <div class="col-sm-12 mb-3">
                 <label for="recipient" class="filedrop-label">Recipients</label>
-                <div class="custom-control custom-checkbox mb-3">
-                    <input type="checkbox" class="custom-control-input" id="sendCheck" ng-model="sendToSelf"
-                        ng-click="sendSelf($event)">
-                    <label for="sendCheck" class="custom-control-label">Send to self</label>
-                </div>
                 <form ng-submit="addRecipient(recipient)">
                     <div class="input-group">
                         <input class="form-control" id="recipient" type="search" name="recipient" ng-model="recipient"
-                            placeholder="UH username...">
+                            placeholder="UH username..." valid-recipient=“true”>
                         <div class="input-group-append">
-                            <button type="submit"
+                            <button type="button" ng-click="sendSelf()"
+                                class="btn btn-success ml-2 d-inline-block">Send To Self
+                            </button>
+                            <button type="submit" ng-disabled="recipient.length === 0"
                                 class="btn btn-primary ml-2 d-inline-block">Add Recipient
                             </button>
                         </div>
