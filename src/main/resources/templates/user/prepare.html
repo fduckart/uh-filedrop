@@ -21,7 +21,7 @@
         <div class="card-body">
             <div class="col-sm-12 mb-3">
                 <label for="email" class="filedrop-label">Sender</label>
-                <div class="input-group">
+                <div class="input-group" ng-cloak="">
                     <input name="email" class="form-control" type="text" disabled ng-value="sender.model"
                         ng-if="!userHasMultipleEmails()">
                     <select ng-if="userHasMultipleEmails()" class="custom-select" name="email" id="email"
@@ -46,7 +46,7 @@
                         </div>
                     </div>
                 </form>
-                <ul class="list-inline mt-1">
+                <ul class="list-inline mt-1" ng-cloak>
                     <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
                         <button type="button" class="btn btn-outline-dark btn-sm"
                             ng-click="removeRecipient(r)" aria-label="Recipient name">
