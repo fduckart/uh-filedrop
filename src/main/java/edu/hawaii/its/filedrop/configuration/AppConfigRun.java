@@ -4,6 +4,7 @@ import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -13,8 +14,9 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.ldap.core.support.LdapContextSource;
+import org.springframework.util.Assert;
 
-@Profile(value = { "localhost", "test" })
+@Profile(value = { "localhost", "test", "prod" })
 @Configuration
 @ComponentScan(basePackages = "edu.hawaii.its.filedrop")
 @EnableJpaRepositories(basePackages = { "edu.hawaii.its.filedrop.repository" })
@@ -25,11 +27,21 @@ import org.springframework.ldap.core.support.LdapContextSource;
 })
 public class AppConfigRun {
 
+    @Value("${app.datasource.initialization-mode}")
+    private String springDatasourceInitialize;
+
+    @Value("${app.jpa.hibernate.ddl-auto}")
+    private String hibernateDdlAuto;
+
     private static final Log logger = LogFactory.getLog(AppConfigRun.class);
 
     @PostConstruct
     public void init() {
         logger.info("AppConfigRun init");
+        Assert.isTrue(springDatasourceInitialize.equals("never"),
+                "Property 'spring.datasource.initialization-mode' should be never.");
+        Assert.isTrue(hibernateDdlAuto.equals("none"),
+                "Property 'spring.jpa.hibernate.ddl-auto' should be none.");
     }
 
     @Bean
