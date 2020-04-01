@@ -69,6 +69,56 @@
     .filedrop-label {
         font-weight: bold;
     }
+    
+    .material-icons {
+        font-family: 'Material Icons';
+        font-weight: normal;
+        font-style: normal;
+        font-size: inherit;
+        vertical-align: middle;
+        display: inline-block;
+        width: 1em;
+        height: 1em;
+        line-height: 1;
+        text-transform: none;
+        letter-spacing: normal;
+        word-wrap: normal;
+
+        /* Support for all WebKit browsers. */
+        -webkit-font-smoothing: antialiased;
+
+        /* Support for Safari and Chrome. */
+        text-rendering: optimizeLegibility;
+
+        /* Support for Firefox. */
+        -moz-osx-font-smoothing: grayscale;
+
+        /* Support for IE. */
+        font-feature-settings: 'liga';
+    }
+
+    /* Rules for icon sizes: */
+    .material-icons.md-18 { font-size: 18px; }
+    .material-icons.md-24 { font-size: 24px; } /* Default */
+    .material-icons.md-36 { font-size: 36px; }
+    .material-icons.md-48 { font-size: 48px; }
+    .material-icons.md-54 { font-size: 54px; }
+    .material-icons.md-60 { font-size: 60px; }
+
+    .material-icons.mi-orange { color: orange; }
+    .material-icons.mi-red { color: red; }
+    .material-icons.mi-blue { color: blue; }
+    .material-icons.mi-green { color: green; }
+    .material-icons.mi-lightblue { color: lightblue; }
+    .material-icons.mi-yellow { color: yellow; }
+
+    .fa.fa-orange { color: orange; }
+    .fa.fa-red { color: red; }
+    .fa.fa-blue { color: #0275d8; }
+    .fa.fa-green { color: green; }
+
+
+    
 }
 
 /* -------------------------------------------------------- */

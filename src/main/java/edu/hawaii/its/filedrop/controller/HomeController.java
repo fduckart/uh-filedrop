@@ -55,10 +55,10 @@ public class HomeController {
         logger.debug("User at home.");
 
         boolean spaceFull = !spaceCheckService.isFreeSpaceAvailable();
+        logger.info("home; spaceFull: " + spaceFull);
         int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.GATE_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("gatemessage", message.getText());
-
 
         return "home";
     }
