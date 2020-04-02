@@ -19,96 +19,113 @@
 <div class="container" ng-controller="PrepareJsController" ng-init="init()">
     <div class="card border-success">
         <div class="card-body">
-            <div class="col-sm-12 mb-3">
-                <label for="email" class="filedrop-label">Sender</label>
-                <div class="input-group" ng-cloak="">
-                    <input name="email" class="form-control" type="text" disabled ng-value="sender.model"
-                        ng-if="!userHasMultipleEmails()">
-                    <select ng-if="userHasMultipleEmails()" class="custom-select" name="email" id="email"
-                        ng-model="sender.model">
-                        <option ng-repeat="mail in sender.mails" value="{{mail}}">{{mail}}</option>
-                    </select>
+            <div class="row">
+                <div class="col-sm-12 mb-3">
+                    <label for="email" class="filedrop-label">Sender</label>
+                    <div class="input-group">
+                        <input name="email" class="form-control" type="text" disabled ng-value="sender.model"
+                            ng-if="!userHasMultipleEmails()">
+                        <select ng-if="userHasMultipleEmails()" class="custom-select" name="email" id="email"
+                            ng-model="sender.model" ng-cloak>
+                            <option ng-repeat="mail in sender.mails" value="{{mail}}">{{mail}}</option>
+                        </select>
+                    </div>
                 </div>
             </div>
-            <div class="col-sm-12 mb-3">
-                <label for="recipient" class="filedrop-label">Recipients</label>
-                <form ng-submit="addRecipient(recipient)">
-                    <div class="input-group">
-                        <input class="form-control" id="recipient" type="search" name="recipient" ng-model="recipient"
-                            placeholder="UH username..." valid-recipient=“true”>
-                        <div class="input-group-append">
-                            <button type="button" ng-click="sendSelf()"
-                                class="btn btn-success ml-2 d-inline-block">Send To Self
-                            </button>
-                            <button type="submit" ng-disabled="recipient.length === 0"
-                                class="btn btn-primary ml-2 d-inline-block">Add Recipient
-                            </button>
+            <div class="row">
+                <div class="col-sm-12 mb-3">
+                    <label for="recipient" class="filedrop-label">Recipients</label>
+                    <form ng-submit="addRecipient(recipient)">
+                        <div class="input-group">
+                            <input class="form-control" id="recipient" type="search" name="recipient"
+                                ng-model="recipient"
+                                placeholder="UH username, email address..." valid-recipient=“true”>
+                            <div class="input-group-append">
+                                <button type="button" ng-click="sendSelf()"
+                                    class="btn btn-success mx-2">Send To Self
+                                </button>
+                                <button type="submit" ng-disabled="recipient.length === 0"
+                                    class="btn btn-primary">Add Recipient
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                </form>
-                <ul class="list-inline mt-1" ng-cloak>
-                    <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
-                        <button type="button" class="btn btn-outline-dark btn-sm"
-                            ng-click="removeRecipient(r)" aria-label="Recipient name">
-                            {{ r.name }} <span class="badge badge-danger">&times;</span>
-                        </button>
-                    </li>
-                </ul>
+                    </form>
+                    <ul class="list-inline mt-1" ng-cloak>
+                        <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
+                            <span class="badge badge-light border-secondary border"
+                                style="font-size: .85em; color: #4d4d4d">
+                                <span class="mr-1 recipient-badge" ng-click="removeRecipient(r)"
+                                    aria-label="Recipient name">
+                                    &times;
+                                </span>
+                                {{r.name}}
+                            </span>
+                            <!--                            <button type="button" class="btn btn-outline-dark btn-sm"-->
+                            <!--                                ng-click="removeRecipient(r)" aria-label="Recipient name">-->
+                            <!--                                {{ r.name }} <span class="badge badge-danger">&times;</span>-->
+                            <!--                            </button>-->
+                        </li>
+                    </ul>
+                </div>
             </div>
-            <div class="col-sm-12">
-                <form th:action="@{/prepare/}" method="POST">
-                    <div class="form-row mb-3">
-                        <div class="col-sm-12">
-                            <label for="validationRequired" class="filedrop-label">Require Authentication</label>
-                            <input type="hidden" name="sender" ng-value="sender.model">
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="validation" id="validationRequired"
-                                    ng-value="true" ng-model="authentication">
-                                <label class="form-check-label" for="validationRequired">
-                                    Yes, require recipient to log in using the UH Login (recommended).
-                                </label>
-                            </div>
-                            <div class="form-check">
-                                <input class="form-check-input" type="radio" name="validation"
-                                    id="validationNotRequired"
-                                    ng-value="false" ng-model="authentication">
-                                <label class="form-check-label" for="validationNotRequired">
-                                    No login required (unsecure download available to anyone).
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="form-row mb-3">
-                        <div class="col-sm-12">
-                            <label for="expiration" class="filedrop-label">Expiration Timer</label>
-                            <div class="col-sm-4 px-0">
-                                <select class="custom-select" name="expiration" id="expiration" ng-model="expiration">
-                                    <option value="30">30 minutes</option>
-                                    <option value="60">1 hour</option>
-                                    <option value="1440">1 day</option>
-                                    <option value="2880">2 days</option>
-                                    <option value="4320">3 days</option>
-                                    <option value="5760">4 days</option>
-                                    <option value="7200" selected>5 days</option>
-                                    <option value="8640">6 days</option>
-                                    <option value="10080">7 days</option>
-                                    <option value="20160">14 days</option>
-                                </select>
+            <div class="row">
+                <div class="col-sm-12">
+                    <form th:action="@{/prepare/}" method="POST">
+                        <div class="form-row mb-3">
+                            <div class="col-sm-12">
+                                <label for="validationRequired" class="filedrop-label">Require Authentication</label>
+                                <input type="hidden" name="sender" ng-value="sender.model">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="validation"
+                                        id="validationRequired"
+                                        ng-value="true" ng-model="authentication">
+                                    <label class="form-check-label" for="validationRequired">
+                                        Yes, require recipient to log in using the UH Login (recommended).
+                                    </label>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="validation"
+                                        id="validationNotRequired"
+                                        ng-value="false" ng-model="authentication">
+                                    <label class="form-check-label" for="validationNotRequired">
+                                        No login required (unsecure download available to anyone).
+                                    </label>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="form-row mb-3">
-                        <div class="col-sm-12">
-                            <label for="message" class="filedrop-label">Optional Message</label>
-                            <textarea class="form-control" name="message" id="message" rows="3"
-                                ng-model="message"></textarea>
+                        <div class="form-row mb-3">
+                            <div class="col-sm-12">
+                                <label for="expiration" class="filedrop-label">Expiration Timer</label>
+                                <div class="col-sm-4 px-0">
+                                    <select class="custom-select" name="expiration" id="expiration"
+                                        ng-model="expiration">
+                                        <option value="30">30 minutes</option>
+                                        <option value="60">1 hour</option>
+                                        <option value="1440">1 day</option>
+                                        <option value="2880">2 days</option>
+                                        <option value="4320">3 days</option>
+                                        <option value="5760">4 days</option>
+                                        <option value="7200" selected>5 days</option>
+                                        <option value="8640">6 days</option>
+                                        <option value="10080">7 days</option>
+                                        <option value="20160">14 days</option>
+                                    </select>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <input type="hidden" name="recipients" ng-value="getRecipients()">
-                    <button class="btn btn-primary pull-right" aria-label="" type="submit" ng-disabled="disabled()">
-                        Next
-                    </button>
-                </form>
+                        <div class="form-row mb-3">
+                            <div class="col-sm-12">
+                                <label for="message" class="filedrop-label">Optional Message</label>
+                                <textarea class="form-control" name="message" id="message" rows="3"
+                                    ng-model="message"></textarea>
+                            </div>
+                        </div>
+                        <input type="hidden" name="recipients" ng-value="getRecipients()">
+                        <button class="btn btn-primary pull-right" aria-label="" type="submit" ng-disabled="disabled()">
+                            Next
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
