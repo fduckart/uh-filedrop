@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.job;
 
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
@@ -11,8 +12,8 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ComponentScan(
-                basePackages = "edu.hawaii.its.filedrop.job",
-                includeFilters = @ComponentScan.Filter(SubmitJobComponent.class))
+        basePackages = "edu.hawaii.its.filedrop.job",
+        includeFilters = @ComponentScan.Filter(SubmitJobComponent.class))
 public class JobFactory {
 
     private static final Log logger = LogFactory.getLog(JobFactory.class);
@@ -25,7 +26,7 @@ public class JobFactory {
         logger.info("init; starting...");
 
         synchronized (this) {
-            for(SubmitJob job : jobs) {
+            for (SubmitJob job : jobs) {
                 logger.info("init; Job: " + job);
             }
         }

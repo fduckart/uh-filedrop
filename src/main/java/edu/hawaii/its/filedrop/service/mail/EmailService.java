@@ -73,6 +73,9 @@ public class EmailService {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom(mail.getFrom());
                 messageHelper.setTo(mail.getTo());
+                if (mail.getBcc() != null && mail.getBcc().length() > 0) {
+                    messageHelper.setBcc(mail.getBcc());
+                }
                 messageHelper.setSubject(mailTemplate.getSubject());
                 messageHelper.setText(htmlContent, true);
             };

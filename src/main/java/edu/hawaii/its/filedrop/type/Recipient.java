@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -28,9 +29,9 @@ public class Recipient implements Serializable {
     @Column(name = "name", nullable = false)
     private String name;
 
-    //Constructor
+    // Constructor.
     public Recipient() {
-        //Empty
+        // Empty.
     }
 
     public Integer getId() {
@@ -60,7 +61,7 @@ public class Recipient implements Serializable {
     @Override
     public String toString() {
         return "Recipient [id=" + id
-                + ", fileDropId=" + fileDrop.getId()
+                + ", fileDrop.id=" + (fileDrop != null ? fileDrop.getId() : null)
                 + ", name=" + name
                 + "]";
     }

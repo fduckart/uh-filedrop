@@ -3,6 +3,7 @@ package edu.hawaii.its.filedrop.type;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -156,6 +157,16 @@ public class FileDrop {
 
     public void setFileSet(Set<FileSet> fileSet) {
         this.fileSet = fileSet;
+    }
+
+    public String toStringShort() {
+        return "FileDro[id=" + id
+                + ", uploader=" + uploader
+                + ", recipients=" + recipients
+                + ", created=" + created
+                + ", expiration=" + expiration
+                + ", valid=" + valid
+                + "]";
     }
 
     @Override
