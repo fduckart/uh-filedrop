@@ -19,8 +19,9 @@
                         <span class="filedrop-label">Recipients: </span>
                         <ul class="list-inline">
                             <li th:each="recipient : ${recipients}" class="mx-1 my-1 list-inline-item">
-                                <button type="button" class="btn btn-outline-dark btn-sm" disabled
-                                    th:text="${recipient}"></button>
+                                <span class="badge badge-light border-secondary border"
+                                    style="font-size: .85em; color: #4d4d4d" th:text="${recipient}">
+                                </span>
                             </li>
                         </ul>
                     </div>
