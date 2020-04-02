@@ -16,7 +16,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.util.Assert;
 
-@Profile(value = { "localhost", "test", "prod" })
+@Profile(value = { "test", "prod" })
 @Configuration
 @ComponentScan(basePackages = "edu.hawaii.its.filedrop")
 @EnableJpaRepositories(basePackages = { "edu.hawaii.its.filedrop.repository" })
