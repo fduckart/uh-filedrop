@@ -11,15 +11,13 @@
             <th>Entry</th>
             <th>Registrant</th>
             <th>Created</th>
-            <th>Expiration Check</th>
             <th>Expired</th>
             <th></th>
         </tr>
         <tr ng-repeat="whitelisted in whitelist">
-            <td>{{ getEntryName(whitelisted) }}</td>
-            <td>{{ getRegistrantName(whitelisted) }}</td>
+            <td>{{ whitelisted.entry }}</td>
+            <td>{{ whitelisted.registrant }}</td>
             <td>{{ whitelisted.created }}</td>
-            <td>{{ whitelisted.check }}</td>
             <td>{{ whitelisted.expired }}</td>
             <td>
                 <button class="btn btn-sm btn-danger" ng-click="deleteWhitelist(whitelisted)"><i
