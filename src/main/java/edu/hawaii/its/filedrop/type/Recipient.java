@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "recipient")
 public class Recipient implements Serializable {
@@ -23,6 +25,7 @@ public class Recipient implements Serializable {
 
     @ManyToOne
     @JoinColumn(name = "filedrop_id", nullable = false)
+    @JsonBackReference
     private FileDrop fileDrop;
 
     @Column(name = "name", nullable = false)

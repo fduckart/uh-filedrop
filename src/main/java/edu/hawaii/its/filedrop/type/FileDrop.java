@@ -13,6 +13,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "filedrop")
 public class FileDrop {
@@ -38,6 +40,7 @@ public class FileDrop {
     private String downloadKey;
 
     @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JsonManagedReference
     private List<Recipient> recipients;
 
     @Column(name = "encrypt_key", nullable = false)
@@ -55,6 +58,7 @@ public class FileDrop {
     private Boolean authenticationRequired;
 
     @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL)
+    @JsonManagedReference
     private Set<FileSet> fileSet;
 
     // Constructor.
