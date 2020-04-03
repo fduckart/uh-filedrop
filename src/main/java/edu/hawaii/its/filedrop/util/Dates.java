@@ -13,8 +13,8 @@ public class Dates {
         // Empty.
     }
 
-    public static LocalDate add(LocalDate date, int days) {
-        return date.plusDays(days);
+    public static LocalDateTime add(LocalDateTime dateTime, int days) {
+        return dateTime.plusDays(days);
     }
 
     public static LocalDateTime addMinutes(LocalDateTime dateTime, int minutes) {
