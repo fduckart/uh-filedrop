@@ -13,6 +13,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -44,6 +45,7 @@ public class FileDrop {
     private List<Recipient> recipients;
 
     @Column(name = "encrypt_key", nullable = false)
+    @JsonIgnore
     private String encryptionKey;
 
     @Column(name = "valid_until", nullable = false)
