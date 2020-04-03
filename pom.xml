@@ -24,7 +24,7 @@
   <properties>
     <maven-war-plugin.version>2.4</maven-war-plugin.version>
     <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
-    <maven.version>3.5.3</maven.version>
+    <maven.version>3.5.2</maven.version>
     <java.version>1.8</java.version>
     <junit.version>4.12</junit.version>
     <commons-dbcp-version>2.1.1</commons-dbcp-version>
@@ -446,6 +446,8 @@
             <exclude>edu/hawaii/its/filedrop/crypto/Aes256.class</exclude>
             <exclude>edu/hawaii/its/filedrop/crypto/Rc2.class</exclude>
             <exclude>edu/hawaii/its/filedrop/service/CipherService.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/service/junk/JunkSchedulerService.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/service/junk/JunkFileDropRowMapper.class</exclude>
           </excludes>
         </configuration>
         <executions>
