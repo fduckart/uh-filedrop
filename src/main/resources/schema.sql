@@ -240,11 +240,12 @@ DROP TABLE IF EXISTS person;
 
 CREATE TABLE person (
   id int(11) NOT NULL AUTO_INCREMENT,
-  uhUuid int(11) NOT NULL,
+  uhuuid int(11) NOT NULL,
   name varchar(255) NOT NULL,
   username varchar(255) NOT NULL,
   email varchar(255) NOT NULL,
-  PRIMARY KEY (id)
+  PRIMARY KEY (id),
+  UNIQUE (uhuuid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE role (

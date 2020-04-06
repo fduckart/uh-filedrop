@@ -30,21 +30,18 @@ insert into office (id, campus_id, sort_id, description) values (10, 10, 10, 'Ch
 insert into office (id, campus_id, sort_id, description) values (11, 11, 11, 'Information Technology Services');
 insert into office (id, campus_id, sort_id, description) values (12, 11, 12, 'Vice President for Community Colleges');
 
-insert into role (id, role, security_role, description) values (1, 'NON_UH',  'NON_UH', 'NonUH');
+insert into role (id, role, security_role, description) values ( 1, 'NON_UH',         'NON_UH',        'NonUH');
 insert into role (id, role, security_role, description) values (13, 'ADMINISTRATOR',  'ADMINISTRATOR', 'Administrator');
 insert into role (id, role, security_role, description) values (14, 'SUPER_USER',     'SUPERUSER',     'Superuser');
 
--- Developers.
-insert into person (id, uhuuid, name, email, username) values (2, '17958670', 'Frank Duckart','duckart@hawaii.edu','duckart');
-
--- Administrators.
-insert into person (id, uhuuid, name, email, username) values ( 5, '10000002', 'Keith Richards',  'krichards@example.com', 'krichards');
-
-insert into person (id, uhuuid, name, email, username) values (22, '12345678', 'Test Staff3', 'test3@hawaii.edu',   'test22');
-insert into person (id, uhuuid, name, email, username) values (23, '89999999', 'Test Admin',  'admin@example.com',  'test23');
-insert into person (id, uhuuid, name, email, username) values (24, '10000001', 'Test Tester', 'tester@example.com', 'test24');
-insert into person (id, uhuuid, name, email, username) values (25, '10000004', 'Test Admin',  'admin4@example.com', 'test25');
-insert into person (id, uhuuid, name, email, username) values (26, '10000003', 'Test Admin',  'admin3@example.com', 'test26');
+-- People.
+insert into person (id, uhuuid, username, name, email) values ( 2, '17958670', 'duckart'  , 'Frank Duckart',   'duckart@hawaii.edu'    );
+insert into person (id, uhuuid, username, name, email) values ( 5, '10000002', 'krichards', 'Keith Richards',  'krichards@example.com' );
+insert into person (id, uhuuid, username, name, email) values (22, '12345678', 'test22'   , 'Test Staff3',     'test3@hawaii.edu'      );
+insert into person (id, uhuuid, username, name, email) values (23, '89999999', 'test23'   , 'Test Admin',      'admin@example.com'     );
+insert into person (id, uhuuid, username, name, email) values (24, '10000001', 'test24'   , 'Test Tester',     'tester@example.com'    );
+insert into person (id, uhuuid, username, name, email) values (25, '10000004', 'test25'   , 'Test Admin',      'admin4@example.com'    );
+insert into person (id, uhuuid, username, name, email) values (26, '10000003', 'test26'   , 'Test Admin',      'admin3@example.com'    );
 
 insert into system_role (id, person_id, role_id, office_id) values ( 2,  2, 14, 11);
 insert into system_role (id, person_id, role_id, office_id) values ( 5,  5, 13, 11);
