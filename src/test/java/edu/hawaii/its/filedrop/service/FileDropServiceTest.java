@@ -1,5 +1,16 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -17,13 +28,6 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.controller.WithMockUhUser;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -224,8 +228,7 @@ public class FileDropServiceTest {
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
         workflowService.addProcessVariables(
-                workflowService.getCurrentTask(user).getProcessInstanceId(), args
-        );
+                workflowService.getCurrentTask(user).getProcessInstanceId(), args);
 
         assertTrue(workflowService.hasFileDrop(user));
 
@@ -258,7 +261,6 @@ public class FileDropServiceTest {
                 fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());
         assertNotEquals(fileDropService.findAllFileDrop().size(), 0);
     }
-
 
     @Test
     public void revertToTask() {
@@ -295,4 +297,17 @@ public class FileDropServiceTest {
 
         assertEquals("recipientsTask", workflowService.getCurrentTask(user).getTaskDefinitionKey());
     }
+
+    @Test
+    public void testToShortString() {
+        FileDrop fileDrop = new FileDrop();
+        assertThat(fileDrop.toStringShort(), startsWith("FileDrop ["));
+        assertThat(fileDrop.toStringShort(), containsString("[id=null, "));
+        assertThat(fileDrop.toStringShort(), containsString(", recipients=null"));
+        assertThat(fileDrop.toStringShort(), containsString(", created=null"));
+        assertThat(fileDrop.toStringShort(), containsString(", expiration=null"));
+        assertThat(fileDrop.toStringShort(), containsString(", valid=null"));
+        assertThat(fileDrop.toStringShort(), endsWith("]"));
+    }
+
 }

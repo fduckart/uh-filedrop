@@ -160,7 +160,7 @@ public class FileDrop {
     }
 
     public String toStringShort() {
-        return "FileDro[id=" + id
+        return "FileDrop [id=" + id
                 + ", uploader=" + uploader
                 + ", recipients=" + recipients
                 + ", created=" + created
