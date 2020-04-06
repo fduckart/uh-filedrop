@@ -342,6 +342,7 @@ public class PrepareController {
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());
         fileSet.setComment(comment);
+        fileSet.setSize(file.getSize());
 
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
 
