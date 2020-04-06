@@ -446,8 +446,7 @@
             <exclude>edu/hawaii/its/filedrop/crypto/Aes256.class</exclude>
             <exclude>edu/hawaii/its/filedrop/crypto/Rc2.class</exclude>
             <exclude>edu/hawaii/its/filedrop/service/CipherService.class</exclude>
-            <exclude>edu/hawaii/its/filedrop/service/junk/JunkSchedulerService.class</exclude>
-            <exclude>edu/hawaii/its/filedrop/service/junk/JunkFileDropRowMapper.class</exclude>
+            <exclude>edu/hawaii/its/filedrop/service/junk/**</exclude>
           </excludes>
         </configuration>
         <executions>
