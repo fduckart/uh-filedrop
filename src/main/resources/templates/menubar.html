@@ -9,21 +9,21 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="filedrop-navbar-collapse-1">
             <a class="navbar-brand uh-nav-app-name" href="/filedrop/" th:href="@{/}">
-                <img class="d-inline-block" width="50px" height="50px" th:src="@{/images/seal.jpg}"
-                    src="images/seal.jpg" alt="">
+                <img class="d-inline-block" width="50px" height="50px" th:src="@{/images/seal.jpg}" src="images/seal.jpg" alt="">
                 <span>UH FileDrop</span>
             </a>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
 
                 <li class="nav-item dropdown">
-                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button"
-                        aria-expanded="false">Help
-                        <span class="caret"></span></a>
+                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button" aria-expanded="false">Help<span class="caret"></span></a>
                     <div class="dropdown-menu" role="menu">
                         <a class="dropdown-item" th:href="@{/help/contact}">Contact</a>
-                        <a class="dropdown-item" style="cursor: pointer" data-toggle="modal"
-                            data-target="#faqModal">FAQ</a>
+                        <a class="dropdown-item" style="cursor: pointer" data-toggle="modal" data-target="#faqModal">FAQ</a>
+                        <span sec:authorize="isAuthenticated()">                         
+                        	<div class="dropdown-divider"></div>
+                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                        </span>
                     </div>
                 </li>
                 <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMINISTRATOR')">
@@ -40,13 +40,12 @@
                         <a th:href="@{/admin/whitelist}" class="dropdown-item">Whitelist</a>
                         <a th:href="@{/admin/email}" class="dropdown-item">Email</a>
                         <a th:href="@{/user}" class="dropdown-item">Login Attributes</a>
-                        <a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')" class="dropdown-item">Employee
-                            Lookup</a>
+                        <a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')" class="dropdown-item">Employee Lookup</a>
                         <div class="dropdown-divider"></div>
                         <a th:href="@{/admin/technology}" class="dropdown-item">Technology</a>
                     </div>
                 </li>
-                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMIN')">
+                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMINISTRATOR')">
                     <a class="nav-link" th:href="@{/logout}">Logout</a>
                 </li>
             </ul>
