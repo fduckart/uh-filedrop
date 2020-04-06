@@ -2,12 +2,13 @@ package edu.hawaii.its.filedrop.service.mail;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-//import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -25,6 +26,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.context.Context;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.store.MailFolder;
+import com.icegreen.greenmail.store.StoredMessage;
+import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.ServerSetup;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
@@ -63,12 +67,14 @@ public class EmailServiceTest {
         Mail mail = new Mail();
         mail.setFrom(emailService.getFrom());
         mail.setTo("frank@example.com");
+        mail.setBcc("duckart@acm.org");
         mail.setSubject("Test Email");
         mail.setContent("Test");
 
         emailService.send(mail);
 
         MimeMessage[] receivedMessages = server.getReceivedMessages();
+
         assertThat(receivedMessages.length, equalTo(1));
         assertThat(receivedMessages[0].getFrom()[0].toString(), equalTo("no-reply@its.hawaii.edu"));
         assertThat(receivedMessages[0].getAllRecipients()[0].toString(), equalTo("frank@example.com"));
@@ -93,7 +99,7 @@ public class EmailServiceTest {
     }
 
     @Test
-    public void sendTemplate() throws MessagingException, IOException {
+    public void sendTemplate() throws Exception {
         assertTrue(emailService.isEnabled());
 
         Mail mail = new Mail();
@@ -111,10 +117,42 @@ public class EmailServiceTest {
         emailService.send(mail, "receiver", context);
 
         MimeMessage[] receivedMessages = server.getReceivedMessages();
+
         assertThat(receivedMessages.length, equalTo(1));
         assertThat(receivedMessages[0].getFrom()[0].toString(), equalTo("test2@google.com"));
         assertThat(receivedMessages[0].getAllRecipients()[0].toString(), equalTo("test@google.com"));
         assertThat(receivedMessages[0].getContent().toString(), containsString("9999 bytes"));
+        assertThat(receivedMessages[0].getSubject(), startsWith("Files are available ")); // Note.
+
+        final GreenMailUser user = server.setUser("duckart@acm.org", "");
+        MailFolder inbox = server.getManagers().getImapHostManager().getInbox(user);
+        List<StoredMessage> messages = inbox.getMessages();
+        assertThat(messages.size(), equalTo(0));
+
+        mail = new Mail();
+        mail.setTo("duckart@computer.org");
+        mail.setBcc("duckart@acm.org");
+        mail.setFrom("no-reply@hawaii.edu");
+        mail.setSubject("Test Email Two");
+
+        emailService.send(mail, "receiver", context);
+
+        receivedMessages = server.getReceivedMessages();
+        assertThat(receivedMessages.length, equalTo(3)); // Why did it go up 2?
+
+        assertThat(receivedMessages[1].getFrom().length, equalTo(1));
+        assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo(mail.getFrom()));
+        assertThat(receivedMessages[1].getAllRecipients().length, equalTo(1));
+        assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo(mail.getTo()));
+
+        assertThat(receivedMessages[2].getFrom().length, equalTo(1));
+        assertThat(receivedMessages[2].getFrom()[0].toString(), equalTo(mail.getFrom()));
+        assertThat(receivedMessages[2].getAllRecipients().length, equalTo(1));
+        assertThat(receivedMessages[2].getAllRecipients()[0].toString(), equalTo(mail.getTo()));
+
+        inbox = server.getManagers().getImapHostManager().getInbox(user);
+        messages = inbox.getMessages();
+        assertThat(messages.size(), equalTo(1));
     }
 
     @Test
