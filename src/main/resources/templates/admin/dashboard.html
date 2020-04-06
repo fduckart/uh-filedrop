@@ -6,6 +6,18 @@
 
 <!--  Content container -->
 <div class="container" ng-controller="DashboardJsController" ng-init="init()">
+    <div class="alert alert-success alert-dismissable" th:if="${addExpiration}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        Added <span th:text="${addExpiration}"></span> day(s) to FileDrop
+    </div>
+
+    <div class="alert alert-success alert-dismissable" th:if="${expired}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        Expired FileDrop
+    </div>
+
     <p>
         The following is a list of all "available" filedrops. The expiration time can be extended by one or three days
         by clicking on the appropriate links below. Or you can remove the upload immediately (more or less -- it wil

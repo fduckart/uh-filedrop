@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
@@ -186,19 +187,22 @@ public class AdminController {
     }
 
     @GetMapping("/admin/add-expiration/{id}/{amount}")
-    public String addExpiration(@PathVariable Integer id, @PathVariable Integer amount) {
+    public String addExpiration(@PathVariable Integer id, @PathVariable Integer amount,
+            RedirectAttributes redirectAttributes) {
         FileDrop fileDrop = fileDropService.findFileDrop(id);
         fileDrop.setExpiration(Dates.add(fileDrop.getExpiration(), amount));
         fileDropService.saveFileDrop(fileDrop);
         logger.debug(currentUser().getUsername() + " added " + amount + " days to: " + fileDrop);
+        redirectAttributes.addFlashAttribute("addExpiration", amount);
         return "redirect:/admin/dashboard";
     }
 
     @GetMapping("/admin/expire/{id}")
-    public String expireFileDrop(@PathVariable Integer id) {
+    public String expireFileDrop(@PathVariable Integer id, RedirectAttributes redirectAttributes) {
         FileDrop fileDrop = fileDropService.findFileDrop(id);
         fileDropService.expire(fileDrop);
         logger.debug("admin; " + currentUser().getUsername() + " expired " + fileDrop);
+        redirectAttributes.addFlashAttribute("expired", true);
         return "redirect:/admin/dashboard";
     }
 
