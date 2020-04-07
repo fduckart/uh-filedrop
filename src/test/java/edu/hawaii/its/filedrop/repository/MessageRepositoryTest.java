@@ -24,7 +24,7 @@ public class MessageRepositoryTest {
         Message m1 = messageRepository.findById(1).get();
         Message m2 = messageRepository.findById(2).get();
 
-        assertEquals("Welcome to the University of Hawai'i FileDrop application.", m1.getText());
+        assertEquals("<span style=\"color: red;\"><strong>WARNING: Not intended for normal use (test-env)</strong></span><br/>Welcome to the University of Hawai'i FileDrop application.", m1.getText());
         assertEquals("Welcome to the University of Hawai'i FileDrop application.", m2.getText());
 
         m2 = m1;

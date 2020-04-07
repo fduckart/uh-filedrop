@@ -1,0 +1,88 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy"></head>
+<body ng-app="filedropApp">
+<nav th:replace="menubar :: copy"></nav>
+
+<!--  Content container -->
+<div class="container" ng-controller="DashboardJsController" ng-init="init()">
+    <div class="alert alert-success alert-dismissable" th:if="${addExpiration}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        Added <span th:text="${addExpiration}"></span> day(s) to FileDrop
+    </div>
+
+    <div class="alert alert-success alert-dismissable" th:if="${expired}">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
+            aria-hidden="true">&times;</span></button>
+        Expired FileDrop
+    </div>
+
+    <p>
+        The following is a list of all "available" filedrops. The expiration time can be extended by one or three days
+        by clicking on the appropriate links below. Or you can remove the upload immediately (more or less -- it wil
+        still take a few seconds) by clicking on the "del" link
+    </p>
+
+    <div class="col-sm-12">
+        <div class="row">
+            <div class="col-md-6 col-sm-12 p-0 mb-3">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input placeholder="Search UH username, keys, date..." class="form-control" type="search"
+                        ng-model="filter"
+                        aria-describedby="search">
+                </div>
+            </div>
+        </div>
+        <div class="row" ng-repeat="fileDrop in fileDrops | filter:filter">
+            <table class="table table-sm table-bordered mb-0">
+                <thead class="thead-light">
+                <th scope="col">uploaded by</th>
+                <th scope="col">uploaded at</th>
+                <th scope="col">expires at</th>
+                <th scope="col">downloads</th>
+                <th scope="col">operations</th>
+                </thead>
+                <tbody>
+                <tr class="table-success">
+                    <td>{{ fileDrop.uploader }}</td>
+                    <td>{{ fileDrop.created | date:'MM/dd/yyyy' }}</td>
+                    <td>{{ fileDrop.expiration | date:'MM/dd/yyyy h:mma'}}</td>
+                    <td>0</td>
+                    <td>
+                        <a th:href="@{/admin/add-expiration/{{ fileDrop.id }}/1}" class="mr-1">+1d</a>
+                        <a th:href="@{/admin/add-expiration/{{ fileDrop.id }}/7}" class="mr-1">+7d</a>
+                        <a th:href="@{/admin/expire/{{ fileDrop.id }}}" class="mr-1">del</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <table class="table table-sm table-bordered">
+                <thead class="thead-light">
+                <th scope="col">file name</th>
+                <th scope="col">file type</th>
+                <th scope="col">size</th>
+                <th scope="col">downloads</th>
+                </thead>
+                <tbody>
+                <tr class="table-danger" ng-repeat="fileSet in fileDrop.fileSet">
+                    <td>{{ fileSet.fileName }}</td>
+                    <td>{{ fileSet.type }}</td>
+                    <td>{{ fileSet.size | bytes}}</td>
+                    <td>0</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+<!-- / Content container. -->
+
+<div th:replace="footer :: copy"></div>
+<script type="text/javascript" th:src="@{/javascript/filedrop.controller.dashboard.js?ver=0.3}"></script>
+</body>
+</html>

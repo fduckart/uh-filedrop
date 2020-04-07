@@ -1,5 +1,33 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithAnonymousUser;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.web.context.WebApplicationContext;
+import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.util.ServerSetup;
+
+import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.WhitelistService;
+import edu.hawaii.its.filedrop.type.Whitelist;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
@@ -19,35 +47,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
-import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.web.context.WebApplicationContext;
-
-import com.icegreen.greenmail.junit.GreenMailRule;
-import com.icegreen.greenmail.util.ServerSetup;
-
-import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.service.WhitelistService;
-import edu.hawaii.its.filedrop.type.Whitelist;
-
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class AdminControllerTest {
 
     @Value("${cas.login.url}")
@@ -61,6 +63,9 @@ public class AdminControllerTest {
 
     @Autowired
     private WhitelistService whitelistService;
+
+    @Autowired
+    private FileDropService fileDropService;
 
     @Rule
     public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
@@ -371,5 +376,82 @@ public class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/email"));
         server.stop();
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void dashboard() throws Exception {
+        mockMvc.perform(get("/admin/dashboard"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/dashboard"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void dashboardAnonymous() throws Exception {
+        mockMvc.perform(get("/admin/dashboard"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void getFileDropsTest() throws Exception {
+        mockMvc.perform(get("/api/admin/filedrops"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void getFileDropsAnonymousTest() throws Exception {
+        mockMvc.perform(get("/api/admin/filedrops"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void addExpirationTest() throws Exception {
+        mockMvc.perform(get("/admin/add-expiration/2/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/dashboard"));
+
+        mockMvc.perform(get("/api/admin/filedrops"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"))
+                .andExpect(jsonPath("$[2].expiration").value("2019-11-16T08:30:18.023"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void addExpirationAnonymousTest() throws Exception {
+        mockMvc.perform(get("/admin/add-expiration/2/1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void expireTest() throws Exception {
+        mockMvc.perform(get("/admin/expire/2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/dashboard"));
+
+        mockMvc.perform(get("/api/admin/filedrops"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"))
+                .andExpect(jsonPath("$[2].valid").value(false));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void expireAnonymousTest() throws Exception {
+        mockMvc.perform(get("/admin/expire/2"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
 }

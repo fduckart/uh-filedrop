@@ -5,6 +5,7 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
         $scope.maxUploadSize = $window.maxUploadSize;
         $scope.uploadKey = $window.uploadKey;
         $scope.expiration = $window.expiration;
+        $scope.ticketNumber = $window.ticketNumber;
     };
 
     $scope.submit = function() {
@@ -22,7 +23,7 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
                       .then(() => {
                           count++;
                           if (count === $scope.files.length) {
-                              $window.location.href = "/filedrop/helpdesk/successful/" + $scope.uploadKey + "?expiration=" + $scope.expiration;
+                              $window.location.href = "/filedrop/helpdesk/successful/" + $scope.uploadKey + "?expiration=" + $scope.expiration + "&ticketNumber=" + $scope.ticketNumber;
                           }
                       });
             });

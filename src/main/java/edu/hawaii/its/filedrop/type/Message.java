@@ -13,7 +13,7 @@ public class Message implements Serializable {
     private static final long serialVersionUID = 2L;
 
     public static final int JUMBOTRON_MESSAGE = 1;
-    public static final int GATE_MESSAGE = 2;
+    public static final int GATE_MESSAGE = 1;
     public static final int UNAVAILABLE_MESSAGE = 3;
 
     private Integer id;

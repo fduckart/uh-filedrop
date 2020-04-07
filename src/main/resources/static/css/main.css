@@ -69,7 +69,16 @@
     .filedrop-label {
         font-weight: bold;
     }
-    
+
+    .recipient-badge {
+        cursor: pointer;
+        color: #7f7f7f;
+    }
+
+    .recipient-badge:hover {
+        color: #111111;
+    }
+
     .material-icons {
         font-family: 'Material Icons';
         font-weight: normal;
