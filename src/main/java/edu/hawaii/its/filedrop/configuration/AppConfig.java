@@ -23,5 +23,4 @@ public class AppConfig {
     public void init() {
         logger.info("AppConfig init");
     }
-
 }

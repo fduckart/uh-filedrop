@@ -1,9 +1,5 @@
 package edu.hawaii.its.filedrop.util;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.core.IsEqual.equalTo;
-import static org.junit.Assert.assertNull;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,11 +8,15 @@ import java.util.Date;
 
 import org.junit.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.core.IsEqual.equalTo;
+import static org.junit.Assert.assertNull;
+
 public class DatesTest {
 
     @Test
     public void addTest() {
-        LocalDate date = LocalDate.of(1968, 11, 22);
+        LocalDateTime date = LocalDateTime.of(1968, 11, 22, 1, 1, 1);
         assertThat(date.getDayOfWeek(), equalTo(DayOfWeek.FRIDAY));
         date = Dates.add(date, 5);
         assertThat(date.getDayOfMonth(), equalTo(27));

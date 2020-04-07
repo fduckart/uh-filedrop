@@ -75,7 +75,8 @@ public class HomeControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
-                .andExpect(model().attribute("gatemessage", equalTo("Welcome to the University of Hawai'i FileDrop application.")));
+                .andExpect(model().attribute("gatemessage",
+                        equalTo("<span style=\"color: red;\"><strong>WARNING: Not intended for normal use (test-env)</strong></span><br/>Welcome to the University of Hawai'i FileDrop application.")));
     }
 
     @Test

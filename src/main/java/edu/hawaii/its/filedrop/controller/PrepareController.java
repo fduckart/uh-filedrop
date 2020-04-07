@@ -116,7 +116,7 @@ public class PrepareController {
     @PostMapping(value = "/helpdesk")
     public String addHelpdesk(@RequestParam String sender,
             @RequestParam Integer expiration,
-            @RequestParam String ticketNumber,
+            @RequestParam Integer ticketNumber,
             RedirectAttributes redirectAttributes) {
 
         FileDrop fileDrop = new FileDrop();
@@ -127,13 +127,14 @@ public class PrepareController {
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
 
-        logger.debug("Sender: " + sender);
-        logger.debug("Recipient: " + fileDrop.getRecipients());
-        logger.debug("Expiration: " + expiration);
-
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
         fileDropService.addRecipients(fileDrop, helpEmail);
+
+        logger.debug("Sender: " + sender);
+        logger.debug("Recipient: " + fileDrop.getRecipients());
+        logger.debug("Expiration: " + expiration);
+        logger.debug("Ticket Number: " + ticketNumber);
 
         logger.debug("Upload Key: " + fileDrop.getUploadKey());
 
@@ -320,6 +321,7 @@ public class PrepareController {
     public String prepareHelpdesk(Model model) {
         logger.debug("User at prepare-helpdesk");
         model.addAttribute("recipient", helpName);
+        model.addAttribute("recipientEmail", helpEmail);
         return "user/prepare-helpdesk";
     }
 
@@ -340,6 +342,7 @@ public class PrepareController {
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());
         fileSet.setComment(comment);
+        fileSet.setSize(file.getSize());
 
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
 

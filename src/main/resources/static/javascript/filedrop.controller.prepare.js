@@ -17,7 +17,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     };
 
     $scope.addRecipient = function (recipient) {
-        if (/^\s*$/.test(recipient) || recipient === undefined || $scope.hasRecipient(recipient)) {
+        if ($scope.hasRecipient(recipient)) {
             return;
         }
 
@@ -38,8 +38,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
                 }
             }
         }, "/filedrop/api/ldap/" + recipient);
-
-        $scope.clearRecipient();
     };
 
     $scope.removeRecipient = function(recipient) {
@@ -79,8 +77,9 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
         $("#prepareModal").modal();
     };
 
-    $scope.sendSelf = function(event) {
-        if (event.target.checked) {
+    $scope.sendSelf = function() {
+        $scope.sendToSelf = !$scope.sendToSelf;
+        if ($scope.sendToSelf) {
             $scope.addRecipient($scope.currentUser().uid);
         } else {
             let user = $scope.recipients.find((recipient) => recipient.uid === $scope.currentUser().uid);
@@ -88,7 +87,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
         }
     };
 
-    $scope.disabled = () => $scope.recipient.length > 0 || $scope.recipients.length === 0;
+    $scope.disabled = () => ($scope.recipient.length > 0 || $scope.recipients.length === 0);
 
     $scope.currentUser = () => $window.user;
 
