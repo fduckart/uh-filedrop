@@ -8,13 +8,14 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
         $scope.authentication = $scope.getAuthentication();
         $scope.expiration = $scope.getExpiration();
         $scope.message = $scope.getMessage();
-        $log.debug("Sender:", $scope.sender);
-        $log.debug("Current user:", $scope.currentUser().uid);
-        $log.debug("Recipients:", $scope.recipients);
-        $log.debug("Authentication:", $scope.authentication);
-        $log.debug("Expiration:", $scope.expiration);
-        $log.debug("Message:", $scope.message);
-        $log.debug("FileDrop Sender", $scope.getFileDrop().sender);
+        $log.debug("init; Sender:", $scope.sender);
+        $log.debug("init; Current user:", $scope.currentUser().uid);
+        $log.debug("init; Recipients:", $scope.recipients);
+        $log.debug("init; Authentication:", $scope.authentication);
+        $log.debug("init; Expiration:", $scope.expiration);
+        $log.debug("init; Message:", $scope.message);
+        $log.debug("init; FileDrop Sender:", $scope.getFileDrop().sender);
+        $log.debug("init; Whitelist:", $scope.getWhitelist());
     };
 
     $scope.addRecipient = function (recipient) {
@@ -27,9 +28,10 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
         }
 
         dataProvider.loadData(function(response) {
-            let data = response.data;
-            if (data.cn) {
-                $log.debug($scope.currentUser().uid + " searched " + recipient + " and found " + data.cn);
+            const data = response.data;
+            const check = $scope.checkRecipient(data);
+            if (data.cn && check) {
+                $log.debug("addRecipient; ", $scope.currentUser().uid, "searched", recipient, "and found", data.cn);
                 $scope.recipients.push({ name: data.cn, mail: data.mails[0], uid: data.uid });
             } else if (recipient.indexOf("@") > -1) {
                 if ($scope.authentication) {
@@ -81,16 +83,11 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
 
     $scope.sendSelf = function() {
         $scope.sendToSelf = !$scope.sendToSelf;
-        if ($scope.sendToSelf) {
-            $scope.addRecipient($scope.currentUser().uid);
-        } else {
-            let user = $scope.recipients.find((recipient) => recipient.uid === $scope.currentUser().uid);
-            $scope.recipients.splice($scope.recipients.indexOf(user), 1);
-        }
+        $scope.addRecipient($scope.currentUser().uid);
     };
 
     $scope.disableSendSelf = function() {
-    	return $scope.sendToSelf || $scope.recipient.length > 0;;
+        return $scope.sendToSelf || $scope.recipient.length > 0;
     };
     
     $scope.disabled = function() {
@@ -130,9 +127,28 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
 
     $scope.getMessage = () => $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
 
+    $scope.getWhitelist = () => $window.whitelist;
+
     $scope.sender = {
         model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.currentUser().mails[0],
         mails: $scope.currentUser().mails
+    };
+
+    $scope.checkRecipient = function(recipient) {
+        if (recipient.uid === $scope.currentUser().uid) {
+            return true;
+        }
+
+        if ($scope.currentUser().affiliations.includes("student", "affiliate")) {
+            return recipient.affiliations.includes("staff") ||
+                recipient.affiliations.includes("faculty") ||
+                $scope.getWhitelist().includes(recipient.uid);
+        } else if($scope.currentUser().affiliations.includes("other")) {
+            return recipient.affiliations.includes("staff") ||
+                recipient.affiliations.includes("faculty");
+        } else {
+            return $scope.currentUser().affiliations.includes("staff", "faculty");
+        }
     };
 }
 

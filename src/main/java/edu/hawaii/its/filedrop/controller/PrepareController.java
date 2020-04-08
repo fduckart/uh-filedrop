@@ -30,6 +30,7 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.ProcessVariableHolder;
+import edu.hawaii.its.filedrop.service.WhitelistService;
 import edu.hawaii.its.filedrop.service.WorkflowService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
@@ -60,6 +61,9 @@ public class PrepareController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private WhitelistService whitelistService;
 
     @Value("${app.mail.help}")
     private String helpName;
@@ -308,6 +312,7 @@ public class PrepareController {
         }
 
         model.addAttribute("user", ldapService.findByUhUuidOrUidOrMail(currentUser().getUhuuid()));
+        model.addAttribute("whitelist", whitelistService.getAllWhitelistUids());
 
         if (logger.isDebugEnabled()) {
             logger.debug("User: " + currentUser());

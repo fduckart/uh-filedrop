@@ -2,6 +2,7 @@ package edu.hawaii.its.filedrop.service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -87,5 +88,9 @@ public class WhitelistService {
 
     public boolean isWhitelisted(String entry) {
         return whitelistRepository.findByEntry(entry) != null;
+    }
+
+    public List<String> getAllWhitelistUids() {
+        return findAllWhiteList().stream().map(Whitelist::getEntry).collect(Collectors.toList());
     }
 }

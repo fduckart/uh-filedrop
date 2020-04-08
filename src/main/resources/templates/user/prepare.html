@@ -12,6 +12,7 @@
         authentication: [[${authentication}]],
         message: [[${message}]]
     };
+    var whitelist = [[${whitelist}]];
     /*]]>*/
 </script>
 <nav th:replace="menubar :: copy"></nav>
@@ -41,11 +42,11 @@
                                 ng-model="recipient"
                                 placeholder="UH username, email address..." valid-recipient=“true”>
                             <div class="input-group-append">
-                                <button type="button" ng-click="sendSelf()" ng-disabled="disableSendSelf()"
-                                    class="btn btn-success mx-2">Send To Self
-                                </button>
                                 <button type="submit" ng-disabled="recipient.length === 0"
-                                    class="btn btn-primary">Add Recipient
+                                    class="btn btn-primary mx-2">Add Recipient
+                                </button>
+                                <button type="button" ng-click="sendSelf()" ng-disabled="disableSendSelf()"
+                                    class="btn btn-success">Send To Self
                                 </button>
                             </div>
                         </div>
