@@ -1,5 +1,15 @@
 package edu.hawaii.its.filedrop.controller;
 
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,18 +25,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
-import edu.hawaii.its.filedrop.service.FileSystemStorageService;
 import edu.hawaii.its.filedrop.type.FileDrop;
-
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -35,9 +34,6 @@ public class DownloadControllerTest {
 
     @Autowired
     private FileDropService fileDropService;
-
-    @Autowired
-    private FileSystemStorageService storageService;
 
     @Autowired
     private WebApplicationContext context;

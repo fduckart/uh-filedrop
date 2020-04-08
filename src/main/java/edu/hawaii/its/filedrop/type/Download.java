@@ -1,5 +1,7 @@
 package edu.hawaii.its.filedrop.type;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -8,8 +10,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.joda.time.DateTime;
 
 @Entity
 @Table(name = "download")
@@ -31,17 +31,17 @@ public class Download {
     private Status status;
 
     @Column(name = "started")
-    private DateTime started;
+    private LocalDateTime started;
 
     @Column(name = "completed")
-    private DateTime completed;
+    private LocalDateTime completed;
 
     @Column(name = "ip_addr", length = 16)
     private String ipAddress;
 
-    //Constructor
+    // Constructor.
     public Download() {
-        //Empty
+        // Empty.
     }
 
     enum Status {
@@ -82,19 +82,19 @@ public class Download {
         this.status = status;
     }
 
-    public DateTime getStarted() {
+    public LocalDateTime getStarted() {
         return started;
     }
 
-    public void setStarted(DateTime started) {
+    public void setStarted(LocalDateTime started) {
         this.started = started;
     }
 
-    public DateTime getCompleted() {
+    public LocalDateTime getCompleted() {
         return completed;
     }
 
-    public void setCompleted(DateTime completed) {
+    public void setCompleted(LocalDateTime completed) {
         this.completed = completed;
     }
 

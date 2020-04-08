@@ -1,5 +1,12 @@
 package edu.hawaii.its.filedrop.crypto;
 
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertTrue;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -16,13 +23,6 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-
-import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.not;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -46,8 +46,8 @@ public class CipherLocatorTest {
     }
 
     public void encryptionProcessTest() throws IOException {
-        Cipher cipher = cipherLocator.find("rc2");
-//        CipherFilter cipherFilter = new CipherFilter("test");
+        //        Cipher cipher = cipherLocator.find("rc2");
+        //        CipherFilter cipherFilter = new CipherFilter("test");
         File original = File.createTempFile("~filedrop.store.original", "txt");
         original.deleteOnExit();
         assertTrue(original.exists());
@@ -74,7 +74,7 @@ public class CipherLocatorTest {
         assertThat(original.length(), greaterThan(0L));
         assertThat(Files.size(original.toPath()), equalTo(original.length()));
 
-//        cipher.encrypt("test", original, encrypted);
+        //        cipher.encrypt("test", original, encrypted);
 
         BufferedReader bufferedReader = new BufferedReader(new FileReader(encrypted));
         StringBuilder builder = new StringBuilder();
@@ -84,7 +84,7 @@ public class CipherLocatorTest {
 
         assertThat(builder.toString(), not(equalTo(content.toString())));
 
-//        cipherService.decryptFile("test", encrypted, decrypted);
+        //        cipherService.decryptFile("test", encrypted, decrypted);
 
         bufferedReader = new BufferedReader(new FileReader(decrypted));
         builder = new StringBuilder();

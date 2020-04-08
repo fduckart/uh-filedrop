@@ -258,8 +258,8 @@ CREATE TABLE role (
 
 CREATE TABLE campus (
   id int(11) NOT NULL AUTO_INCREMENT,
-  code char(2) NOT NULL,
-  actual bit NOT NULL,
+  code varchar(3) NOT NULL,  
+  actual char(1) NOT NULL DEFAULT 'Y',
   description varchar(255) NOT NULL,
   PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

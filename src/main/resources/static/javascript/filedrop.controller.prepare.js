@@ -1,4 +1,5 @@
 function PrepareJsController($scope, dataProvider, $http, $window, $log) {
+	
     $scope.init = function() {
         $scope.recipient = "";
         $scope.recipients = [];
@@ -37,6 +38,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
                     $scope.recipients.push({ name: recipient });
                 }
             }
+            $scope.recipient = "";
         }, "/filedrop/api/ldap/" + recipient);
     };
 
@@ -87,8 +89,19 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
         }
     };
 
-    $scope.disabled = () => ($scope.recipient.length > 0 || $scope.recipients.length === 0);
-
+    $scope.disableSendSelf = function() {
+    	return $scope.sendToSelf || $scope.recipient.length > 0;;
+    };
+    
+    $scope.disabled = function() {
+    	$log.debug('disabled; recipient.length: ' + $scope.recipient.length);
+    	$log.debug('disabled; recipients.length: ' + $scope.recipients.length);
+    	let result = $scope.recipient.length > 0 || $scope.recipients.length === 0;
+    	$log.debug('disabled; result: ' + result);
+    	$log.debug('disabled; .......................................');
+    	return $scope.recipient.length > 0 || $scope.recipients.length === 0;
+    };
+    
     $scope.currentUser = () => $window.user;
 
     $scope.getFileDrop = () => $window.fileDrop;

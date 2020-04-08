@@ -21,6 +21,7 @@ import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -34,6 +35,7 @@ import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.Recipient;
 
+@Profile(value = { "test", "prod" })
 @Service
 public class JunkSchedulerService {
 

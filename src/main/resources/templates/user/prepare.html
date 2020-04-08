@@ -41,7 +41,7 @@
                                 ng-model="recipient"
                                 placeholder="UH username, email address..." valid-recipient=“true”>
                             <div class="input-group-append">
-                                <button type="button" ng-click="sendSelf()"
+                                <button type="button" ng-click="sendSelf()" ng-disabled="disableSendSelf()"
                                     class="btn btn-success mx-2">Send To Self
                                 </button>
                                 <button type="submit" ng-disabled="recipient.length === 0"

@@ -2,8 +2,6 @@ package edu.hawaii.its.filedrop.configuration;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -17,7 +15,7 @@ import org.springframework.ldap.core.support.LdapContextSource;
 import org.springframework.util.Assert;
 
 @Profile(value = { "test", "prod" })
-@Configuration
+@Configuration(value = "appConfig")
 @ComponentScan(basePackages = "edu.hawaii.its.filedrop")
 @EnableJpaRepositories(basePackages = { "edu.hawaii.its.filedrop.repository" })
 @PropertySources({
@@ -25,16 +23,15 @@ import org.springframework.util.Assert;
         @PropertySource(value = "file:${user.home}/.${user.name}-conf/filedrop-overrides.properties",
                 ignoreResourceNotFound = true)
 })
-public class AppConfigRun {
+public class AppConfigTest extends AppConfig {
 
-    @Value("${app.datasource.initialization-mode}")
-    private String springDatasourceInitialize;
+    @Value("${app.datasource.initialization-mode:}")
+    private String springDatasourceInitialize = "";
 
-    @Value("${app.jpa.hibernate.ddl-auto}")
-    private String hibernateDdlAuto;
+    @Value("${app.jpa.hibernate.ddl-auto:}")
+    private String hibernateDdlAuto = "";
 
-    private static final Log logger = LogFactory.getLog(AppConfigRun.class);
-
+    @Override
     @PostConstruct
     public void init() {
         logger.info("AppConfigRun init");

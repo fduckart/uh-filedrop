@@ -1,5 +1,20 @@
 package edu.hawaii.its.filedrop.controller;
 
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,20 +30,6 @@ import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
-
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -76,7 +77,7 @@ public class HomeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
                 .andExpect(model().attribute("gatemessage",
-                        equalTo("<span style=\"color: red;\"><strong>WARNING: Not intended for normal use (test-env)</strong></span><br/>Welcome to the University of Hawai'i FileDrop application.")));
+                        startsWith("Welcome to the University")));
     }
 
     @Test
@@ -85,7 +86,8 @@ public class HomeControllerTest {
         mockMvc.perform(get("/"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
-                .andExpect(model().attribute("gatemessage", equalTo("FileDrop is currently unavailable.")));
+                .andExpect(model().attribute("gatemessage",
+                        equalTo("FileDrop is currently unavailable.")));
         spaceCheckService.update();
     }
 

@@ -2,8 +2,6 @@ package edu.hawaii.its.filedrop.configuration;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -15,7 +13,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.ldap.core.support.LdapContextSource;
 
 @Profile(value = { "localhost" })
-@Configuration
+@Configuration(value = "appConfig")
 @ComponentScan(basePackages = "edu.hawaii.its.filedrop")
 @EnableJpaRepositories(basePackages = { "edu.hawaii.its.filedrop.repository" })
 @PropertySources({
@@ -23,10 +21,9 @@ import org.springframework.ldap.core.support.LdapContextSource;
         @PropertySource(value = "file:${user.home}/.${user.name}-conf/filedrop-overrides.properties",
                 ignoreResourceNotFound = true)
 })
-public class AppConfigLocal {
+public class AppConfigLocal extends AppConfig {
 
-    private static final Log logger = LogFactory.getLog(AppConfig.class);
-
+    @Override
     @PostConstruct
     public void init() {
         logger.info("AppConfig init");
