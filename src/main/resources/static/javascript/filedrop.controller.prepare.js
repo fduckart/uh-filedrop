@@ -94,11 +94,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     };
     
     $scope.disabled = function() {
-    	$log.debug('disabled; recipient.length: ' + $scope.recipient.length);
-    	$log.debug('disabled; recipients.length: ' + $scope.recipients.length);
-    	let result = $scope.recipient.length > 0 || $scope.recipients.length === 0;
-    	$log.debug('disabled; result: ' + result);
-    	$log.debug('disabled; .......................................');
     	return $scope.recipient.length > 0 || $scope.recipients.length === 0;
     };
     
