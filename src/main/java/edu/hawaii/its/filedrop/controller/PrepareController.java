@@ -108,8 +108,6 @@ public class PrepareController {
             return recipient;
         }).collect(toList());
 
-        logger.debug("Recipients: " + recipientsList + " Recipients: " + fileDrop.getRecipients());
-
         model.addAttribute("recipients", recipientsList);
         model.addAttribute("maxUploadSize", maxUploadSize);
         model.addAttribute("uploadKey", fileDrop.getUploadKey());
@@ -194,6 +192,16 @@ public class PrepareController {
         workflowService.addProcessVariables(workflowService.getCurrentTask(user), processVariableHolder.getMap());
 
         fileDropService.addRecipients(user, recipients);
+
+        for (String recipient : recipients) {
+            LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
+            boolean checkRecipient = fileDropService.checkRecipient(currentUser(), fileDrop, ldapPerson);
+            logger.debug("checkRecipient; " + recipient + ": " + checkRecipient);
+
+            if (!checkRecipient) {
+                return "redirect:/prepare";
+            }
+        }
 
         logger.debug(user.getUsername() + " created new " + fileDrop);
         logger.debug("Sender: " + sender);

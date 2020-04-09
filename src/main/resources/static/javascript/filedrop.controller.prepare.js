@@ -29,8 +29,8 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
 
         dataProvider.loadData(function(response) {
             const data = response.data;
-            const check = $scope.checkRecipient(data);
-            if (data.cn && check) {
+            const checkRecipient = $scope.checkRecipient(data);
+            if (data.cn && checkRecipient) {
                 $log.debug("addRecipient; ", $scope.currentUser().uid, "searched", recipient, "and found", data.cn);
                 $scope.recipients.push({ name: data.cn, mail: data.mails[0], uid: data.uid });
             } else if (recipient.indexOf("@") > -1) {
@@ -134,6 +134,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
             return true;
         }
 
+        //TODO: use the backend checkRecipient somehow.
         if ($scope.currentUser().affiliations.includes("student", "affiliate")) {
             return recipient.affiliations.includes("staff") ||
                 recipient.affiliations.includes("faculty") ||
