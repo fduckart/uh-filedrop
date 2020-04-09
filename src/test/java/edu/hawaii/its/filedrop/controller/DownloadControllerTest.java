@@ -57,7 +57,7 @@ public class DownloadControllerTest {
     }
 
     @Test
-    @WithMockUhUser
+    @WithMockUhUser(username = "jmess")
     public void downloadTest() throws Exception {
 
         mockMvc.perform(get("/prepare"))
@@ -66,7 +66,7 @@ public class DownloadControllerTest {
 
         mockMvc.perform(post("/prepare")
                 .param("sender", "test")
-                .param("recipients", "test@test.com", "test2@test.com")
+                .param("recipients", "jwlennon")
                 .param("message", "test")
                 .param("validation", "true")
                 .param("expiration", "5"))
