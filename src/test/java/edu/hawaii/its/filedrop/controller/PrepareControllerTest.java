@@ -141,7 +141,7 @@ public class PrepareControllerTest {
 
         mockMvc.perform(post("/prepare")
                 .param("sender", "jwlennon@hawaii.edu")
-                .param("recipients", "test", "jwlennon")
+                .param("recipients", "jwlennon")
                 .param("validation", "true")
                 .param("expiration", "5")
                 .param("message", "Test Message"))
@@ -153,7 +153,7 @@ public class PrepareControllerTest {
         mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/files"))
-                .andExpect(model().attribute("recipients", contains("test", "John W Lennon")));
+                .andExpect(model().attribute("recipients", contains("John W Lennon")));
 
         mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
                 .andExpect(status().is3xxRedirection())
@@ -358,5 +358,144 @@ public class PrepareControllerTest {
                 .param("ticketNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
+    }
+
+    @Test
+    @WithMockUhUser(affiliation = "faculty")
+    public void restrictionsFacultyTest() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "krichards", "beno", "help"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(containsString("redirect:/prepare/files/")));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "uhmfund"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare"));
+    }
+
+    @Test
+    @WithMockUhUser(affiliation = "staff")
+    public void restrictionsStaffTest() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "krichards", "beno", "help"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(containsString("redirect:/prepare/files/")));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "uhmfund"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare"));
+    }
+
+    @Test
+    @WithMockUhUser(affiliation = "student")
+    public void restrictionsStudentTest() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "krichards", "beno", "help"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "uhmfund"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare"));
+    }
+
+    @Test
+    @WithMockUhUser(affiliation = "affiliate")
+    public void restrictionsAffiliateTest() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "krichards", "beno", "help"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "uhmfund"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare"));
+    }
+
+    @Test
+    @WithMockUhUser(affiliation = "other")
+    public void restrictionsOtherTest() throws Exception {
+        mockMvc.perform(get("/prepare"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "krichards", "beno"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name(containsString("redirect:/prepare/files")));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "help"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare"));
+
+        mockMvc.perform(post("/prepare")
+                .param("sender", "user@test.edu")
+                .param("validation", "true")
+                .param("expiration", "5")
+                .param("message", "Test Message")
+                .param("recipients", "uhmfund"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/prepare"));
     }
 }
