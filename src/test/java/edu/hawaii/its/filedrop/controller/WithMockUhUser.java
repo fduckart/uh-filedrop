@@ -17,4 +17,6 @@ public @interface WithMockUhUser {
     String name() default "User";
 
     String email() default "user@test.edu";
+
+    String affiliation() default "staff";
 }

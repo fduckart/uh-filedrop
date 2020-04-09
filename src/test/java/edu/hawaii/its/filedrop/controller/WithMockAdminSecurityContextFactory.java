@@ -34,6 +34,7 @@ public class WithMockAdminSecurityContextFactory
         attrsMap.put("cn", uhUser.name());
         attrsMap.put("uhEmail", uhUser.email());
         attrsMap.put("mails", Collections.singletonList(uhUser.email()));
+        attrsMap.put("eduPersonAffiliation", uhUser.affiliation());
         UhAttributes attributes = new UhCasAttributes(attrsMap);
         user.setAttributes(attributes);
 
