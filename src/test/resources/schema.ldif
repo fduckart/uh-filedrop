@@ -159,11 +159,59 @@ uid: 20000004
 mail: 20000004@hawaii.edu
 uhUuid: 20000004
 
+dn: cn=Test Student,ou=People,dc=hawaii,dc=edu
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Test Student
+sn: Student
+givenname: Test
+uid: teststudent
+mail: teststudent@hawaii.edu
+uhUuid: 22222222
+title: Testy Tester2
+telephoneNumber: (111) 231-1215
+facsimileTelephoneNumber: (111) 231-1216
+ou: University of Hawaii System
+uhOrgAffiliation: eduPersonOrgDN=uhm,eduPersonAffiliation=student
+eduPersonAffiliation: student
+
+dn: cn=Test User,ou=People,dc=hawaii,dc=edu
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+cn: Test User
+sn: User
+givenname: Test
+uid: user
+mail: user@hawaii.edu
+uhUuid: 33333333
+title: Testy Tester3
+telephoneNumber: (333) 231-1215
+facsimileTelephoneNumber: (333) 231-1216
+ou: University of Hawaii System
+uhOrgAffiliation: eduPersonOrgDN=uhm,eduPersonAffiliation=other
+eduPersonAffiliation: other
+
 dn: cn=help,ou=People,dc=hawaii,dc=edu
 givenName: ITS Help Desk
 sn: ITS Help Desk
 cn: ITS Help Desk
 uid: help
+objectClass: eduPerson
+objectClass: inetOrgPerson
+objectClass: organizationalPerson
+objectClass: person
+objectClass: top
+objectClass: uhEduPerson
+
+dn: cn=uhmfund,ou=People,dc=hawaii,dc=edu
+givenName: UHM Fund
+sn: UHM Fund
+cn: UHM Fund
+uid: uhmfund
 objectClass: eduPerson
 objectClass: inetOrgPerson
 objectClass: organizationalPerson
