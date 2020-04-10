@@ -66,9 +66,14 @@ public class DownloadController {
     public String download(Model model, @PathVariable String downloadKey) {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
 
-        if (fileDrop == null || !fileDrop.isValid()) {
+        if (fileDrop == null) {
             model.addAttribute("error", "Download not found");
             return "user/download-error";
+        }
+
+        if (!fileDrop.isValid()) {
+            model.addAttribute("expiration", fileDrop.getExpiration());
+            return "user/expired";
         }
 
         if (fileDrop.isAuthenticationRequired()) {
@@ -85,9 +90,14 @@ public class DownloadController {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
         logger.debug("downloadSecure; fileDrop: " + fileDrop + " User: " + currentUser().getUsername());
 
-        if (fileDrop == null || !fileDrop.isValid()) {
+        if (fileDrop == null) {
             model.addAttribute("error", "Download not found");
             return "user/download-error";
+        }
+
+        if (!fileDrop.isValid()) {
+            model.addAttribute("expiration", fileDrop.getExpiration());
+            return "user/expired";
         }
 
         if (!fileDropService.isAuthorized(fileDrop, currentUser().getUsername())) {
