@@ -55,13 +55,20 @@ public class DatabaseConfig {
 
     @PostConstruct
     public void init() {
+        logger.info("init; starting...");
+
+        logger.info("init; url: " + url);
+        logger.info("init; username: " + username);
+        logger.info("init; driverClassName: " + driverClassName);
+        logger.info("init; hibernateDialect: " + hibernateDialect);
+        logger.info("init; hibernateHbm2ddlAuto: " + hibernateHbm2ddlAuto);
+
         Assert.hasLength(url, "property 'url' is required");
         Assert.hasLength(username, "property 'user' is required");
         Assert.hasLength(driverClassName, "property 'driverClassName' is required");
         Assert.hasLength(hibernateCacheProviderClass, "property 'hibernateCacheProviderClass' is required");
 
-        logger.info("url: " + url);
-        logger.info("username: " + username);
+        logger.info("init; started.");
     }
 
     @Bean(name = "dataSource")
