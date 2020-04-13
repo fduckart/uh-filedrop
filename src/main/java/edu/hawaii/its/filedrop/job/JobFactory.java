@@ -1,5 +1,6 @@
 package edu.hawaii.its.filedrop.job;
 
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,9 +18,12 @@ import org.springframework.stereotype.Component;
 public class JobFactory {
 
     private static final Log logger = LogFactory.getLog(JobFactory.class);
+    private final List<SubmitJob> jobs;
 
-    @Autowired
-    private List<SubmitJob> jobs;
+    // Constructor.
+    public JobFactory(@Autowired List<SubmitJob> jobs) {
+        this.jobs = jobs != null ? jobs : Collections.emptyList();
+    }
 
     @PostConstruct
     public void init() {

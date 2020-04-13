@@ -1,5 +1,9 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
+import static org.quartz.TriggerBuilder.newTrigger;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
@@ -15,10 +19,6 @@ import org.springframework.stereotype.Service;
 import edu.hawaii.its.filedrop.job.JobFactory;
 import edu.hawaii.its.filedrop.job.SubmitJob;
 
-import static org.quartz.JobBuilder.newJob;
-import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
-import static org.quartz.TriggerBuilder.newTrigger;
-
 @Service
 public class SchedulerService {
 
@@ -32,7 +32,7 @@ public class SchedulerService {
 
     @PostConstruct
     public void init() throws SchedulerException {
-        for(SubmitJob submitJob : jobFactory.getJobs()) {
+        for (SubmitJob submitJob : jobFactory.getJobs()) {
             addJob(submitJob);
         }
     }
