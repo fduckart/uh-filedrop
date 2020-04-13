@@ -4,12 +4,16 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -44,6 +48,36 @@ public class FileDropService {
 
     @Autowired
     private FileSystemStorageService fileSystemStorageService;
+
+    @Autowired
+    private WhitelistService whitelistService;
+
+    @Value("${app.restrictions.sender.student}")
+    private List<String> studentRestrictions;
+
+    @Value("${app.restrictions.sender.faculty}")
+    private List<String> facultyRestrictions;
+
+    @Value("${app.restrictions.sender.staff}")
+    private List<String> staffRestrictions;
+
+    @Value("${app.restrictions.sender.affiliate}")
+    private List<String> affiliateRestrictions;
+
+    @Value("${app.restrictions.sender.other}")
+    private List<String> otherRestrictions;
+
+    private Map<String, List<String>> allRestrictions;
+
+    @PostConstruct
+    public void init() {
+        allRestrictions = new HashMap<>();
+        allRestrictions.put("affiliate", affiliateRestrictions);
+        allRestrictions.put("faculty", facultyRestrictions);
+        allRestrictions.put("other", otherRestrictions);
+        allRestrictions.put("staff", staffRestrictions);
+        allRestrictions.put("student", studentRestrictions);
+    }
 
     public void expire(FileDrop fileDrop) {
         fileDrop.setValid(false);
@@ -121,6 +155,33 @@ public class FileDropService {
 
     public boolean containsRecipient(FileDrop fileDrop, String recipient) {
         return findRecipients(fileDrop).stream().anyMatch(recipientObj -> recipientObj.getName().equals(recipient));
+    }
+
+    public boolean checkRecipient(User user, FileDrop fileDrop, LdapPerson ldapPerson) {
+        if (user.getUid().equals(ldapPerson.getUid())) {
+            return true;
+        }
+
+        if (!fileDrop.isAuthenticationRequired() && !ldapPerson.isValid()) {
+            return true;
+        }
+
+        boolean validRecipient = false;
+
+        for (String affiliations : user.getAttributes().getAffiliation()) {
+            validRecipient = ldapPerson.getAffiliations().stream()
+                    .anyMatch(affiliation -> allRestrictions.get(affiliations).contains(affiliation));
+
+            if (allRestrictions.get(affiliations).contains("department") && !validRecipient) {
+                validRecipient = whitelistService.isWhitelisted(ldapPerson.getUid());
+            }
+
+            if (validRecipient) {
+                break;
+            }
+        }
+
+        return validRecipient;
     }
 
     public FileSet saveFileSet(FileSet fileSet) {

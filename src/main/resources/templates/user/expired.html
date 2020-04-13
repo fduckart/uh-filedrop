@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy"></head>
+<body>
+<nav th:replace="menubar :: copy"></nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h1>Expired</h1>
+            This drop expired at <span th:text="${#temporals.format(expiration, 'E, dd MMMM yyyy h:mm a z')}"></span>.
+        </div>
+    </div>
+</div>
+
+<div th:replace="footer :: copy"></div>
+</body>
+</html>

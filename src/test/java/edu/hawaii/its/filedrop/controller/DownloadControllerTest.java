@@ -1,15 +1,5 @@
 package edu.hawaii.its.filedrop.controller;
 
-import static org.hamcrest.Matchers.containsString;
-import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
-import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +16,16 @@ import org.springframework.web.context.WebApplicationContext;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
+
+import static org.hamcrest.Matchers.containsString;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -54,10 +54,15 @@ public class DownloadControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/download-error"))
                 .andExpect(model().attribute("error", "Download not found"));
+
+        mockMvc.perform(get("/sl/randomtest"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/download-error"))
+                .andExpect(model().attribute("error", "Download not found"));
     }
 
     @Test
-    @WithMockUhUser
+    @WithMockUhUser(username = "jmess")
     public void downloadTest() throws Exception {
 
         mockMvc.perform(get("/prepare"))
@@ -66,7 +71,7 @@ public class DownloadControllerTest {
 
         mockMvc.perform(post("/prepare")
                 .param("sender", "test")
-                .param("recipients", "test@test.com", "test2@test.com")
+                .param("recipients", "jwlennon")
                 .param("message", "test")
                 .param("validation", "true")
                 .param("expiration", "5"))
@@ -188,10 +193,15 @@ public class DownloadControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
 
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/expired"))
+                .andExpect(model().attributeExists("expiration"));
+
         mockMvc.perform(get("/sl/" + fileDrop.getDownloadKey()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user/download-error"))
-                .andExpect(model().attribute("error", "Download not found"));
+                .andExpect(view().name("user/expired"))
+                .andExpect(model().attributeExists("expiration"));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/1")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))
@@ -235,8 +245,8 @@ public class DownloadControllerTest {
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
                 .andExpect(status().isOk())
-                .andExpect(view().name("user/download-error"))
-                .andExpect(model().attribute("error", "Download not found"));
+                .andExpect(view().name("user/expired"))
+                .andExpect(model().attributeExists("expiration"));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/1")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))

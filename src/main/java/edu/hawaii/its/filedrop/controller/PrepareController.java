@@ -30,6 +30,7 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.ProcessVariableHolder;
+import edu.hawaii.its.filedrop.service.WhitelistService;
 import edu.hawaii.its.filedrop.service.WorkflowService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
@@ -60,6 +61,9 @@ public class PrepareController {
 
     @Autowired
     private EmailService emailService;
+
+    @Autowired
+    private WhitelistService whitelistService;
 
     @Value("${app.mail.help}")
     private String helpName;
@@ -103,8 +107,6 @@ public class PrepareController {
             }
             return recipient;
         }).collect(toList());
-
-        logger.debug("Recipients: " + recipientsList + " Recipients: " + fileDrop.getRecipients());
 
         model.addAttribute("recipients", recipientsList);
         model.addAttribute("maxUploadSize", maxUploadSize);
@@ -190,6 +192,16 @@ public class PrepareController {
         workflowService.addProcessVariables(workflowService.getCurrentTask(user), processVariableHolder.getMap());
 
         fileDropService.addRecipients(user, recipients);
+
+        for (String recipient : recipients) {
+            LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
+            boolean checkRecipient = fileDropService.checkRecipient(currentUser(), fileDrop, ldapPerson);
+            logger.debug("checkRecipient; " + recipient + ": " + checkRecipient);
+
+            if (!checkRecipient) {
+                return "redirect:/prepare";
+            }
+        }
 
         logger.debug(user.getUsername() + " created new " + fileDrop);
         logger.debug("Sender: " + sender);
@@ -308,6 +320,7 @@ public class PrepareController {
         }
 
         model.addAttribute("user", ldapService.findByUhUuidOrUidOrMail(currentUser().getUhuuid()));
+        model.addAttribute("whitelist", whitelistService.getAllWhitelistUids());
 
         if (logger.isDebugEnabled()) {
             logger.debug("User: " + currentUser());

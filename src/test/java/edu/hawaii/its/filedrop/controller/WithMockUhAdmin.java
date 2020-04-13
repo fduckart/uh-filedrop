@@ -17,4 +17,6 @@ public @interface WithMockUhAdmin {
     String name() default "Admin";
 
     String email() default "admin@test.edu";
+
+    String affiliation() default "staff";
 }
