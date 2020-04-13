@@ -76,15 +76,19 @@ public class User extends org.springframework.security.core.userdetails.User {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (!super.equals(obj))
+        }
+        if (!super.equals(obj)) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         User other = (User) obj;
-        if (!uhuuid.equals(other.uhuuid))
+        if (!uhuuid.equals(other.uhuuid)) {
             return false;
+        }
         return true;
     }
 

@@ -1,14 +1,14 @@
 package edu.hawaii.its.filedrop.access;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import edu.hawaii.its.filedrop.service.PersonService;
-
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ADMINISTRATOR;
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ANONYMOUS;
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.SUPERUSER;
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.UH;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import edu.hawaii.its.filedrop.service.PersonService;
 
 @Service
 public class AuthorizationService {
