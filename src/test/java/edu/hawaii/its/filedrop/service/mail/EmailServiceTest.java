@@ -164,7 +164,7 @@ public class EmailServiceTest {
         mail.setTo("krichards@example.com");
         mail.setSubject("Test Email");
 
-        FileDrop fileDrop = fileDropService.findFileDrop(2);
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
 
         Context context = emailService.fileDropContext("receiver", fileDrop);
 
@@ -185,7 +185,7 @@ public class EmailServiceTest {
 
     @Test
     public void misc() {
-        FileDrop fileDrop = fileDropService.findFileDrop(2);
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
         Context context = emailService.fileDropContext("recipients", fileDrop);
 
         @SuppressWarnings("unchecked")

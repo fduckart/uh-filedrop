@@ -1,6 +1,6 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -23,7 +23,7 @@ public class Whitelist {
     private String entry;
 
     @Column(name = "created")
-    private LocalDate created;
+    private LocalDateTime created;
 
     @Column(name = "registrant")
     private String registrant;
@@ -85,11 +85,11 @@ public class Whitelist {
         this.expired = expired;
     }
 
-    public LocalDate getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(LocalDate created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 

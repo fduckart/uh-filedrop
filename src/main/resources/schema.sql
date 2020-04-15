@@ -22,7 +22,7 @@ CREATE TABLE download (
   id int(11) NOT NULL AUTO_INCREMENT,
   filedrop_id int(11) NOT NULL DEFAULT '0',
   file_name varchar(255) NOT NULL DEFAULT '',
-  status enum('INPROGRESS','COMPLETED','CANCELED') NOT NULL DEFAULT 'INPROGRESS',
+  status_code VARCHAR(48) NOT NULL default 'INPROGRESS',
   started datetime NOT NULL,
   completed datetime DEFAULT NULL,
   ip_addr varchar(16) NOT NULL DEFAULT '',
@@ -37,8 +37,8 @@ CREATE TABLE fileset (
   file_name varchar(255) NOT NULL DEFAULT '',
   type varchar(255) NOT NULL DEFAULT '',
   comment varchar(255) NOT NULL DEFAULT '',
-  size int(11) NOT NULL DEFAULT '0',
-  id int(10) unsigned NOT NULL AUTO_INCREMENT,
+  size BIGINT NOT NULL DEFAULT '0',
+  id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id),
   CONSTRAINT fileset_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -240,7 +240,7 @@ DROP TABLE IF EXISTS person;
 
 CREATE TABLE person (
   id int(11) NOT NULL AUTO_INCREMENT,
-  uhuuid int(11) NOT NULL,
+  uhuuid varchar(32) NOT NULL,
   name varchar(255) NOT NULL,
   username varchar(255) NOT NULL,
   email varchar(255) NOT NULL,

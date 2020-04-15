@@ -1,6 +1,11 @@
 package edu.hawaii.its.filedrop.repository;
 
-import java.time.LocalDate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,11 +15,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.type.Whitelist;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -31,8 +31,8 @@ public class WhitelistRepositoryTest {
         whitelist.setEntry("Test");
         whitelist.setRegistrant("Person");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.now();
-        whitelist.setCreated(localDate);
+        LocalDateTime localDateTime = LocalDateTime.now();
+        whitelist.setCreated(localDateTime);
         whitelist.setExpired(false);
 
         whitelistRepository.save(whitelist);
@@ -44,7 +44,7 @@ public class WhitelistRepositoryTest {
         assertEquals("Person", foundWhitelist.getRegistrant());
         assertEquals(Integer.valueOf(0), foundWhitelist.getCheck());
         assertFalse(foundWhitelist.isExpired());
-        assertEquals(localDate, foundWhitelist.getCreated());
+        assertEquals(localDateTime, foundWhitelist.getCreated());
 
         foundWhitelist = whitelistRepository.findByEntry("Test");
         assertNotNull(foundWhitelist);

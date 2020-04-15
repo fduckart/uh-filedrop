@@ -1,6 +1,6 @@
 package edu.hawaii.its.filedrop.controller;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -159,7 +159,7 @@ public class AdminController {
         whitelist.setRegistrantName(ldapService.findByUid(registrant).getCn());
         whitelist.setCheck(0);
         whitelist.setExpired(false);
-        whitelist.setCreated(LocalDate.now());
+        whitelist.setCreated(LocalDateTime.now());
         whitelist = whitelistService.addWhitelist(whitelist);
         logger.debug("User added Whitelist: " + whitelist);
         return "redirect:/admin/whitelist";

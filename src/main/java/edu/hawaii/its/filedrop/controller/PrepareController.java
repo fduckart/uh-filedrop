@@ -1,5 +1,7 @@
 package edu.hawaii.its.filedrop.controller;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
@@ -39,8 +41,6 @@ import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.type.Recipient;
 import edu.hawaii.its.filedrop.util.Dates;
 import edu.hawaii.its.filedrop.util.Strings;
-
-import static java.util.stream.Collectors.toList;
 
 @Controller
 public class PrepareController {
@@ -87,16 +87,17 @@ public class PrepareController {
     @GetMapping(value = "/prepare/files/{uploadKey}")
     public String addFiles(Model model, @PathVariable String uploadKey) {
 
-        if (workflowService.atTask(currentUser(), "addRecipients")) {
+        logger.debug("User at addFiles.");
+        User user = currentUser();
+
+        if (workflowService.atTask(user, "addRecipients")) {
             return "redirect:/prepare";
         }
-
-        logger.debug("User at addFiles.");
 
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
 
         ProcessVariableHolder processVariableHolder =
-                new ProcessVariableHolder(workflowService.getProcessVariables(currentUser()));
+                new ProcessVariableHolder(workflowService.getProcessVariables(user));
 
         String[] recipients = (String[]) processVariableHolder.get("recipients");
 
@@ -158,7 +159,7 @@ public class PrepareController {
         User user = currentUser();
 
         if (logger.isDebugEnabled()) {
-            logger.debug("User: " + currentUser());
+            logger.debug("User: " + user);
             logger.debug("User added recipients: " + Arrays.toString(recipients));
         }
 
@@ -180,7 +181,7 @@ public class PrepareController {
         }
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
-        fileDropService.addRecipients(currentUser(), recipients);
+        fileDropService.addRecipients(user, recipients);
 
         ProcessVariableHolder processVariableHolder = new ProcessVariableHolder();
         processVariableHolder.add("fileDropId", fileDrop.getId());
@@ -189,13 +190,13 @@ public class PrepareController {
         processVariableHolder.add("sender", sender);
         processVariableHolder.add("message", message);
 
-        workflowService.addProcessVariables(workflowService.getCurrentTask(user), processVariableHolder.getMap());
+        workflowService.addProcessVariables(user, processVariableHolder);
 
         fileDropService.addRecipients(user, recipients);
 
         for (String recipient : recipients) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
-            boolean checkRecipient = fileDropService.checkRecipient(currentUser(), fileDrop, ldapPerson);
+            boolean checkRecipient = fileDropService.checkRecipient(user, fileDrop, ldapPerson);
             logger.debug("checkRecipient; " + recipient + ": " + checkRecipient);
 
             if (!checkRecipient) {
@@ -301,12 +302,14 @@ public class PrepareController {
     public String prepare(Model model) {
         logger.debug("User at prepare.");
 
-        Task currentTask = workflowService.getCurrentTask(currentUser());
+        User user = currentUser();
+        Task currentTask = workflowService.getCurrentTask(user);
 
         if (currentTask != null && currentTask.getTaskDefinitionKey().equalsIgnoreCase("filesTask")) {
             FileDrop fileDrop =
-                    fileDropService.findFileDrop(fileDropService.getFileDropId(currentUser()));
-            workflowService.revertTask(currentUser(), "recipientsTask");
+                    fileDropService.findFileDrop(fileDropService.getFileDropId(user));
+
+            workflowService.revertTask(user, "recipientsTask");
             ProcessVariableHolder processVariableHolder =
                     new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
             String recipients = Arrays.toString((String[]) processVariableHolder.get("recipients"));
@@ -316,14 +319,14 @@ public class PrepareController {
             model.addAttribute("recipients", recipients);
             model.addAttribute("message", processVariableHolder.get("message"));
         } else {
-            fileDropService.startUploadProcess(currentUser());
+            fileDropService.startUploadProcess(user);
         }
 
-        model.addAttribute("user", ldapService.findByUhUuidOrUidOrMail(currentUser().getUhuuid()));
+        model.addAttribute("user", ldapService.findByUhUuidOrUidOrMail(user.getUhuuid()));
         model.addAttribute("whitelist", whitelistService.getAllWhitelistUids());
 
         if (logger.isDebugEnabled()) {
-            logger.debug("User: " + currentUser());
+            logger.debug("User: " + user);
             logger.debug("Current Task: " + currentTask);
         }
 
