@@ -39,7 +39,7 @@ function UploadJsController($scope, Upload, $window) {
     };
 
     $scope.removeFile = function (file) {
-        var index = $scope.files.indexOf(file);
+        let index = $scope.files.indexOf(file);
         if (index > -1) {
             $scope.files.splice(index, 1);
             $scope.uploadSize -= file.size;

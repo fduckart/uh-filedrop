@@ -15,7 +15,7 @@ public class SpaceCheckService {
 
     private static final Log logger = LogFactory.getLog(SpaceCheckService.class);
 
-    @Value("app.scheduler.spacecheck.default-reserved-space")
+    @Value("app.job.spacecheck.default-reserved-space")
     public static final long DEFAULT_RESERVED_SPACE = 1000000000;
     private File root;
     private long bytesFree;
@@ -27,7 +27,7 @@ public class SpaceCheckService {
     // The number of bytes which we require to remain available in the filesystem.
     private long reservedSpace = DEFAULT_RESERVED_SPACE;
 
-    @Value("${app.scheduler.spacecheck.interval}")
+    @Value("${app.job.spacecheck.interval}")
     private int interval;
 
     @Autowired

@@ -22,7 +22,7 @@ public class WhitelistService {
     @Autowired
     private LdapService ldapService;
 
-    @Value("${app.whitelist.check.threshold}")
+    @Value("${app.job.whitelist.threshold}")
     private int threshold;
 
     private static final Log logger = LogFactory.getLog(WhitelistService.class);

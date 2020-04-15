@@ -24,7 +24,7 @@ public class SpaceCheckJob extends SubmitJob {
     }
 
     @Override
-    @Value("${app.scheduler.spacecheck.interval}")
+    @Value("${app.job.spacecheck.interval}")
     public void setInterval(int interval) {
         super.setInterval(interval);
     }
