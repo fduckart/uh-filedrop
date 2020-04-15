@@ -20,26 +20,26 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
                     },
                     arrayKey: ""
                 })
-                      .then(() => {
-                          count++;
-                          if (count === $scope.files.length) {
-                              $window.location.href = "/filedrop/helpdesk/successful/" + $scope.uploadKey + "?expiration=" + $scope.expiration + "&ticketNumber=" + $scope.ticketNumber;
-                          }
-                      });
+                .then(() => {
+                    count++;
+                    if (count === $scope.files.length) {
+                        $window.location.href = "/filedrop/helpdesk/successful/" + $scope.uploadKey + "?expiration=" + $scope.expiration + "&ticketNumber=" + $scope.ticketNumber;
+                    }
+                });
             });
         }
     };
 
     $scope.addFiles = function(files) {
         $scope.files = $scope.files.concat(files);
-        angular.forEach(files, function(file) {
+        $scope.files.forEach(files, function(file) {
             file.comment = "";
             $scope.uploadSize += file.size;
         });
     };
 
     $scope.removeFile = function(file) {
-        var index = $scope.files.indexOf(file);
+        let index = $scope.files.indexOf(file);
         if (index > -1) {
             $scope.files.splice(index, 1);
             $scope.uploadSize -= file.size;

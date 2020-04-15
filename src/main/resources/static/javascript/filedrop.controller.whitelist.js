@@ -30,7 +30,7 @@ function WhitelistJsController($scope, dataProvider) {
 
     $scope.deleteWhitelist = function (whitelist) {
         dataProvider.delData(function () {
-            var index = $scope.whitelist.indexOf(whitelist);
+            let index = $scope.whitelist.indexOf(whitelist);
             if (index > -1) {
                 $scope.whitelist.splice(index, 1);
             }
