@@ -59,6 +59,10 @@ public class WorkflowService {
         return getCurrentTask(user) != null;
     }
 
+    public Task currentTask(User user) {
+        return getCurrentTask(user);
+    }
+
     public Task getCurrentTask(User user) {
         return taskService.createTaskQuery().taskAssignee(user.getUsername()).singleResult();
     }
@@ -73,6 +77,10 @@ public class WorkflowService {
 
     public void addProcessVariables(Task task, Map<String, Object> variables) {
         addProcessVariables(task.getProcessInstanceId(), variables);
+    }
+
+    public void addProcessVariables(User user, ProcessVariableHolder holder) {
+        addProcessVariables(getCurrentTask(user), holder.getMap());
     }
 
     public Map<String, Object> getProcessVariables(String processId) {
