@@ -71,11 +71,24 @@
             </div>
 
             <div class="row">
+                <div class="col mb-3" ng-if="progress > 0">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped progress-bar-animated w-{{ progress }}"
+                            role="progressbar"
+                            aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+                        </div>
+                    </div>
+                </div>
                 <div class="col-sm-12">
                     <p ng-class="isUploadLarge() ? 'text-danger' : ''" ng-if="uploadSize > 0">Upload size: {{uploadSize
                         | bytes}} / {{maxUploadSize | bytes}} </p>
-                    <button class="btn pull-right" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'" type="submit"
-                        ng-disabled="isUploadLarge()" form="filesForm">Submit
+                    <button class="btn pull-right" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'"
+                        type="submit"
+                        ng-disabled="isUploadLarge() || progress > 0" form="filesForm">
+                        <span ng-show="progress > 0">
+                            <span class="spinner-border spinner-border-sm"></span> Uploading...
+                        </span>
+                        <span ng-hide="progress > 0">Submit</span>
                     </button>
                     <p class="text-danger d-inline-block" ng-if="isUploadLarge()">Upload size is too
                         <strong>large</strong>.

@@ -4,7 +4,7 @@ function UploadJsController($scope, Upload, $window) {
         $scope.uploadSize = 0;
         $scope.maxUploadSize = $window.maxUploadSize;
         $scope.uploadKey = $window.uploadKey;
-
+        $scope.progress = 0;
     };
 
     $scope.submit = function () {
@@ -19,10 +19,11 @@ function UploadJsController($scope, Upload, $window) {
                     },
                     arrayKey: ""
                 })
-                      .then(() => {
+                      .success(() => {
                           count++;
+                          $scope.progress = 100 * (count / $scope.files.length);
                           if (count === $scope.files.length) {
-                              $window.location.href = "/filedrop/complete/" + $scope.uploadKey;
+                              // $window.location.href = "/filedrop/complete/" + $scope.uploadKey;
                           }
                       });
             });
