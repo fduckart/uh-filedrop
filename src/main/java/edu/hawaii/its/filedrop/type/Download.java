@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -26,8 +27,8 @@ public class Download {
     @Column(name = "file_name")
     private String fileName;
 
-    @Column(name = "status")
-    private Status status;
+    @Column(name = "status_code")
+    private String status;
 
     @Column(name = "started")
     private LocalDateTime started;
@@ -41,12 +42,6 @@ public class Download {
     // Constructor.
     public Download() {
         // Empty.
-    }
-
-    enum Status {
-        INPROGRESS,
-        COMPLETED,
-        CANCELED;
     }
 
     public Integer getId() {
@@ -73,11 +68,11 @@ public class Download {
         this.fileName = fileName;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 

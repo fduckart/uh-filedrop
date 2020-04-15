@@ -411,7 +411,7 @@ public class AdminControllerTest {
     @Test
     @WithMockUhAdmin
     public void addExpirationTest() throws Exception {
-        mockMvc.perform(get("/admin/add-expiration/2/1"))
+        mockMvc.perform(get("/admin/add-expiration/3/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/dashboard"));
 
@@ -425,7 +425,7 @@ public class AdminControllerTest {
     @Test
     @WithAnonymousUser
     public void addExpirationAnonymousTest() throws Exception {
-        mockMvc.perform(get("/admin/add-expiration/2/1"))
+        mockMvc.perform(get("/admin/add-expiration/3/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
@@ -433,7 +433,7 @@ public class AdminControllerTest {
     @Test
     @WithMockUhAdmin
     public void expireTest() throws Exception {
-        mockMvc.perform(get("/admin/expire/2"))
+        mockMvc.perform(get("/admin/expire/3"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/dashboard"));
 
@@ -447,7 +447,7 @@ public class AdminControllerTest {
     @Test
     @WithAnonymousUser
     public void expireAnonymousTest() throws Exception {
-        mockMvc.perform(get("/admin/expire/2"))
+        mockMvc.perform(get("/admin/expire/3"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }

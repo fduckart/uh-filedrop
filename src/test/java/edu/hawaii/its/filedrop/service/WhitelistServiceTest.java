@@ -1,6 +1,12 @@
 package edu.hawaii.its.filedrop.service;
 
-import java.time.LocalDate;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.time.LocalDateTime;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,12 +21,6 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.job.WhitelistCheckJob;
 import edu.hawaii.its.filedrop.repository.WhitelistRepository;
 import edu.hawaii.its.filedrop.type.Whitelist;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -45,7 +45,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("Test Entry");
         whitelist.setRegistrant("Some Person");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.of(2019, 12, 31);
+        LocalDateTime localDate = LocalDateTime.of(2019, 12, 31, 0, 0, 0);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         assertEquals(Integer.valueOf(999), whitelist.getId());
@@ -57,7 +57,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("Test Entry");
         whitelist.setRegistrant("Some Person");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.of(2019, 12, 31);
+        LocalDateTime localDate = LocalDateTime.of(2019, 12, 31, 0, 0, 0);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelistService.addWhitelist(whitelist);
@@ -75,7 +75,7 @@ public class WhitelistServiceTest {
     @Test
     public void addWhitelistLdapTest() {
         Whitelist whitelist = whitelistService.addWhitelist(new LdapPersonEmpty(), new LdapPersonEmpty());
-        whitelist.setCreated(LocalDate.of(2019, 12, 31));
+        whitelist.setCreated(LocalDateTime.of(2019, 12, 31, 0, 0, 0));
         whitelist = whitelistService.addWhitelist(whitelist);
         whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertNotNull(whitelist);
@@ -93,7 +93,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("New Entry");
         whitelist.setRegistrant("New Person");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.now();
+        LocalDateTime localDate = LocalDateTime.now();
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
 
@@ -113,7 +113,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("New Person");
         whitelist.setRegistrant("Same Old Mistakes");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.of(2019, 12, 31);
+        LocalDateTime localDate = LocalDateTime.of(2019, 12, 31, 0, 0, 0);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
 
@@ -134,7 +134,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("Gavin Dance");
         whitelist.setRegistrant("Jon Mess");
         whitelist.setCheck(0);
-        LocalDate localDate = LocalDate.of(2019, 12, 31);
+        LocalDateTime localDate = LocalDateTime.of(2019, 12, 31, 0, 0, 0);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelist = whitelistService.addWhitelist(whitelist);
@@ -154,7 +154,7 @@ public class WhitelistServiceTest {
         whitelist.setEntry("Tame Impala");
         whitelist.setRegistrant("Kevin Parker");
         whitelist.setCheck(threshold);
-        LocalDate localDate = LocalDate.of(2019, 12, 31);
+        LocalDateTime localDate = LocalDateTime.of(2019, 12, 31, 0, 0, 0);
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelist = whitelistService.addWhitelist(whitelist);

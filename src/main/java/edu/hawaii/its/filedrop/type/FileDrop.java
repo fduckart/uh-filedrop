@@ -6,6 +6,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -52,12 +53,12 @@ public class FileDrop {
     @Column(name = "valid_until", nullable = false)
     private LocalDateTime expiration;
 
-    // Need to alter table from character to boolean
     @Column(name = "is_valid", nullable = false)
+    @Convert(converter = BooleanToCharacterConverter.class)
     private Boolean valid;
 
-    // Need to alter table from character to boolean
     @Column(name = "require_auth", nullable = false)
+    @Convert(converter = BooleanToCharacterConverter.class)
     private Boolean authenticationRequired;
 
     @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL)

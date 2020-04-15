@@ -1,6 +1,6 @@
 package edu.hawaii.its.filedrop.service;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,7 +33,7 @@ public class WhitelistService {
         whitelist.setRegistrant(registrant.getUid());
         whitelist.setCheck(0);
         whitelist.setExpired(false);
-        whitelist.setCreated(LocalDate.now());
+        whitelist.setCreated(LocalDateTime.now());
         return addWhitelist(whitelist);
     }
 

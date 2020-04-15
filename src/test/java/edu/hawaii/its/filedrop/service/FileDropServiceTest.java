@@ -1,5 +1,17 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.endsWith;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -17,17 +29,6 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.controller.WithMockUhUser;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.endsWith;
-import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -202,6 +203,21 @@ public class FileDropServiceTest {
 
         assertEquals(fileDrop.getId(), fileDropService.findFileDropDownloadKey("test-key").getId());
         assertEquals(fileDrop.getId(), fileDropService.findFileDropUploadKey("test-key2").getId());
+    }
+
+    @Test
+    public void findFileDropDownloadKey() {
+        String downloadKey = "downloadKey3";
+        FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
+        assertThat(fileDrop.getDownloadKey(), equalTo(downloadKey));
+        assertThat(fileDrop.isValid(), equalTo(true));
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+
+        downloadKey = "downloadKey2";
+        fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
+        assertThat(fileDrop.getDownloadKey(), equalTo(downloadKey));
+        assertThat(fileDrop.isValid(), equalTo(true));
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
     }
 
     @Test
