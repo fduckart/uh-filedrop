@@ -23,7 +23,7 @@ CREATE TABLE download (
   filedrop_id int(11) NOT NULL DEFAULT '0',
   file_name varchar(255) NOT NULL DEFAULT '',
   status_code VARCHAR(48) NOT NULL default 'INPROGRESS',
-  started datetime NOT NULL,
+  started datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   completed datetime DEFAULT NULL,
   ip_addr varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (id),
