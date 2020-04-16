@@ -31,11 +31,10 @@
                             <label for="recipient" class="filedrop-label">Recipients</label>
                             <input id="recipient" name="recipient" type="hidden" th:value="${recipientEmail}">
                             <ul class="list-inline">
-                                <li class="mr-2 my-1 list-inline-item">
-                                    <button type="button" class="btn btn-outline-dark btn-sm" disabled
-                                        aria-label="Recipient name">
-                                        <span th:utext="${recipient}"></span>
-                                    </button>
+                                <li class="list-inline-item">
+                                    <span class="badge badge-light border-secondary border"
+                                                    style="font-size: .85em; color: #4d4d4d" th:text="${recipient}">
+                                    </span>
                                 </li>
                             </ul>
                         </div>

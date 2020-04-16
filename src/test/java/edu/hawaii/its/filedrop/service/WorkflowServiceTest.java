@@ -23,6 +23,7 @@ import edu.hawaii.its.filedrop.controller.WithMockUhUser;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -38,16 +39,21 @@ public class WorkflowServiceTest {
     @Autowired
     private UserContextService userContextService;
 
+    @Autowired
+    private WorkflowService workflowService;
+
     @Test
     public void startProcessTest() {
         AnonymousUser user = new AnonymousUser();
         assertNotNull(user);
+        assertNull(workflowService.currentTask(user));
 
         Map<String, Object> args = new HashMap<>();
         args.put("initiator", user.getUsername());
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
         assertNotNull(process);
+        assertNotNull(workflowService.currentTask(user));
 
         List<Task> fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
 
@@ -70,19 +76,21 @@ public class WorkflowServiceTest {
         fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
 
         assertEquals(0, fileDropTasks.size());
-
+        assertNull(workflowService.getCurrentTask(user));
     }
 
     @Test
     public void startProcessMultipleAnonymous() {
         AnonymousUser user = new AnonymousUser();
         assertNotNull(user);
+        assertNull(workflowService.currentTask(user));
 
         Map<String, Object> args = new HashMap<>();
         args.put("initiator", user.getUsername());
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
         assertNotNull(process);
+        assertNotNull(workflowService.currentTask(user));
 
         AnonymousUser anotherUser = new AnonymousUser();
         assertNotNull(anotherUser);
@@ -103,6 +111,7 @@ public class WorkflowServiceTest {
 
         runtimeService.deleteProcessInstance(process.getId(), "test");
         runtimeService.deleteProcessInstance(process2.getId(), "test");
+        assertNull(workflowService.currentTask(user));
     }
 
     @Test
@@ -111,11 +120,14 @@ public class WorkflowServiceTest {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
 
+        assertNull(workflowService.currentTask(user));
+
         Map<String, Object> args = new HashMap<>();
         args.put("initiator", user.getUsername());
 
         ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
         assertNotNull(process);
+        assertNotNull(workflowService.currentTask(user));
 
         List<Task> userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
 
@@ -136,5 +148,6 @@ public class WorkflowServiceTest {
         userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
 
         assertEquals(0, userTasks.size());
+        assertNull(workflowService.currentTask(user));
     }
 }

@@ -24,7 +24,7 @@ public class WhitelistCheckJob extends SubmitJob {
     }
 
     @Override
-    @Value("${app.scheduler.whitelistcheck.interval}")
+    @Value("${app.job.whitelist.interval}")
     public void setInterval(int interval) {
         super.setInterval(interval);
     }
