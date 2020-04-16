@@ -6,6 +6,7 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
         $scope.uploadKey = $window.uploadKey;
         $scope.expiration = $window.expiration;
         $scope.ticketNumber = $window.ticketNumber;
+        $scope.progress = 0;
     };
 
     $scope.submit = function() {
@@ -20,8 +21,9 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
                     },
                     arrayKey: ""
                 })
-                .then(() => {
+                .success(() => {
                     count++;
+                    $scope.progress = 100 * (count / $scope.files.length);
                     if (count === $scope.files.length) {
                         $window.location.href = "/filedrop/helpdesk/successful/" + $scope.uploadKey + "?expiration=" + $scope.expiration + "&ticketNumber=" + $scope.ticketNumber;
                     }
