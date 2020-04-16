@@ -35,7 +35,7 @@ public class WhitelistServiceTest {
     @Autowired
     private SchedulerService schedulerService;
 
-    @Value("${app.whitelist.check.threshold}")
+    @Value("${app.job.whitelist.threshold}")
     private Integer threshold;
 
     @Test
