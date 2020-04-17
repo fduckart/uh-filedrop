@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:remove="all">FileDrop</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<div>
+    <div>
+        <h1 style="color: red; font-size: 150%;">
+            University of Hawai'i FileDrop Service Email Validation
+        </h1>
+    </div>
+
+    <p>
+        You, or someone using the email address:
+    </p>
+
+    <pre>
+        <span th:text="${email}"></span>
+    </pre>
+
+    <p>
+        has attempted to use UH's FileDrop service to upload files. To use the service click on the link below and follow
+        the remaining instructions. The link can be used multiple times but will at some point expire, after which you must
+        use the service to send another validation email.
+    </p>
+    <div style="text-align: center; margin: 2em">
+        <a th:href="${validationURL}" target="_blank">CLICK HERE TO CONTINUE</a>
+    </div>
+    <p>
+        If you did not intend to use the FileDrop service, someone may have attempted to use your email address as the
+        apparent uploader of a file. You may wish to report this to UH staff.
+    </p>
+</div>
+</body>
+</html>

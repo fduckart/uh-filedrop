@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy"></head>
+<body>
+<nav th:replace="menubar :: copy"></nav>
+
+<!--   Content container -->
+<div class='container'>
+    <div class='row'>
+        <div class='col-xs-12'>
+            <h4>Validation</h4>
+            <p>
+                An email message has been sent to <b><code th:text="${email}"></code></b>.
+                After following the instructions contained in that message you
+                will be able to use the system to upload files.
+            </p>
+        </div>
+    </div>
+</div>
+<!-- / Contact container -->
+
+<div th:replace="footer :: copy"></div>
+</body>
+</html>
