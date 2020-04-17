@@ -80,20 +80,30 @@
                     </div>
                 </div>
                 <div class="col-sm-12">
-                    <p ng-class="isUploadLarge() ? 'text-danger' : ''" ng-if="uploadSize > 0">Upload size: {{uploadSize
-                        | bytes}} / {{maxUploadSize | bytes}} </p>
-                    <button class="btn pull-right" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'"
-                        type="submit"
-                        ng-disabled="isUploadLarge() || progress > 0" form="filesForm">
-                        <span ng-show="progress > 0">
-                            <span class="spinner-border spinner-border-sm"></span> Uploading...
-                        </span>
-                        <span ng-hide="progress > 0">Submit</span>
-                    </button>
-                    <p class="text-danger d-inline-block" ng-if="isUploadLarge()">Upload size is too
-                        <strong>large</strong>.
-                    </p>
-                    <a th:href="@{/prepare/}" class="btn btn-primary">Back</a>
+                    <div class="row">
+                        <div class="col">
+                            <p class="d-inline-block" ng-class="isUploadLarge() ? 'text-danger' : ''" ng-if="uploadSize > 0">Upload size:
+                                {{uploadSize | bytes}} / {{maxUploadSize | bytes}} </p>
+                            <p class="text-danger d-inline-block float-md-right" ng-if="isUploadLarge()">Upload size is too
+                                <strong>large</strong>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col">
+                            <button class="btn float-right" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'"
+                                    type="submit"
+                                    ng-disabled="isUploadLarge() || progress > 0" form="filesForm">
+                                <span ng-show="progress > 0">
+                                    <span class="spinner-border spinner-border-sm"></span> Uploading...
+                                </span>
+                                <span ng-hide="progress > 0">Submit</span>
+                            </button>
+
+                            <a th:href="@{/prepare/}" class="btn btn-primary">Back</a>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

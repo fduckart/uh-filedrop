@@ -48,7 +48,7 @@
 
         font-family: alegreyasans-regular, opensans-regular, serif;
         font-weight: normal;
-        font-size: 20px;
+        font-size: 28px;
     }
 
     .uh-branding-one {
@@ -77,6 +77,11 @@
 
     .recipient-badge:hover {
         color: #111111;
+    }
+
+    .btn.btn-primary[disabled] {
+        background-color: #63aeff;
+        border-color: #63aeff;
     }
 
     .material-icons {
