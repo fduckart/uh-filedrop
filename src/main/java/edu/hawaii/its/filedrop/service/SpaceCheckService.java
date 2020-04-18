@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.service;
 
 import java.io.File;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
@@ -60,7 +61,7 @@ public class SpaceCheckService {
         long used = root.getTotalSpace() - root.getFreeSpace();
 
         if (logger.isDebugEnabled()) {
-            logger.debug(">>> used space: " + used + "; free space: " + free);
+            logger.debug("Used space: " + used + "; free space: " + free);
         }
 
         if (free > 0) {
