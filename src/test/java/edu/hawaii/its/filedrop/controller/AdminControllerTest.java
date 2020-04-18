@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.controller;
 
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
@@ -396,7 +397,7 @@ public class AdminControllerTest {
     public void getFileDropsTest() throws Exception {
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(3))))
                 .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"));
     }
 
@@ -417,7 +418,7 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(3))))
                 .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"))
                 .andExpect(jsonPath("$[2].expiration").value("2019-11-16T08:30:18.023"));
     }
@@ -439,7 +440,7 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)))
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(3))))
                 .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"))
                 .andExpect(jsonPath("$[2].valid").value(false));
     }
