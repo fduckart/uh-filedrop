@@ -1,5 +1,9 @@
 package edu.hawaii.its.filedrop.service;
 
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
+
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
@@ -24,10 +29,6 @@ import edu.hawaii.its.filedrop.repository.RecipientRepository;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.type.Recipient;
-
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
-import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
 
 @Service
 public class FileDropService {
@@ -85,14 +86,25 @@ public class FileDropService {
     }
 
     public void startUploadProcess(User user) {
+        deleteUploadProcess(user);
+        workflowService.startProcess(user, "fileUpload");
+        logger.debug("startUploadProcess; user: " + user);
+    }
+
+    protected void deleteUploadProcess(User user) {
         if (workflowService.hasTask(user)) {
-            Integer fileDropId = getFileDropId(user);
-            if (fileDropId != null && findFileDrop(fileDropId) != null) {
-                fileDropRepository.delete(findFileDrop(fileDropId));
+            Integer fileDropId = fileDropId(user);
+            if (fileDropId != null) {
+                FileDrop fileDrop = findFileDrop(fileDropId);
+                if (fileDrop != null) {
+                    fileDropRepository.delete(fileDrop);
+                }
             }
         }
-        workflowService.startProcess(user, "fileUpload");
-        logger.debug("Created tasks for: " + user.getUsername());
+    }
+
+    public Integer fileDropId(User user) {
+        return getFileDropId(user);
     }
 
     public Integer getFileDropId(User user) {
@@ -118,8 +130,8 @@ public class FileDropService {
             fileSet.setSize(file.getSize());
             saveFileSet(fileSet);
 
-            fileSystemStorageService.storeFileSet(file, Paths.get(fileDrop.getDownloadKey(),
-                    fileSet.getId().toString()));
+            fileSystemStorageService.storeFileSet(file,
+                    Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()));
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);
         }
@@ -130,10 +142,6 @@ public class FileDropService {
             logger.debug(user.getUsername() + " completed " + fileDrop);
             workflowService.completeCurrentTask(user);
         }
-    }
-
-    public boolean isAuthorized(FileDrop fileDrop, String user) {
-        return containsRecipient(fileDrop, user) || fileDrop.getUploader().equals(user);
     }
 
     public void addRecipients(FileDrop fileDrop, String... recipients) {
@@ -153,8 +161,14 @@ public class FileDropService {
         saveFileDrop(fileDrop);
     }
 
+    public boolean isAuthorized(FileDrop fileDrop, String user) {
+        return containsRecipient(fileDrop, user) || fileDrop.getUploader().equals(user);
+    }
+
     public boolean containsRecipient(FileDrop fileDrop, String recipient) {
-        return findRecipients(fileDrop).stream().anyMatch(recipientObj -> recipientObj.getName().equals(recipient));
+        return findRecipients(fileDrop)
+                .stream()
+                .anyMatch(r -> r.getName().equalsIgnoreCase(recipient));
     }
 
     public boolean checkRecipient(User user, FileDrop fileDrop, LdapPerson ldapPerson) {

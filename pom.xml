@@ -9,7 +9,7 @@
   <description>University of Hawaii FileDrop Web Application.</description>
   <version>1.1</version>
   <url>https://www.hawaii.edu/filedrop</url>
-  
+
   <scm>
     <url>https://github.com/fduckart/uh-filedrop</url>
   </scm>
@@ -32,10 +32,10 @@
     <popper.js-version>1.14.3</popper.js-version>
     <angularjs-version>1.7.8</angularjs-version>
     <angular-mocks-version>1.5.8</angular-mocks-version>
-    
+
     <spotbugs.version>3.1.12.2</spotbugs.version>
     <pmd.plugin.version>3.11.0</pmd.plugin.version>
-    <pmdVersion>6.12.0</pmdVersion>    
+    <pmdVersion>6.12.0</pmdVersion>
   </properties>
 
   <dependencies>
@@ -178,7 +178,6 @@
       <version>${pmd.plugin.version}</version>
     </dependency>
 
-
     <!-- LDAP Testing. -->
     <dependency>
       <groupId>com.unboundid</groupId>
@@ -267,7 +266,7 @@
       <groupId>org.webjars</groupId>
       <artifactId>material-design-icons</artifactId>
       <version>3.0.1</version>
-    </dependency>    
+    </dependency>
   </dependencies>
   <build>
     <plugins>
@@ -321,7 +320,7 @@
             </goals>
             <phase>generate-resources</phase>
           </execution>
-          
+
           <execution>
             <id>install</id>
             <goals>
@@ -398,7 +397,7 @@
                 <echo>$ ./mvnw -Dmaven.test.skip=true clean package</echo>
                 <echo>$ ./mvnw jasmine:test</echo>
                 <echo>$ ./mvnw clean test jacoco:report</echo>
-                <echo>$ ./mvnw clean compile site</echo>                
+                <echo>$ ./mvnw clean compile site</echo>
                 <echo>$ ./mvnw clean spring-boot:run</echo>
               </tasks>
             </configuration>
@@ -454,7 +453,7 @@
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
         <version>3.8.2</version>
-      </plugin>      
+      </plugin>
     </plugins>
   </build>
     <reporting>
@@ -497,15 +496,7 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jxr-plugin</artifactId>
                 <version>3.0.0</version>
-            </plugin>               
-	        <plugin>
-	            <groupId>org.apache.maven.plugins</groupId>
-	            <artifactId>maven-checkstyle-plugin</artifactId>
-	            <version>3.1.1</version>
-	            <configuration>
-	                <configLocation>src/test/resources/checkstyle/checkstyle.xml</configLocation>
-	            </configuration>
-	        </plugin>
-	    </plugins> 
+            </plugin>
+	    </plugins>
     </reporting>
 </project>

@@ -11,7 +11,7 @@ public class BooleanToCharacterConverter implements AttributeConverter<Boolean, 
 
     @Override
     public Character convertToDatabaseColumn(Boolean value) {
-        return (value != null && value) ? YES : NO;
+        return value != null && value ? YES : NO;
     }
 
     @Override
