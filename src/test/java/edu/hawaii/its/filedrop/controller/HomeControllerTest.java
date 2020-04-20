@@ -77,7 +77,7 @@ public class HomeControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("home"))
                 .andExpect(model().attribute("gatemessage",
-                        startsWith("Welcome to the University")));
+                        startsWith("This application is provided by")));
     }
 
     @Test
