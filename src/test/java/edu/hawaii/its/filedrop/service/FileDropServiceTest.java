@@ -3,20 +3,24 @@ package edu.hawaii.its.filedrop.service;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.instanceOf;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.flowable.task.api.Task;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,20 +57,20 @@ public class FileDropServiceTest {
         workflowService.stopProcess(user);
         assertNotNull(user);
 
-        assertNull(workflowService.getCurrentTask(user));
+        assertNull(currentTask(user));
         fileDropService.startUploadProcess(user);
-        assertNotNull(workflowService.getCurrentTask(user));
+        assertNotNull(currentTask(user));
 
-        assertEquals("addRecipients", workflowService.getCurrentTask(user).getName());
+        assertEquals("addRecipients", currentTask(user).getName());
 
         String[] recipients = { "test" };
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
+        assertEquals("addFiles", currentTask(user).getName());
         fileDropService.uploadFile(user, null, null, null);
         fileDropService.completeFileDrop(user, null);
 
-        assertNull(workflowService.getCurrentTask(user));
+        assertNull(currentTask(user));
     }
 
     @Test
@@ -75,29 +79,29 @@ public class FileDropServiceTest {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
         workflowService.stopProcess(user);
-        assertNull(workflowService.getCurrentTask(user));
+        assertNull(currentTask(user));
         fileDropService.startUploadProcess(user);
-        assertNotNull(workflowService.getCurrentTask(user));
+        assertNotNull(currentTask(user));
 
-        assertEquals("addRecipients", workflowService.getCurrentTask(user).getName());
+        assertEquals("addRecipients", currentTask(user).getName());
 
         String[] recipients = { "test" };
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
+        assertEquals("addFiles", currentTask(user).getName());
 
         fileDropService.startUploadProcess(user);
 
-        assertEquals("addRecipients", workflowService.getCurrentTask(user).getName());
+        assertEquals("addRecipients", currentTask(user).getName());
 
         fileDropService.uploadFile(user, null, null, null); // Doesn't work since on recipientsTask.
 
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
+        assertEquals("addFiles", currentTask(user).getName());
         fileDropService.uploadFile(user, null, null, null);
         fileDropService.completeFileDrop(user, null);
-        assertNull(workflowService.getCurrentTask(user));
+        assertNull(currentTask(user));
     }
 
     @Test
@@ -112,7 +116,7 @@ public class FileDropServiceTest {
         fileDropService.addRecipients(user, recipients);
 
         Map<String, Object> processVariables =
-                workflowService.getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId());
+                workflowService.getProcessVariables(currentTask(user).getProcessInstanceId());
 
         assertFalse(processVariables.isEmpty());
         assertEquals(2, processVariables.size());
@@ -128,7 +132,7 @@ public class FileDropServiceTest {
         String[] recipients = new String[0];
         fileDropService.addRecipients(user, recipients);
 
-        assertNull(workflowService.getCurrentTask(user));
+        assertNull(currentTask(user));
     }
 
     @Test
@@ -142,13 +146,10 @@ public class FileDropServiceTest {
         String[] recipients = new String[0];
 
         fileDropService.addRecipients(user, recipients);
-
-        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
+        assertEquals("addFiles", currentTask(user).getName());
 
         fileDropService.addRecipients(user, recipients);
-
-        assertEquals("addFiles", workflowService.getCurrentTask(user).getName());
-
+        assertEquals("addFiles", currentTask(user).getName());
     }
 
     @Test
@@ -159,14 +160,13 @@ public class FileDropServiceTest {
 
         fileDropService.startUploadProcess(user);
 
+        String processId = currentTask(user).getProcessInstanceId();
         Map<String, Object> variables = new HashMap<>();
         variables.put("test", "123");
-        workflowService
-                .addProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId(), variables);
+        workflowService.addProcessVariables(processId, variables);
 
-        Map<String, Object> processVariables =
-                workflowService
-                        .getProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId());
+        processId = currentTask(user).getProcessInstanceId();
+        Map<String, Object> processVariables = workflowService.getProcessVariables(processId);
 
         assertFalse(processVariables.isEmpty());
         assertEquals(2, processVariables.size());
@@ -183,10 +183,10 @@ public class FileDropServiceTest {
 
         Map<String, Object> variables = new HashMap<>();
         variables.put("test", "123");
-        workflowService.addProcessVariables(workflowService.getCurrentTask(user), variables);
+        workflowService.addProcessVariables(currentTask(user), variables);
 
         Map<String, Object> taskVariables =
-                workflowService.getProcessVariables(workflowService.getCurrentTask(user));
+                workflowService.getProcessVariables(currentTask(user));
 
         assertFalse(taskVariables.isEmpty());
         assertEquals(2, taskVariables.size());
@@ -203,6 +203,22 @@ public class FileDropServiceTest {
 
         assertEquals(fileDrop.getId(), fileDropService.findFileDropDownloadKey("test-key").getId());
         assertEquals(fileDrop.getId(), fileDropService.findFileDropUploadKey("test-key2").getId());
+    }
+
+    @Test
+    public void findFileDrop() {
+        FileDrop fileDrop = fileDropService.findFileDrop(1);
+        assertThat(fileDrop, not(equalTo(null)));
+        assertThat(fileDrop.getId(), equalTo(1));
+
+        fileDrop = fileDropService.findFileDrop(0);
+        assertThat(fileDrop, equalTo(null));
+
+        fileDrop = fileDropService.findFileDrop(null);
+        assertThat(fileDrop, equalTo(null));
+
+        fileDrop = fileDropService.findFileDrop(-1);
+        assertThat(fileDrop, equalTo(null));
     }
 
     @Test
@@ -246,8 +262,7 @@ public class FileDropServiceTest {
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
-        workflowService.addProcessVariables(
-                workflowService.getCurrentTask(user).getProcessInstanceId(), args);
+        workflowService.addProcessVariables(currentTask(user).getProcessInstanceId(), args);
 
         assertTrue(workflowService.hasFileDrop(user));
 
@@ -276,8 +291,7 @@ public class FileDropServiceTest {
         assertEquals(2, fileSet.getId().intValue());
 
         assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
-        assertEquals(2,
-                fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());
+        assertEquals(2, fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());
         assertNotEquals(fileDropService.findAllFileDrop().size(), 0);
     }
 
@@ -306,15 +320,48 @@ public class FileDropServiceTest {
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
-        workflowService.addProcessVariables(workflowService.getCurrentTask(user).getProcessInstanceId(), args);
+        workflowService.addProcessVariables(currentTask(user).getProcessInstanceId(), args);
 
         fileDropService.addRecipients(user, recipients);
 
-        assertEquals("filesTask", workflowService.getCurrentTask(user).getTaskDefinitionKey());
+        assertEquals("filesTask", currentTask(user).getTaskDefinitionKey());
 
         workflowService.revertTask(user, "recipientsTask");
 
-        assertEquals("recipientsTask", workflowService.getCurrentTask(user).getTaskDefinitionKey());
+        assertEquals("recipientsTask", currentTask(user).getTaskDefinitionKey());
+    }
+
+    @Test
+    public void startUploadProcessNullCheck() {
+        try {
+            fileDropService.startUploadProcess(null);
+            fail("Not reaching here, but might change this behavior.");
+        } catch (Exception e) {
+            assertThat(e, instanceOf(NullPointerException.class));
+        }
+    }
+
+    @Test
+    public void deleteUploadProcessNullCheck() {
+        fileDropService.deleteUploadProcess(null);
+    }
+
+    @Test
+    @WithMockUhUser
+    public void deleteUploadProcess() {
+        User user = userContextService.getCurrentUser();
+        assertNotNull(user);
+
+        fileDropService.deleteUploadProcess(user);
+
+        fileDropService.startUploadProcess(user);
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("fileDropId", Integer.MIN_VALUE);
+        String processId = currentTask(user).getProcessInstanceId();
+        workflowService.addProcessVariables(processId, args);
+
+        fileDropService.deleteUploadProcess(user);
     }
 
     @Test
@@ -438,5 +485,85 @@ public class FileDropServiceTest {
         assertFalse(fileDropService.checkRecipient(user, fileDrop, ldapService.findByUhUuidOrUidOrMail("uhmfund")));
         assertFalse(fileDropService.checkRecipient(user, fileDrop, ldapService.findByUhUuidOrUidOrMail("teststudent")));
         assertTrue(fileDropService.checkRecipient(user, fileDrop, ldapService.findByUhUuidOrUidOrMail("test@some.edu")));
+    }
+
+    @Test
+    public void containsRecipient() {
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(2);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(1);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(4);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon@hawaii.edu"), equalTo(true));
+    }
+
+    @Test
+    public void isAuthorizedOne() {
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        assertThat(fileDrop.getUploader(), equalTo("jwlennon@hawaii.edu"));
+        assertThat(fileDrop.getRecipients().size(), equalTo(1));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards@example.com"), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, "jwlennon@hawaii.edu"), equalTo(true));
+        assertThat(fileDropService.isAuthorized(fileDrop, "jwlennon@HAWAII.EDU"), equalTo(false)); // Note.
+        assertThat(fileDropService.isAuthorized(fileDrop, "jwlennon"), equalTo(false)); // Note.
+        assertThat(fileDropService.isAuthorized(fileDrop, "krichards@example.com"), equalTo(true));
+
+        fileDrop = fileDropService.findFileDrop(2);
+        assertThat(fileDrop.getUploader(), equalTo("test"));
+        assertThat(fileDrop.getRecipients().size(), equalTo(1));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.isAuthorized(fileDrop, "TEST"), equalTo(true));
+        assertThat(fileDropService.isAuthorized(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(1);
+        assertThat(fileDrop.getUploader(), equalTo("test"));
+        assertThat(fileDrop.getRecipients().size(), equalTo(1));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.isAuthorized(fileDrop, "TEST"), equalTo(true));
+        assertThat(fileDropService.isAuthorized(fileDrop, "duckart"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(4);
+        assertThat(fileDrop.getUploader(), equalTo("jwlennon@hawaii.edu"));
+        assertThat(fileDrop.getRecipients().size(), equalTo(2));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon@hawaii.edu"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards@example.com"), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, "krichards@example.com"), equalTo(true));
+        assertThat(fileDropService.isAuthorized(fileDrop, "jwlennon@hawaii.edu"), equalTo(true));
+
+        // Misc checks.
+        assertThat(fileDropService.isAuthorized(fileDrop, null), equalTo(false));
+        assertThat(fileDropService.isAuthorized(fileDrop, ""), equalTo(false));
+        assertThat(fileDropService.isAuthorized(fileDrop, " "), equalTo(false));
+    }
+
+    private Task currentTask(User user) {
+        return workflowService.getCurrentTask(user);
     }
 }

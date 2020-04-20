@@ -56,7 +56,7 @@ public class WorkflowService {
     }
 
     public boolean hasTask(User user) {
-        return getCurrentTask(user) != null;
+        return user != null && getCurrentTask(user) != null;
     }
 
     public Task currentTask(User user) {

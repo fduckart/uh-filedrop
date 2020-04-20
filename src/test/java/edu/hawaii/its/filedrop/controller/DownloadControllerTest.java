@@ -1,6 +1,9 @@
 package edu.hawaii.its.filedrop.controller;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -32,6 +35,9 @@ import edu.hawaii.its.filedrop.type.FileDrop;
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class DownloadControllerTest {
+
+    @Autowired
+    private DownloadController downloadController;
 
     @Autowired
     private FileDropRepository fileDropRepository;
@@ -259,4 +265,151 @@ public class DownloadControllerTest {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().is4xxClientError());
     }
+
+    @Test
+    @WithMockUhUser(username = "dgrohl")
+    public void isDownloadAllowed() {
+        String username = "dgrohl";
+
+        assertThat(downloadController.currentUser().getUsername(), equalTo(username));
+        assertThat(downloadController.currentUser().getUid(), equalTo(username));
+
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(false));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards@example.com"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(2);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(1);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(false));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(4);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDrop.getRecipients().size(), greaterThanOrEqualTo(2));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards@example.com"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon@hawaii.edu"), equalTo(true));
+    }
+
+    @Test
+    @WithMockUhUser(username = "jwlennon")
+    public void isDownloadAllowedTwo() {
+        String username = "jwlennon";
+        assertThat(downloadController.currentUser().getUsername(), equalTo(username));
+        assertThat(downloadController.currentUser().getUid(), equalTo(username));
+
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(false));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(2);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(1);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(false));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(4);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon@hawaii.edu"), equalTo(true));
+    }
+
+    @Test
+    @WithMockUhUser(username = "test22")
+    public void isDownloadAllowedThree() {
+        String username = "test22";
+        assertThat(downloadController.currentUser().getUsername(), equalTo(username));
+        assertThat(downloadController.currentUser().getUid(), equalTo(username));
+
+        FileDrop fileDrop = fileDropService.findFileDrop(3);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(false));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(2);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(1);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(true));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(false));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+
+        fileDrop = fileDropService.findFileDrop(4);
+        assertThat(fileDrop.isAuthenticationRequired(), equalTo(false));
+        assertThat(downloadController.isDownloadAllowed(fileDrop), equalTo(true));
+
+        assertThat(fileDropService.isAuthorized(fileDrop, username), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "recipient"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
+        assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+    }
+
 }

@@ -115,14 +115,17 @@ public class DownloadController {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
 
         if (fileDrop == null || !fileDrop.isValid()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .header(HttpHeaders.LOCATION, "/").build();
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .header(HttpHeaders.LOCATION, "/")
+                    .build();
         }
 
-        if ((!fileDrop.isAuthenticationRequired()) || (fileDrop.isAuthenticationRequired()
-                && fileDropService.isAuthorized(fileDrop, currentUser().getUsername()))) {
+        if (isDownloadAllowed(fileDrop)) {
             Optional<FileSet> foundFileSet =
-                    fileDrop.getFileSet().stream().filter(fileSet -> fileSet.getId().equals(fileId))
+                    fileDrop.getFileSet()
+                            .stream()
+                            .filter(fileSet -> fileSet.getId().equals(fileId))
                             .findFirst();
 
             if (foundFileSet.isPresent()) {
@@ -140,18 +143,30 @@ public class DownloadController {
 
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", Could not find fileSet: " + fileId);
 
-                return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                        .header(HttpHeaders.LOCATION, "/dl/" + downloadKey).build();
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .header(HttpHeaders.LOCATION, "/dl/" + downloadKey)
+                        .build();
             }
         }
 
         logger.debug("downloadFile; Could not find fileDrop with key: " + downloadKey);
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .header(HttpHeaders.LOCATION, "/dl/" + downloadKey).build();
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .header(HttpHeaders.LOCATION, "/dl/" + downloadKey)
+                .build();
     }
 
-    private User currentUser() {
+    public boolean isDownloadAllowed(FileDrop fileDrop) {
+        if (!fileDrop.isAuthenticationRequired()) {
+            return true;
+        }
+
+        return fileDropService.isAuthorized(fileDrop, currentUser().getUsername());
+    }
+
+    public User currentUser() {
         return userContextService.getCurrentUser();
     }
 }
