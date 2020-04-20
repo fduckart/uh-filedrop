@@ -19,13 +19,13 @@ function UploadJsController($scope, Upload, $window) {
                     },
                     arrayKey: ""
                 })
-                      .success(() => {
-                          count++;
-                          $scope.progress = 100 * (count / $scope.files.length);
-                          if (count === $scope.files.length) {
-                              $window.location.href = "/filedrop/complete/" + $scope.uploadKey;
-                          }
-                      });
+                .success(() => {
+                    count++;
+                    $scope.progress = 100 * (count / $scope.files.length);
+                    if (count === $scope.files.length) {
+                        $window.location.href = "/filedrop/complete/" + $scope.uploadKey;
+                    }
+                });
             });
         }
     };

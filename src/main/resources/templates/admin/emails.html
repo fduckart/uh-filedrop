@@ -38,6 +38,15 @@
                 </form>
             </td>
         </tr>
+        <tr>
+            <td>Validation</td>
+            <td>
+                <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" method="POST">
+                    <button type="submit" class="btn btn-outline-dark">Email</button>
+                    <input name="template" type="hidden" value="validation">
+                </form>
+            </td>
+        </tr>
     </table>
 </div>
 <!-- / Content container. -->

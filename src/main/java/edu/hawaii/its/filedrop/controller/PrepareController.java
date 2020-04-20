@@ -167,7 +167,6 @@ public class PrepareController {
 
         if (workflowService.hasFileDrop(user)) {
             fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(user));
-            fileDrop.setValid(validation);
             fileDrop.setAuthenticationRequired(validation);
         } else {
             fileDrop = new FileDrop();
@@ -176,12 +175,11 @@ public class PrepareController {
             fileDrop.setUploadKey(Strings.generateRandomString());
             fileDrop.setUploader(user.getUsername());
             fileDrop.setUploaderFullName(user.getName());
-            fileDrop.setValid(validation);
             fileDrop.setAuthenticationRequired(validation);
         }
 
+        fileDrop.setValid(true);
         fileDrop = fileDropService.saveFileDrop(fileDrop);
-        fileDropService.addRecipients(user, recipients);
 
         ProcessVariableHolder processVariableHolder = new ProcessVariableHolder();
         processVariableHolder.add("fileDropId", fileDrop.getId());

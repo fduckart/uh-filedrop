@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -21,7 +22,7 @@ public class Validation {
     private String validationKey;
 
     @Column(name = "created", nullable = false)
-    private Timestamp created;
+    private LocalDateTime created;
 
     @Column(name = "ip_addr", length = 32, nullable = false)
     private String ipAddress;
@@ -55,11 +56,11 @@ public class Validation {
         this.validationKey = validationKey;
     }
 
-    public Timestamp getCreated() {
+    public LocalDateTime getCreated() {
         return created;
     }
 
-    public void setCreated(Timestamp created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
@@ -69,5 +70,15 @@ public class Validation {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "Validation [validationKey=" + validationKey
+            + ", address=" + address
+            + ", name=" + name
+            + ", ipAddress=" + ipAddress
+            + ", created=" + created
+            + "]";
     }
 }
