@@ -6,27 +6,42 @@
 
 <!--  Content container -->
 <div class="container" ng-controller="WhitelistJsController" ng-init="init()" ng-cloak>
-    <table class="table">
-        <tr>
-            <th>Entry</th>
-            <th>Registrant</th>
-            <th>Created</th>
-            <th>Expired</th>
-            <th></th>
-        </tr>
-        <tr ng-repeat="whitelisted in whitelist">
-            <td>{{ whitelisted.entry }}</td>
-            <td>{{ whitelisted.registrant }}</td>
-            <td>{{ whitelisted.created }}</td>
-            <td>{{ whitelisted.expired }}</td>
-            <td>
-                <button class="btn btn-sm btn-danger" ng-click="deleteWhitelist(whitelisted)"><i
-                    class="fa fa-trash"></i>
-                </button>
-            </td>
-        </tr>
-    </table>
-    <button type="button" class="btn btn-primary" ng-click="openModal()">&plus; Whitelist</button>
+    <div class="row">
+        <div class="col-sm-12">
+            <div class="table-responsive" ng-if="whitelist.length > 0">
+                <table class="table">
+                    <tr>
+                        <th>Entry</th>
+                        <th>Registrant</th>
+                        <th>Created</th>
+                        <th>Expired</th>
+                        <th></th>
+                    </tr>
+                    <tr ng-repeat="whitelisted in whitelist">
+                        <td>{{ whitelisted.entry }}</td>
+                        <td>{{ whitelisted.registrant }}</td>
+                        <td>{{ whitelisted.created | date:'MM/dd/yyyy' }}</td>
+                        <td>{{ whitelisted.expired | date:'MM/dd/yyyy' }}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" ng-click="deleteWhitelist(whitelisted)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <div class="text-center" ng-if="whitelist.length == 0">
+                <div class="spinner-border" style="width: 2rem; height: 2rem; text-align: center" role="status">
+                    <span class="sr-only">Loading Whitelist...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row" ng-if="whitelist.length > 0">
+        <div class="col-sm-12">
+            <button type="button" class="btn btn-primary" ng-click="openModal()">&plus; Whitelist</button>
+        </div>
+    </div>
     <div th:replace="admin/whitelist-modal :: copy"></div>
 </div>
 <!-- / Content container. -->
