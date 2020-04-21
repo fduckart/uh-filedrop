@@ -9,11 +9,9 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -80,13 +78,6 @@ public class DatabaseConfig {
         dataSource.setPassword(password);
 
         return dataSource;
-    }
-
-    @Profile(value = { "test", "prod" })
-    @ConfigurationProperties(prefix = "junk.spring.datasource")
-    @Bean(name = "junkDataSource")
-    public DataSource junkDataSource() {
-        return new BasicDataSource();
     }
 
     @Bean
