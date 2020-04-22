@@ -1,7 +1,5 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "download")
@@ -98,5 +97,17 @@ public class Download {
 
     public void setIpAddress(String ipAddress) {
         this.ipAddress = ipAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "Download [id=" + id
+            + ", fileDrop=" + fileDrop.getId()
+            + ", fileName=" + fileName
+            + ", ipAddress=" + ipAddress
+            + ", started=" + started
+            + ", status=" + status
+            + ", completed=" + completed
+            + "]";
     }
 }
