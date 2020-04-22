@@ -102,7 +102,7 @@ public class Download {
     @Override
     public String toString() {
         return "Download [id=" + id
-            + ", fileDrop=" + fileDrop.getId()
+            + ", fileDrop=" + (fileDrop != null ? fileDrop.getId() : null)
             + ", fileName=" + fileName
             + ", ipAddress=" + ipAddress
             + ", started=" + started
