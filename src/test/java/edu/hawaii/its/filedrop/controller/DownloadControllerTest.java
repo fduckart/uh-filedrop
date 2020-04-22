@@ -113,7 +113,7 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/download"))
                 .andExpect(model().attributeExists("fileDrop"));
 
-        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/3")
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/4")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().isOk());
 

@@ -288,7 +288,7 @@ public class FileDropServiceTest {
 
         fileDropService.saveFileSet(fileSet);
 
-        assertEquals(2, fileSet.getId().intValue());
+        assertEquals(3, fileSet.getId().intValue());
 
         assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
         assertEquals(2, fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());

@@ -67,3 +67,5 @@ insert into recipient (id, filedrop_id, name) values (3, 3, 'krichards@example.c
 insert into recipient (id, filedrop_id, name) values (4, 4, 'krichards@example.com');
 insert into recipient (id, filedrop_id, name) values (5, 4, 'jwlennon@hawaii.edu');
 
+insert into fileset (id, filedrop_id, file_name, type, comment, size) values (1, 2, 'test.txt', 'text/plain', '', 1000);
+insert into download (id, filedrop_id, file_name, started, completed, ip_addr) values (1, 2, 'test.txt', '2019-11-14T08:30:18.023', '2019-11-14T08:31:18.023', '0.0.0.0');

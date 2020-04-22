@@ -398,7 +398,12 @@ public class AdminControllerTest {
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
-                .andExpect(jsonPath("$[1].uploader").value("test"));
+                .andExpect(jsonPath("$[1].uploader").value("test"))
+                .andExpect(jsonPath("$[1].fileInfoList").isNotEmpty())
+                .andExpect(jsonPath("$[1].fileInfoList[0].fileName").value("test.txt"))
+                .andExpect(jsonPath("$[1].fileInfoList[0].fileType").value("text/plain"))
+                .andExpect(jsonPath("$[1].fileInfoList[0].fileSize").value("1000"))
+                .andExpect(jsonPath("$[1].fileInfoList[0].downloads").value("1"));
     }
 
     @Test
