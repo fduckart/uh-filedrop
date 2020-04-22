@@ -397,8 +397,8 @@ public class AdminControllerTest {
     public void getFileDropsTest() throws Exception {
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(3))))
-                .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"));
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
+                .andExpect(jsonPath("$[1].uploader").value("test"));
     }
 
     @Test
@@ -418,9 +418,9 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(3))))
-                .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"))
-                .andExpect(jsonPath("$[2].expiration").value("2019-11-16T08:30:18.023"));
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
+                .andExpect(jsonPath("$[1].uploader").value("test"))
+                .andExpect(jsonPath("$[1].expiration").value("2019-11-15T08:30:18.023"));
     }
 
     @Test
@@ -440,9 +440,8 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(3))))
-                .andExpect(jsonPath("$[2].uploader").value("jwlennon@hawaii.edu"))
-                .andExpect(jsonPath("$[2].valid").value(false));
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
+                .andExpect(jsonPath("$[1].uploader").value("test"));
     }
 
     @Test
