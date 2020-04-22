@@ -50,6 +50,12 @@ public class DatabaseConfig {
     @Value("${app.jpa.properties.hibernate.connection.shutdown}")
     private String hibernateConnectionShutdown;
 
+    @Value("${flowable.database-schema:}")
+    private String flowableDatabaseSchema;
+
+    @Value("${flowable.database-schema-update:}")
+    private String flowableDatabaseSchemaUpdate;
+
     @PostConstruct
     public void init() {
         logger.info("init; starting...");
@@ -59,6 +65,8 @@ public class DatabaseConfig {
         logger.info("init; driverClassName: " + driverClassName);
         logger.info("init; hibernateDialect: " + hibernateDialect);
         logger.info("init; hibernateHbm2ddlAuto: " + hibernateHbm2ddlAuto);
+        logger.info("init; flowableDatabaseSchema: " + flowableDatabaseSchema);
+        logger.info("init; flowableDatabaseSchemaUpdate: " + flowableDatabaseSchemaUpdate);
 
         Assert.hasLength(url, "property 'url' is required");
         Assert.hasLength(username, "property 'user' is required");
