@@ -4,6 +4,7 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
 
+import javax.annotation.PostConstruct;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,8 +12,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -171,12 +170,12 @@ public class FileDropService {
                 .anyMatch(r -> r.getName().equalsIgnoreCase(recipient));
     }
 
-    public boolean checkRecipient(User user, FileDrop fileDrop, LdapPerson ldapPerson) {
+    public boolean checkRecipient(User user, LdapPerson ldapPerson, boolean authRequired) {
         if (user.getUid().equals(ldapPerson.getUid())) {
             return true;
         }
 
-        if (!fileDrop.isAuthenticationRequired() && !ldapPerson.isValid()) {
+        if (!authRequired && !ldapPerson.isValid()) {
             return true;
         }
 

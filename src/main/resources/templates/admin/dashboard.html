@@ -51,11 +51,11 @@
                     <td>{{ fileDrop.uploader }}</td>
                     <td>{{ fileDrop.created | date:'MM/dd/yyyy' }}</td>
                     <td>{{ fileDrop.expiration | date:'MM/dd/yyyy h:mma'}}</td>
-                    <td>0</td>
+                    <td>{{ fileDrop.downloads }}</td>
                     <td>
-                        <a th:href="@{/admin/add-expiration/{{ fileDrop.id }}/1}" class="mr-1">+1d</a>
-                        <a th:href="@{/admin/add-expiration/{{ fileDrop.id }}/7}" class="mr-1">+7d</a>
-                        <a th:href="@{/admin/expire/{{ fileDrop.id }}}" class="mr-1">del</a>
+                        <a th:href="@{/admin/add-expiration/{{ fileDrop.fileDropId }}/1}" class="mr-1">+1d</a>
+                        <a th:href="@{/admin/add-expiration/{{ fileDrop.fileDropId }}/7}" class="mr-1">+7d</a>
+                        <a th:href="@{/admin/expire/{{ fileDrop.fileDropId }}}" class="mr-1">del</a>
                     </td>
                 </tr>
                 </tbody>
@@ -68,11 +68,11 @@
                 <th scope="col">downloads</th>
                 </thead>
                 <tbody>
-                <tr class="table-danger" ng-repeat="fileSet in fileDrop.fileSet">
+                <tr class="table-danger" ng-repeat="fileSet in fileDrop.fileInfoList">
                     <td>{{ fileSet.fileName }}</td>
-                    <td>{{ fileSet.type }}</td>
-                    <td>{{ fileSet.size | bytes}}</td>
-                    <td>0</td>
+                    <td>{{ fileSet.fileType }}</td>
+                    <td>{{ fileSet.fileSize | bytes }}</td>
+                    <td>{{ fileSet.downloads }}</td>
                 </tr>
                 </tbody>
             </table>

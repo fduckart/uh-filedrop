@@ -1,7 +1,9 @@
 package edu.hawaii.its.filedrop.controller;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
@@ -21,8 +23,10 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.repository.DownloadRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.FileSystemStorageService;
+import edu.hawaii.its.filedrop.type.Download;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
@@ -39,6 +43,9 @@ public class DownloadController {
 
     @Autowired
     private UserContextService userContextService;
+
+    @Autowired
+    private DownloadRepository downloadRepository;
 
     @GetMapping(value = "/expire/{downloadKey}")
     public String expire(Model model, RedirectAttributes redirectAttributes, @PathVariable String downloadKey) {
@@ -110,8 +117,8 @@ public class DownloadController {
     }
 
     @GetMapping(value = "/dl/{downloadKey}/{fileId}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String downloadKey, @PathVariable Integer fileId)
-            throws IOException {
+    public ResponseEntity<Resource> downloadFile(@PathVariable String downloadKey, @PathVariable Integer fileId,
+            HttpServletRequest httpServletRequest) throws IOException {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
 
         if (fileDrop == null || !fileDrop.isValid()) {
@@ -129,10 +136,19 @@ public class DownloadController {
                             .findFirst();
 
             if (foundFileSet.isPresent()) {
+                Download download = new Download();
+                download.setFileDrop(fileDrop);
+                download.setFileName(foundFileSet.get().getFileName());
+                download.setStarted(LocalDateTime.now());
+                download.setIpAddress(httpServletRequest.getRemoteAddr());
+
                 Resource resource = storageService.loadAsResource(
                         Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString());
 
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", fileSet: " + foundFileSet.get());
+
+                download.setCompleted(LocalDateTime.now());
+                downloadRepository.save(download);
 
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)

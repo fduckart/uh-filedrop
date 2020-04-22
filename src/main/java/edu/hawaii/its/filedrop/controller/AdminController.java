@@ -1,5 +1,7 @@
 package edu.hawaii.its.filedrop.controller;
 
+import static java.util.stream.Collectors.toList;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -24,6 +26,7 @@ import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.repository.DownloadRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
@@ -33,6 +36,7 @@ import edu.hawaii.its.filedrop.service.WhitelistService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.Message;
 import edu.hawaii.its.filedrop.type.Whitelist;
 import edu.hawaii.its.filedrop.util.Dates;
@@ -60,6 +64,9 @@ public class AdminController {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @Autowired
+    private DownloadRepository downloadRepository;
 
     @GetMapping("/admin")
     public String admin() {
@@ -174,9 +181,25 @@ public class AdminController {
     }
 
     @GetMapping("/api/admin/filedrops")
-    public ResponseEntity<List<FileDrop>> getFileDrops() {
+    public ResponseEntity<List<FileDropInfo>> getFileDrops() {
         logger.debug("User at api/admin/filedrops");
-        List<FileDrop> fileDrops = fileDropService.findAllFileDrop();
+        List<FileDropInfo> fileDrops = fileDropService.findAllFileDrop().stream().filter(FileDrop::isValid).map(fileDrop -> {
+            FileDropInfo fileDropInfo = new FileDropInfo();
+            fileDropInfo.setUploader(fileDrop.getUploader());
+            fileDropInfo.setCreated(fileDrop.getCreated());
+            fileDropInfo.setExpiration(fileDrop.getExpiration());
+            fileDropInfo.setFileDropId(fileDrop.getId());
+            fileDropInfo.setFileInfoList(fileDrop.getFileSet().stream().map(fileSet -> {
+                FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
+                fileInfo.setFileName(fileSet.getFileName());
+                fileInfo.setFileSize(fileSet.getSize());
+                fileInfo.setFileType(fileSet.getType());
+                fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
+                return fileInfo;
+            }).collect(toList()));
+            fileDropInfo.setDownloads(fileDropInfo.getFileInfoList().stream().mapToInt(FileDropInfo.FileInfo::getDownloads).sum());
+            return fileDropInfo;
+        }).collect(toList());
         return ResponseEntity.ok().body(fileDrops);
     }
 

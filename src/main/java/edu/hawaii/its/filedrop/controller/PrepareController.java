@@ -194,7 +194,7 @@ public class PrepareController {
 
         for (String recipient : recipients) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
-            boolean checkRecipient = fileDropService.checkRecipient(user, fileDrop, ldapPerson);
+            boolean checkRecipient = fileDropService.checkRecipient(user, ldapPerson, fileDrop.isAuthenticationRequired());
             logger.debug("checkRecipient; " + recipient + ": " + checkRecipient);
 
             if (!checkRecipient) {
