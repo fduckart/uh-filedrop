@@ -1,5 +1,13 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.LoggerFactory;
@@ -9,18 +17,10 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.type.Message;
-
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.type.Message;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -34,7 +34,7 @@ public class MessageServiceTest {
     public void findMessage() {
         Message message = messageService.findMessage(Message.GATE_MESSAGE);
         assertThat(message.getId(), equalTo(Message.GATE_MESSAGE));
-        assertEquals("Y", message.getEnabled());
+        assertTrue(message.isEnabled());
         assertTrue(message.getText().contains("University of Hawai'i"));
 
         // Turn down logging just for a second, just
@@ -47,7 +47,7 @@ public class MessageServiceTest {
         message = messageService.findMessage(-1);
         assertNotNull(message);
         assertThat(message.getId(), equalTo(null));
-        assertThat(message.getEnabled(), equalTo(null));
+        assertThat(message.isEnabled(), equalTo(null));
         assertThat(message.getTypeId(), equalTo(null));
         assertThat(message.getText(), equalTo(""));
 
@@ -68,7 +68,7 @@ public class MessageServiceTest {
     @Test
     public void update() {
         Message message = messageService.findMessage(Message.GATE_MESSAGE);
-        assertEquals("Y", message.getEnabled());
+        assertTrue(message.isEnabled());
         assertEquals(Integer.valueOf(1), message.getTypeId());
         assertTrue(message.getText().contains("University of Hawai'i"));
         assertTrue(message.getText().endsWith("."));
@@ -79,7 +79,7 @@ public class MessageServiceTest {
         messageService.update(message);
 
         message = messageService.findMessage(Message.GATE_MESSAGE);
-        assertEquals("Y", message.getEnabled());
+        assertTrue(message.isEnabled());
         assertEquals(Integer.valueOf(1), message.getTypeId());
         assertTrue(message.getText().equals("Stemming the bleeding."));
 
@@ -109,7 +109,7 @@ public class MessageServiceTest {
 
         Message m3 = new Message();
         m3.setId(999);
-        m3.setEnabled("Y");
+        m3.setEnabled(Boolean.TRUE);
         m3.setText("Testing");
         m3.setTypeId(1);
         messageService.add(m3);

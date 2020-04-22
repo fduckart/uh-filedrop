@@ -9,11 +9,9 @@ import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -52,6 +50,12 @@ public class DatabaseConfig {
     @Value("${app.jpa.properties.hibernate.connection.shutdown}")
     private String hibernateConnectionShutdown;
 
+    @Value("${flowable.database-schema:}")
+    private String flowableDatabaseSchema;
+
+    @Value("${flowable.database-schema-update:}")
+    private String flowableDatabaseSchemaUpdate;
+
     @PostConstruct
     public void init() {
         logger.info("init; starting...");
@@ -61,6 +65,8 @@ public class DatabaseConfig {
         logger.info("init; driverClassName: " + driverClassName);
         logger.info("init; hibernateDialect: " + hibernateDialect);
         logger.info("init; hibernateHbm2ddlAuto: " + hibernateHbm2ddlAuto);
+        logger.info("init; flowableDatabaseSchema: " + flowableDatabaseSchema);
+        logger.info("init; flowableDatabaseSchemaUpdate: " + flowableDatabaseSchemaUpdate);
 
         Assert.hasLength(url, "property 'url' is required");
         Assert.hasLength(username, "property 'user' is required");
@@ -80,13 +86,6 @@ public class DatabaseConfig {
         dataSource.setPassword(password);
 
         return dataSource;
-    }
-
-    @Profile(value = { "test", "prod" })
-    @ConfigurationProperties(prefix = "junk.spring.datasource")
-    @Bean(name = "junkDataSource")
-    public DataSource junkDataSource() {
-        return new BasicDataSource();
     }
 
     @Bean

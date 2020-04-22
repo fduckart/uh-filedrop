@@ -23,11 +23,4 @@ public class DatabaseConfigTest {
         assertThat(databaseConfig, not(equalTo(null)));
     }
 
-    @Test
-    public void junkDataSource() {
-        // Not really a test, just getting coverage.
-        DatabaseConfig config = new DatabaseConfig();
-        assertThat(config.junkDataSource(), not(equalTo(null)));
-    }
-
 }

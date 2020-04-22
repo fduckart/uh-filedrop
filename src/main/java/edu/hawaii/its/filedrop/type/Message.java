@@ -1,7 +1,9 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.io.Serializable;
+
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -16,18 +18,25 @@ public class Message implements Serializable {
     public static final int GATE_MESSAGE = 1;
     public static final int UNAVAILABLE_MESSAGE = 3;
 
+    @Id
+    @Column(name = "MSG_ID")
     private Integer id;
+
+    @Column(name = "MSG_TYPE_ID")
     private Integer typeId;
+
+    @Column(name = "MSG_TEXT")
     private String text = "";
-    private String enabled;
+
+    @Column(name = "msg_enabled", nullable = false)
+    @Convert(converter = BooleanToCharacterConverter.class)
+    private Boolean enabled;
 
     // Constructor.
     public Message() {
         // Empty.
     }
 
-    @Id
-    @Column(name = "MSG_ID")
     public Integer getId() {
         return id;
     }
@@ -36,7 +45,6 @@ public class Message implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "MSG_TEXT")
     public String getText() {
         return text;
     }
@@ -45,16 +53,14 @@ public class Message implements Serializable {
         this.text = text;
     }
 
-    @Column(name = "MSG_ENABLED", columnDefinition = "char")
-    public String getEnabled() {
+    public Boolean isEnabled() {
         return enabled;
     }
 
-    public void setEnabled(String enabled) {
+    public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
     }
 
-    @Column(name = "MSG_TYPE_ID")
     public Integer getTypeId() {
         return typeId;
     }

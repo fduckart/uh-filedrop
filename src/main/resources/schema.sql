@@ -194,23 +194,13 @@ CREATE TABLE qrtz_trigger_listeners (
   CONSTRAINT QRTZ_TRIGGER_LISTENERS_ibfk_1 FOREIGN KEY (TRIGGER_NAME, TRIGGER_GROUP) REFERENCES qrtz_triggers (TRIGGER_NAME, TRIGGER_GROUP)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS system_messages;
-
-CREATE TABLE system_messages (
-  id int(11) NOT NULL AUTO_INCREMENT,
-  message mediumtext NOT NULL,
-  begin_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  end_at datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
-  PRIMARY KEY (id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
 DROP TABLE IF EXISTS message;
 
 CREATE TABLE message (
   msg_id int(11) NOT NULL AUTO_INCREMENT,
-  msg_enabled bit NOT NULL,
+  msg_enabled char(1) NOT NULL DEFAULT 'Y',
   msg_type_id int(11) NOT NULL,
-  msg_text mediumtext NOT NULL,
+  msg_text varchar(1000) NOT NULL,
   PRIMARY KEY (msg_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

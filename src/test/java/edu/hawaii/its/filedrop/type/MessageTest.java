@@ -1,8 +1,5 @@
 package edu.hawaii.its.filedrop.type;
 
-import org.junit.Before;
-import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -11,6 +8,9 @@ import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+
+import org.junit.Before;
+import org.junit.Test;
 
 public class MessageTest {
 
@@ -30,7 +30,7 @@ public class MessageTest {
     public void accessors() {
         assertNotNull(message);
         assertNull(message.getId());
-        assertNull(message.getEnabled());
+        assertNull(message.isEnabled());
         assertThat(message.getText(), equalTo(""));
         assertNull(message.getTypeId());
 
