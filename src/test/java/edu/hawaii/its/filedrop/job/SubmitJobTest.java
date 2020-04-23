@@ -1,8 +1,8 @@
 package edu.hawaii.its.filedrop.job;
 
-import org.junit.Test;
-
 import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
 
 public class SubmitJobTest {
 
@@ -12,6 +12,9 @@ public class SubmitJobTest {
         assertEquals("W", submitJob.getClassCode());
 
         submitJob = new SpaceCheckJob();
-        assertEquals("Z", submitJob.getClassCode());
+        assertEquals("S", submitJob.getClassCode());
+
+        submitJob = new ExpireJob();
+        assertEquals("E", submitJob.getClassCode());
     }
 }

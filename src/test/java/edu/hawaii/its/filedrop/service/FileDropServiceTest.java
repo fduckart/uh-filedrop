@@ -563,6 +563,17 @@ public class FileDropServiceTest {
         assertThat(fileDropService.isAuthorized(fileDrop, " "), equalTo(false));
     }
 
+    @Test
+    public void expireJobCheck() {
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setValid(true);
+        fileDrop.setExpiration(LocalDateTime.now().minusMinutes(1));
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
+        fileDropService.checkFileDrops();
+        fileDrop = fileDropService.findFileDrop(fileDrop.getId());
+        assertFalse(fileDrop.isValid());
+    }
+
     private Task currentTask(User user) {
         return workflowService.getCurrentTask(user);
     }
