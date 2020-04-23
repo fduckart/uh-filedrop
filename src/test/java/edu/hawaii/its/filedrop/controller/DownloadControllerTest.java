@@ -135,16 +135,16 @@ public class DownloadControllerTest {
     @Test
     @WithMockUhUser
     public void downloadUnauthorized() throws Exception {
-        mockMvc.perform(get("/dl/downloadKey"))
+        mockMvc.perform(get("/dl/downloadKey3"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/sl/downloadKey"));
+                .andExpect(view().name("redirect:/sl/downloadKey3"));
 
-        mockMvc.perform(get("/sl/downloadKey"))
+        mockMvc.perform(get("/sl/downloadKey3"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/download-error"))
                 .andExpect(model().attribute("error", "You are not a recipient for this drop."));
 
-        mockMvc.perform(get("/dl/downloadKey/999"))
+        mockMvc.perform(get("/dl/downloadKey3/999"))
                 .andExpect(status().is4xxClientError());
     }
 

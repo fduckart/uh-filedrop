@@ -397,13 +397,13 @@ public class AdminControllerTest {
     public void getFileDropsTest() throws Exception {
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
-                .andExpect(jsonPath("$[1].uploader").value("test"))
-                .andExpect(jsonPath("$[1].fileInfoList").isNotEmpty())
-                .andExpect(jsonPath("$[1].fileInfoList[0].fileName").value("test.txt"))
-                .andExpect(jsonPath("$[1].fileInfoList[0].fileType").value("text/plain"))
-                .andExpect(jsonPath("$[1].fileInfoList[0].fileSize").value("1000"))
-                .andExpect(jsonPath("$[1].fileInfoList[0].downloads").value("1"));
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))))
+                .andExpect(jsonPath("$[0].uploader").value("test"))
+                .andExpect(jsonPath("$[0].fileInfoList").isNotEmpty())
+                .andExpect(jsonPath("$[0].fileInfoList[0].fileName").value("test.txt"))
+                .andExpect(jsonPath("$[0].fileInfoList[0].fileType").value("text/plain"))
+                .andExpect(jsonPath("$[0].fileInfoList[0].fileSize").value("1000"))
+                .andExpect(jsonPath("$[0].fileInfoList[0].downloads").value("1"));
     }
 
     @Test
@@ -417,15 +417,15 @@ public class AdminControllerTest {
     @Test
     @WithMockUhAdmin
     public void addExpirationTest() throws Exception {
-        mockMvc.perform(get("/admin/add-expiration/3/1"))
+        mockMvc.perform(get("/admin/add-expiration/2/1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/dashboard"));
 
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
-                .andExpect(jsonPath("$[1].uploader").value("test"))
-                .andExpect(jsonPath("$[1].expiration").value("2019-11-15T08:30:18.023"));
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))))
+                .andExpect(jsonPath("$[0].uploader").value("test"))
+                .andExpect(jsonPath("$[0].expiration").value("2021-11-16T08:30:18.023"));
     }
 
     @Test
@@ -445,8 +445,8 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/api/admin/filedrops"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(2))))
-                .andExpect(jsonPath("$[1].uploader").value("test"));
+                .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))))
+                .andExpect(jsonPath("$[0].uploader").value("test"));
     }
 
     @Test
