@@ -200,13 +200,6 @@ public class HomeControllerTest {
     }
 
     @Test
-    public void permissions() throws Exception {
-        mockMvc.perform(get("/help/permissions"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("help/permissions"));
-    }
-
-    @Test
     public void requestUrl404() throws Exception {
         mockMvc.perform(get("/404"))
                 .andExpect(status().is3xxRedirection())
