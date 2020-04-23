@@ -31,6 +31,7 @@ public class MessageTest {
         assertNotNull(message);
         assertNull(message.getId());
         assertNull(message.isEnabled());
+        assertNull(message.getEnabled());
         assertThat(message.getText(), equalTo(""));
         assertNull(message.getTypeId());
 

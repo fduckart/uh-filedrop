@@ -99,7 +99,7 @@ public class PrepareController {
         ProcessVariableHolder processVariableHolder =
                 new ProcessVariableHolder(workflowService.getProcessVariables(user));
 
-        String[] recipients = (String[]) processVariableHolder.get("recipients");
+        String[] recipients = processVariableHolder.getStrings("recipients");
 
         List<String> recipientsList = Arrays.stream(recipients).map(recipient -> {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
@@ -225,8 +225,8 @@ public class PrepareController {
         ProcessVariableHolder processVariables =
                 new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
 
-        Integer expiration = (Integer) processVariables.get("expirationLength");
-        String[] recipients = (String[]) processVariables.get("recipients");
+        Integer expiration = processVariables.getInteger("expirationLength");
+        String[] recipients = processVariables.getStrings("recipients");
 
         LocalDateTime now = LocalDateTime.now();
         fileDrop.setCreated(now);
@@ -236,7 +236,7 @@ public class PrepareController {
 
         fileDropService.addRecipients(fileDrop, recipients);
 
-        String sender = (String) processVariables.get("sender");
+        String sender = processVariables.getString("sender");
         Mail mail = new Mail();
         mail.setTo(sender);
         mail.setFrom(emailService.getFrom());
@@ -261,7 +261,7 @@ public class PrepareController {
             }
 
             fileDropContext = emailService.getFileDropContext("receiver", fileDrop);
-            fileDropContext.put("comment", processVariables.get("message"));
+            fileDropContext.put("comment", processVariables.getString("message"));
             fileDropContext.put("size", size);
             fileDropContext.put("sender", sender);
             emailService.send(mail, "receiver", new Context(Locale.ENGLISH, fileDropContext));
@@ -310,12 +310,12 @@ public class PrepareController {
             workflowService.revertTask(user, "recipientsTask");
             ProcessVariableHolder processVariableHolder =
                     new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
-            String recipients = Arrays.toString((String[]) processVariableHolder.get("recipients"));
-            model.addAttribute("sender", processVariableHolder.get("sender"));
-            model.addAttribute("expiration", processVariableHolder.get("expirationLength"));
+            String recipients = Arrays.toString(processVariableHolder.getStrings("recipients"));
+            model.addAttribute("sender", processVariableHolder.getString("sender"));
+            model.addAttribute("expiration", processVariableHolder.getInteger("expirationLength"));
             model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
             model.addAttribute("recipients", recipients);
-            model.addAttribute("message", processVariableHolder.get("message"));
+            model.addAttribute("message", processVariableHolder.getString("message"));
         } else {
             fileDropService.startUploadProcess(user);
         }
