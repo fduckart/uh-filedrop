@@ -35,12 +35,24 @@ public class ProcessVariableHolder {
         processVariables.put(key, object);
     }
 
-    public void add(Map<String, Object> variables) {
+    public void addAll(Map<String, Object> variables) {
         processVariables.putAll(variables);
     }
 
-    public Object get(String key) {
+    private Object get(String key) {
         return processVariables.get(key);
+    }
+
+    public Integer getInteger(String key) {
+        return (Integer) get(key);
+    }
+
+    public String getString(String key) {
+        return (String) get(key);
+    }
+
+    public String[] getStrings(String key) {
+        return (String[]) get(key);
     }
 
     public int size() {

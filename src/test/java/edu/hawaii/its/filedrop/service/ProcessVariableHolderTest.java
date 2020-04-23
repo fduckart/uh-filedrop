@@ -1,15 +1,15 @@
 package edu.hawaii.its.filedrop.service;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.junit.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import org.junit.Test;
 
 public class ProcessVariableHolderTest {
 
@@ -62,7 +62,7 @@ public class ProcessVariableHolderTest {
         variables.put("Tame Impala", "The Slow Rush");
         variables.put("The Black Keys", "El Camino");
 
-        processVariableHolder.add(variables);
+        processVariableHolder.addAll(variables);
 
         assertThat(processVariableHolder.toString(), containsString("Tame Impala"));
         assertThat(processVariableHolder.toString(), containsString("The Slow Rush"));
@@ -72,6 +72,6 @@ public class ProcessVariableHolderTest {
         assertThat(processVariableHolder.size(), equalTo(4));
         assertThat(processVariableHolder.getMap().size(), equalTo(4));
 
-        assertThat(processVariableHolder.get("The Black Keys"), equalTo("El Camino"));
+        assertThat(processVariableHolder.getString("The Black Keys"), equalTo("El Camino"));
     }
 }

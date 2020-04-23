@@ -116,7 +116,7 @@ public class FileDropServiceTest {
         fileDropService.addRecipients(user, recipients);
 
         Map<String, Object> processVariables =
-                workflowService.getProcessVariables(currentTask(user).getProcessInstanceId());
+                workflowService.getProcessVariables(currentTask(user));
 
         assertFalse(processVariables.isEmpty());
         assertEquals(2, processVariables.size());
@@ -382,20 +382,20 @@ public class FileDropServiceTest {
         User user = userContextService.getCurrentUser();
         FileDrop fileDrop = new FileDrop();
         fileDrop.setAuthenticationRequired(true);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
         fileDrop.setAuthenticationRequired(false);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
     }
 
     @Test
@@ -404,20 +404,20 @@ public class FileDropServiceTest {
         User user = userContextService.getCurrentUser();
         FileDrop fileDrop = new FileDrop();
         fileDrop.setAuthenticationRequired(true);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
         fileDrop.setAuthenticationRequired(false);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
     }
 
     @Test
@@ -426,20 +426,20 @@ public class FileDropServiceTest {
         User user = userContextService.getCurrentUser();
         FileDrop fileDrop = new FileDrop();
         fileDrop.setAuthenticationRequired(true);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
         fileDrop.setAuthenticationRequired(false);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
     }
 
     @Test
@@ -448,20 +448,20 @@ public class FileDropServiceTest {
         User user = userContextService.getCurrentUser();
         FileDrop fileDrop = new FileDrop();
         fileDrop.setAuthenticationRequired(true);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
         fileDrop.setAuthenticationRequired(false);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
     }
 
     @Test
@@ -470,21 +470,21 @@ public class FileDropServiceTest {
         User user = userContextService.getCurrentUser();
         FileDrop fileDrop = new FileDrop();
         fileDrop.setAuthenticationRequired(true);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
 
         fileDrop.setAuthenticationRequired(false);
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
-        assertFalse(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
-        assertTrue(fileDropService.checkRecipient(user, ldapService.findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("user"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("beno"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("krichards"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("help"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("uhmfund"), fileDrop.isAuthenticationRequired()));
+        assertFalse(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("teststudent"), fileDrop.isAuthenticationRequired()));
+        assertTrue(fileDropService.checkRecipient(user, findByUhUuidOrUidOrMail("test@some.edu"), fileDrop.isAuthenticationRequired()));
     }
 
     @Test
@@ -576,5 +576,9 @@ public class FileDropServiceTest {
 
     private Task currentTask(User user) {
         return workflowService.getCurrentTask(user);
+    }
+
+    private LdapPerson findByUhUuidOrUidOrMail(String value) {
+        return ldapService.findByUhUuidOrUidOrMail(value);
     }
 }

@@ -19,13 +19,13 @@ public class Message implements Serializable {
     public static final int UNAVAILABLE_MESSAGE = 3;
 
     @Id
-    @Column(name = "MSG_ID")
+    @Column(name = "msg_id")
     private Integer id;
 
-    @Column(name = "MSG_TYPE_ID")
+    @Column(name = "msg_type_id", nullable = false)
     private Integer typeId;
 
-    @Column(name = "MSG_TEXT")
+    @Column(name = "msg_text", nullable = false)
     private String text = "";
 
     @Column(name = "msg_enabled", nullable = false)
@@ -51,6 +51,10 @@ public class Message implements Serializable {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public Boolean getEnabled() {
+        return enabled;
     }
 
     public Boolean isEnabled() {
