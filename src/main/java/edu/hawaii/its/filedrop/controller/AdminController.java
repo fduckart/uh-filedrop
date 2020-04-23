@@ -229,6 +229,11 @@ public class AdminController {
         return "redirect:/admin/dashboard";
     }
 
+    @GetMapping("/admin/permissions")
+    public String permissions() {
+        return "admin/permissions";
+    }
+
     private User currentUser() {
         return userContextService.getCurrentUser();
     }

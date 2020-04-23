@@ -456,4 +456,20 @@ public class AdminControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
+
+    @Test
+    @WithAnonymousUser
+    public void permissionsAnonymousTest() throws Exception {
+        mockMvc.perform(get("/admin/permissions"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void permissionsTest() throws Exception {
+        mockMvc.perform(get("/admin/permissions"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("admin/permissions"));
+    }
 }
