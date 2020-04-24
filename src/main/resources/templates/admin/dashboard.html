@@ -37,7 +37,7 @@
                 </div>
             </div>
         </div>
-        <div class="row" ng-repeat="fileDrop in fileDrops | filter:filter">
+        <div class="row" ng-repeat="fileDrop in fileDrops | filter:filter | orderBy:'-created' ">
             <table class="table table-sm table-bordered mb-0">
                 <thead class="thead-light">
                 <th scope="col">uploaded by</th>
