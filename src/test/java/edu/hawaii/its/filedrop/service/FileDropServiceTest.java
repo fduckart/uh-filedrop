@@ -288,7 +288,7 @@ public class FileDropServiceTest {
 
         fileDropService.saveFileSet(fileSet);
 
-        assertEquals(2, fileSet.getId().intValue());
+        assertEquals(3, fileSet.getId().intValue());
 
         assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
         assertEquals(2, fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());
@@ -561,6 +561,17 @@ public class FileDropServiceTest {
         assertThat(fileDropService.isAuthorized(fileDrop, null), equalTo(false));
         assertThat(fileDropService.isAuthorized(fileDrop, ""), equalTo(false));
         assertThat(fileDropService.isAuthorized(fileDrop, " "), equalTo(false));
+    }
+
+    @Test
+    public void expireJobCheck() {
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setValid(true);
+        fileDrop.setExpiration(LocalDateTime.now().minusMinutes(1));
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
+        fileDropService.checkFileDrops();
+        fileDrop = fileDropService.findFileDrop(fileDrop.getId());
+        assertFalse(fileDrop.isValid());
     }
 
     private Task currentTask(User user) {

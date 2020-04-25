@@ -6,12 +6,14 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 
 import javax.annotation.PostConstruct;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -195,6 +197,17 @@ public class FileDropService {
         }
 
         return validRecipient;
+    }
+
+    public synchronized void checkFileDrops() {
+        logger.debug("Starting expired FileDrops check");
+
+        List<FileDrop> expiredFileDrops = findAllFileDrop().stream().filter(fileDrop ->
+            fileDrop.getExpiration().isBefore(LocalDateTime.now()) && fileDrop.isValid()).collect(Collectors.toList());
+
+        expiredFileDrops.forEach(this::expire);
+
+        logger.debug("Finished expired FileDrops check. " + expiredFileDrops.size() + " FileDrop(s) expired.");
     }
 
     public FileSet saveFileSet(FileSet fileSet) {

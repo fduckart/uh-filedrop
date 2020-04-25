@@ -57,8 +57,8 @@ insert into whitelist (id, entry, registrant, created, expiration_check, expired
 insert into whitelist (id, entry, registrant, created, expiration_check, expired) values (2, 'help', 'lukemcd9', '2019-06-26', 0, false);
 
 insert into filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (1, 'test', 'Test', '2019-11-14T08:30:18.023', 'uploadKey',  'downloadKey',  'encryptionKey',  '2019-11-15T08:30:18.023', 'Y', 'Y');
-insert into filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (2, 'test', 'Test', '2019-11-14T08:30:18.023', 'uploadKey2', 'downloadKey2', 'encryptionKey2', '2019-11-15T08:30:18.023', 'Y', 'N');
-insert into filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (3, 'jwlennon@hawaii.edu', 'John W Lennon', '2019-11-14T08:30:18.023', 'uploadKey3', 'downloadKey3', 'encryptionKey3', '2019-11-15T08:30:18.023', 'Y', 'Y');
+insert into filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (2, 'test', 'Test', '2019-11-14T08:30:18.023', 'uploadKey2', 'downloadKey2', 'encryptionKey2', '2021-11-15T08:30:18.023', 'Y', 'N');
+insert into filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (3, 'jwlennon@hawaii.edu', 'John W Lennon', '2019-11-14T08:30:18.023', 'uploadKey3', 'downloadKey3', 'encryptionKey3', '2021-11-15T08:30:18.023', 'Y', 'Y');
 insert into filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (4, 'jwlennon@hawaii.edu', 'John W Lennon', '2019-11-14T08:30:18.023', 'uploadKey4', 'downloadKey4', 'encryptionKey4', '2019-11-15T08:30:18.023', 'N', 'N');
 
 insert into recipient (id, filedrop_id, name) values (1, 1, 'test');
@@ -67,3 +67,5 @@ insert into recipient (id, filedrop_id, name) values (3, 3, 'krichards@example.c
 insert into recipient (id, filedrop_id, name) values (4, 4, 'krichards@example.com');
 insert into recipient (id, filedrop_id, name) values (5, 4, 'jwlennon@hawaii.edu');
 
+insert into fileset (id, filedrop_id, file_name, type, comment, size) values (1, 2, 'test.txt', 'text/plain', '', 1000);
+insert into download (id, filedrop_id, file_name, started, completed, ip_addr) values (1, 2, 'test.txt', '2019-11-14T08:30:18.023', '2019-11-14T08:31:18.023', '0.0.0.0');

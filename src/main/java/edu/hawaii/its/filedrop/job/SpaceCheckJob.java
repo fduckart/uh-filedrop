@@ -8,7 +8,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 
-@SubmitJobComponent
+@SubmitJobComponent(classCode = "S")
 @ConditionalOnProperty(
         prefix = "app.job.spacecheck",
         name = "enabled",
