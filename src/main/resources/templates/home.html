@@ -1,76 +1,80 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-    lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head th:replace="header :: copy"></head>
 <body>
     <nav th:replace="menubar :: copy"></nav>
 
     <!--  Content container -->
     <div class="container mb-sm-5">
-        <div class="row justify-content-center" th:if="${message}">
-            <div class="col-sm-8">
-                <div class="alert alert-success alert-dismissible fade show" role="alert" th:utext="${message}">
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-sm-12">
-                <p class="lead text-center" th:utext="${gatemessage}"></p>
-            </div>
-        </div>
-        <div class="row justify-content-center">
-            <div class="card-deck">
-                <div class="card border-success mx-4 my-3">
-                    <div class="card-header bg-transparent border-0 text-center">
-                        <span class="lead">UH Users</span>
-                    </div>
-                    <div class="card-body">
-                        <a th:href="@{/prepare}" class="btn btn-success btn-lg w-100">UH Login Here</a>
-                    </div>
-                </div>
-                <div class="card border-danger mx-4 my-3">
-                    <div class="card-header bg-transparent border-0 text-center">
-                        <span class="lead">Non-UH Users</span>
-                    </div>
-                    <div class="card-body">
-                        <p>If you do not have a UH username, please provide your name and email address below </p>
-                        <form action="#" th:action="@{/validate}" method="POST">
-                            <div class="form-group">
-                                <label for="name">Name </label>
-                                <input class="form-control" type="text" id="name" name="name" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="email">Email </label>
-                                <input class="form-control" type="email" id="email" name="email" required>
-                            </div>
-                            <button type="submit" class="btn btn-outline-primary">Continue</button>
-                        </form>
-                    </div>
+        <div class="row justify-content-md-center card-deck">
+            <div class="card border-0">
+                <div class="card-body text-center">
+                    <span class="d-block d-sm-none"> </span>
+                    <p class="card-text lead text-center text-muted" th:utext="${gatemessage}"></p>
                 </div>
             </div>
         </div>
 
-        <div class="row justify-content-md-center">
-            <div class="col-xs-12 col-md-6 col-lg-5 ml-lg-4">
-                <p class="lead">
-                    <span th:text="#{home.contact}"></span>
-                    <a th:href="@{/help/contact}" class="btn btn-outline-primary">View</a>
-                </p>
-                <p th:text="#{home.contact.message}"></p>
+        <div class="row justify-content-md-center card-deck">
+            <div class="card border-success">
+                <div class="card-header bg-transparent border-0 border-success text-center">
+                    <span class="lead">UH Users</span>
+                </div>
+                <div class="card-body text-center">
+                    <a th:href="@{/prepare}" class="btn btn-success btn-lg w-100">UH Login Here</a>
+                </div>
             </div>
-            <div class="col-xs-12 col-md-6 col-lg-5">
-                <p class="lead">
-                    <span th:text="#{home.faq}"></span>
-                    <a th:href="@{/help/faq}" class="btn btn-outline-primary">View</a>
-                </p>
-                <p th:text="#{home.faq.message}"></p>
+            <div class="card border">
+                <div class="card-header bg-transparent border-0 border-danger text-center">
+                    <span class="lead">Non-UH Users</span>
+                </div>
+                <div class="card-body text-left">
+                    <p>If you do not have a UH username, please provide your name and email address below </p>
+                    <form action="#" th:action="@{/validate}" method="POST">
+                        <div class="form-group">
+                            <label for="name">Name </label>
+                            <input class="form-control" type="text" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email </label>
+                            <input class="form-control" type="email" id="email" name="email" required>
+                        </div>
+                        <button type="submit" class="btn btn-outline-primary">Continue</button>
+                    </form>
+                </div>
             </div>
         </div>
+
+        <div class="row"><p></p></div>
+
+        <div class="row justify-content-md-center card-deck">
+            <div class="card border">
+                <div class="card-body text-left border-1 mb-0 pb-0">
+                    <p class="card-text my-auto">
+                        <p class="lead" th:text="#{home.contact}"></p>
+                        <p th:text="#{home.contact.message}"></p>
+                    </p>
+                </div>              
+                <div class="card-footer border-0 mt-0 mb-0 pt-0 bg-transparent">
+                    <a th:href="@{/help/contact}" class="btn btn-outline-primary pull-left">View</a>
+                </div>            
+            </div>
+            <div class="card border">
+                <div class="card-body text-left border-1 mb-0 pb-0">
+                    <p class="card-text my-auto">
+                        <p class="lead" th:text="#{home.faq}"></p>
+                        <p th:text="#{home.faq.message}"></p>
+                    </p>
+                </div>  
+                <div class="card-footer border-0 mt-0 mb-0 pt-0 bg-transparent">
+                    <a th:href="@{/help/faq}" class="btn btn-outline-primary pull-left">View</a>                
+                </div>            
+            </div>
+        </div>
+
     </div>
     <!-- / Content container. -->
-    <div th:replace="footer :: copy"></div>
+
+<div th:replace="footer :: copy"></div>
 </body>
 </html>

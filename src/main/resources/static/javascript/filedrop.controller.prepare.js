@@ -1,5 +1,5 @@
 function PrepareJsController($scope, dataProvider, $http, $window, $log) {
-	
+    
     $scope.init = function() {
         $scope.recipient = "";
         $scope.recipients = [];
@@ -15,7 +15,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
         $log.debug("init; Expiration:", $scope.expiration);
         $log.debug("init; Message:", $scope.message);
         $log.debug("init; FileDrop Sender:", $scope.getFileDrop().sender);
-        $log.debug("init; Whitelist:", $scope.getWhitelist());
     };
 
     $scope.addRecipient = function (recipient) {
@@ -91,7 +90,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     };
     
     $scope.disabled = function() {
-    	return $scope.recipient.length > 0 || $scope.recipients.length === 0;
+        return $scope.recipient.length > 0 || $scope.recipients.length === 0;
     };
     
     $scope.currentUser = () => $window.user;

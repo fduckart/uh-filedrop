@@ -15,7 +15,7 @@
                 <div sec:authorize="isAuthenticated()">
                     <div class="card">
                         <div class="card-header">
-                            <form class="form-inline" action="/user/data" th:action="@{/user/data}" method="POST">
+                            <form class="form-inline" th:action="@{/user/data}" th:method"POST">
                                 <label for="emailButton"><h6>Login Details </h6></label>
                                 <button type="submit" id="emailButton" class="btn btn-outline-dark ml-auto">Email Me
                                     Data
