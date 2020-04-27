@@ -90,6 +90,13 @@ public class HomeController {
         return "campus";
     }
 
+    @GetMapping(value = { "/help" })
+    public String help(Model model) {
+        logger.debug("User at help.");
+        model.addAttribute("maxSize", FileUtils.byteCountToDisplaySize(maxSize));
+        return "help/faq";
+    }
+
     @GetMapping(value = { "/help/contact", "/help/contacts" })
     public String contact() {
         logger.debug("User at contact.");

@@ -10,7 +10,7 @@
         <h1 style="color: red; text-align: center; font-size: 150%">Files are available for download</h1>
     </div>
     <p>
-    	Here are the downloads for <span th:text="${recipient}"></span> uploaded in the past hour:
+        Here are the downloads for <span th:text="${recipient}"></span> uploaded in the past hour:
     </p>
     <table style="margin: 1em auto 1em auto; width: 80%; border-collapse: separate; border-spacing: 0.5em">
         <thead>
@@ -20,10 +20,10 @@
             </tr>
         </thead>    
         <tbody>        
-			<tr style="text-align: left;" th:each="f: ${filedrops}">
-			    <td th:utext="${f.created}" />
-			    <td><a th:href="'https://www.hawaii.edu/filedrop/dl/' + ${f.downloadKey} + '/'"><span th:utext="${f.downloadKey}"></span></a><td/>
-			</tr>        
+            <tr style="text-align: left;" th:each="f: ${filedrops}">
+                <td th:utext="${f.created}" />
+                <td><a th:href="'https://www.hawaii.edu/filedrop/dl/' + ${f.downloadKey} + '/'"><span th:utext="${f.downloadKey}"></span></a><td/>
+            </tr>        
         </tbody>
     </table>
 </div>

@@ -1,59 +1,56 @@
-<nav class="navbar navbar-expand-md navbar-light bg-white fixed-top" role="navigation" th:fragment="copy">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <button class="navbar-toggler" type="button" data-toggle="collapse"
-        data-target="#filedrop-navbar-collapse-1" aria-controls="navbarText" aria-expanded="false"
-        aria-label="Toggle navigation">
+<nav class="navbar navbar-expand-sm navbar-light bg-white" role="navigation" th:fragment="copy">
+<div class="container">
+    <a class="navbar-brand uh-nav-app-name" href="/filedrop/" th:href="@{/}">
+        <img class="d-inline-block" width="50px" height="50px" th:src="@{/images/seal.jpg}" src="images/seal.jpg" alt="">
+        <span class="align-bottom">UH FileDrop</span>
+    </a>  
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="container">
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse" id="filedrop-navbar-collapse-1">
-            <a class="navbar-brand uh-nav-app-name" href="/filedrop/" th:href="@{/}">
-                <img class="d-inline-block" width="50px" height="50px" th:src="@{/images/seal.jpg}" src="images/seal.jpg" alt="">
-                <span>UH FileDrop</span>
-            </a>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item"><a class="nav-link" th:href="@{/}">Home</a></li>
+    <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" th:href="@{/}">Home</a>
+            </li>
 
-                <li class="nav-item dropdown">
-                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button"
-                        aria-expanded="false">Info<span class="caret"></span></a>
-                    <div class="dropdown-menu" role="menu">
-                        <a class="dropdown-item" th:href="@{/help/contact}">Contact</a>
-                        <a class="dropdown-item" style="cursor: pointer" data-toggle="modal" data-target="#faqModal">FAQ</a>
-                        <span sec:authorize="isAuthenticated()">                         
-                        	<div class="dropdown-divider"></div>
-                            <a class="dropdown-item" th:href="@{/logout}">Logout</a>
-                        </span>
-                    </div>
-                </li>
-                <li class="nav-item dropdown" sec:authorize="hasRole('ROLE_ADMINISTRATOR')">
-                    <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button"
-                        aria-expanded="false">Admin
-                        <span class="caret"></span></a>
-                    <div class="dropdown-menu dropdown-menu-right">
-                        <a th:href="@{/admin}" class="dropdown-item">Administration</a>
+            <li class="nav-item dropdown">
+                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button" aria-expanded="false"  id="navbarDropdownInfo">
+                    Info <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownInfo">
+                    <a class="dropdown-item" th:href="@{/help/contact}">Contact</a>
+                    <a class="dropdown-item" data-toggle="modal" data-target="#faqModal">FAQ</a>
+                    <span sec:authorize="isAuthenticated()">                         
                         <div class="dropdown-divider"></div>
-                        <a th:href="@{/admin/application/role}" class="dropdown-item">Application Roles</a>
-                        <a th:href="@{/campus}" class="dropdown-item">Campuses</a>
-                        <div class="dropdown-divider"></div>
-                        <a th:href="@{/admin/dashboard}" class="dropdown-item">Dashboard</a>
-                        <a th:href="@{/admin/gate-message}" class="dropdown-item">Gate Message</a>
-                        <a th:href="@{/admin/whitelist}" class="dropdown-item">Whitelist</a>
-                        <a th:href="@{/admin/email}" class="dropdown-item">Email</a>
-                        <a th:href="@{/admin/permissions}" class="dropdown-item">Permissions</a>
-                        <a th:href="@{/user}" class="dropdown-item">Login Attributes</a>
-                        <a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')" class="dropdown-item">Employee Lookup</a>
-                        <div class="dropdown-divider"></div>
-                        <a th:href="@{/admin/technology}" class="dropdown-item">Technology</a>
-                    </div>
-                </li>
-                <li class="nav-item" sec:authorize="hasRole('ROLE_ADMINISTRATOR')">
-                    <a class="nav-link" th:href="@{/logout}">Logout</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-    <!-- /.navbar-collapse -->
-    <!-- /.container -->
+                        <a class="dropdown-item" th:href="@{/logout}">Logout</a>
+                    </span>            
+                </div>
+            </li>
+      
+            <li class="nav-item dropdown"  sec:authorize="hasRole('ROLE_ADMINISTRATOR')">
+                <a href="#" class="dropdown-toggle nav-link" data-toggle="dropdown" role="button" aria-expanded="false" id="navbarDropdownAdmin">
+                    Admin <span class="caret"></span>
+                </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownAdmin">
+                    <a th:href="@{/admin}" class="dropdown-item">Administration</a>
+                    <div class="dropdown-divider"></div>
+                    <a th:href="@{/admin/application/role}" class="dropdown-item">Application Roles</a>
+                    <a th:href="@{/campus}" class="dropdown-item">Campuses</a>
+                    <div class="dropdown-divider"></div>
+                    <a th:href="@{/admin/dashboard}" class="dropdown-item">Dashboard</a>
+                    <a th:href="@{/admin/gate-message}" class="dropdown-item">Gate Message</a>
+                    <a th:href="@{/admin/whitelist}" class="dropdown-item">Whitelist</a>
+                    <a th:href="@{/admin/email}" class="dropdown-item">Email</a>
+                    <a th:href="@{/admin/permissions}" class="dropdown-item">Permissions</a>
+                    <a th:href="@{/user}" class="dropdown-item">Login Attributes</a>
+                    <a th:href="@{/admin/lookup}" sec:authorize="hasRole('ADMIN')" class="dropdown-item">Employee Lookup</a>
+                    <div class="dropdown-divider"></div>
+                    <a th:href="@{/admin/technology}" class="dropdown-item">Technology</a>
+                </div>
+            </li>
+      
+      
+    </ul>
+  </div>
+</div>
 </nav>

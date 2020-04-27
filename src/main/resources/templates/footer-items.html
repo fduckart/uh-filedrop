@@ -1,16 +1,31 @@
 <div th:fragment="copy" th:remove="tag">
-    <footer class="navbar navbar-light" th:fragment="copy">
-        <div class="container">
-            <span class="navbar-text text-center mx-auto">
-                <span class="uh-branding-one">University</span>
-                <span class="uh-branding-two">of&nbsp;</span>
-                <span class="uh-branding-one">Hawai&#8216;i</span>
-            </span>
+
+    <!-- Footer -->
+    <footer class="page-footer font-small mdb-color pt-4">
+        <!-- Footer Links -->
+        <div class="container text-center text-md-left">
+             <hr>
+             <!-- Grid row -->
+             <div class="row d-flex align-items-center">
+               <!-- Grid column -->
+               <div class="col-md-12 col-lg-12 col-xs-12">
+                 <!--Copyright-->
+                 <p class="text-center text-md-center">
+                    <span class="uh-branding-one">University</span>
+                    <span class="uh-branding-two">of&nbsp;</span>
+                    <span class="uh-branding-one">Hawai&#8216;i</span>
+                 </p>
+               </div>
+               <!-- Grid column -->
+             </div>
+            <!-- Grid row -->
         </div>
+        <!-- Footer Links -->
     </footer>
-
+    <!-- Footer -->
+    
     <script type="text/javascript" th:src="@{/webjars/ng-file-upload/ng-file-upload.min.js}"></script>
-
+    
     <script type="text/javascript" th:src="@{/javascript/app.js?ver=0.2}"></script>
     <script type="text/javascript" th:src="@{/javascript/app.service.js?ver=0.2}"></script>
     <script type="text/javascript" th:src="@{/javascript/filedrop.controller.campus.js?ver=0.2}"></script>
