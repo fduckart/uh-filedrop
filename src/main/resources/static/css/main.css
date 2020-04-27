@@ -126,6 +126,10 @@ a:hover {
 .fa.fa-blue { color: #0275d8; }
 .fa.fa-green { color: green; }
 
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none !important;
+}
+
 /* -------------------------------------------------------- */
 @media (min-width: 576px) {  /* In effect at this width and above. */
     body {
