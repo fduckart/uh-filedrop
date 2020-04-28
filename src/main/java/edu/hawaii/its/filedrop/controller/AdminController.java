@@ -119,7 +119,7 @@ public class AdminController {
         return "admin/lookup";
     }
 
-    @PostMapping("/admin/lookup/ldap")
+    @PostMapping("/admin/lookup")
     public String adminLookupLdap(Model model, @ModelAttribute("search") String search) {
         logger.debug("User at admin/ldap/data.");
 
