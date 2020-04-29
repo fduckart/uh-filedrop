@@ -10,22 +10,22 @@
             <div class="card border-0">
                 <div class="card-body text-center">
                     <span class="d-block d-sm-none"> </span>
-                    <p class="card-text lead text-center text-muted" th:utext="${gatemessage}"></p>
+                    <p class="card-text text-center lead text-muted" th:utext="${gatemessage}"></p>
                 </div>
             </div>
         </div>
 
         <div class="row justify-content-md-center card-deck">
-            <div class="card border-success">
-                <div class="card-header bg-transparent border-0 border-success text-center">
+            <div class="card border-success w-100">
+                <div class="card-header bg-transparent border-0 text-center">                
                     <span class="lead">UH Users</span>
                 </div>
-                <div class="card-body text-center">
+                <div class="card-body text-left">
                     <a th:href="@{/prepare}" class="btn btn-success btn-lg w-100">UH Login Here</a>
                 </div>
             </div>
-            <div class="card border">
-                <div class="card-header bg-transparent border-0 border-danger text-center">
+            <div class="card border w-100">
+                <div class="card-header bg-transparent border-0 text-center">
                     <span class="lead">Non-UH Users</span>
                 </div>
                 <div class="card-body text-left">

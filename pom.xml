@@ -27,9 +27,9 @@
     <maven.version>3.5.2</maven.version>
     <java.version>1.8</java.version>
     <cas.client-version>3.4.1</cas.client-version>
-    <bootstrap-version>4.3.1</bootstrap-version>
-    <jquery-version>3.2.0</jquery-version>
-    <popper.js-version>1.14.3</popper.js-version>
+    <bootstrap-version>4.4.1</bootstrap-version>
+    <jquery-version>3.4.1</jquery-version>
+    <popper.js-version>1.16.0</popper.js-version>
     <angularjs-version>1.7.8</angularjs-version>
     <angular-mocks-version>1.5.8</angular-mocks-version>
 
@@ -253,7 +253,7 @@
       <version>2.5.13</version>
     </dependency>
     <dependency>
-      <groupId>org.webjars</groupId>
+    <groupId>org.webjars.bower</groupId>
       <artifactId>popper.js</artifactId>
       <version>${popper.js-version}</version>
     </dependency>

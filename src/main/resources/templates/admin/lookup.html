@@ -11,8 +11,10 @@
         <div class="card" sec:authorize="hasAnyRole('ADMINISTRATOR', 'SUPERUSER')">
             <div class="card-header text-center">
                 <div class="d-flex align-items-center">
-                    <form class="form-horizontal w-100" th:action="@{/admin/lookup}" th:method="post" id="ldap_form">
-                        <input name="search" placeholder="UH Number, username, or email" class="form-control w-100" type="search" autofocus="true"/>
+                    <form class="form-inline w-100" th:action="@{/admin/lookup}" th:method="post" id="ldap_form">
+                        <div class="form-group w-100">
+                            <input name="search" placeholder="UH Number, username, or email" class="form-control w-100" type="search" autofocus="true"/>
+                        </div>
                     </form>
                   </div>
            </div>
