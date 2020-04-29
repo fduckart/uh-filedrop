@@ -117,6 +117,13 @@ public class HomeControllerTest {
     }
 
     @Test
+    public void requestHelp() throws Exception {
+        mockMvc.perform(get("/help"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("help/faq"));
+    }
+
+    @Test
     @WithAnonymousUser
     public void loginViaAnonymous() throws Exception {
         mockMvc.perform(get("/login"))

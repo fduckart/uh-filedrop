@@ -143,7 +143,7 @@ public class AdminControllerTest {
     @Test
     @WithMockUhAdmin(username = "beno")
     public void adminLookupLdapViaAdmin() throws Exception {
-        mockMvc.perform(post("/admin/lookup/ldap")
+        mockMvc.perform(post("/admin/lookup/")
                 .param("search", "rthompson"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/lookup"))
@@ -157,7 +157,7 @@ public class AdminControllerTest {
     @Test
     @WithMockUhAdmin(username = "duckart")
     public void adminLookupLdapViaAdminAgain() throws Exception {
-        MvcResult result = mockMvc.perform(post("/admin/lookup/ldap")
+        MvcResult result = mockMvc.perform(post("/admin/lookup/")
                 .param("search", "rthompson")
                 .with(csrf()))
                 .andExpect(status().isOk())
@@ -461,15 +461,15 @@ public class AdminControllerTest {
     @WithAnonymousUser
     public void permissionsAnonymousTest() throws Exception {
         mockMvc.perform(get("/admin/permissions"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
 
     @Test
     @WithMockUhAdmin
     public void permissionsTest() throws Exception {
         mockMvc.perform(get("/admin/permissions"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("admin/permissions"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/permissions"));
     }
 }
