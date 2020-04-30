@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    background-color: /*green*/ white;
+    background-color: white;
 }
 
 h4 .uh-nav-app-name {
@@ -63,6 +63,10 @@ a:hover {
     
 .filedrop-label {
     font-weight: bold;
+}
+
+#filedrop-home-container {
+    margin-top: -1.4rem;
 }
 
 .recipient-badge {

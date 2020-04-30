@@ -5,7 +5,7 @@
     <nav th:replace="menubar :: copy"></nav>
 
     <!--  Content container -->
-    <div class="container mb-sm-5">
+    <div class="container-lg " id="filedrop-home-container">
         <div class="row justify-content-md-center card-deck">
             <div class="card border-0">
                 <div class="card-body text-center">
@@ -15,8 +15,8 @@
             </div>
         </div>
 
-        <div class="row justify-content-md-center card-deck">
-            <div class="card border-success w-100">
+        <div class="row row-cols-1 row-cols-sm-2 justify-content-md-center card-deck px-2 px-sm-0">
+            <div class="card border-success ">
                 <div class="card-header bg-transparent border-0 text-center">                
                     <span class="lead">UH Users</span>
                 </div>
@@ -24,7 +24,7 @@
                     <a th:href="@{/prepare}" class="btn btn-success btn-lg w-100">UH Login Here</a>
                 </div>
             </div>
-            <div class="card border w-100">
+            <div class="card border">
                 <div class="card-header bg-transparent border-0 text-center">
                     <span class="lead">Non-UH Users</span>
                 </div>
@@ -39,7 +39,7 @@
                             <label for="email">Email </label>
                             <input class="form-control" type="email" id="email" name="email" required>
                         </div>
-                        <button type="submit" class="btn btn-outline-primary">Continue</button>
+                        <button type="submit" class="btn btn-outline-success">Continue</button>
                     </form>
                 </div>
             </div>
@@ -47,7 +47,7 @@
 
         <div class="row"><p></p></div>
 
-        <div class="row justify-content-md-center card-deck">
+        <div class="row row-cols-1 row-cols-sm-2 justify-content-md-center card-deck px-2 px-sm-0">
             <div class="card border">
                 <div class="card-body text-left border-1 mb-0 pb-0">
                     <p class="card-text my-auto">
@@ -56,7 +56,7 @@
                     </p>
                 </div>              
                 <div class="card-footer border-0 mt-0 mb-0 pt-0 bg-transparent">
-                    <a th:href="@{/help/contact}" class="btn btn-outline-primary pull-left">View</a>
+                    <a th:href="@{/help/contact}" class="btn btn-outline-success pull-left">View</a>
                 </div>            
             </div>
             <div class="card border">
@@ -67,7 +67,7 @@
                     </p>
                 </div>  
                 <div class="card-footer border-0 mt-0 mb-0 pt-0 bg-transparent">
-                    <a th:href="@{/help/faq}" class="btn btn-outline-primary pull-left">View</a>                
+                    <a th:href="@{/help/faq}" class="btn btn-outline-success pull-left">View</a>                
                 </div>            
             </div>
         </div>
