@@ -7,32 +7,30 @@
 <!--  Content container -->
 <div class="container">
     <div class="card panel-default">
-        <div class="card-header bg-transparent">
-            Administration
+        <div class="card-header bg-transparent pb-0">
+            <h5 class="card-title">Administration</h5>
         </div>
         <div class="card-body">
-            <div class="col-xs-12">
-                <a class="card-link" th:href="@{/admin/dashboard}">Dashboard</a><br/>
-                <a class="card-link" th:href="@{/admin/gate-message}">Gate Message</a><br/>
-                <a class="card-link" th:href="@{/admin/whitelist}">Whitelist</a><br/>
-                <a class="card-link" th:href="@{/admin/email}">Email</a><br/>
-                <a class="card-link" th:href="@{/admin/application/role}">Application Roles</a><br/>
-                <a class="card-link" th:href="@{/admin/permissions}">Permissions</a><br/>
-                <a class="card-link" th:href="@{/campus}">Campuses</a><br/>
-            </div>
-            <div class="col-xs-12">
-                <p></p>
-            </div>
-            <div class="col-xs-12">
-                <a class="text-left" th:href="@{/user}">Login Attributes</a><br/>
-                <a class="text-left" th:href="@{/admin/lookup}">LDAP User Lookup</a><br/>
-            </div>
-            <div class="col-xs-12">
-                <p></p>
-            </div>
-            <div class="col-xs-12">
-                <a class="text-left" th:href="@{/help/fonts}">Font Experiments</a><br/>
-                <a class="text-left" th:href="@{/admin/icons}">Icon Examples</a><br/><br/>                
+            <div class="row">
+                <div class="col-sm">
+                    <a class="card-link" th:href="@{/admin/dashboard}">Dashboard</a><br/>
+                    <a class="card-link" th:href="@{/admin/gate-message}">Gate Message</a><br/>
+                    <a class="card-link" th:href="@{/admin/whitelist}">Whitelist</a><br/>
+                </div>
+                <div class="col-sm">
+                    <a class="card-link" th:href="@{/admin/application/role}">Application Roles</a><br/>
+                    <a class="card-link" th:href="@{/admin/permissions}">Permissions</a><br/>
+                    <a class="card-link" th:href="@{/campus}">Campuses</a><br/>
+                </div>
+                <div class="col-sm">
+                    <a class="text-left" th:href="@{/user}">Login Attributes</a><br/>
+                    <a class="text-left" th:href="@{/admin/lookup}">LDAP User Lookup</a><br/>
+                    <a class="card-link" th:href="@{/admin/email}">Email</a><br/>
+                </div>
+                <div class="col-sm">
+                    <a class="text-left" th:href="@{/help/fonts}">Font Experiments</a><br/>
+                    <a class="text-left" th:href="@{/admin/icons}">Icon Examples</a><br/><br/>                
+                </div>
             </div>
         </div>
     </div>
