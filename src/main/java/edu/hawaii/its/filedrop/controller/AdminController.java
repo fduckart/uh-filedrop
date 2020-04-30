@@ -75,6 +75,12 @@ public class AdminController {
         return "admin/admin";
     }
 
+    @GetMapping(value = "/admin/fonts")
+    public String fonts() {
+        logger.debug("User at admin/fonts.");
+        return "admin/fonts";
+    }
+
     @GetMapping("/admin/technology")
     public String technology() {
         logger.debug("User at admin/technology.");

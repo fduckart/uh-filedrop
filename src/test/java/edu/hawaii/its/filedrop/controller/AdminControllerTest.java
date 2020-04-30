@@ -118,6 +118,32 @@ public class AdminControllerTest {
 
     @Test
     @WithMockUhAdmin
+    public void adminFonts() throws Exception {
+        mockMvc.perform(get("/admin/fonts"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/fonts"));
+    }
+
+    @Test
+    @WithMockUhUser
+    public void adminFontsViaUh() throws Exception {
+        // Access forbidden due to insufficient role.
+        mockMvc.perform(get("/admin/fonts"))
+                .andExpect(status().is4xxClientError())
+                .andExpect(status().is(403));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void adminFontsViaAnonymous() throws Exception {
+        // Anonymous users not allowed into admin area.
+        mockMvc.perform(get("/admin/fonts"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+    }
+
+    @Test
+    @WithMockUhAdmin
     public void adminLookup() throws Exception {
         mockMvc.perform(get("/admin/lookup"))
                 .andExpect(status().isOk())
