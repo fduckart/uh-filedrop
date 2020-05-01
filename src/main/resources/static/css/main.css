@@ -131,23 +131,23 @@ a:hover {
 .fa.fa-green { color: green; }
 
 /* -------------------------------------------------------- */
-@media (min-width: 576px) {  /* In effect at this width and above. */
+@media (min-width: 576px) {
   body {
-    background-color:  /* blue */ white;
+    background-color: white;
   }
 }
 
 /* -------------------------------------------------------- */
-@media (min-width: 768px) {  /* In effect at this width and above. */
+@media (min-width: 768px) {
   body {
-    background-color:  /* purple */ white;
+    background-color: white;
   }
 }
 
 /* -------------------------------------------------------- */
 @media (min-width: 992px) {
   body {
-    background-color: /* SaddleBrown */ white;
+    background-color: white;
   }
 }
 
@@ -155,7 +155,7 @@ a:hover {
 /* -------------------------------------------------------- */
 @media (min-width: 1200px) {
   body {
-    background-color: /*black*/ white;
+    background-color: white;
   }
 }
 /* -------------------------------------------------------- */
