@@ -6,7 +6,7 @@ import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-public class Dates {
+public final class Dates {
 
     // Constructor.
     private Dates() {
