@@ -320,7 +320,9 @@ public class PrepareController {
             fileDropService.startUploadProcess(user);
         }
 
-        model.addAttribute("user", ldapService.findByUhUuidOrUidOrMail(user.getUhuuid()));
+        model.addAttribute("uid", user.getUid());
+        model.addAttribute("mails", user.getAttributes().getMail());
+        model.addAttribute("affiliations", user.getAttributes().getAffiliation());
         model.addAttribute("whitelist", whitelistService.getAllWhitelistUids());
 
         if (logger.isDebugEnabled()) {

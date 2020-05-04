@@ -4,7 +4,11 @@
 <body ng-app="filedropApp">
 <script th:inline="javascript">
     /*<![CDATA[*/
-    var user = [[${user}]];
+    var user = {
+        uid: [[${uid}]],
+        mails: [[${mails}]],
+        affiliations: [[${affiliations}]]
+    };
     var fileDrop = {
         sender: [[${sender}]],
         recipients: [[${recipients}]],

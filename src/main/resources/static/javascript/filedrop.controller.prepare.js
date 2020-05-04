@@ -44,7 +44,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     };
 
     $scope.removeRecipient = function(recipient) {
-        if (recipient.name === $scope.currentUser().cn) {
+        if ($scope.currentUser().mails.includes(recipient.mail)) {
             $scope.sendToSelf = false;
         }
 
