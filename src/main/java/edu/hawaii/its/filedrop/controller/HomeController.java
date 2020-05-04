@@ -110,12 +110,6 @@ public class HomeController {
         return "help/faq";
     }
 
-    @GetMapping(value = "/help/fonts")
-    public String fonts() {
-        logger.debug("User at fonts.");
-        return "help/fonts";
-    }
-
     @PreAuthorize("hasRole('UH')")
     @GetMapping("/user")
     public String adminUser(Model model) {

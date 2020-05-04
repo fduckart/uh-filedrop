@@ -1,8 +1,11 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.springframework.ldap.query.LdapQueryBuilder.query;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +14,6 @@ import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
-import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
 @Service
 public class LdapService {
@@ -31,14 +32,6 @@ public class LdapService {
     @PostConstruct
     public void init() {
         Assert.notNull(ldapTemplate, "'ldapTemplate' should not be null.");
-    }
-
-    public String[] getSearchAttributes() {
-        return searchAttributes;
-    }
-
-    public void setSearchAttributes(String[] searchAttributes) {
-        this.searchAttributes = searchAttributes;
     }
 
     public LdapPerson findByMail(String mail) {

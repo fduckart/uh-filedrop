@@ -1,5 +1,14 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -12,16 +21,6 @@ import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -37,14 +36,6 @@ public class LdapServiceTest {
     @Test
     public void setUp() {
         assertNotNull(ldapService);
-    }
-
-    @Test
-    public void accessors() {
-        ldapService.setSearchAttributes(searchAttributes);
-        assertNotNull(ldapService.getSearchAttributes());
-        ldapService.setSearchAttributes(null);
-        assertNull(ldapService.getSearchAttributes());
     }
 
     @Test

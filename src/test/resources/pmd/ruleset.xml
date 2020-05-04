@@ -82,4 +82,10 @@
     <rule ref="category/java/performance.xml/BigIntegerInstantiation" />
     <rule ref="category/java/performance.xml/BooleanInstantiation" />
 
+    <rule ref="category/java/codestyle.xml/ClassNamingConventions">
+        <properties>
+            <property name="utilityClassPattern" value="[A-Z][a-zA-Z0-9]+\_{0,1}"/>
+        </properties>
+    </rule>
+    
 </ruleset>

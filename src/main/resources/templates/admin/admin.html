@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
 <body>
-<nav th:replace="menubar :: copy"></nav>
+    <nav th:replace="menubar :: copy"></nav>
 
 <!--  Content container -->
 <div class="container">
@@ -28,7 +28,7 @@
                     <a class="card-link" th:href="@{/admin/email}">Email</a><br/>
                 </div>
                 <div class="col-sm">
-                    <a class="text-left" th:href="@{/help/fonts}">Font Experiments</a><br/>
+                    <a class="text-left" th:href="@{/admin/fonts}">Font Experiments</a><br/>
                     <a class="text-left" th:href="@{/admin/icons}">Icon Examples</a><br/><br/>                
                 </div>
             </div>

@@ -474,7 +474,7 @@
                 <configuration>
                     <effort>Max</effort>
                     <threshold>Medium</threshold>
-                    <excludeFilterFile>src/test/resources/spotbugs/spotbugs-exclude.xml</excludeFilterFile>
+                    <excludeFilterFile>src/test/resources/spotbugs/findbugs-excludes.xml</excludeFilterFile>
                 </configuration>
             </plugin>
             <plugin>
@@ -483,7 +483,7 @@
                 <version>${pmd.plugin.version}</version>
                 <configuration>
                     <rulesets>
-                        <ruleset>src/test/resources/pmd/maven-pmd-plugin-default.xml</ruleset>
+                        <ruleset>src/test/resources/pmd/ruleset.xml</ruleset>
                     </rulesets>
                     <minimumTokens>200</minimumTokens>
                 </configuration>

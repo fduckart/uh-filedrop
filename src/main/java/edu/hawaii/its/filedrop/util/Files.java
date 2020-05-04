@@ -2,7 +2,7 @@ package edu.hawaii.its.filedrop.util;
 
 import org.apache.commons.io.FileUtils;
 
-public class Files {
+public final class Files {
 
     // Constructor
     private Files() {

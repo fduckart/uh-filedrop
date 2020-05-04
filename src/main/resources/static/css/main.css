@@ -3,107 +3,112 @@
 
 /* -------------------------------------------------------- */
 html {
-    position: relative;
-    min-height: 100%;
-    overflow-y: scroll;
+  position: relative;
+  min-height: 100%;
+  overflow-y: scroll;
 }
 
 body {
-    background-color: /*green*/ white;
+  background-color: white;
 }
 
 h4 .uh-nav-app-name {
-    color: #BD9319;
+  color: #BD9319;
 }
 
 .navbar-brand.uh-nav-app-name:hover {
-    color: #b08a17;
+  color: #b08a17;
 }
 
 a {
-    color: #0275d8;
-    text-decoration: none;
+  color: #0275d8;
+  text-decoration: none;
 }
 
 a:hover {
-    color: #0275d8;
-    text-decoration: underline;
+  color: #0275d8;
+  text-decoration: underline;
 }
-
 
 .navbar-brand.uh-nav-app-name {
-    color: #BD9319;
+  color: #BD9319;
+  font-family: alegreyasans-regular, opensans-regular, serif;
+  font-weight: normal;
+  font-size: 26px;
+}
 
-    font-family: alegreyasans-regular, opensans-regular, serif;
-    font-weight: normal;
-    font-size: 26px;
-}
 .footer {
-    position: absolute;
-    padding-top: 5px;
-    bottom: 0;
-    width: 100%;
-    height: 50px;
-    font-size: 100%;
-    text-align: center;
+  position: absolute;
+  padding-top: 5px;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  font-size: 100%;
+  text-align: center;
 }
+
 .uh-branding-one {
-    font-family: cinzel-regular, serif;
-    font-size: 1.8em;
-    font-style: normal;
-    letter-spacing: 2.2px;
-    color: #777;
+  font-family: cinzel-regular, serif;
+  font-size: 1.8em;
+  font-style: normal;
+  letter-spacing: 2.2px;
+  color: #777;
 }
+
 .uh-branding-two {
-    font-family: cormorant-upright-regular, cursive;
-    font-size: 1.0em;
-    font-style: normal;
-    color: #777;
+  font-family: cormorant-upright-regular, cursive;
+  font-size: 1em;
+  font-style: normal;
+  color: #777;
 }
-    
+  
 .filedrop-label {
-    font-weight: bold;
+  font-weight: bold;
+}
+
+#filedrop-home-container {
+  margin-top: -1.4rem;
 }
 
 .recipient-badge {
-    cursor: pointer;
-    color: #7f7f7f;
+  cursor: pointer;
+  color: #7f7f7f;
 }
 
 .recipient-badge:hover {
-    color: #111111;
+  color: #111111;
 }
 
 .btn.btn-primary[disabled] {
-    background-color: #63aeff;
-    border-color: #63aeff;
+  background-color: #63aeff;
+  border-color: #63aeff;
 }
 
 .material-icons {
-    font-family: 'Material Icons';
-    font-weight: normal;
-    font-style: normal;
-    font-size: inherit;
-    vertical-align: middle;
-    display: inline-block;
-    width: 1em;
-    height: 1em;
-    line-height: 1;
-    text-transform: none;
-    letter-spacing: normal;
-    word-wrap: normal;
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: inherit;
+  vertical-align: middle;
+  display: inline-block;
+  width: 1em;
+  height: 1em;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
 
-    /* Support for all WebKit browsers. */
-    -webkit-font-smoothing: antialiased;
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
 
-    /* Support for Safari and Chrome. */
-    text-rendering: optimizeLegibility;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
 
-    /* Support for Firefox. */
-    -moz-osx-font-smoothing: grayscale;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
 
-    /* Support for IE. */
-    font-feature-settings: 'liga';
+  /* Support for IE. */
+  font-feature-settings: 'liga';
 }
 
 /* Rules for icon sizes: */
@@ -131,31 +136,31 @@ a:hover {
 }
 
 /* -------------------------------------------------------- */
-@media (min-width: 576px) {  /* In effect at this width and above. */
-    body {
-        background-color:  /* blue */ white;
-    }
+@media (min-width: 576px) {
+  body {
+    background-color: white;
+  }
 }
 
 /* -------------------------------------------------------- */
-@media (min-width: 768px) {  /* In effect at this width and above. */
-    body {
-        background-color:  /* purple */ white;
-    }
+@media (min-width: 768px) {
+  body {
+    background-color: white;
+  }
 }
 
 /* -------------------------------------------------------- */
 @media (min-width: 992px) {
-    body {
-        background-color: /* SaddleBrown */ white;
-    }
+  body {
+    background-color: white;
+  }
 }
 
 
 /* -------------------------------------------------------- */
 @media (min-width: 1200px) {
-    body {
-        background-color: /*black*/ white;
-    }
+  body {
+    background-color: white;
+  }
 }
 /* -------------------------------------------------------- */
