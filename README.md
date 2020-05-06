@@ -36,7 +36,6 @@ To run a single method in a test class:
 
     $ ./mvnw clean test -Dtest=StringsTest#trunctate
 
-
 ##### Build to deploy to an Environment
 To build a deployable war file for deployment:
 
@@ -62,7 +61,7 @@ Be sure to set up a M2_REPO environment variable.
 ##### Source Repository
 The files for the project are kept here:
 
-https://github.com/fduckart/uh-filedrop
+<https://github.com/fduckart/uh-filedrop>
 
 ##### Important Note
 The UH Number is restricted by University of Hawaii policy, so be sure not to expose it on any public page.
