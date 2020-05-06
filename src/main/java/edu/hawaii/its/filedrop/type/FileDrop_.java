@@ -7,14 +7,15 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(FileDrop.class)
 public class FileDrop_ {
 
-    private FileDrop_() {
-        //Empty constructor
-    }
-
     public static volatile SingularAttribute<FileDrop, Integer> id;
     public static volatile SingularAttribute<FileDrop, String> downloadKey;
     public static volatile SingularAttribute<FileDrop, String> uploadKey;
     public static volatile SingularAttribute<FileDrop, String> encryptionKey;
     public static volatile SetAttribute<FileDrop, FileSet> fileSets;
+
+    // Private contructor to prevent instantiation.
+    private FileDrop_() {
+        // Empty.
+    }
 
 }

@@ -8,4 +8,14 @@
         <Bug category="BAD_PRACTICE"/>
     </Match>
 
+    <Match>
+        <Class name="edu.hawaii.its.filedrop.type.FileDrop_"/>
+        <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+
+    <Match>
+        <Class name="edu.hawaii.its.filedrop.type.FileSet_"/>
+        <Bug pattern="UUF_UNUSED_PUBLIC_OR_PROTECTED_FIELD"/>
+    </Match>
+    
 </FindBugsFilter>

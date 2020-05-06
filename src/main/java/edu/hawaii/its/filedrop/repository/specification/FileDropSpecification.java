@@ -12,8 +12,9 @@ import edu.hawaii.its.filedrop.type.FileSet;
 
 public class FileDropSpecification {
 
+    // Private contructor to prevent instantiation.
     private FileDropSpecification() {
-        // Empty constructor
+        // Empty.
     }
 
     public static Specification<FileDrop> withId(Integer id) {

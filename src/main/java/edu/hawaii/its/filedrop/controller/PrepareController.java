@@ -212,7 +212,7 @@ public class PrepareController {
     @GetMapping(value = "/complete/{uploadKey}")
     public String completeFileDrop(@PathVariable String uploadKey) {
         logger.debug("completeFileDrop; start.");
-        logger.debug("completeFileDrop; uploadKey: " + uploadKey);
+        logger.info("completeFileDrop; uploadKey: " + uploadKey);
 
         Task currentTask = workflowService.getCurrentTask(currentUser());
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
@@ -247,10 +247,7 @@ public class PrepareController {
 
         mail.setFrom(sender);
 
-        long size = 0;
-        for (FileSet fileSet : fileDrop.getFileSet()) {
-            size += fileSet.getSize();
-        }
+        long size = totalFilesize(fileDrop);
 
         for (Recipient recipient : fileDropService.findRecipients(fileDrop)) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient.getName());
@@ -272,6 +269,14 @@ public class PrepareController {
         logger.debug("completeFileDrop; done.");
 
         return "redirect:/dl/" + fileDrop.getDownloadKey();
+    }
+
+    private long totalFilesize(FileDrop fileDrop) {
+        long size = 0;
+        for (FileSet fileSet : fileDrop.getFileSet()) {
+            size += fileSet.getSize();
+        }
+        return size;
     }
 
     private User currentUser() {
