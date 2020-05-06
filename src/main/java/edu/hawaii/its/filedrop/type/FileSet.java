@@ -1,6 +1,9 @@
 package edu.hawaii.its.filedrop.type;
 
 import java.io.Serializable;
+
+import javax.persistence.Access;
+import javax.persistence.AccessType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -35,14 +38,15 @@ public class FileSet implements Serializable {
     private String type;
 
     @Column(name = "comment", nullable = false)
-    private String comment;
+    @Access(AccessType.PROPERTY)
+    private String comment = "";
 
     @Column(name = "size", nullable = false)
     private Long size;
 
-    //Constructor
+    // Constructor.
     public FileSet() {
-        //Empty
+        // Empty.
     }
 
     public Integer getId() {
@@ -82,7 +86,7 @@ public class FileSet implements Serializable {
     }
 
     public void setComment(String comment) {
-        this.comment = comment;
+        this.comment = comment != null ? comment : "";
     }
 
     public Long getSize() {
@@ -96,7 +100,7 @@ public class FileSet implements Serializable {
     @Override
     public String toString() {
         return "FileSet [id=" + id
-                + ", fileDropId=" + fileDrop.getId()
+                + ", fileDrop=" + (fileDrop != null ? fileDrop.getId() : null)
                 + ", fileName=" + fileName
                 + ", type=" + type
                 + ", comment=" + comment
