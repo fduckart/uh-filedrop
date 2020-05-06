@@ -99,7 +99,7 @@ public class SpaceCheckService {
         return bytesFree;
     }
 
-    public void setBytesFree(long bytesFree) {
+    public synchronized void setBytesFree(long bytesFree) {
         this.bytesFree = bytesFree;
     }
 
@@ -107,7 +107,7 @@ public class SpaceCheckService {
         return bytesUsed;
     }
 
-    public void setBytesUsed(long bytesUsed) {
+    public synchronized void setBytesUsed(long bytesUsed) {
         this.bytesUsed = bytesUsed;
     }
 }
