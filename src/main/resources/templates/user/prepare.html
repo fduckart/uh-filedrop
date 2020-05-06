@@ -31,7 +31,7 @@
                         <input name="email" class="form-control" type="text" disabled ng-value="sender.model"
                             ng-if="!userHasMultipleEmails()">
                         <select ng-if="userHasMultipleEmails()" class="custom-select" name="email" id="email"
-                            ng-model="sender.model" ng-cloak>
+                            ng-model="sender.model" ng-cloak ng-disabled="recipient.length > 0">
                             <option ng-repeat="mail in sender.mails" value="{{mail}}">{{mail}}</option>
                         </select>
                     </div>
@@ -49,7 +49,7 @@
                                 <button type="submit" ng-disabled="recipient.length === 0"
                                     class="btn btn-primary mx-2">Add Recipient
                                 </button>
-                                <button type="button" ng-click="sendSelf()" ng-disabled="disableSendSelf()"
+                                <button type="button" ng-click="sendSelf()" ng-disabled="disableSendSelf() || recipient.length > 0"
                                     class="btn btn-success">Send To Self
                                 </button>
                             </div>
@@ -77,7 +77,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="validation"
                                         id="validationRequired"
-                                        ng-value="true" ng-model="authentication">
+                                        ng-value="true" ng-model="authentication" ng-disabled="recipient.length > 0">
                                     <label class="form-check-label" for="validationRequired">
                                         Yes, require recipient to log in using the UH Login (recommended).
                                     </label>
@@ -85,7 +85,7 @@
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="validation"
                                         id="validationNotRequired"
-                                        ng-value="false" ng-model="authentication">
+                                        ng-value="false" ng-model="authentication" ng-disabled="recipient.length > 0">
                                     <label class="form-check-label" for="validationNotRequired">
                                         No login required (unsecure download available to anyone).
                                     </label>
@@ -97,7 +97,7 @@
                                 <label for="expiration" class="filedrop-label">Expiration Timer</label>
                                 <div class="col-sm-4 px-0">
                                     <select class="custom-select" name="expiration" id="expiration"
-                                        ng-model="expiration">
+                                        ng-model="expiration" ng-disabled="recipient.length > 0">
                                         <option value="30">30 minutes</option>
                                         <option value="60">1 hour</option>
                                         <option value="1440">1 day</option>
