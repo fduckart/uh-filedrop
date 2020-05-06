@@ -14,16 +14,23 @@
     <div class="card border-success">
         <div class="card-body">
             <div class="row">
-                <div class="col-sm-12">
-                    <div class="mb-1">
-                        <span class="filedrop-label">Recipients </span>
-                        <ul class="list-inline">
-                            <li th:each="recipient : ${recipients}" class="mx-1 my-1 list-inline-item">
+                <div class="col-sm-12 mb-1">
+                    <div class="row" th:if="!${authentication}">
+                        <div class="col-sm-12">
+                            <span style="color: red;"><strong>You are sending an unauthenticated FileDrop!</strong></span>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span class="filedrop-label">Recipients </span>
+                            <ul class="list-inline">
+                                <li th:each="recipient : ${recipients}" class="mx-1 my-1 list-inline-item">
                                 <span class="badge badge-light border-secondary border"
-                                    style="font-size: .85em; color: #4d4d4d" th:text="${recipient}">
+                                      style="font-size: .85em; color: #4d4d4d" th:text="${recipient}">
                                 </span>
-                            </li>
-                        </ul>
+                                </li>
+                            </ul>
+                        </div>
                     </div>
                 </div>
             </div>

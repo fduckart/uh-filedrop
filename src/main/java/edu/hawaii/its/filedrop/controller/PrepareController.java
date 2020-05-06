@@ -112,6 +112,7 @@ public class PrepareController {
         model.addAttribute("recipients", recipientsList);
         model.addAttribute("maxUploadSize", maxUploadSize);
         model.addAttribute("uploadKey", fileDrop.getUploadKey());
+        model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
 
         return "user/files";
     }
