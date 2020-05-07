@@ -134,33 +134,3 @@ a:hover {
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
     display: none !important;
 }
-
-/* -------------------------------------------------------- */
-@media (min-width: 576px) {
-  body {
-    background-color: white;
-  }
-}
-
-/* -------------------------------------------------------- */
-@media (min-width: 768px) {
-  body {
-    background-color: white;
-  }
-}
-
-/* -------------------------------------------------------- */
-@media (min-width: 992px) {
-  body {
-    background-color: white;
-  }
-}
-
-
-/* -------------------------------------------------------- */
-@media (min-width: 1200px) {
-  body {
-    background-color: white;
-  }
-}
-/* -------------------------------------------------------- */
