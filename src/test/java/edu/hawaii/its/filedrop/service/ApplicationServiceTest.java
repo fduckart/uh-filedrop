@@ -1,5 +1,14 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
+
 import java.util.List;
 
 import org.junit.Test;
@@ -10,14 +19,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.type.Office;
-
-import static org.hamcrest.CoreMatchers.containsString;
-import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
+import edu.hawaii.its.filedrop.type.Setting;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -83,5 +85,50 @@ public class ApplicationServiceTest {
         Office c0 = applicationService.findOffice(id);
         assertSame(oZ, office);
         assertSame(oZ, c0);
+    }
+
+    @Test
+    public void findSettings() {
+        List<Setting> settings = applicationService.findSettings();
+        assertThat(settings.size(), greaterThanOrEqualTo(1));
+        assertThat(settings.get(0).getId(), equalTo(1));
+        assertThat(settings.get(0).getKey(), equalTo("disableLanding"));
+        assertThat(settings.get(0).getValue(), equalTo("false"));
+
+        List<Setting> cache = applicationService.findSettings();
+
+        assertSame(settings, cache);
+
+        applicationService.evictSettingCache();
+
+        assertNotSame(cache, applicationService.findSettings());
+    }
+
+    @Test
+    public void findSettingById() {
+        Setting setting = applicationService.findSetting(1);
+        Setting setting1 = applicationService.findSetting(1);
+
+        assertThat(setting.getId(), equalTo(1));
+        assertThat(setting.getKey(), equalTo("disableLanding"));
+        assertThat(setting.getValue(), equalTo("false"));
+        assertThat(setting1.getId(), equalTo(1));
+        assertThat(setting1.getKey(), equalTo("disableLanding"));
+        assertThat(setting1.getValue(), equalTo("false"));
+
+        assertSame(setting, setting1);
+    }
+
+    @Test
+    public void saveSetting() {
+        Setting setting = applicationService.findSetting(1);
+        setting.setValue("true");
+        assertThat(setting.getValue(), equalTo("true"));
+        Setting setting1 = applicationService.saveSetting(setting);
+        assertThat(setting1.getValue(), equalTo("true"));
+        setting.setValue("false");
+        setting = applicationService.saveSetting(setting);
+        applicationService.evictSettingCache();
+        assertThat(setting.getValue(), equalTo("false"));
     }
 }

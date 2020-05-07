@@ -13,6 +13,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
@@ -45,7 +46,9 @@ import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetup;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.WhitelistService;
+import edu.hawaii.its.filedrop.type.Setting;
 import edu.hawaii.its.filedrop.type.Whitelist;
 
 @RunWith(SpringRunner.class)
@@ -64,6 +67,9 @@ public class AdminControllerTest {
 
     @Autowired
     private WhitelistService whitelistService;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @Rule
     public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
@@ -497,5 +503,43 @@ public class AdminControllerTest {
         mockMvc.perform(get("/admin/permissions"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/permissions"));
+    }
+
+    @Test
+    @WithAnonymousUser
+    public void settingsAnonymousTest() throws Exception {
+        mockMvc.perform(get("/admin/settings"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+
+        mockMvc.perform(post("/admin/settings"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+    }
+
+    @Test
+    @WithMockUhAdmin
+    public void settingsTest() throws Exception {
+        mockMvc.perform(get("/admin/settings"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("admin/settings"))
+            .andExpect(model().attributeExists("settings"));
+
+        mockMvc.perform(post("/admin/settings")
+            .param("id", "1")
+            .param("value", "false"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/admin/settings"))
+            .andExpect(flash().attributeExists("alert"));
+
+        Setting setting = applicationService.findSetting(1);
+        assertThat(setting.getValue(), equalTo("false"));
+
+        mockMvc.perform(post("/admin/settings")
+            .param("id", "1")
+            .param("value", "true"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/admin/settings"))
+            .andExpect(flash().attributeExists("alert"));
     }
 }
