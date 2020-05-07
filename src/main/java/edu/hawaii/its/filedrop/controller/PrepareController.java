@@ -120,7 +120,7 @@ public class PrepareController {
     @PostMapping(value = "/helpdesk")
     public String addHelpdesk(@RequestParam String sender,
             @RequestParam Integer expiration,
-            @RequestParam Integer ticketNumber,
+            @RequestParam(required = false) Integer ticketNumber,
             RedirectAttributes redirectAttributes) {
 
         FileDrop fileDrop = new FileDrop();
@@ -285,7 +285,7 @@ public class PrepareController {
 
     @GetMapping(value = "/helpdesk/successful/{uploadKey}")
     public String helpdeskSuccessful(RedirectAttributes redirectAttributes, @PathVariable String uploadKey,
-            @RequestParam String expiration, @RequestParam String ticketNumber) {
+            @RequestParam String expiration, @RequestParam(required = false) String ticketNumber) {
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
         LocalDateTime now = LocalDateTime.now();
         fileDrop.setCreated(now);

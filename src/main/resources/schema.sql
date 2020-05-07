@@ -270,3 +270,10 @@ CREATE TABLE system_role (
   office_id int(11) NOT NULL,
   PRIMARY KEY(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE setting (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  key varchar(255) NOT NULL UNIQUE,
+  value varchar(255) NOT NULL,
+  PRIMARY KEY(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
