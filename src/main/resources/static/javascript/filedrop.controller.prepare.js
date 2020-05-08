@@ -35,6 +35,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
             } else if (recipient.indexOf("@") > -1) {
                 if ($scope.authentication) {
                     $scope.showPopup();
+                    return;
                 } else {
                     $scope.recipients.push({ name: recipient });
                 }

@@ -27,6 +27,7 @@ import org.thymeleaf.context.Context;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.repository.DownloadRepository;
+import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
@@ -38,6 +39,7 @@ import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.Message;
+import edu.hawaii.its.filedrop.type.Setting;
 import edu.hawaii.its.filedrop.type.Whitelist;
 import edu.hawaii.its.filedrop.util.Dates;
 
@@ -67,6 +69,9 @@ public class AdminController {
 
     @Autowired
     private DownloadRepository downloadRepository;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @GetMapping("/admin")
     public String admin() {
@@ -237,7 +242,28 @@ public class AdminController {
 
     @GetMapping("/admin/permissions")
     public String permissions() {
+        logger.debug("User at admin/permissions");
         return "admin/permissions";
+    }
+
+    @GetMapping("/admin/settings")
+    public String settings(Model model) {
+        logger.debug("User at admin/settings");
+        List<Setting> settings = applicationService.findSettings();
+        model.addAttribute("settings", settings);
+        return "admin/settings";
+    }
+
+    @PostMapping("/admin/settings")
+    public String changeSetting(@RequestParam("id") Integer id,
+                                @RequestParam("value") String value,
+                                RedirectAttributes redirectAttributes) {
+        Setting setting = applicationService.findSetting(id);
+        setting.setValue(value);
+        setting = applicationService.saveSetting(setting);
+        logger.debug("changeSetting; User changed setting: " + setting);
+        redirectAttributes.addFlashAttribute("alert", "Saved setting.");
+        return "redirect:/admin/settings";
     }
 
     private User currentUser() {

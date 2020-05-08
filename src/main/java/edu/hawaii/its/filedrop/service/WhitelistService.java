@@ -52,9 +52,10 @@ public class WhitelistService {
     public int addCheck(Whitelist whitelist, int amount) {
         whitelist.setCheck(whitelist.getCheck() + amount);
         if (whitelist.getCheck() >= threshold) {
+            logger.debug("addCheck; Expired: " + whitelist);
             whitelist.setExpired(true);
         }
-        addWhitelist(whitelist);
+        whitelist = addWhitelist(whitelist);
         return whitelist.getCheck();
     }
 
