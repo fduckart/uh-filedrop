@@ -1,5 +1,7 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -11,6 +13,7 @@ import java.time.LocalDateTime;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.quartz.JobDetail;
+import org.quartz.Scheduler;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,7 +21,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.job.WhitelistCheckJob;
 import edu.hawaii.its.filedrop.repository.WhitelistRepository;
 import edu.hawaii.its.filedrop.type.Whitelist;
 
@@ -37,6 +39,9 @@ public class WhitelistServiceTest {
 
     @Value("${app.job.whitelist.threshold}")
     private Integer threshold;
+
+    @Autowired
+    private Scheduler scheduler;
 
     @Test
     public void whitelistTest() {
@@ -129,7 +134,8 @@ public class WhitelistServiceTest {
     }
 
     @Test
-    public void schedulerCheckTest() throws SchedulerException, InterruptedException {
+    public void schedulerCheckTest() {
+        long count = whitelistService.recordCount();
         Whitelist whitelist = new Whitelist();
         whitelist.setEntry("Gavin Dance");
         whitelist.setRegistrant("Jon Mess");
@@ -138,18 +144,16 @@ public class WhitelistServiceTest {
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelist = whitelistService.addWhitelist(whitelist);
-        WhitelistCheckJob whitelistCheckJob = new WhitelistCheckJob();
-        whitelistCheckJob.setInterval(5);
-        JobDetail jobDetail = schedulerService.addJob(whitelistCheckJob, "SERVICE_TEST");
-        Thread.sleep(500);
+        whitelistService.checkWhitelists();
         whitelist = whitelistService.findWhiteList(whitelist.getId());
-        assertEquals(Integer.valueOf(1), whitelist.getCheck());
+        assertThat(whitelist.getCheck(), greaterThanOrEqualTo(1));
         assertTrue(whitelistService.isWhitelisted(whitelist.getEntry()));
-        schedulerService.deleteJob(jobDetail.getKey());
+        whitelistService.deleteWhitelist(whitelist);
+        assertThat(whitelistService.recordCount(), greaterThanOrEqualTo(count - 1L));
     }
 
     @Test
-    public void schedulerTest() throws SchedulerException, InterruptedException {
+    public void schedulerTest() throws SchedulerException {
         Whitelist whitelist = new Whitelist();
         whitelist.setEntry("Tame Impala");
         whitelist.setRegistrant("Kevin Parker");
@@ -158,10 +162,9 @@ public class WhitelistServiceTest {
         whitelist.setCreated(localDate);
         whitelist.setExpired(false);
         whitelist = whitelistService.addWhitelist(whitelist);
-        WhitelistCheckJob whitelistCheckJob = new WhitelistCheckJob();
-        whitelistCheckJob.setInterval(5);
-        JobDetail jobDetail = schedulerService.addJob(whitelistCheckJob, "SERVICE_TEST");
-        Thread.sleep(500);
+        JobDetail jobDetail = schedulerService.findJob("WhitelistCheckJob", "DEFAULT");
+        scheduler.triggerJob(jobDetail.getKey());
+        whitelistService.checkWhitelists();
         whitelist = whitelistService.findWhiteList(whitelist.getId());
         assertTrue(whitelistService.isWhitelisted(whitelist.getEntry()));
         assertTrue(whitelist.isExpired());
@@ -172,5 +175,10 @@ public class WhitelistServiceTest {
     public void notWhitelistedTest() {
         assertNull(whitelistRepository.findByEntry("testing"));
         assertFalse(whitelistService.isWhitelisted("testing"));
+    }
+
+    @Test
+    public void getWhitelistUidsTest() {
+        assertThat(whitelistService.getAllWhitelistUids().size(), greaterThanOrEqualTo(2));
     }
 }
