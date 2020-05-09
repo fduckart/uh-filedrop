@@ -5,7 +5,7 @@
     <nav th:replace="menubar :: copy"></nav>
 
     <!--  Content container -->
-    <div class="container-lg " id="filedrop-home-container">
+    <div class="container-lg mt-n4">
         <div class="row justify-content-md-center card-deck">
             <div class="card border-0">
                 <div class="card-body text-center">
@@ -17,7 +17,7 @@
 
         <div class="row row-cols-1 row-cols-sm-2 justify-content-md-center card-deck px-2 px-sm-0">
             <div class="card border-success ">
-                <div class="card-header bg-transparent border-0 text-center">                
+                <div class="card-header bg-transparent border-0 text-center">
                     <span class="lead">UH Users</span>
                 </div>
                 <div class="card-body text-left">
@@ -54,10 +54,10 @@
                         <p class="lead" th:text="#{home.contact}"></p>
                         <p th:text="#{home.contact.message}"></p>
                     </p>
-                </div>              
+                </div>
                 <div class="card-footer border-0 mt-0 mb-0 pt-0 bg-transparent">
                     <a th:href="@{/help/contact}" class="btn btn-outline-success pull-left">View</a>
-                </div>            
+                </div>
             </div>
             <div class="card border">
                 <div class="card-body text-left border-1 mb-0 pb-0">
@@ -65,10 +65,10 @@
                         <p class="lead" th:text="#{home.faq}"></p>
                         <p th:text="#{home.faq.message}"></p>
                     </p>
-                </div>  
+                </div>
                 <div class="card-footer border-0 mt-0 mb-0 pt-0 bg-transparent">
-                    <a th:href="@{/help/faq}" class="btn btn-outline-success pull-left">View</a>                
-                </div>            
+                    <a th:href="@{/help/faq}" class="btn btn-outline-success pull-left">View</a>
+                </div>
             </div>
         </div>
 

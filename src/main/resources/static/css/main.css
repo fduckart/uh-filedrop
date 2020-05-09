@@ -1,5 +1,3 @@
-@import url('font.css');
-
 /* -------------------------------------------------------- */
 html {
   position: relative;
@@ -9,14 +7,6 @@ html {
 
 body {
   background-color: white;
-}
-
-h4 .uh-nav-app-name {
-  color: #BD9319;
-}
-
-.navbar-brand.uh-nav-app-name:hover {
-  color: #b08a17;
 }
 
 a {
@@ -29,21 +19,25 @@ a:hover {
   text-decoration: underline;
 }
 
-.navbar-brand.uh-nav-app-name {
-  color: #BD9319;
+.navbar-brand.uh-nav-app-name { /* csslint allow: adjoining-classes */
+  color: #bd9319;
   font-family: alegreyasans-regular, opensans-regular, serif;
-  font-weight: normal;
   font-size: 26px;
+  font-weight: normal;
+}
+
+.navbar-brand.uh-nav-app-name:hover { /* csslint allow: adjoining-classes */
+  color: #b08a17;
 }
 
 .footer {
-  position: absolute;
-  padding-top: 5px;
   bottom: 0;
-  width: 100%;
-  height: 50px;
   font-size: 100%;
+  height: 50px;
+  padding-top: 0.3125rem;
+  position: absolute;
   text-align: center;
+  width: 100%;
 }
 
 .uh-branding-one {
@@ -60,13 +54,9 @@ a:hover {
   font-style: normal;
   color: #777;
 }
-  
+
 .filedrop-label {
   font-weight: bold;
-}
-
-#filedrop-home-container {
-  margin-top: -1.4rem;
 }
 
 .recipient-badge {
@@ -110,6 +100,7 @@ a:hover {
   font-feature-settings: 'liga';
 }
 
+/* csslint ignore:start */
 /* Rules for icon sizes: */
 .material-icons.md-18 { font-size: 18px; }
 .material-icons.md-24 { font-size: 24px; } /* Default */
@@ -124,6 +115,7 @@ a:hover {
 .material-icons.mi-green { color: green; }
 .material-icons.mi-lightblue { color: lightblue; }
 .material-icons.mi-yellow { color: yellow; }
+/* csslint ignore:end */
 
 .fa.fa-orange { color: orange; }
 .fa.fa-red { color: red; }
