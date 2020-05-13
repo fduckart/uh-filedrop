@@ -30,7 +30,7 @@
     <bootstrap-version>4.4.1</bootstrap-version>
     <jquery-version>3.4.1</jquery-version>
     <popper.js-version>1.16.0</popper.js-version>
-    <angularjs-version>1.7.8</angularjs-version>
+    <angularjs-version>1.7.9</angularjs-version>
     <angular-mocks-version>1.5.8</angular-mocks-version>
 
     <spotbugs-maven-plugin.version>4.0.0</spotbugs-maven-plugin.version>
@@ -246,11 +246,6 @@
       <groupId>org.webjars.bower</groupId>
       <artifactId>angular-mocks</artifactId>
       <version>${angular-mocks-version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.webjars.npm</groupId>
-      <artifactId>vue</artifactId>
-      <version>2.5.13</version>
     </dependency>
     <dependency>
     <groupId>org.webjars.bower</groupId>
