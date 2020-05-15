@@ -2,6 +2,7 @@ UH FileDrop web application.
 
 [![Build Status](https://travis-ci.org/fduckart/uh-filedrop.png?branch=master)](https://travis-ci.org/fduckart/uh-filedrop)
 [![Coverage Status](https://coveralls.io/repos/github/fduckart/uh-filedrop/badge.svg)](https://coveralls.io/github/fduckart/uh-filedrop)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b032f7b5407848edbba7ca83c37483d2)](https://www.codacy.com/manual/fduckart/uh-filedrop?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=fduckart/uh-filedrop&amp;utm_campaign=Badge_Grade)
 ##### Java
 You'll need a Java JDK to build and run the project (version 1.8).
 
