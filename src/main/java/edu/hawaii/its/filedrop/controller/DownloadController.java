@@ -108,7 +108,7 @@ public class DownloadController {
         }
 
         if (!fileDropService.isAuthorized(fileDrop, currentUser().getUsername())) {
-            model.addAttribute("error", "You are not a recipient for this drop.");
+            model.addAttribute("error", "Download not found");
             return "user/download-error";
         }
 
