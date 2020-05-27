@@ -2,6 +2,7 @@ package edu.hawaii.its.filedrop.controller;
 
 import static java.util.stream.Collectors.toList;
 
+import javax.xml.ws.Response;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -169,26 +171,24 @@ public class AdminController {
     }
 
     @PostMapping("/api/admin/whitelist")
-    public String addWhitelist(@RequestParam("entry") String entry, @RequestParam("registrant") String registrant) {
-        Whitelist whitelist = new Whitelist();
-        whitelist.setEntry(entry);
-        whitelist.setEntryName(ldapService.findByUid(entry).getCn());
-        whitelist.setRegistrant(registrant);
-        whitelist.setRegistrantName(ldapService.findByUid(registrant).getCn());
+    public ResponseEntity<Whitelist> addWhitelist(@RequestBody Whitelist whitelistBody) {
+        Whitelist whitelist = whitelistBody;
+        whitelist.setEntryName(ldapService.findByUid(whitelist.getEntry()).getCn());
+        whitelist.setRegistrantName(ldapService.findByUid(whitelist.getRegistrant()).getCn());
         whitelist.setCheck(0);
         whitelist.setExpired(false);
         whitelist.setCreated(LocalDateTime.now());
         whitelist = whitelistService.addWhitelist(whitelist);
         logger.debug("User added Whitelist: " + whitelist);
-        return "redirect:/admin/whitelist";
+        return ResponseEntity.ok().body(whitelist);
     }
 
     @DeleteMapping("/api/admin/whitelist/{whitelistId}")
-    @ResponseStatus(value = HttpStatus.OK)
-    public void deleteWhitelist(@PathVariable Integer whitelistId) {
+    public ResponseEntity<Whitelist> deleteWhitelist(@PathVariable Integer whitelistId) {
         Whitelist whitelist = whitelistService.findWhiteList(whitelistId);
         whitelistService.deleteWhitelist(whitelist);
         logger.debug("User deleted Whitelist: " + whitelist);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 
     @GetMapping("/api/admin/filedrops")
