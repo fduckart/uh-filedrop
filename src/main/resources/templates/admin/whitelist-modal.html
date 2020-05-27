@@ -37,22 +37,19 @@
         </button>
     </div>
 
-    <form th:action="@{/api/admin/whitelist}" id="whitelistForm" th:method="POST" ng-submit="ok()">
+    <form id="whitelistForm" ng-submit="ok()">
         <div class="modal-body">
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Entry</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Entry"
-                           aria-describedby="whitelist-entry" name="entry" required>
-                </div>
-                <div class="input-group mb-3">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text">Registrant</span>
-                    </div>
-                    <input type="text" class="form-control" aria-label="Registrant"
-                           aria-describedby="whitelist-registrant" name="registrant" required>
-                </div>
+            <div class="form-group">
+                <label for="entry">Entry</label>
+                <input type="text" class="form-control" aria-label="Entry"
+                       aria-describedby="whitelist-entry" id="entry" ng-model="entry" name="entry" required>
+            </div>
+            <div class="form-group">
+                <label for="registrant">Registrant</label>
+                <input type="text" class="form-control" aria-label="Registrant"
+                       aria-describedby="whitelist-registrant" id="registrant" ng-model="registrant"
+                       name="registrant" required>
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-success" type="submit">Save</button>
