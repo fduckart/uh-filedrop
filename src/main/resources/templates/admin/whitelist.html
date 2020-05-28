@@ -6,6 +6,11 @@
 
 <!--  Content container -->
 <div class="container" ng-controller="WhitelistJsController" ng-init="init()" ng-cloak>
+    <div class="row mb-2">
+        <div class="col-sm-12">
+            <button type="button" class="btn btn-primary" ng-click="openAddModal()">&plus; Whitelist</button>
+        </div>
+    </div>
     <div class="row">
         <div class="col-sm-12">
             <div class="table-responsive" ng-if="whitelist.length > 0">
@@ -21,9 +26,9 @@
                         <td>{{ whitelisted.entry }}</td>
                         <td>{{ whitelisted.registrant }}</td>
                         <td>{{ whitelisted.created | date:'MM/dd/yyyy' }}</td>
-                        <td>{{ whitelisted.expired | date:'MM/dd/yyyy' }}</td>
+                        <td>{{ whitelisted.expired }}</td>
                         <td>
-                            <button class="btn btn-sm btn-danger" ng-click="deleteWhitelist(whitelisted)">
+                            <button class="btn btn-sm btn-danger" ng-click="openDeleteModal(whitelisted)">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </td>
@@ -35,11 +40,6 @@
                     <span class="sr-only">Loading Whitelist...</span>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="row" ng-if="whitelist.length > 0">
-        <div class="col-sm-12">
-            <button type="button" class="btn btn-primary" ng-click="openModal()">&plus; Whitelist</button>
         </div>
     </div>
     <div th:replace="admin/whitelist-modal :: copy"></div>

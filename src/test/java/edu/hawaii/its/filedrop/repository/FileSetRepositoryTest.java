@@ -130,6 +130,10 @@ public class FileSetRepositoryTest {
         assertThat(fd0, not(equalTo(null)));
 
         FileSet fs0 = new FileSet();
+        fs0.setFileName("test");
+        fs0.setComment("test comment");
+        fs0.setType("text/plain");
+        fs0.setSize(Long.MIN_VALUE);
         fs0.setFileDrop(fd0);
 
         fs0 = fileSetRepository.save(fs0);

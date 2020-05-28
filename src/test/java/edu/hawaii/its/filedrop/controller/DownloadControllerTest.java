@@ -142,7 +142,7 @@ public class DownloadControllerTest {
         mockMvc.perform(get("/sl/downloadKey3"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/download-error"))
-                .andExpect(model().attribute("error", "You are not a recipient for this drop."));
+                .andExpect(model().attribute("error", "Download not found"));
 
         mockMvc.perform(get("/dl/downloadKey3/999"))
                 .andExpect(status().is4xxClientError());
@@ -166,7 +166,7 @@ public class DownloadControllerTest {
         mockMvc.perform(get("/expire/downloadKey3"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/download-error"))
-                .andExpect(model().attribute("error", "You are not authorized to expire this drop"));
+                .andExpect(model().attribute("error", "Download not found"));
     }
 
     @Test

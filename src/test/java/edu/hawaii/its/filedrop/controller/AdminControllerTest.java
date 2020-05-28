@@ -21,11 +21,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.apache.http.entity.ContentType;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -42,8 +45,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.jayway.jsonpath.JsonPath;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.ApplicationService;
@@ -81,6 +89,13 @@ public class AdminControllerTest {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
+
+        server.start();
+    }
+
+    @After
+    public void tearDown() {
+        server.stop();
     }
 
     @Test
@@ -311,27 +326,41 @@ public class AdminControllerTest {
     @WithMockUhAdmin
     public void addWhitelist() throws Exception {
         long count0 = whitelistService.recordCount();
+        Whitelist whitelist = new Whitelist();
+        whitelist.setEntry("help");
+        whitelist.setRegistrant("jwlennon");
+        whitelist.setExpired(false);
+
+        String jsonRequest = objectToJSON(whitelist);
 
         mockMvc.perform(post("/api/admin/whitelist")
-                .param("entry", "help")
-                .param("registrant", "jwlennon"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/whitelist"));
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(jsonRequest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.entry").value("help"))
+                .andExpect(jsonPath("$.registrant").value("jwlennon"));
 
         long count1 = whitelistService.recordCount();
         assertThat(count1, equalTo(count0 + 1));
 
-        Whitelist whitelist = whitelistService.findWhiteList(3);
+        whitelist = whitelistService.findWhiteList(3);
         assertEquals("help", whitelist.getEntry());
         assertEquals("ITS Help Desk", whitelist.getEntryName());
         assertEquals("jwlennon", whitelist.getRegistrant());
         assertEquals("John W Lennon", whitelist.getRegistrantName());
 
+        whitelist = new Whitelist();
+        whitelist.setExpired(false);
+        whitelist.setEntry("help");
+        whitelist.setRegistrant("jwlennon");
+        jsonRequest = objectToJSON(whitelist);
+
         mockMvc.perform(post("/api/admin/whitelist")
-                .param("entry", "help")
-                .param("registrant", "jwlennon"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/whitelist"));
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(jsonRequest))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.entry").value("help"))
+                .andExpect(jsonPath("$.registrant").value("jwlennon"));
 
         long count2 = whitelistService.recordCount();
         assertThat(count2, equalTo(count1 + 1));
@@ -345,11 +374,16 @@ public class AdminControllerTest {
         assertEquals("help", whitelist.getEntry());
         assertEquals("jwlennon", whitelist.getRegistrant());
 
+        whitelist = new Whitelist();
+        whitelist.setExpired(false);
+        whitelist.setEntry("testing");
+        whitelist.setRegistrant("testing");
+        jsonRequest = objectToJSON(whitelist);
+
         mockMvc.perform(post("/api/admin/whitelist")
-                .param("entry", "testing")
-                .param("registrant", "testing"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/whitelist"));
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(jsonRequest))
+                .andExpect(status().isOk());
 
         long count3 = whitelistService.recordCount();
         assertThat(count3, equalTo(count2 + 1));
@@ -371,13 +405,19 @@ public class AdminControllerTest {
     @Test
     @WithMockUhAdmin
     public void deleteWhitelist() throws Exception {
-        mockMvc.perform(post("/api/admin/whitelist")
-                .param("entry", "help")
-                .param("registrant", "jwlennon"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/whitelist"));
-        mockMvc.perform(delete("/api/admin/whitelist/6"))
-                .andExpect(status().isOk());
+        Whitelist whitelist = new Whitelist();
+        whitelist.setExpired(false);
+        whitelist.setEntry("help");
+        whitelist.setRegistrant("jwlennon");
+        String jsonRequest = objectToJSON(whitelist);
+        MvcResult result = mockMvc.perform(post("/api/admin/whitelist")
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(jsonRequest))
+                .andExpect(status().isOk())
+                .andReturn();
+        Integer id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
+        mockMvc.perform(delete("/api/admin/whitelist/" + id))
+                .andExpect(status().is2xxSuccessful());
     }
 
     @Test
@@ -541,5 +581,12 @@ public class AdminControllerTest {
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/admin/settings"))
             .andExpect(flash().attributeExists("alert"));
+    }
+
+    public String objectToJSON(Whitelist whitelist) throws JsonProcessingException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
+        ObjectWriter objectWriter = objectMapper.writer().withDefaultPrettyPrinter();
+        return objectWriter.writeValueAsString(whitelist);
     }
 }

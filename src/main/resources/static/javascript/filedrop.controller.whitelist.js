@@ -1,5 +1,6 @@
-function WhitelistJsController($scope, dataProvider) {
-    let URL_LOAD = "/filedrop/api/admin/whitelist";
+const URL_LOAD = "/filedrop/api/admin/whitelist";
+
+function WhitelistJsController($scope, dataProvider, $uibModal, $http) {
 
     $scope.init = function () {
         $scope.whitelist = [];
@@ -12,12 +13,21 @@ function WhitelistJsController($scope, dataProvider) {
         }, URL_LOAD);
     };
 
-    $scope.openModal = function () {
-        $("#whitelistModal").modal();
+    $scope.openAddModal = function () {
+       let modalInstance = $uibModal.open({
+           templateUrl: "whitelistAddModal.html",
+           controller: "WhitelistAddModalController",
+        });
+
+       modalInstance.result.then((whitelist) => {
+            $scope.addWhitelist(whitelist.entry, whitelist.registrant);
+       });
     };
 
-    $scope.submit = function () {
-        $("#whitelistModal").modal("hide");
+    $scope.addWhitelist = function (entry, registrant) {
+        dataProvider.saveData(function (response) {
+            $scope.whitelist.push(response.data);
+        }, URL_LOAD, { entry: entry, registrant: registrant })
     };
 
     $scope.getEntryName = function (whitelist) {
@@ -26,6 +36,22 @@ function WhitelistJsController($scope, dataProvider) {
 
     $scope.getRegistrantName = function (whitelist) {
         return whitelist.registrantName ? whitelist.registrantName : whitelist.registrant;
+    };
+
+    $scope.openDeleteModal = function(whitelist) {
+        let modalInstance = $uibModal.open({
+            templateUrl: "whitelistDeleteModal.html",
+            controller: "WhitelistDeleteModalController",
+            resolve: {
+                whitelist: function() {
+                    return whitelist;
+                }
+            },
+        });
+
+        modalInstance.result.then((whitelist) => {
+            $scope.deleteWhitelist(whitelist);
+        });
     };
 
     $scope.deleteWhitelist = function (whitelist) {
@@ -39,3 +65,27 @@ function WhitelistJsController($scope, dataProvider) {
 }
 
 filedropApp.controller("WhitelistJsController", WhitelistJsController);
+
+function WhitelistAddModalController($scope, $uibModalInstance) {
+    $scope.ok = function() {
+        $uibModalInstance.close({ entry: $scope.entry, registrant: $scope.registrant });
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    }
+}
+
+filedropApp.controller("WhitelistAddModalController", WhitelistAddModalController);
+
+function WhitelistDeleteModalController($scope, $uibModalInstance, whitelist) {
+    $scope.ok = function() {
+        $uibModalInstance.close(whitelist);
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    }
+}
+
+filedropApp.controller("WhitelistDeleteModalController", WhitelistDeleteModalController);

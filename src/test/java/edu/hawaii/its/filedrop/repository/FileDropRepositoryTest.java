@@ -176,6 +176,7 @@ public class FileDropRepositoryTest {
         fileSet.setFileDrop(fileDrop);
         fileSet.setComment("test fileset");
         fileSet.setType("image/png");
+        fileSet.setSize(Long.MIN_VALUE);
 
         fileSetRepository.save(fileSet);
 
@@ -225,6 +226,7 @@ public class FileDropRepositoryTest {
         fileSet.setFileDrop(fileDrop);
         fileSet.setComment("test fileset");
         fileSet.setType("image/png");
+        fileSet.setSize(Long.MIN_VALUE);
 
         fileSetRepository.save(fileSet);
 

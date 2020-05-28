@@ -17,12 +17,12 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>2.1.6.RELEASE</version>
+    <version>2.1.12.RELEASE</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
   <properties>
-    <maven-war-plugin.version>2.4</maven-war-plugin.version>
+    <maven-war-plugin.version>3.2.3</maven-war-plugin.version>
     <maven-enforcer-plugin.version>3.0.0-M2</maven-enforcer-plugin.version>
     <maven.version>3.5.2</maven.version>
     <java.version>1.8</java.version>
@@ -30,8 +30,8 @@
     <bootstrap-version>4.4.1</bootstrap-version>
     <jquery-version>3.4.1</jquery-version>
     <popper.js-version>1.16.0</popper.js-version>
-    <angularjs-version>1.7.8</angularjs-version>
-    <angular-mocks-version>1.5.8</angular-mocks-version>
+    <angularjs-version>1.7.9</angularjs-version>
+    <angular-mocks-version>1.7.5</angular-mocks-version>
 
     <spotbugs-maven-plugin.version>4.0.0</spotbugs-maven-plugin.version>
     <pmd.plugin.version>3.11.0</pmd.plugin.version>
@@ -111,6 +111,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
+      <version>5.4.16.Final</version>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -248,11 +249,6 @@
       <version>${angular-mocks-version}</version>
     </dependency>
     <dependency>
-      <groupId>org.webjars.npm</groupId>
-      <artifactId>vue</artifactId>
-      <version>2.5.13</version>
-    </dependency>
-    <dependency>
     <groupId>org.webjars.bower</groupId>
       <artifactId>popper.js</artifactId>
       <version>${popper.js-version}</version>
@@ -372,6 +368,7 @@
           <jsTestSrcDir>${project.build.testOutputDirectory}/javascript</jsTestSrcDir>
           <preloadSources>
             <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>
+            <source>classpath/META-INF/resources/webjars/github-com-Morgul-ui-bootstrap4/3.0.5/ui-bootstrap-tpls-3.0.5.js"></source>
             <source>classpath/META-INF/resources/webjars/ng-file-upload/12.2.13/ng-file-upload.min.js"></source>
             <source>classpath/META-INF/resources/webjars/jquery/${jquery-version}/jquery.min.js</source>
             <source>classpath/META-INF/resources/webjars/bootstrap/${bootstrap-version}/js/bootstrap.min.js</source>

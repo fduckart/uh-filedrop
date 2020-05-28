@@ -17,6 +17,7 @@ import static org.junit.Assert.fail;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -198,6 +199,14 @@ public class FileDropServiceTest {
         FileDrop fileDrop = new FileDrop();
         fileDrop.setDownloadKey("test-key");
         fileDrop.setUploadKey("test-key2");
+        fileDrop.setEncryptionKey("test-key3");
+        fileDrop.setRecipients(Collections.emptyList());
+        fileDrop.setUploaderFullName("Test");
+        fileDrop.setUploader("test");
+        fileDrop.setAuthenticationRequired(true);
+        fileDrop.setValid(true);
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now());
 
         fileDropService.saveFileDrop(fileDrop);
 
@@ -256,6 +265,7 @@ public class FileDropServiceTest {
         fileDrop.setAuthenticationRequired(true);
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
+        fileDrop.setRecipients(Collections.emptyList());
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
         fileDropService.addRecipients(fileDrop, recipients);
@@ -272,6 +282,7 @@ public class FileDropServiceTest {
         fileSet.setFileName("test.png");
         fileSet.setType("image/png");
         fileSet.setComment("Test image png");
+        fileSet.setSize(0L);
 
         Map<String, Object> vars = workflowService.getProcessVariables(user);
 
@@ -283,6 +294,7 @@ public class FileDropServiceTest {
         fileSet.setFileName("test.jpg");
         fileSet.setType("image/jpg");
         fileSet.setComment("Test image jpg");
+        fileSet.setSize(0L);
 
         fileSet.setFileDrop(fileDropService.findFileDrop((Integer) vars.get("fileDropId")));
 
@@ -568,6 +580,14 @@ public class FileDropServiceTest {
         FileDrop fileDrop = new FileDrop();
         fileDrop.setValid(true);
         fileDrop.setExpiration(LocalDateTime.now().minusMinutes(1));
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setAuthenticationRequired(true);
+        fileDrop.setDownloadKey("somekey");
+        fileDrop.setUploadKey("somekey");
+        fileDrop.setEncryptionKey("somekey");
+        fileDrop.setUploader("test");
+        fileDrop.setUploaderFullName("Test");
+        fileDrop.setRecipients(Collections.emptyList());
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         fileDropService.checkFileDrops();
         fileDrop = fileDropService.findFileDrop(fileDrop.getId());

@@ -1,4 +1,4 @@
-let filedropApp = angular.module("filedropApp", ["ngFileUpload"]);
+let filedropApp = angular.module("filedropApp", ["ngFileUpload", "ui.bootstrap"]);
 
 filedropApp.filter("bytes", function () {
     return function (bytes, precision) {
@@ -17,19 +17,19 @@ filedropApp.filter("bytes", function () {
 filedropApp.directive("validRecipient", function() {
     return {
         require: "ngModel",
-    link: function(scope, element, attr, ngModelCtrl) {
-        function fromUser(text) {
-            if (text) {
-                let transformedInput = text.replace(/[^a-zA-Z0-9@.+]*$/g, "");
-                if (transformedInput !== text) {
-                    ngModelCtrl.$setViewValue(transformedInput);
-                    ngModelCtrl.$render();
+        link: function(scope, element, attr, ngModelCtrl) {
+            function fromUser(text) {
+                if (text) {
+                    let transformedInput = text.replace(/[^a-zA-Z0-9@.+]*$/g, "");
+                    if (transformedInput !== text) {
+                        ngModelCtrl.$setViewValue(transformedInput);
+                        ngModelCtrl.$render();
+                    }
+                    return transformedInput;
                 }
-                return transformedInput;
+                return "";
             }
-            return "";
+            ngModelCtrl.$parsers.push(fromUser);
         }
-        ngModelCtrl.$parsers.push(fromUser);
-    }
-};
+    };
 });

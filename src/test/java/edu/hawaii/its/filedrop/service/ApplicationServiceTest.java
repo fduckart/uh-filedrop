@@ -69,6 +69,7 @@ public class ApplicationServiceTest {
         office = new Office();
         office.setCampusId(7);
         office.setDescription("New Manoa Campus Office");
+        office.setSortId(9999);
 
         // What we are testing.
         applicationService.addOffice(office);

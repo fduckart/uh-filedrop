@@ -11,6 +11,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 import java.time.LocalDateTime;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,6 +51,13 @@ public class ValidationControllerTest {
         mockMvc = webAppContextSetup(context)
             .apply(springSecurity())
             .build();
+
+        server.start();
+    }
+
+    @After
+    public void tearDown() {
+        server.stop();
     }
 
     @Test

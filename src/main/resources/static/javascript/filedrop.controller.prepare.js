@@ -1,4 +1,4 @@
-function PrepareJsController($scope, dataProvider, $http, $window, $log) {
+function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibModal) {
     
     $scope.init = function() {
         $scope.recipient = "";
@@ -78,7 +78,14 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
     };
 
     $scope.showPopup = function() {
-        $("#prepareModal").modal();
+        let modalInstance = $uibModal.open({
+            templateUrl: "prepareModal.html",
+            controller: "PrepareModalController"
+        });
+
+        modalInstance.result.then((authentication) => {
+            $scope.authentication = authentication;
+        });
     };
 
     $scope.sendSelf = function() {
@@ -149,3 +156,15 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log) {
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);
+
+function PrepareModalController($scope, $uibModalInstance) {
+    $scope.ok = function() {
+        $uibModalInstance.close(false);
+    };
+
+    $scope.cancel = function () {
+        $uibModalInstance.dismiss('cancel');
+    }
+}
+
+filedropApp.controller("PrepareModalController", PrepareModalController);
