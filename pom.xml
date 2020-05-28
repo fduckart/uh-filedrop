@@ -368,6 +368,7 @@
           <jsTestSrcDir>${project.build.testOutputDirectory}/javascript</jsTestSrcDir>
           <preloadSources>
             <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>
+            <source>classpath/META-INF/resources/webjars/github-com-Morgul-ui-bootstrap4/3.0.5/ui-bootstrap-tpls-3.0.5.js"></source>
             <source>classpath/META-INF/resources/webjars/ng-file-upload/12.2.13/ng-file-upload.min.js"></source>
             <source>classpath/META-INF/resources/webjars/jquery/${jquery-version}/jquery.min.js</source>
             <source>classpath/META-INF/resources/webjars/bootstrap/${bootstrap-version}/js/bootstrap.min.js</source>

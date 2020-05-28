@@ -130,6 +130,8 @@ public class PrepareController {
         fileDrop.setEncryptionKey(Strings.generateRandomString());
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now());
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
@@ -178,7 +180,8 @@ public class PrepareController {
             fileDrop.setUploaderFullName(user.getName());
             fileDrop.setAuthenticationRequired(validation);
         }
-
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now());
         fileDrop.setValid(true);
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 

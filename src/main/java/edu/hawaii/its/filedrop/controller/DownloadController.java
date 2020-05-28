@@ -57,7 +57,7 @@ public class DownloadController {
         }
 
         if (!currentUser().getUsername().equals(fileDrop.getUploader())) {
-            model.addAttribute("error", "You are not authorized to expire this drop");
+            model.addAttribute("error", "Download not found");
             return "user/download-error";
         }
 

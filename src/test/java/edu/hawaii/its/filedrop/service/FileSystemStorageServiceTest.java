@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.Collections;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -143,6 +145,14 @@ public class FileSystemStorageServiceTest {
         FileDrop fileDrop = new FileDrop();
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
+        fileDrop.setEncryptionKey(Strings.generateRandomString());
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now());
+        fileDrop.setValid(true);
+        fileDrop.setAuthenticationRequired(true);
+        fileDrop.setUploader("test");
+        fileDrop.setUploaderFullName("Test");
+        fileDrop.setRecipients(Collections.emptyList());
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         final String downloadKey = fileDrop.getDownloadKey();
         assertNotNull(downloadKey);
@@ -166,6 +176,7 @@ public class FileSystemStorageServiceTest {
         fileSet.setFileName(multipartFile.getName());
         fileSet.setFileDrop(fileDrop);
         fileSet.setType(multipartFile.getContentType());
+        fileSet.setSize(multipartFile.getSize());
         fileSet = fileDropService.saveFileSet(fileSet);
         fileName = fileSet.getId() + ".txt";
         assertFalse(storageService.exists(multipartFile, downloadKey));
@@ -196,6 +207,14 @@ public class FileSystemStorageServiceTest {
         fileDrop.setId(123456789);
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
+        fileDrop.setEncryptionKey(Strings.generateRandomString());
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setExpiration(LocalDateTime.now());
+        fileDrop.setValid(true);
+        fileDrop.setAuthenticationRequired(true);
+        fileDrop.setUploader("test");
+        fileDrop.setUploaderFullName("Test");
+        fileDrop.setRecipients(Collections.emptyList());
         fileDrop = fileDropService.saveFileDrop(fileDrop);
         final String downloadKey = fileDrop.getDownloadKey();
         assertNotNull(downloadKey);
@@ -219,6 +238,7 @@ public class FileSystemStorageServiceTest {
         fileSet.setFileName(multipartFile.getName());
         fileSet.setFileDrop(fileDrop);
         fileSet.setType(multipartFile.getContentType());
+        fileSet.setSize(multipartFile.getSize());
         fileSet = fileDropService.saveFileSet(fileSet);
         fileName = fileSet.getId() + ".txt";
         assertFalse(storageService.exists(multipartFile, downloadKey));

@@ -105,6 +105,7 @@ public class AdminController {
 
     @PostMapping(value = "/admin/gate-message", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     public String setGateMessage(Model model, Message message) {
+        message.setTypeId(1);
         messageService.update(message);
         messageService.evictCache();
         model.addAttribute("success", true);
