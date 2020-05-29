@@ -111,6 +111,13 @@ public class HomeController {
     }
 
     @PreAuthorize("hasRole('UH')")
+    @GetMapping("/help/permissions")
+    public String permissions() {
+        logger.debug("User at help/permissions");
+        return "admin/permissions";
+    }
+
+    @PreAuthorize("hasRole('UH')")
     @GetMapping("/user")
     public String adminUser(Model model) {
         logger.debug("User at /user.");

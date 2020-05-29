@@ -241,12 +241,6 @@ public class AdminController {
         return "redirect:/admin/dashboard";
     }
 
-    @GetMapping("/admin/permissions")
-    public String permissions() {
-        logger.debug("User at admin/permissions");
-        return "admin/permissions";
-    }
-
     @GetMapping("/admin/settings")
     public String settings(Model model) {
         logger.debug("User at admin/settings");
