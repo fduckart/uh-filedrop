@@ -6,51 +6,72 @@
 
 <!--  Content container -->
 <div class="container">
-    <table class="table">
-        <tr>
-            <th>Email</th>
-            <th></th>
-        </tr>
-        <tr>
-            <td>Uploader</td>
-            <td>
-                <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" th:method="POST">
-                    <button type="submit" class="btn btn-outline-dark">Email</button>
-                    <input name="template" type="hidden" value="uploader">
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td>Receiver</td>
-            <td>
-                <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" th:method="POST">
-                    <button type="submit" class="btn btn-outline-dark">Email</button>
-                    <input name="template" type="hidden" value="receiver">
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td>Whitelist</td>
-            <td>
-                <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" th:method="POST">
-                    <button type="submit" class="btn btn-outline-dark">Email</button>
-                    <input name="template" type="hidden" value="whitelist">
-                </form>
-            </td>
-        </tr>
-        <tr>
-            <td>Validation</td>
-            <td>
-                <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" th:method="POST">
-                    <button type="submit" class="btn btn-outline-dark">Email</button>
-                    <input name="template" type="hidden" value="validation">
-                </form>
-            </td>
-        </tr>
-    </table>
+    <div class="card panel-default">
+        <div class="card-header pb-0">
+            <div class="d-flex align-items-center">
+                <span class="card-title h5">Emails</span>
+                <a href="#" class="ml-auto mt-n2" data-toggle="popover" 
+                      th:title="#{admin.technology.email.popup.title}" 
+                      th:data-content="#{admin.technology.email.popup.text}">
+                    <i class="fa fa-info-circle fa-2x"></i>
+                </a>
+            </div>
+        </div>
+        <div class="card-body">
+            <table class="table">
+                <tr>
+                    <th>Email</th>
+                    <th>
+                    </th>
+                </tr>
+                <tr>
+                    <td>Uploader</td>
+                    <td>
+                        <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" th:method="POST">
+                            <button type="submit" class="btn btn-outline-dark">Email</button>
+                            <input name="template" type="hidden" value="uploader">
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Receiver</td>
+                    <td>
+                        <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" th:method="POST">
+                            <button type="submit" class="btn btn-outline-dark">Email</button>
+                            <input name="template" type="hidden" value="receiver">
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Whitelist</td>
+                    <td>
+                        <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" th:method="POST">
+                            <button type="submit" class="btn btn-outline-dark">Email</button>
+                            <input name="template" type="hidden" value="whitelist">
+                        </form>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Validation</td>
+                    <td>
+                        <form class="form-inline" action="/admin/email" th:action="@{/admin/email}" th:method="POST">
+                            <button type="submit" class="btn btn-outline-dark">Email</button>
+                            <input name="template" type="hidden" value="validation">
+                        </form>
+                    </td>
+                </tr>
+            </table>    
+        </div>
+    </div>
 </div>
 <!-- / Content container. -->
 
 <div th:replace="footer :: copy"></div>
+<script th:inline="javascript">
+    $(document).ready(function(){
+        $('[data-toggle="popover"]').popover();   
+    });    
+</script>
+
 </body>
 </html>
