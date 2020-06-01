@@ -531,22 +531,6 @@ public class AdminControllerTest {
 
     @Test
     @WithAnonymousUser
-    public void permissionsAnonymousTest() throws Exception {
-        mockMvc.perform(get("/admin/permissions"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
-    }
-
-    @Test
-    @WithMockUhAdmin
-    public void permissionsTest() throws Exception {
-        mockMvc.perform(get("/admin/permissions"))
-                .andExpect(status().isOk())
-                .andExpect(view().name("admin/permissions"));
-    }
-
-    @Test
-    @WithAnonymousUser
     public void settingsAnonymousTest() throws Exception {
         mockMvc.perform(get("/admin/settings"))
             .andExpect(status().is3xxRedirection())

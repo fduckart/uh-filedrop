@@ -110,11 +110,10 @@ public class HomeController {
         return "help/faq";
     }
 
-    @PreAuthorize("hasRole('UH')")
     @GetMapping("/help/permissions")
     public String permissions() {
         logger.debug("User at help/permissions");
-        return "admin/permissions";
+        return "help/permissions";
     }
 
     @PreAuthorize("hasRole('UH')")

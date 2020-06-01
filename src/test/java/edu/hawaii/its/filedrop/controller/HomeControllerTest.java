@@ -227,4 +227,12 @@ public class HomeControllerTest {
                 .build();
     }
 
+    @Test
+    @WithMockUhUser
+    public void permissionsTest() throws Exception {
+        mockMvc.perform(get("/help/permissions"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("help/permissions"));
+    }
+
 }
