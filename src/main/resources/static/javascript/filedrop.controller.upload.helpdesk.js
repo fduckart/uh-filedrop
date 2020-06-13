@@ -7,10 +7,12 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
         $scope.expiration = $window.expiration;
         $scope.ticketNumber = $window.ticketNumber;
         $scope.progress = 0;
+        $scope.disableUpload = false;
     };
 
     $scope.submit = function() {
         if ($scope.files && $scope.files.length) {
+            $scope.disableUpload = true;
             let count = 0;
             $scope.files.map((file) => {
                 Upload.upload({

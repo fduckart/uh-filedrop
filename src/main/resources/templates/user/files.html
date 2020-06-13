@@ -101,11 +101,12 @@
                         <div class="col">
                             <button class="btn float-right" ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'"
                                     type="submit"
-                                    ng-disabled="isUploadLarge() || progress > 0" form="filesForm">
-                                <span ng-show="progress > 0">
+                                    ng-disabled="isUploadLarge() || disableUpload"
+                                    form="filesForm">
+                                <span ng-show="disableUpload">
                                     <span class="spinner-border spinner-border-sm"></span> Uploading...
                                 </span>
-                                <span ng-hide="progress > 0">Submit</span>
+                                <span ng-hide="disableUpload">Submit</span>
                             </button>
 
                             <a th:href="@{/prepare/}" class="btn btn-primary">Back</a>
