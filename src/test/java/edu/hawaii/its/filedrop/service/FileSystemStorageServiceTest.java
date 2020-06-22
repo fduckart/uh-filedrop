@@ -75,7 +75,7 @@ public class FileSystemStorageServiceTest {
                     filename,
                     "text/plain",
                     "some data".getBytes());
-            storageService.store(firstFile);
+            storageService.store(firstFile.getResource());
             finished = true;
         } catch (Exception e) {
             fail("Unexpected error: " + e);
@@ -179,8 +179,8 @@ public class FileSystemStorageServiceTest {
         fileSet.setSize(multipartFile.getSize());
         fileSet = fileDropService.saveFileSet(fileSet);
         fileName = fileSet.getId() + ".txt";
-        assertFalse(storageService.exists(multipartFile, downloadKey));
-        storageService.storeFileSet(multipartFile, Paths.get(downloadKey, fileName));
+        assertFalse(storageService.exists(multipartFile.getResource(), downloadKey));
+        storageService.storeFileSet(multipartFile.getResource(), Paths.get(downloadKey, fileName));
 
         expectedPath = Paths.get(storageService.getRootLocation().toString(), downloadKey, fileName);
         String expectedFilename = expectedPath.toString();
@@ -241,8 +241,8 @@ public class FileSystemStorageServiceTest {
         fileSet.setSize(multipartFile.getSize());
         fileSet = fileDropService.saveFileSet(fileSet);
         fileName = fileSet.getId() + ".txt";
-        assertFalse(storageService.exists(multipartFile, downloadKey));
-        storageService.storeFileSet(multipartFile, Paths.get(downloadKey, fileName));
+        assertFalse(storageService.exists(multipartFile.getResource(), downloadKey));
+        storageService.storeFileSet(multipartFile.getResource(), Paths.get(downloadKey, fileName));
 
         expectedPath = Paths.get(storageService.getRootLocation().toString(), downloadKey, fileName);
         String expectedFilename = expectedPath.toString();
@@ -276,7 +276,7 @@ public class FileSystemStorageServiceTest {
                         "Test MockMultipartFile".getBytes());
 
         // Store the file.
-        storageService.store(multipartFile);
+        storageService.store(multipartFile.getResource());
 
         // Now load that same file.
         Resource r = storageService.loadAsResource(file.getAbsolutePath());
@@ -309,7 +309,7 @@ public class FileSystemStorageServiceTest {
                         "text/plain",
                         "".getBytes());
         try {
-            storageService.store(multipartFile);
+            storageService.store(multipartFile.getResource());
             fail("Should not have reached here.");
         } catch (Exception e) {
             assertThat(e, instanceOf(StorageException.class));
@@ -317,7 +317,7 @@ public class FileSystemStorageServiceTest {
         }
 
         try {
-            storageService.storeFileSet(multipartFile, storageService.getRootLocation());
+            storageService.storeFileSet(multipartFile.getResource(), storageService.getRootLocation());
             fail("Should not have reached here.");
         } catch (Exception e) {
             assertThat(e, instanceOf(StorageException.class));
@@ -341,7 +341,7 @@ public class FileSystemStorageServiceTest {
                         "text/plain",
                         "Test MockMultipartFile Error".getBytes());
         try {
-            storageService.store(multipartFile);
+            storageService.store(multipartFile.getResource());
             fail("Should not have reached here.");
         } catch (Exception e) {
             assertThat(e, instanceOf(StorageException.class));

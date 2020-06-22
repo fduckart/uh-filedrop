@@ -4,7 +4,6 @@ import java.nio.file.Path;
 
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public interface StorageService {
@@ -13,11 +12,11 @@ public interface StorageService {
 
     Resource loadAsResource(String fileName);
 
-    void store(MultipartFile file);
+    void store(Resource resource);
 
-    String store(MultipartFile file, Path parent);
+    String store(Resource resource, Path parent);
 
-    boolean storeFileSet(MultipartFile file, Path filePath);
+    boolean storeFileSet(Resource resource, Path filePath);
 
     void delete(String fileName, String directory);
 
@@ -25,7 +24,7 @@ public interface StorageService {
 
     boolean exists(String fileName, String downloadKey);
 
-    boolean exists(MultipartFile file, String downloadKey);
+    boolean exists(Resource resource, String downloadKey);
 
     boolean exists(Path path);
 

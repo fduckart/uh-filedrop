@@ -7,8 +7,18 @@
 <!--  Content container -->
 <div class="container" ng-controller="WhitelistJsController" ng-init="init()" ng-cloak>
     <div class="row mb-2">
-        <div class="col-sm-12">
-            <button type="button" class="btn btn-primary" ng-click="openAddModal()">&plus; Whitelist</button>
+        <div class="col-sm-6">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
+                </div>
+                <input placeholder="Search UH username, date..." class="form-control" type="search"
+                       ng-model="filter"
+                       aria-describedby="search">
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <button type="button" class="btn btn-primary float-right" ng-click="openAddModal()">&plus; Whitelist</button>
         </div>
     </div>
     <div class="row">
@@ -22,7 +32,7 @@
                         <th>Expired</th>
                         <th></th>
                     </tr>
-                    <tr ng-repeat="whitelisted in whitelist">
+                    <tr ng-repeat="whitelisted in whitelist | filter:filter">
                         <td>{{ whitelisted.entry }}</td>
                         <td>{{ whitelisted.registrant }}</td>
                         <td>{{ whitelisted.created | date:'MM/dd/yyyy' }}</td>
