@@ -9,10 +9,12 @@ import java.security.GeneralSecurityException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
 import edu.hawaii.its.filedrop.crypto.CipherFilter;
 import edu.hawaii.its.filedrop.crypto.Ciphers;
+import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
 @Service
@@ -22,6 +24,16 @@ public class CipherService {
 
     @Autowired
     private Ciphers ciphers;
+
+    public Resource encrypt(Resource resource, FileDrop fileDrop) {
+        String encryptionKey = fileDrop.getEncryptionKey();
+        return resource;
+    }
+
+    public Resource decrypt(Resource resource, FileDrop fileDrop) {
+        String encryptionKey = fileDrop.getEncryptionKey();
+        return resource;
+    }
 
     public void encryptFile(String encryptionKey, File original, File encrypted) {
         try {
