@@ -20,6 +20,7 @@ import org.apache.commons.logging.LogFactory;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,6 +54,9 @@ public class FileDropService {
 
     @Autowired
     private WhitelistService whitelistService;
+
+    @Autowired
+    private CipherService cipherService;
 
     @Value("${app.restrictions.sender.student}")
     private List<String> studentRestrictions;
@@ -131,7 +135,10 @@ public class FileDropService {
             fileSet.setSize(file.getSize());
             saveFileSet(fileSet);
 
-            fileSystemStorageService.storeFileSet(file,
+            Resource resource = file.getResource();
+            resource = cipherService.encrypt(resource, fileSet.getFileDrop());
+
+            fileSystemStorageService.storeFileSet(resource,
                     Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()));
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);

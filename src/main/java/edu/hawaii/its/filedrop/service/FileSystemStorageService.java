@@ -64,25 +64,25 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void store(MultipartFile file) {
-        store(file, Paths.get(""));
+    public void store(Resource resource) {
+        store(resource, Paths.get(""));
     }
 
     @Override
-    public String store(MultipartFile file, Path parent) {
+    public String store(Resource resource, Path parent) {
         Path resolvedPath = null;
         try {
-            if(file.isEmpty()) {
-                String msg = "Failed to store empty file " + file.getOriginalFilename();
+            if(resource.contentLength() == 0L) {
+                String msg = "Failed to store empty file " + resource.getFilename();
                 throw new StorageException(msg);
             }
 
             String parentDir = parent.toString();
-            Path path = Paths.get(parentDir, file.getOriginalFilename());
+            Path path = Paths.get(parentDir, resource.getFilename());
             resolvedPath = rootLocation.resolve(path);
 
             createDirectories(parentDir);
-            Files.copy(file.getInputStream(), resolvedPath);
+            Files.copy(resource.getInputStream(), resolvedPath);
 
         } catch(Exception e) {
             throw new StorageException(e.toString(), e);
@@ -92,7 +92,7 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public boolean storeFileSet(MultipartFile file, Path filePath) {
+    public boolean storeFileSet(Resource resource, Path filePath) {
         boolean successful = false;
 
         try {
@@ -105,7 +105,7 @@ public class FileSystemStorageService implements StorageService {
                 createDirectories(absolutePath.toString());
             }
 
-            Files.copy(file.getInputStream(), path);
+            Files.copy(resource.getInputStream(), path);
             successful = true;
 
         } catch(Exception e) {
@@ -137,8 +137,8 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public boolean exists(MultipartFile file, String downloadKey) {
-        return exists(file.getOriginalFilename(), downloadKey);
+    public boolean exists(Resource resource, String downloadKey) {
+        return exists(resource.getFilename(), downloadKey);
     }
 
     @Override
