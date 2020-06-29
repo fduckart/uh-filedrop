@@ -2,7 +2,6 @@ package edu.hawaii.its.filedrop.controller;
 
 import static java.util.stream.Collectors.toList;
 
-import javax.xml.ws.Response;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,7 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.Context;
 
@@ -35,14 +33,14 @@ import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.MessageService;
-import edu.hawaii.its.filedrop.service.WhitelistService;
+import edu.hawaii.its.filedrop.service.AllowlistService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
+import edu.hawaii.its.filedrop.type.Allowlist;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.Message;
 import edu.hawaii.its.filedrop.type.Setting;
-import edu.hawaii.its.filedrop.type.Whitelist;
 import edu.hawaii.its.filedrop.util.Dates;
 
 @Controller
@@ -58,7 +56,7 @@ public class AdminController {
     private MessageService messageService;
 
     @Autowired
-    private WhitelistService whitelistService;
+    private AllowlistService allowlistService;
 
     @Autowired
     private EmailService emailService;
@@ -143,10 +141,10 @@ public class AdminController {
         return "admin/lookup";
     }
 
-    @GetMapping("/admin/whitelist")
-    public String whitelist() {
-        logger.debug("User at admin/whitelist.");
-        return "admin/whitelist";
+    @GetMapping("/admin/allowlist")
+    public String allowlist() {
+        logger.debug("User at admin/allowlist.");
+        return "admin/allowlist";
     }
 
     @GetMapping("/admin/email")
@@ -164,31 +162,31 @@ public class AdminController {
         return "redirect:/admin/email";
     }
 
-    @GetMapping("/api/admin/whitelist")
-    public ResponseEntity<List<Whitelist>> getWhiteList() {
-        logger.debug("User at api/admin/whitelist");
-        List<Whitelist> whitelist = whitelistService.findAllWhiteList();
-        return ResponseEntity.ok(whitelist);
+    @GetMapping("/api/admin/allowlist")
+    public ResponseEntity<List<Allowlist>> getAllowList() {
+        logger.debug("User at api/admin/allowlist");
+        List<Allowlist> allowlist = allowlistService.findAllAllowList();
+        return ResponseEntity.ok(allowlist);
     }
 
-    @PostMapping("/api/admin/whitelist")
-    public ResponseEntity<Whitelist> addWhitelist(@RequestBody Whitelist whitelistBody) {
-        Whitelist whitelist = whitelistBody;
-        whitelist.setEntryName(ldapService.findByUid(whitelist.getEntry()).getCn());
-        whitelist.setRegistrantName(ldapService.findByUid(whitelist.getRegistrant()).getCn());
-        whitelist.setCheck(0);
-        whitelist.setExpired(false);
-        whitelist.setCreated(LocalDateTime.now());
-        whitelist = whitelistService.addWhitelist(whitelist);
-        logger.debug("User added Whitelist: " + whitelist);
-        return ResponseEntity.ok().body(whitelist);
+    @PostMapping("/api/admin/allowlist")
+    public ResponseEntity<Allowlist> addAllowlist(@RequestBody Allowlist allowlistBody) {
+        Allowlist allowlist = allowlistBody;
+        allowlist.setEntryName(ldapService.findByUid(allowlist.getEntry()).getCn());
+        allowlist.setRegistrantName(ldapService.findByUid(allowlist.getRegistrant()).getCn());
+        allowlist.setCheck(0);
+        allowlist.setExpired(false);
+        allowlist.setCreated(LocalDateTime.now());
+        allowlist = allowlistService.addAllowlist(allowlist);
+        logger.debug("User added Allowlist: " + allowlist);
+        return ResponseEntity.ok().body(allowlist);
     }
 
-    @DeleteMapping("/api/admin/whitelist/{whitelistId}")
-    public ResponseEntity<Whitelist> deleteWhitelist(@PathVariable Integer whitelistId) {
-        Whitelist whitelist = whitelistService.findWhiteList(whitelistId);
-        whitelistService.deleteWhitelist(whitelist);
-        logger.debug("User deleted Whitelist: " + whitelist);
+    @DeleteMapping("/api/admin/allowlist/{allowlistId}")
+    public ResponseEntity<Allowlist> deleteAllowlist(@PathVariable Integer allowlistId) {
+        Allowlist allowlist = allowlistService.findAllowList(allowlistId);
+        allowlistService.deleteAllowlist(allowlist);
+        logger.debug("User deleted Allowlist: " + allowlist);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 

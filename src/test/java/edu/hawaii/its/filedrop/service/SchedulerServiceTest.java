@@ -9,7 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.job.WhitelistCheckJob;
+import edu.hawaii.its.filedrop.job.AllowlistCheckJob;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -24,7 +24,7 @@ public class SchedulerServiceTest {
 
     @Test
     public void findJobTest() throws SchedulerException {
-        JobDetail jobDetail = schedulerService.findJob("WhitelistCheckJob");
+        JobDetail jobDetail = schedulerService.findJob("AllowlistCheckJob");
 
         assertNotNull(jobDetail);
 
@@ -37,26 +37,26 @@ public class SchedulerServiceTest {
 
     @Test
     public void addJobTest() throws SchedulerException {
-        WhitelistCheckJob whitelistCheckJob = new WhitelistCheckJob();
-        whitelistCheckJob.setInterval(10);
-        JobDetail jobDetail = schedulerService.addJob(whitelistCheckJob, "TEST");
+        AllowlistCheckJob allowlistCheckJob = new AllowlistCheckJob();
+        allowlistCheckJob.setInterval(10);
+        JobDetail jobDetail = schedulerService.addJob(allowlistCheckJob, "TEST");
 
         assertNotNull(jobDetail);
 
-        jobDetail = schedulerService.findJob("WhitelistCheckJob", "TEST");
+        jobDetail = schedulerService.findJob("AllowlistCheckJob", "TEST");
         assertNotNull(jobDetail);
     }
 
     @Test
     public void deleteJobTest() throws SchedulerException {
-        WhitelistCheckJob whitelistCheckJob = new WhitelistCheckJob();
-        whitelistCheckJob.setInterval(10);
+        AllowlistCheckJob allowlistCheckJob = new AllowlistCheckJob();
+        allowlistCheckJob.setInterval(10);
 
-        JobDetail jobDetail = schedulerService.addJob(whitelistCheckJob, "TEST");
+        JobDetail jobDetail = schedulerService.addJob(allowlistCheckJob, "TEST");
         assertNotNull(jobDetail);
 
-        boolean deleted = schedulerService.deleteJob(schedulerService.findJob("WhitelistCheckJob", "TEST").getKey());
-        jobDetail = schedulerService.findJob("WhitelistCheckJob", "TEST");
+        boolean deleted = schedulerService.deleteJob(schedulerService.findJob("AllowlistCheckJob", "TEST").getKey());
+        jobDetail = schedulerService.findJob("AllowlistCheckJob", "TEST");
         assertTrue(deleted);
         assertNull(jobDetail);
     }

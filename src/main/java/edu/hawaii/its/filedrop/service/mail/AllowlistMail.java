@@ -2,16 +2,16 @@ package edu.hawaii.its.filedrop.service.mail;
 
 import org.springframework.stereotype.Component;
 
-@Component("whitelist")
-public class WhitelistMail implements MailTemplate {
+@Component("allowlist")
+public class AllowlistMail implements MailTemplate {
 
     @Override
     public String getSubject() {
-        return "FileDrop Whitelist";
+        return "FileDrop Allowlist";
     }
 
     @Override
     public String toString() {
-        return "WhitelistMail [subject=" + getSubject() + "]";
+        return "AllowlistMail [subject=" + getSubject() + "]";
     }
 }

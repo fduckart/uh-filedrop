@@ -53,7 +53,7 @@ public class FileDropService {
     private FileSystemStorageService fileSystemStorageService;
 
     @Autowired
-    private WhitelistService whitelistService;
+    private AllowlistService allowlistService;
 
     @Autowired
     private CipherService cipherService;
@@ -195,7 +195,7 @@ public class FileDropService {
                     .anyMatch(affiliation -> allRestrictions.get(affiliations).contains(affiliation));
 
             if (allRestrictions.get(affiliations).contains("department") && !validRecipient) {
-                validRecipient = whitelistService.isWhitelisted(ldapPerson.getUid());
+                validRecipient = allowlistService.isAllowlisted(ldapPerson.getUid());
             }
 
             if (validRecipient) {

@@ -21,13 +21,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.apache.http.entity.ContentType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
@@ -55,9 +53,9 @@ import com.jayway.jsonpath.JsonPath;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.ApplicationService;
-import edu.hawaii.its.filedrop.service.WhitelistService;
+import edu.hawaii.its.filedrop.service.AllowlistService;
+import edu.hawaii.its.filedrop.type.Allowlist;
 import edu.hawaii.its.filedrop.type.Setting;
-import edu.hawaii.its.filedrop.type.Whitelist;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -74,7 +72,7 @@ public class AdminControllerTest {
     private WebApplicationContext context;
 
     @Autowired
-    private WhitelistService whitelistService;
+    private AllowlistService allowlistService;
 
     @Autowired
     private ApplicationService applicationService;
@@ -303,19 +301,19 @@ public class AdminControllerTest {
 
     @Test
     @WithMockUhUser
-    public void redirectWhitelist() throws Exception {
-        mockMvc.perform(get("/admin/whitelist"))
+    public void redirectAllowlist() throws Exception {
+        mockMvc.perform(get("/admin/allowlist"))
                 .andExpect(status().is4xxClientError());
     }
 
     @Test
     @WithMockUhAdmin
-    public void getWhitelist() throws Exception {
-        mockMvc.perform(get("/admin/whitelist"))
+    public void getAllowlist() throws Exception {
+        mockMvc.perform(get("/admin/allowlist"))
                 .andExpect(status().isOk())
-                .andExpect(view().name("admin/whitelist"));
+                .andExpect(view().name("admin/allowlist"));
 
-        mockMvc.perform(get("/api/admin/whitelist"))
+        mockMvc.perform(get("/api/admin/allowlist"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(5)))
                 .andExpect(jsonPath("$[0].entry").exists())
@@ -324,99 +322,99 @@ public class AdminControllerTest {
 
     @Test
     @WithMockUhAdmin
-    public void addWhitelist() throws Exception {
-        long count0 = whitelistService.recordCount();
-        Whitelist whitelist = new Whitelist();
-        whitelist.setEntry("help");
-        whitelist.setRegistrant("jwlennon");
-        whitelist.setExpired(false);
+    public void addAllowlist() throws Exception {
+        long count0 = allowlistService.recordCount();
+        Allowlist allowlist = new Allowlist();
+        allowlist.setEntry("help");
+        allowlist.setRegistrant("jwlennon");
+        allowlist.setExpired(false);
 
-        String jsonRequest = objectToJSON(whitelist);
+        String jsonRequest = objectToJSON(allowlist);
 
-        mockMvc.perform(post("/api/admin/whitelist")
+        mockMvc.perform(post("/api/admin/allowlist")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.entry").value("help"))
                 .andExpect(jsonPath("$.registrant").value("jwlennon"));
 
-        long count1 = whitelistService.recordCount();
+        long count1 = allowlistService.recordCount();
         assertThat(count1, equalTo(count0 + 1));
 
-        whitelist = whitelistService.findWhiteList(3);
-        assertEquals("help", whitelist.getEntry());
-        assertEquals("ITS Help Desk", whitelist.getEntryName());
-        assertEquals("jwlennon", whitelist.getRegistrant());
-        assertEquals("John W Lennon", whitelist.getRegistrantName());
+        allowlist = allowlistService.findAllowList(3);
+        assertEquals("help", allowlist.getEntry());
+        assertEquals("ITS Help Desk", allowlist.getEntryName());
+        assertEquals("jwlennon", allowlist.getRegistrant());
+        assertEquals("John W Lennon", allowlist.getRegistrantName());
 
-        whitelist = new Whitelist();
-        whitelist.setExpired(false);
-        whitelist.setEntry("help");
-        whitelist.setRegistrant("jwlennon");
-        jsonRequest = objectToJSON(whitelist);
+        allowlist = new Allowlist();
+        allowlist.setExpired(false);
+        allowlist.setEntry("help");
+        allowlist.setRegistrant("jwlennon");
+        jsonRequest = objectToJSON(allowlist);
 
-        mockMvc.perform(post("/api/admin/whitelist")
+        mockMvc.perform(post("/api/admin/allowlist")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.entry").value("help"))
                 .andExpect(jsonPath("$.registrant").value("jwlennon"));
 
-        long count2 = whitelistService.recordCount();
+        long count2 = allowlistService.recordCount();
         assertThat(count2, equalTo(count1 + 1));
 
-        mockMvc.perform(get("/api/admin/whitelist"))
+        mockMvc.perform(get("/api/admin/allowlist"))
                 .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[3].entry").value("help"))
                 .andExpect(jsonPath("$[3].registrant").value("jwlennon"));
 
-        whitelist = whitelistService.findWhiteList(4);
-        assertEquals("help", whitelist.getEntry());
-        assertEquals("jwlennon", whitelist.getRegistrant());
+        allowlist = allowlistService.findAllowList(4);
+        assertEquals("help", allowlist.getEntry());
+        assertEquals("jwlennon", allowlist.getRegistrant());
 
-        whitelist = new Whitelist();
-        whitelist.setExpired(false);
-        whitelist.setEntry("testing");
-        whitelist.setRegistrant("testing");
-        jsonRequest = objectToJSON(whitelist);
+        allowlist = new Allowlist();
+        allowlist.setExpired(false);
+        allowlist.setEntry("testing");
+        allowlist.setRegistrant("testing");
+        jsonRequest = objectToJSON(allowlist);
 
-        mockMvc.perform(post("/api/admin/whitelist")
+        mockMvc.perform(post("/api/admin/allowlist")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(jsonRequest))
                 .andExpect(status().isOk());
 
-        long count3 = whitelistService.recordCount();
+        long count3 = allowlistService.recordCount();
         assertThat(count3, equalTo(count2 + 1));
 
-        mockMvc.perform(get("/api/admin/whitelist"))
+        mockMvc.perform(get("/api/admin/allowlist"))
                 .andExpect(jsonPath("$", hasSize(5)))
                 .andExpect(jsonPath("$[4].entry").value("testing"))
                 .andExpect(jsonPath("$[4].entryName").value(""))
                 .andExpect(jsonPath("$[4].registrant").value("testing"))
                 .andExpect(jsonPath("$[4].registrantName").value(""));
 
-        whitelist = whitelistService.findWhiteList(5);
-        assertEquals("testing", whitelist.getEntry());
-        assertEquals("", whitelist.getEntryName());
-        assertEquals("testing", whitelist.getRegistrant());
-        assertEquals("", whitelist.getEntryName());
+        allowlist = allowlistService.findAllowList(5);
+        assertEquals("testing", allowlist.getEntry());
+        assertEquals("", allowlist.getEntryName());
+        assertEquals("testing", allowlist.getRegistrant());
+        assertEquals("", allowlist.getEntryName());
     }
 
     @Test
     @WithMockUhAdmin
-    public void deleteWhitelist() throws Exception {
-        Whitelist whitelist = new Whitelist();
-        whitelist.setExpired(false);
-        whitelist.setEntry("help");
-        whitelist.setRegistrant("jwlennon");
-        String jsonRequest = objectToJSON(whitelist);
-        MvcResult result = mockMvc.perform(post("/api/admin/whitelist")
+    public void deleteAllowlist() throws Exception {
+        Allowlist allowlist = new Allowlist();
+        allowlist.setExpired(false);
+        allowlist.setEntry("help");
+        allowlist.setRegistrant("jwlennon");
+        String jsonRequest = objectToJSON(allowlist);
+        MvcResult result = mockMvc.perform(post("/api/admin/allowlist")
                 .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
                 .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andReturn();
         Integer id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
-        mockMvc.perform(delete("/api/admin/whitelist/" + id))
+        mockMvc.perform(delete("/api/admin/allowlist/" + id))
                 .andExpect(status().is2xxSuccessful());
     }
 
@@ -441,7 +439,7 @@ public class AdminControllerTest {
                 .andExpect(view().name("redirect:/admin/email"));
 
         mockMvc.perform(post("/admin/email")
-                .param("template", "whitelist")
+                .param("template", "allowlist")
                 .param("recipient", "admin@example.com"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/email"));
@@ -567,10 +565,10 @@ public class AdminControllerTest {
             .andExpect(flash().attributeExists("alert"));
     }
 
-    public String objectToJSON(Whitelist whitelist) throws JsonProcessingException {
+    public String objectToJSON(Allowlist allowlist) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter objectWriter = objectMapper.writer().withDefaultPrettyPrinter();
-        return objectWriter.writeValueAsString(whitelist);
+        return objectWriter.writeValueAsString(allowlist);
     }
 }

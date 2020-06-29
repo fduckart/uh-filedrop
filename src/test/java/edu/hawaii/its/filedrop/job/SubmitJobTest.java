@@ -8,7 +8,7 @@ public class SubmitJobTest {
 
     @Test
     public void runTest() {
-        SubmitJob submitJob = new WhitelistCheckJob();
+        SubmitJob submitJob = new AllowlistCheckJob();
         assertEquals("W", submitJob.getClassCode());
 
         submitJob = new SpaceCheckJob();

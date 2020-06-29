@@ -11,8 +11,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
-@Table(name = "whitelist")
-public class Whitelist {
+@Table(name = "allowlist")
+public class Allowlist {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -41,7 +41,7 @@ public class Whitelist {
     private String registrantName;
 
     // Constructor.
-    public Whitelist() {
+    public Allowlist() {
         // Empty.
     }
 
