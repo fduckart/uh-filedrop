@@ -214,9 +214,9 @@ CREATE TABLE validation (
   ip_addr varchar(32) NOT NULL DEFAULT ''
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 ROW_FORMAT=DYNAMIC;
 
-DROP TABLE IF EXISTS whitelist;
+DROP TABLE IF EXISTS allowlist;
 
-CREATE TABLE whitelist (
+CREATE TABLE allowlist (
   id int(11) NOT NULL AUTO_INCREMENT,
   entry varchar(128) NOT NULL,
   registrant varchar(128) NOT NULL,

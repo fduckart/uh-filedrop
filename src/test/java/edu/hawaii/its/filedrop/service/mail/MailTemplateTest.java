@@ -35,9 +35,9 @@ public class MailTemplateTest {
         assertNotNull(mailTemplate);
         assertThat(mailTemplate.getSubject(), equalTo("Your files have been received by the UH FileDrop Service"));
 
-        mailTemplate = mailComponentLocator.find("whitelist");
+        mailTemplate = mailComponentLocator.find("allowlist");
         assertNotNull(mailTemplate);
-        assertThat(mailTemplate.getSubject(), equalTo("FileDrop Whitelist"));
+        assertThat(mailTemplate.getSubject(), equalTo("FileDrop Allowlist"));
 
         mailTemplate = mailComponentLocator.find("validation");
         assertNotNull(mailTemplate);

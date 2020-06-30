@@ -5,7 +5,7 @@
 <nav th:replace="menubar :: copy"></nav>
 
 <!--  Content container -->
-<div class="container" ng-controller="WhitelistJsController" ng-init="init()" ng-cloak>
+<div class="container" ng-controller="AllowlistJsController" ng-init="init()" ng-cloak>
     <div class="row mb-2">
         <div class="col-sm-6">
             <div class="input-group">
@@ -18,12 +18,12 @@
             </div>
         </div>
         <div class="col-sm-6">
-            <button type="button" class="btn btn-primary float-right" ng-click="openAddModal()">&plus; Whitelist</button>
+            <button type="button" class="btn btn-primary float-right" ng-click="openAddModal()">Add</button>
         </div>
     </div>
     <div class="row">
         <div class="col-sm-12">
-            <div class="table-responsive" ng-if="whitelist.length > 0">
+            <div class="table-responsive" ng-if="allowlist.length > 0">
                 <table class="table">
                     <tr>
                         <th>Entry</th>
@@ -32,27 +32,27 @@
                         <th>Expired</th>
                         <th></th>
                     </tr>
-                    <tr ng-repeat="whitelisted in whitelist | filter:filter">
-                        <td>{{ whitelisted.entry }}</td>
-                        <td>{{ whitelisted.registrant }}</td>
-                        <td>{{ whitelisted.created | date:'MM/dd/yyyy' }}</td>
-                        <td>{{ whitelisted.expired }}</td>
+                    <tr ng-repeat="allowed in allowlist | filter:filter">
+                        <td>{{ allowed.entry }}</td>
+                        <td>{{ allowed.registrant }}</td>
+                        <td>{{ allowed.created | date:'MM/dd/yyyy' }}</td>
+                        <td>{{ allowed.expired }}</td>
                         <td>
-                            <button class="btn btn-sm btn-danger" ng-click="openDeleteModal(whitelisted)">
+                            <button class="btn btn-sm btn-danger" ng-click="openDeleteModal(allowed)">
                                 <i class="fa fa-trash"></i>
                             </button>
                         </td>
                     </tr>
                 </table>
             </div>
-            <div class="text-center" ng-if="whitelist.length == 0">
+            <div class="text-center" ng-if="allowlist.length == 0">
                 <div class="spinner-border" style="width: 2rem; height: 2rem; text-align: center" role="status">
-                    <span class="sr-only">Loading Whitelist...</span>
+                    <span class="sr-only">Loading Allowlist...</span>
                 </div>
             </div>
         </div>
     </div>
-    <div th:replace="admin/whitelist-modal :: copy"></div>
+    <div th:replace="admin/allowlist-modal :: copy"></div>
 </div>
 <!-- / Content container. -->
 

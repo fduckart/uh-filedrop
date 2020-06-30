@@ -129,7 +129,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
     $scope.getMessage = () => $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
 
-    $scope.getWhitelist = () => $window.whitelist;
+    $scope.getAllowlist = () => $window.allowlist;
 
     $scope.sender = {
         model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.currentUser().mails[0],

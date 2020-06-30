@@ -6,25 +6,25 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 
-import edu.hawaii.its.filedrop.service.WhitelistService;
+import edu.hawaii.its.filedrop.service.AllowlistService;
 
 @SubmitJobComponent(classCode = "W")
 @ConditionalOnProperty(
-        prefix = "app.job.whitelist",
+        prefix = "app.job.allowlist",
         name = "enabled",
         matchIfMissing = true)
-public class WhitelistCheckJob extends SubmitJob {
+public class AllowlistCheckJob extends SubmitJob {
 
     @Autowired
-    private WhitelistService whitelistService;
+    private AllowlistService allowlistService;
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
-        whitelistService.checkWhitelists();
+        allowlistService.checkAllowlists();
     }
 
     @Override
-    @Value("${app.job.whitelist.interval}")
+    @Value("${app.job.allowlist.interval}")
     public void setInterval(int interval) {
         super.setInterval(interval);
     }
