@@ -141,6 +141,7 @@ public class DownloadController {
                 download.setFileName(foundFileSet.get().getFileName());
                 download.setStarted(LocalDateTime.now());
                 download.setIpAddress(httpServletRequest.getRemoteAddr());
+                download.setStatus("INPROGRESS");
 
                 Resource resource = storageService.loadAsResource(
                         Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString());
