@@ -142,15 +142,15 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         }
 
         //TODO: use the backend checkRecipient somehow.
-        if ($scope.currentUser().affiliations.includes("student", "affiliate")) {
+        if ($scope.currentUser().affiliations.includes("student") || $scope.currentUser().affiliations.includes("affiliate")) {
             return recipient.affiliations.includes("staff") ||
                 recipient.affiliations.includes("faculty") ||
-                $scope.getWhitelist().includes(recipient.uid);
+                $scope.getAllowlist().includes(recipient.uid);
         } else if($scope.currentUser().affiliations.includes("other")) {
             return recipient.affiliations.includes("staff") ||
                 recipient.affiliations.includes("faculty");
         } else {
-            return $scope.currentUser().affiliations.includes("staff", "faculty");
+            return $scope.currentUser().affiliations.includes("staff") || $scope.currentUser().affiliations.includes("faculty");
         }
     };
 }
