@@ -62,7 +62,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     $scope.getRecipients = function() {
         let recipients = [];
         $scope.recipients.forEach(function(recipient) {
-            recipients.push(recipient.mail ? recipient.mail : recipient.name);
+            recipients.push(recipient.uid ? recipient.uid : recipient.name);
         });
         return recipients.join(",");
     };
