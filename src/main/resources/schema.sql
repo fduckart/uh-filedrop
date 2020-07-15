@@ -4,11 +4,11 @@ CREATE TABLE filedrop (
   id int(11) NOT NULL AUTO_INCREMENT,
   uploader varchar(255) NOT NULL DEFAULT '',
   uploader_fullname varchar(255) DEFAULT NULL,
-  created datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  created timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   upload_key varchar(255) NOT NULL DEFAULT '',
   download_key varchar(255) NOT NULL DEFAULT '',
   encrypt_key varchar(255) NOT NULL DEFAULT '',
-  valid_until datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  valid_until timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   is_valid char(1) NOT NULL DEFAULT 'Y',
   require_auth char(1) NOT NULL DEFAULT 'N',
   PRIMARY KEY (id),
@@ -23,8 +23,8 @@ CREATE TABLE download (
   filedrop_id int(11) NOT NULL DEFAULT '0',
   file_name varchar(255) NOT NULL DEFAULT '',
   status_code VARCHAR(48) NOT NULL default 'INPROGRESS',
-  started datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  completed datetime DEFAULT NULL,
+  started timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  completed timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ip_addr varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (id),
   CONSTRAINT download_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
@@ -273,7 +273,8 @@ CREATE TABLE system_role (
 
 CREATE TABLE setting (
   id int(11) NOT NULL AUTO_INCREMENT,
-  key varchar(255) NOT NULL UNIQUE,
+  `key` varchar(255) NOT NULL,
   value varchar(255) NOT NULL,
-  PRIMARY KEY(id)
+  PRIMARY KEY(id),
+  UNIQUE (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
