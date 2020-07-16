@@ -5,6 +5,7 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
 
 import javax.annotation.PostConstruct;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -86,7 +88,11 @@ public class FileDropService {
     }
 
     public void expire(FileDrop fileDrop) {
+        Path directory = Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey());
         fileDrop.setValid(false);
+        List<FileSet> fileSets = fileSetRepository.findAllByFileDrop(fileDrop);
+        fileSets.forEach(fileSet -> fileSystemStorageService.delete(fileSet.getId().toString(), directory.toString()));
+        fileSystemStorageService.delete(directory);
         saveFileDrop(fileDrop);
     }
 

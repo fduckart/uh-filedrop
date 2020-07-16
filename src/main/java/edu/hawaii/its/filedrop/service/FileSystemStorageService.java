@@ -11,7 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.configuration.StorageProperties;
 import edu.hawaii.its.filedrop.exception.StorageException;
