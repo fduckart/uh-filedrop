@@ -111,7 +111,7 @@ public class Allowlist {
 
     @Override
     public String toString() {
-        return "Whitelist [id=" + id
+        return "Allowlist [id=" + id
                 + ", entry=" + entry
                 + ", registrant=" + registrant
                 + ", check=" + check
