@@ -10,6 +10,9 @@ public class FileDropInfo {
     private Integer downloads;
     private Integer fileDropId;
     private List<FileInfo> fileInfoList;
+    private boolean valid;
+    private String downloadKey;
+    private List<String> recipients;
 
     // Constructor.
     public FileDropInfo() {
@@ -62,6 +65,30 @@ public class FileDropInfo {
 
     public void setFileInfoList(List<FileInfo> fileInfoList) {
         this.fileInfoList = fileInfoList;
+    }
+
+    public boolean isValid() {
+        return valid;
+    }
+
+    public void setValid(boolean valid) {
+        this.valid = valid;
+    }
+
+    public String getDownloadKey() {
+        return downloadKey;
+    }
+
+    public void setDownloadKey(String downloadKey) {
+        this.downloadKey = downloadKey;
+    }
+
+    public List<String> getRecipients() {
+        return recipients;
+    }
+
+    public void setRecipients(List<String> recipients) {
+        this.recipients = recipients;
     }
 
     public static class FileInfo {

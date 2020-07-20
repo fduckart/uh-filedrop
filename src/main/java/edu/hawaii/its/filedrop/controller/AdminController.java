@@ -193,23 +193,7 @@ public class AdminController {
     @GetMapping("/api/admin/filedrops")
     public ResponseEntity<List<FileDropInfo>> getFileDrops() {
         logger.debug("User at api/admin/filedrops");
-        List<FileDropInfo> fileDrops = fileDropService.findAllFileDrop().stream().filter(FileDrop::isValid).map(fileDrop -> {
-            FileDropInfo fileDropInfo = new FileDropInfo();
-            fileDropInfo.setUploader(fileDrop.getUploader());
-            fileDropInfo.setCreated(fileDrop.getCreated());
-            fileDropInfo.setExpiration(fileDrop.getExpiration());
-            fileDropInfo.setFileDropId(fileDrop.getId());
-            fileDropInfo.setFileInfoList(fileDrop.getFileSet().stream().map(fileSet -> {
-                FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
-                fileInfo.setFileName(fileSet.getFileName());
-                fileInfo.setFileSize(fileSet.getSize());
-                fileInfo.setFileType(fileSet.getType());
-                fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
-                return fileInfo;
-            }).collect(toList()));
-            fileDropInfo.setDownloads(fileDropInfo.getFileInfoList().stream().mapToInt(FileDropInfo.FileInfo::getDownloads).sum());
-            return fileDropInfo;
-        }).collect(toList());
+        List<FileDropInfo> fileDrops = fileDropService.findAllFileDropsInfo().stream().filter(FileDropInfo::isValid).collect(toList());
         return ResponseEntity.ok().body(fileDrops);
     }
 

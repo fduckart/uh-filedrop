@@ -3,6 +3,7 @@ package edu.hawaii.its.filedrop.service;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
+import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
 import java.nio.file.Path;
@@ -14,7 +15,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -27,10 +27,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.User;
+import edu.hawaii.its.filedrop.repository.DownloadRepository;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.repository.RecipientRepository;
 import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.type.Recipient;
 
@@ -59,6 +61,9 @@ public class FileDropService {
 
     @Autowired
     private CipherService cipherService;
+
+    @Autowired
+    private DownloadRepository downloadRepository;
 
     @Value("${app.restrictions.sender.student}")
     private List<String> studentRestrictions;
@@ -215,12 +220,42 @@ public class FileDropService {
     public synchronized void checkFileDrops() {
         logger.debug("Starting expired FileDrops check");
 
-        List<FileDrop> expiredFileDrops = findAllFileDrop().stream().filter(fileDrop ->
+        List<FileDrop> expiredFileDrops = findAllFileDrops().stream().filter(fileDrop ->
             fileDrop.getExpiration().isBefore(LocalDateTime.now()) && fileDrop.isValid()).collect(Collectors.toList());
 
         expiredFileDrops.forEach(this::expire);
 
         logger.debug("Finished expired FileDrops check. " + expiredFileDrops.size() + " FileDrop(s) expired.");
+    }
+
+    public List<FileDropInfo> findAllFileDropsInfo() {
+        return findAllFileDrops().stream().map(fileDrop -> {
+            FileDropInfo fileDropInfo = new FileDropInfo();
+            fileDropInfo.setUploader(fileDrop.getUploader());
+            fileDropInfo.setCreated(fileDrop.getCreated());
+            fileDropInfo.setExpiration(fileDrop.getExpiration());
+            fileDropInfo.setFileDropId(fileDrop.getId());
+            fileDropInfo.setValid(fileDrop.isValid());
+            fileDropInfo.setDownloadKey(fileDrop.getDownloadKey());
+            fileDropInfo.setRecipients(fileDrop.getRecipients().stream().map(Recipient::getName).collect(toList()));
+            fileDropInfo.setFileInfoList(fileDrop.getFileSet().stream().map(fileSet -> {
+                FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
+                fileInfo.setFileName(fileSet.getFileName());
+                fileInfo.setFileSize(fileSet.getSize());
+                fileInfo.setFileType(fileSet.getType());
+                fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
+                return fileInfo;
+            }).collect(toList()));
+            fileDropInfo.setDownloads(fileDropInfo.getFileInfoList().stream().mapToInt(FileDropInfo.FileInfo::getDownloads).sum());
+            return fileDropInfo;
+        }).collect(toList());
+    }
+
+    public List<FileDropInfo> findAllUserFileDropInfo(User user) {
+        return findAllFileDropsInfo().stream().filter(fileDropInfo ->
+            fileDropInfo.getUploader().equals(user.getUsername()) ||
+            fileDropInfo.getRecipients().contains(user.getUsername()))
+            .collect(toList());
     }
 
     public FileSet saveFileSet(FileSet fileSet) {
@@ -251,7 +286,7 @@ public class FileDropService {
         return fileDropRepository.findOne(withUploadKey(key)).orElse(null);
     }
 
-    public List<FileDrop> findAllFileDrop() {
+    public List<FileDrop> findAllFileDrops() {
         return fileDropRepository.findAll();
     }
 }
