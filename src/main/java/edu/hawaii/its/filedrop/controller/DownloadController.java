@@ -29,6 +29,7 @@ import edu.hawaii.its.filedrop.service.FileSystemStorageService;
 import edu.hawaii.its.filedrop.type.Download;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
+import edu.hawaii.its.filedrop.type.Role;
 
 @Controller
 public class DownloadController {
@@ -136,20 +137,21 @@ public class DownloadController {
                             .findFirst();
 
             if (foundFileSet.isPresent()) {
-                Download download = new Download();
-                download.setFileDrop(fileDrop);
-                download.setFileName(foundFileSet.get().getFileName());
-                download.setStarted(LocalDateTime.now());
-                download.setIpAddress(httpServletRequest.getRemoteAddr());
-                download.setStatus("INPROGRESS");
-
                 Resource resource = storageService.loadAsResource(
-                        Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString());
+                    Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString());
 
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", fileSet: " + foundFileSet.get());
 
-                download.setCompleted(LocalDateTime.now());
-                downloadRepository.save(download);
+                if(!currentUser().hasRole(Role.SecurityRole.ADMINISTRATOR)) {
+                    Download download = new Download();
+                    download.setFileDrop(fileDrop);
+                    download.setFileName(foundFileSet.get().getFileName());
+                    download.setStarted(LocalDateTime.now());
+                    download.setIpAddress(httpServletRequest.getRemoteAddr());
+                    download.setStatus("INPROGRESS");
+                    download.setCompleted(LocalDateTime.now());
+                    downloadRepository.save(download);
+                }
 
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)

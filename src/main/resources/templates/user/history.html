@@ -1,0 +1,73 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="header :: copy"></head>
+    <body ng-app="filedropApp">
+    <script th:inline="javascript">
+        var user = [[${user}]];
+    </script>
+    <nav th:replace="menubar :: copy"></nav>
+
+    <div class="container" ng-controller="HistoryJsController" ng-init="init()">
+        <div class="row justify-content-center mb-2">
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
+                    </div>
+                    <input placeholder="Search UH username, date..." class="form-control" type="search"
+                           ng-model="filter"
+                           aria-describedby="search">
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-sm-8">
+                <div class="card mb-2"
+                     ng-if="fileDrops.length > 0"
+                     ng-class="{'border-danger': !fileDrop.valid, 'border-success': fileDrop.valid}"
+                     ng-repeat="fileDrop in fileDrops | orderBy:['-valid', -isRecipient, '-created'] | filter:filter"
+                     ng-cloak
+                     ng-controller="HistoryCardController">
+                    <div class="card-header">
+                        <span class="h5">Uploader: {{ fileDrop.uploader }}</span>
+                        <button class="btn btn-outline-primary float-right" ng-click="isCollapsed = !isCollapsed">{{ isCollapsed ? 'More Info' : 'Less Info' }}</button>
+                    </div>
+                    <div uib-collapse="isCollapsed" class="card-body">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="lead">
+                                    <span>Uploaded: {{ fileDrop.created }}</span>
+                                    <span class="float-right">{{ fileDrop.valid ? 'Expires' : 'Expired' }}: {{ fileDrop.expiration }}</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <span class="lead">Files:</span>
+                                <div class="mt-1 mb-3">
+                                    <ul class="list-group">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="fileSet in fileDrop.fileInfoList">
+                                            {{ fileSet.fileName }}
+                                            <span class="badge badge-primary badge-pill"><i class="fa fa-cloud-download"></i>&nbsp;{{ fileSet.downloads }}</span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-footer bg-transparent" ng-if="fileDrop.valid">
+                        <a ng-href="/filedrop/dl/{{fileDrop.downloadKey}}" class="btn btn-outline-success">View</a>
+                    </div>
+                </div>
+                <div class="text-center" ng-if="fileDrops.length == 0">
+                    <div class="spinner-border" style="width: 2rem; height: 2rem; text-align: center" role="status">
+                        <span class="sr-only">Loading FileDrops...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="footer :: copy"></div>
+    </body>
+</html>

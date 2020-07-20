@@ -1,10 +1,14 @@
 package edu.hawaii.its.filedrop.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,10 +18,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
+import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.Message;
 import edu.hawaii.its.filedrop.util.Files;
 
@@ -49,6 +56,9 @@ public class HomeController {
 
     @Autowired
     private SpaceCheckService spaceCheckService;
+
+    @Autowired
+    private FileDropService fileDropService;
 
     @GetMapping(value = { "/", "/home" })
     public String home(Model model) {
@@ -124,6 +134,24 @@ public class HomeController {
         model.addAttribute("user", currentUser());
 
         return "user/user";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/history")
+    public String history(Model model) {
+        model.addAttribute("user", currentUser().getUsername());
+        logger.debug("User at history");
+        return "user/history";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @GetMapping("/api/filedrops")
+    public ResponseEntity<List<FileDropInfo>> findUserFileDrops() {
+        logger.debug(currentUser().getUsername() + " looked for their FileDrops");
+
+        List<FileDropInfo> fileDrops = fileDropService.findAllUserFileDropInfo(currentUser());
+
+        return ResponseEntity.ok().body(fileDrops);
     }
 
     @GetMapping(value = "/404")

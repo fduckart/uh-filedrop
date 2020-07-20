@@ -304,7 +304,7 @@ public class FileDropServiceTest {
 
         assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
         assertEquals(2, fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());
-        assertNotEquals(fileDropService.findAllFileDrop().size(), 0);
+        assertNotEquals(fileDropService.findAllFileDrops().size(), 0);
     }
 
     @Test
@@ -544,8 +544,9 @@ public class FileDropServiceTest {
 
         fileDrop = fileDropService.findFileDrop(2);
         assertThat(fileDrop.getUploader(), equalTo("test"));
-        assertThat(fileDrop.getRecipients().size(), equalTo(1));
+        assertThat(fileDrop.getRecipients().size(), equalTo(2));
         assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(true));
+        assertThat(fileDropService.containsRecipient(fileDrop, "lukemcd9"), equalTo(true));
 
         assertThat(fileDropService.isAuthorized(fileDrop, "test"), equalTo(true));
         assertThat(fileDropService.isAuthorized(fileDrop, "TEST"), equalTo(true));

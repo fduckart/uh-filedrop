@@ -2,6 +2,7 @@ package edu.hawaii.its.filedrop.controller;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
@@ -9,6 +10,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrlPattern;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -233,6 +235,23 @@ public class HomeControllerTest {
         mockMvc.perform(get("/help/permissions"))
             .andExpect(status().isOk())
             .andExpect(view().name("help/permissions"));
+    }
+
+    @Test
+    @WithMockUhUser
+    public void historyTest() throws Exception {
+        mockMvc.perform(get("/history"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("user/history"))
+            .andExpect(model().attributeExists("user"));
+    }
+
+    @Test
+    @WithMockUhUser(username = "test")
+    public void fileDropsTest() throws Exception {
+        mockMvc.perform(get("/api/filedrops"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$", hasSize(2)));
     }
 
 }
