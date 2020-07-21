@@ -32,6 +32,7 @@
     <popper.js-version>1.16.0</popper.js-version>
     <angularjs-version>1.7.9</angularjs-version>
     <angular-mocks-version>1.7.5</angular-mocks-version>
+    <js-tests.skip>false</js-tests.skip>
 
     <spotbugs-maven-plugin.version>4.0.0</spotbugs-maven-plugin.version>
     <pmd.plugin.version>3.11.0</pmd.plugin.version>
@@ -364,6 +365,7 @@
           </execution>
         </executions>
         <configuration>
+          <skipJasmineTests>${js-tests.skip}</skipJasmineTests>
           <jsSrcDir>${project.build.outputDirectory}/static/javascript</jsSrcDir>
           <jsTestSrcDir>${project.build.testOutputDirectory}/javascript</jsTestSrcDir>
           <preloadSources>
