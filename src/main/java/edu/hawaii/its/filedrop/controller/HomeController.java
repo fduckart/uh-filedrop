@@ -1,9 +1,7 @@
 package edu.hawaii.its.filedrop.controller;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +21,6 @@ import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
-import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.Message;
 import edu.hawaii.its.filedrop.util.Files;
@@ -103,7 +100,7 @@ public class HomeController {
     @GetMapping(value = { "/help" })
     public String help(Model model) {
         logger.debug("User at help.");
-        model.addAttribute("maxSize", FileUtils.byteCountToDisplaySize(maxSize));
+        model.addAttribute("maxSize", Files.byteCountToDisplaySize(maxSize));
         return "help/faq";
     }
 
@@ -116,7 +113,7 @@ public class HomeController {
     @GetMapping(value = { "/help/faq", "/help/faqs" })
     public String faq(Model model) {
         logger.debug("User at faq.");
-        model.addAttribute("maxSize", FileUtils.byteCountToDisplaySize(maxSize));
+        model.addAttribute("maxSize", Files.byteCountToDisplaySize(maxSize));
         return "help/faq";
     }
 
