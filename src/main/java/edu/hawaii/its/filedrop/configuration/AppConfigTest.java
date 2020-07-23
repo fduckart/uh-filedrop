@@ -12,7 +12,8 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.ldap.core.support.LdapContextSource;
-import org.springframework.util.Assert;
+
+import edu.hawaii.its.filedrop.exception.PropertyNotSetException;
 
 @Profile(value = { "test", "prod" })
 @Configuration(value = "appConfig")
@@ -35,10 +36,13 @@ public class AppConfigTest extends AppConfig {
     @PostConstruct
     public void init() {
         logger.info("AppConfigRun init");
-        Assert.isTrue(springDatasourceInitialize.equals("never"),
-                "Property 'spring.datasource.initialization-mode' should be never.");
-        Assert.isTrue(hibernateDdlAuto.equals("none"),
-                "Property 'spring.jpa.hibernate.ddl-auto' should be none.");
+        if(!springDatasourceInitialize.equals("never")) {
+            throw new PropertyNotSetException("spring.datasource.initialization-mode", "never", springDatasourceInitialize);
+        }
+
+        if(!hibernateDdlAuto.equals("none")) {
+            throw new PropertyNotSetException("spring.jpa.hibernate.ddl-auto", "none", hibernateDdlAuto);
+        }
     }
 
     @Bean
