@@ -1,0 +1,31 @@
+<div class="modal fade" tabindex="-1" role="dialog" id="settingsModal" th:fragment="copy">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Add Setting</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="settingsForm" th:action="@{/admin/settings}" method="POST">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="key">Key</label>
+                        <input type="text" class="form-control" aria-label="key"
+                               aria-describedby="setting-key" id="key" name="key" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="value">Value</label>
+                        <input type="text" class="form-control" aria-label="value"
+                               aria-describedby="setting-value" id="value"
+                               name="value" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-success" type="submit">Save</button>
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

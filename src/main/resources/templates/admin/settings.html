@@ -15,13 +15,20 @@
         </div>
     </div>
     <div class="card">
-        <div class="card-header bg-transparent pb-0">
-            <h5 class="card-title">Settings</h5>
+        <div class="card-header bg-transparent">
+            <div class="row">
+                <div class="col-sm-8">
+                    <h5 class="card-title mt-2">Settings</h5>
+                </div>
+                <div class="col-sm-4">
+                    <button class="btn btn-primary float-md-right" data-toggle="modal" data-target="#settingsModal">Add</button>
+                </div>
+            </div>
         </div>
         <div class="card-body">
             <div class="row" th:each="setting : ${settings}">
                 <div class="col-sm-8 mb-3">
-                    <form th:action="@{/admin/settings}" method="POST">
+                    <form th:action="@{/admin/settings/{id}(id=${setting.id})}" method="POST">
                         <div class="input-group">
                             <div class="input-group-prepend">
                                 <span class="input-group-text" th:text="${setting.getKey()}"></span>
@@ -41,7 +48,7 @@
     </div>
 </div>
 <!-- / Content container. -->
-
+<div th:replace="admin/settings-modal :: copy"></div>
 <div th:replace="footer :: copy"></div>
 </body>
 </html>

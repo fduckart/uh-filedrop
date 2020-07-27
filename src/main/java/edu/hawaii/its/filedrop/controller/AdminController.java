@@ -26,7 +26,6 @@ import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.repository.DownloadRepository;
 import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
@@ -66,9 +65,6 @@ public class AdminController {
 
     @Autowired
     private FileDropService fileDropService;
-
-    @Autowired
-    private DownloadRepository downloadRepository;
 
     @Autowired
     private ApplicationService applicationService;
@@ -231,15 +227,29 @@ public class AdminController {
         return "admin/settings";
     }
 
-    @PostMapping("/admin/settings")
-    public String changeSetting(@RequestParam("id") Integer id,
+    @PostMapping("/admin/settings/{id}")
+    public String changeSetting(@PathVariable("id") Integer id,
                                 @RequestParam("value") String value,
                                 RedirectAttributes redirectAttributes) {
         Setting setting = applicationService.findSetting(id);
         setting.setValue(value);
         setting = applicationService.saveSetting(setting);
         logger.debug("changeSetting; User changed setting: " + setting);
-        redirectAttributes.addFlashAttribute("alert", "Saved setting.");
+        redirectAttributes.addFlashAttribute("alert", "Setting modified");
+        return "redirect:/admin/settings";
+    }
+
+    @PostMapping("/admin/settings")
+    public String addSetting(@RequestParam("key") String key,
+                             @RequestParam("value") String value,
+                             RedirectAttributes redirectAttributes) {
+        Setting setting = new Setting();
+        setting.setKey(key);
+        setting.setValue(value);
+        setting = applicationService.saveSetting(setting);
+        applicationService.evictSettingCache();
+        logger.debug("addSetting; User created new setting: " + setting);
+        redirectAttributes.addFlashAttribute("alert", "Setting added");
         return "redirect:/admin/settings";
     }
 
