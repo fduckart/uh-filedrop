@@ -19,5 +19,11 @@ public class PropertyNotSetExceptionTest {
         assertNotNull(propertyNotSetException);
         assertThat(propertyNotSetException.getMessage(), containsString("test"));
         assertThat(propertyNotSetException.getCause().getMessage(), equalTo("message"));
+
+        propertyNotSetException = new PropertyNotSetException("property", "test", "value");
+        assertNotNull(propertyNotSetException);
+        assertThat(propertyNotSetException.getMessage(), containsString("Property (property)"));
+        assertThat(propertyNotSetException.getMessage(), containsString("expected: 'test'"));
+        assertThat(propertyNotSetException.getMessage(), containsString("actual: 'value'"));
     }
 }
