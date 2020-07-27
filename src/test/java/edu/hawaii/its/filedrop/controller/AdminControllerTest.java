@@ -28,6 +28,7 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,8 +53,8 @@ import com.icegreen.greenmail.util.ServerSetup;
 import com.jayway.jsonpath.JsonPath;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.AllowlistService;
+import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.type.Allowlist;
 import edu.hawaii.its.filedrop.type.Setting;
 
@@ -506,6 +507,7 @@ public class AdminControllerTest {
                 .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
 
+    @Ignore
     @Test
     @WithMockUhAdmin
     public void expireTest() throws Exception {
@@ -531,21 +533,21 @@ public class AdminControllerTest {
     @WithAnonymousUser
     public void settingsAnonymousTest() throws Exception {
         mockMvc.perform(get("/admin/settings"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
 
         mockMvc.perform(post("/admin/settings"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
 
     @Test
     @WithMockUhAdmin
     public void settingsTest() throws Exception {
         mockMvc.perform(get("/admin/settings"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("admin/settings"))
-            .andExpect(model().attributeExists("settings"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/settings"))
+                .andExpect(model().attributeExists("settings"));
 
         mockMvc.perform(post("/admin/settings/1")
             .param("value", "false"))
