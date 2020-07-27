@@ -40,6 +40,13 @@
             <div class="row">
                 <div class="col-sm-12 mb-3">
                     <label for="recipient" class="filedrop-label">Recipients</label>
+
+                    <a href="#" class="ml-1"
+                       th:attr="uib-popover=#{prepare.recipient.popup.text}, popover-title=#{prepare.recipient.popup.title}"
+                       popover-trigger="'mouseenter click'">
+                        <i class="fa fa-info-circle fa-lg"></i>
+                    </a>
+
                     <form ng-submit="addRecipient(recipient)">
                         <div class="input-group">
                             <input class="form-control" id="recipient" type="search" name="recipient"
@@ -128,6 +135,10 @@
             </div>
         </div>
     </div>
+
+    <script type="text/ng-template" id="popover">
+        <span th:text="#{prepare.recipient.popup.text}"></span>
+    </script>
 
     <div th:replace="user/prepare-modal :: copy"></div>
 </div>

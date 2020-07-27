@@ -117,7 +117,7 @@ public class HomeController {
         return "help/faq";
     }
 
-    @GetMapping("/help/permissions")
+    @GetMapping(value = {"/help/permissions", "/help/permission", "/help/restrictions", "/help/restriction"})
     public String permissions() {
         logger.debug("User at help/permissions");
         return "help/permissions";
@@ -162,10 +162,5 @@ public class HomeController {
 
     private User currentUser() {
         return userContextService.getCurrentUser();
-    }
-
-    @ModelAttribute("maxSize")
-    public String maxSizeDisplay() {
-        return Files.byteCountToDisplaySize(maxSize);
     }
 }

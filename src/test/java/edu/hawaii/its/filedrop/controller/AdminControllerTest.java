@@ -549,22 +549,27 @@ public class AdminControllerTest {
                 .andExpect(view().name("admin/settings"))
                 .andExpect(model().attributeExists("settings"));
 
-        mockMvc.perform(post("/admin/settings")
-                .param("id", "1")
-                .param("value", "false"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/settings"))
-                .andExpect(flash().attributeExists("alert"));
+        mockMvc.perform(post("/admin/settings/1")
+            .param("value", "false"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/admin/settings"))
+            .andExpect(flash().attributeExists("alert"));
 
         Setting setting = applicationService.findSetting(1);
         assertThat(setting.getValue(), equalTo("false"));
 
+        mockMvc.perform(post("/admin/settings/1")
+            .param("value", "true"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/admin/settings"))
+            .andExpect(flash().attributeExists("alert"));
+
         mockMvc.perform(post("/admin/settings")
-                .param("id", "1")
-                .param("value", "true"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/admin/settings"))
-                .andExpect(flash().attributeExists("alert"));
+            .param("key", "test")
+            .param("value", "1"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/admin/settings"))
+            .andExpect(flash().attributeExists("alert"));
     }
 
     public String objectToJSON(Allowlist allowlist) throws JsonProcessingException {
