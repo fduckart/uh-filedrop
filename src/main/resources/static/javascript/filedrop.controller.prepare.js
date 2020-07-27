@@ -32,12 +32,12 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
             if (data.cn && checkRecipient) {
                 $log.debug("addRecipient; ", $scope.currentUser().uid, "searched", recipient, "and found", data.cn);
                 $scope.recipients.push({ name: data.cn, mail: data.mails[0], uid: data.uid });
-            } else if (recipient.indexOf("@") > -1) {
+            } else if (recipient.indexOf("@") > -1 && !recipient.endsWith("hawaii.edu")) {
                 if ($scope.authentication) {
                     $scope.showPopup();
                     return;
                 } else {
-                    $scope.recipients.push({ name: recipient });
+                    $scope.recipients.push({ name: recipient, mail: recipient });
                 }
             }
             $scope.recipient = "";
@@ -69,7 +69,9 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
     $scope.hasRecipient = function(recipient) {
         return $scope.recipients.includes($scope.recipients.find(function(r) {
-            return (r.uid ? r.uid.toUpperCase() === recipient.toUpperCase() : false) || r.name.toUpperCase() === recipient.toUpperCase();
+            return (r.uid ? r.uid.toUpperCase() === recipient.toUpperCase() : false) ||
+                r.name.toUpperCase() === recipient.toUpperCase() ||
+                r.mail.toUpperCase() === recipient.toUpperCase();
         }));
     };
 
