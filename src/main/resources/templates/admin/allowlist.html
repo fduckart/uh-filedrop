@@ -6,48 +6,59 @@
 
 <!--  Content container -->
 <div class="container" ng-controller="AllowlistJsController" ng-init="init()" ng-cloak>
-    <div class="row mb-2">
-        <div class="col-sm-6">
-            <div class="input-group">
-                <div class="input-group-prepend">
-                    <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
+    <div class="card">
+        <div class="card-header bg-transparent pb-0">
+            <div class="row">
+                <div class="col-sm-2 align-center">
+                    <h5 class="card-title mt-2">Allowlist</h5>
                 </div>
-                <input placeholder="Search UH username, date..." class="form-control" type="search"
-                       ng-model="filter"
-                       aria-describedby="search">
+
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input placeholder="Search UH username, date..." class="form-control" type="search"
+                               ng-model="filter"
+                               aria-describedby="search">
+                    </div>
+                </div>
+
+                <div class="col-sm-2 mt-sm-2 mt-md-0">
+                    <button type="button" class="btn btn-primary float-md-right" ng-click="openAddModal()">Add</button>
+                </div>
             </div>
         </div>
-        <div class="col-sm-6">
-            <button type="button" class="btn btn-primary float-right" ng-click="openAddModal()">Add</button>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-sm-12">
-            <div class="table-responsive" ng-if="allowlist.length > 0">
-                <table class="table">
-                    <tr>
-                        <th>Entry</th>
-                        <th>Registrant</th>
-                        <th>Created</th>
-                        <th>Expired</th>
-                        <th></th>
-                    </tr>
-                    <tr ng-repeat="allowed in allowlist | filter:filter">
-                        <td>{{ allowed.entry }}</td>
-                        <td>{{ allowed.registrant }}</td>
-                        <td>{{ allowed.created | date:'MM/dd/yyyy' }}</td>
-                        <td>{{ allowed.expired }}</td>
-                        <td>
-                            <button class="btn btn-sm btn-danger" ng-click="openDeleteModal(allowed)">
-                                <i class="fa fa-trash"></i>
-                            </button>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div class="text-center" ng-if="allowlist.length == 0">
-                <div class="spinner-border" style="width: 2rem; height: 2rem; text-align: center" role="status">
-                    <span class="sr-only">Loading Allowlist...</span>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive" ng-if="allowlist.length > 0">
+                        <table class="table">
+                            <tr>
+                                <th>Entry</th>
+                                <th>Registrant</th>
+                                <th>Created</th>
+                                <th>Expired</th>
+                                <th></th>
+                            </tr>
+                            <tr ng-repeat="allowed in allowlist | filter:filter">
+                                <td>{{ allowed.entry }}</td>
+                                <td>{{ allowed.registrant }}</td>
+                                <td>{{ allowed.created | date:'MM/dd/yyyy' }}</td>
+                                <td>{{ allowed.expired }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" ng-click="openDeleteModal(allowed)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="text-center" ng-if="allowlist.length == 0">
+                        <div class="spinner-border" style="width: 2rem; height: 2rem; text-align: center" role="status">
+                            <span class="sr-only">Loading Allowlist...</span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
