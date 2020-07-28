@@ -65,7 +65,8 @@ public class ValidationControllerTest {
         server.start();
         mockMvc.perform(post("/validate")
             .param("name", "Jon Mess")
-            .param("email", "jmess@test.com"))
+            .param("value", "jmess@test.com")
+            .param("email", ""))
             .andExpect(view().name("validation/validation-sent"))
             .andExpect(model().attribute("email", "jmess@test.com"))
             .andReturn();
@@ -79,6 +80,17 @@ public class ValidationControllerTest {
         assertThat(validation.getAddress(), equalTo("jmess@test.com"));
         assertThat(validation.getIpAddress(), equalTo("0.0.0.0"));
         assertTrue(validation.getCreated().isBefore(LocalDateTime.now()));
+    }
+
+    @Test
+    public void validateSpamTest() throws Exception {
+        mockMvc.perform(post("/validate")
+            .param("name", "Jon Mess")
+            .param("value", "jmess@test.com")
+            .param("email", "spam@test.com"))
+            .andExpect(view().name("validation/validation-sent"))
+            .andExpect(model().attribute("email", "spam@test.com"))
+            .andReturn();
     }
 
 }
