@@ -30,29 +30,37 @@ public class ValidationController {
     private ValidationRepository validationRepository;
 
     @PostMapping("/validate")
-    public String validation(HttpServletRequest request, Model model, @RequestParam("name") String name, @RequestParam("email") String email) {
-        Validation validation = new Validation();
-        validation.setValidationKey(Strings.generateRandomString());
-        validation.setName(name);
-        validation.setAddress(email);
-        validation.setCreated(LocalDateTime.now());
-        validation.setIpAddress(request.getRemoteAddr());
+    public String validation(HttpServletRequest request,
+                             Model model,
+                             @RequestParam("name") String name,
+                             @RequestParam("value") String email,
+                             @RequestParam("email") String valid) {
 
-        validation = validationRepository.save(validation);
+        if (valid.isEmpty()) {
+            Validation validation = new Validation();
+            validation.setValidationKey(Strings.generateRandomString());
+            validation.setName(name);
+            validation.setAddress(email);
+            validation.setCreated(LocalDateTime.now());
+            validation.setIpAddress(request.getRemoteAddr());
 
-        Mail mail = new Mail();
-        mail.setTo(email);
-        mail.setFrom(emailService.getFrom());
+            validation = validationRepository.save(validation);
 
-        Context context = new Context();
-        context.setVariable("email", email);
+            Mail mail = new Mail();
+            mail.setTo(email);
+            mail.setFrom(emailService.getFrom());
 
-        emailService.send(mail, "validation", context);
+            Context context = new Context();
+            context.setVariable("email", email);
 
-        model.addAttribute("email", email);
+            emailService.send(mail, "validation", context);
 
-        logger.debug("validation; " + validation);
-
+            logger.debug("validation; " + validation);
+            model.addAttribute("email", email);
+        } else {
+            model.addAttribute("email", valid);
+            logger.debug("validation; spam: " + " name=" + name + " email=" + email + "valid=" + valid);
+        }
         return "validation/validation-sent";
     }
 }
