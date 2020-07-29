@@ -34,11 +34,11 @@
                     </div>
                     <div uib-collapse="isCollapsed" class="card-body">
                         <div class="row">
-                            <div class="col-sm-12">
-                                <span class="lead">
-                                    <span>Uploaded: {{ fileDrop.created }}</span>
-                                    <span class="float-right">{{ fileDrop.valid ? 'Expires' : 'Expired' }}: {{ fileDrop.expiration }}</span>
-                                </span>
+                            <div class="col-sm-12 col-md-6">
+                                <span class="lead text-nowrap">Uploaded: {{ fileDrop.created }}</span>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <span class="lead float-md-right">{{ fileDrop.valid ? 'Expires' : 'Expired' }}: {{ fileDrop.expiration }}</span>
                             </div>
                         </div>
                         <div class="row">
