@@ -1,5 +1,6 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
@@ -115,8 +116,8 @@ public class AllowlistServiceTest {
     @Test
     public void addCheckThresholdTest() {
         Allowlist allowlist = new Allowlist();
-        allowlist.setEntry("New Person");
-        allowlist.setRegistrant("Same Old Mistakes");
+        allowlist.setEntry("jwlennon");
+        allowlist.setRegistrant("help");
         allowlist.setCheck(0);
         LocalDateTime localDate = LocalDateTime.of(2019, 12, 31, 0, 0, 0);
         allowlist.setCreated(localDate);
@@ -130,7 +131,13 @@ public class AllowlistServiceTest {
 
         assertEquals(threshold, check);
         assertTrue(allowlist.isExpired());
-        assertTrue(allowlistService.isAllowlisted("New Person"));
+        assertTrue(allowlistService.isAllowlisted("jwlennon"));
+
+        allowlistService.checkAllowlists();
+
+        allowlist = allowlistService.findAllowList(allowlist.getId());
+        assertThat(allowlist.getCheck(), equalTo(0));
+        assertFalse(allowlist.isExpired());
     }
 
     @Test
