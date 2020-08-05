@@ -4,6 +4,7 @@ import static java.util.stream.Collectors.toList;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,11 +30,11 @@ import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.AllowlistService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.ProcessVariableHolder;
-import edu.hawaii.its.filedrop.service.AllowlistService;
 import edu.hawaii.its.filedrop.service.WorkflowService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
@@ -330,6 +332,7 @@ public class PrepareController {
         }
 
         model.addAttribute("uid", user.getUid());
+        model.addAttribute("cn", user.getName());
         model.addAttribute("mails", user.getAttributes().getMail());
         model.addAttribute("affiliations", user.getAttributes().getAffiliation());
         model.addAttribute("allowlist", allowlistService.getAllAllowlistUids());
@@ -340,6 +343,25 @@ public class PrepareController {
         }
 
         return "user/prepare";
+    }
+
+    @PreAuthorize("isAuthenticated()")
+    @PostMapping(value = { "/prepare/recipient/add" })
+    public ResponseEntity<?> addRecipient(@RequestParam("recipient") String user,
+                                          @RequestParam("authenticationRequired") Boolean authRequired) {
+        LdapPerson person = ldapService.findByUhUuidOrUidOrMail(user);
+
+        if (!person.isValid() && authRequired) {
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                .body(Collections.singletonMap("message", "Could not add non-UH recipient when authentication is required."));
+        }
+
+        if (fileDropService.checkRecipient(currentUser(), person, authRequired)) {
+            return ResponseEntity.ok().body(person);
+        }
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+            .body(Collections.singletonMap("message", "Could not add recipient due to restrictions."));
     }
 
     @GetMapping(value = "/helpdesk")

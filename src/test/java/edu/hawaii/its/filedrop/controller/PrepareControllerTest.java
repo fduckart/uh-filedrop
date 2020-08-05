@@ -13,6 +13,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
@@ -395,6 +396,62 @@ public class PrepareControllerTest {
                 .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+                .param("recipient", "jwlennon")
+                .param("authenticationRequired", "true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").exists())
+                .andExpect(jsonPath("$.cn").value("John W Lennon"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "teststudent")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test Student"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test21")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test Staff2"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "user")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test User"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "false"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").isEmpty());
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "help")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("ITS Help Desk"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "uhmfund")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
     }
 
     @Test
@@ -421,10 +478,66 @@ public class PrepareControllerTest {
                 .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "jwlennon")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("John W Lennon"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "teststudent")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test Student"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test21")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test Staff2"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "user")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test User"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "false"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").isEmpty());
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "help")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("ITS Help Desk"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "uhmfund")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
     }
 
     @Test
-    @WithMockUhUser(affiliation = "student")
+    @WithMockUhUser(affiliation = "student", username = "student")
     public void restrictionsStudentTest() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
@@ -447,10 +560,66 @@ public class PrepareControllerTest {
                 .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "jwlennon")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("John W Lennon"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "teststudent")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test21")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test Staff2"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "user")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "false"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").isEmpty());
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "help")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("ITS Help Desk"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "uhmfund")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
     }
 
     @Test
-    @WithMockUhUser(affiliation = "affiliate")
+    @WithMockUhUser(affiliation = "affiliate", username = "affiliate")
     public void restrictionsAffiliateTest() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
@@ -473,10 +642,66 @@ public class PrepareControllerTest {
                 .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "jwlennon")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("John W Lennon"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "teststudent")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test21")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test Staff2"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "user")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "false"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").isEmpty());
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "help")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("ITS Help Desk"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "uhmfund")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
     }
 
     @Test
-    @WithMockUhUser(affiliation = "other")
+    @WithMockUhUser(affiliation = "other", username = "other")
     public void restrictionsOtherTest() throws Exception {
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
@@ -508,5 +733,61 @@ public class PrepareControllerTest {
                 .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "jwlennon")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("John W Lennon"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "teststudent")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test21")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").value("Test Staff2"));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "user")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "test@google.com")
+            .param("authenticationRequired", "false"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.cn").isEmpty());
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "help")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
+
+        mockMvc.perform(post("/prepare/recipient/add")
+            .param("recipient", "uhmfund")
+            .param("authenticationRequired", "true"))
+            .andExpect(status().is4xxClientError())
+            .andExpect(jsonPath("$").exists())
+            .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
     }
 }

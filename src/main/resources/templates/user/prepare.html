@@ -5,9 +5,9 @@
 <script th:inline="javascript">
     /*<![CDATA[*/
     var user = {
+        cn: [[${cn}]],
         uid: [[${uid}]],
-        mails: [[${mails}]],
-        affiliations: [[${affiliations}]]
+        mails: [[${mails}]]
     };
     var fileDrop = {
         sender: [[${sender}]],
@@ -16,7 +16,6 @@
         authentication: [[${authentication}]],
         message: [[${message}]]
     };
-    var allowlist = [[${allowlist}]];
     /*]]>*/
 </script>
 <nav th:replace="menubar :: copy"></nav>
@@ -41,28 +40,32 @@
                 <div class="col-sm-12 mb-3">
                     <label for="recipient" class="filedrop-label">Recipients</label>
 
-                    <a href="#" class="ml-1"
+                    <span href="#" class="ml-1 text-primary"
                        th:attr="uib-popover=#{prepare.recipient.popup.text}, popover-title=#{prepare.recipient.popup.title}"
                        popover-trigger="'mouseenter click'">
                         <i class="fa fa-info-circle fa-lg"></i>
-                    </a>
+                    </span>
 
                     <form ng-submit="addRecipient(recipient)">
                         <div class="input-group">
                             <input class="form-control" id="recipient" type="search" name="recipient"
-                                ng-model="recipient"
-                                placeholder="UH username, email address..." valid-recipient=“true”>
+                                   ng-change="error = null"
+                                   ng-model="recipient"
+                                   placeholder="UH username, email address..." valid-recipient="true"
+                                   ng-class="{ 'is-invalid': error }">
                             <div class="input-group-append">
                                 <button type="submit" ng-disabled="recipient.length === 0"
                                     class="btn btn-primary mx-2">Add Recipient
                                 </button>
                                 <button type="button" ng-click="sendSelf()" ng-disabled="disableSendSelf() || recipient.length > 0"
-                                    class="btn btn-success">Send To Self
+                                        class="btn btn-success">
+                                    Send To Self
                                 </button>
                             </div>
                         </div>
+                        <small ng-if="error" ng-cloak class="form-text text-danger">{{ error.message }}</small>
                     </form>
-                    <ul class="list-inline mt-1" ng-cloak>
+                    <ul class="list-inline my-1" ng-cloak>
                         <li ng-repeat="r in recipients" class="mr-2 my-1 list-inline-item">
                             <span class="badge badge-light border-secondary border"
                                 style="font-size: .85em; color: #4d4d4d">

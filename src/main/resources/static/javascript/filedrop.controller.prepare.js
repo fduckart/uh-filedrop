@@ -17,32 +17,51 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         $log.debug("init; FileDrop Sender:", $scope.getFileDrop().sender);
     };
 
-    $scope.addRecipient = function (recipient) {
+    $scope.addRecipient = function(recipient) {
+        const currentUser = $scope.currentUser();
+
         if ($scope.hasRecipient(recipient)) {
             return;
         }
 
-        if (recipient === $scope.currentUser().uid) {
+        if (recipient === currentUser.uid || currentUser.mails.includes(recipient)) {
             $scope.sendToSelf = true;
+            $scope.recipients.push({ name: currentUser.cn, mail: currentUser.mails[0], uid: currentUser.uid });
+            $scope.recipient = "";
+            return;
         }
 
-        dataProvider.loadData(function(response) {
-            const data = response.data;
-            const checkRecipient = $scope.checkRecipient(data);
-            if (data.cn && checkRecipient) {
-                $log.debug("addRecipient; ", $scope.currentUser().uid, "searched", recipient, "and found", data.cn);
-                $scope.recipients.push({ name: data.cn, mail: data.mails[0], uid: data.uid });
-            } else if (recipient.indexOf("@") > -1 && !recipient.endsWith("hawaii.edu")) {
-                if ($scope.authentication) {
-                    $scope.showPopup();
-                    return;
-                } else {
-                    $scope.recipients.push({ name: recipient, mail: recipient });
-                }
+        $http({
+            method: "POST",
+            url: "/filedrop/prepare/recipient/add",
+            params: {
+                recipient: recipient,
+                authenticationRequired: $scope.authentication
             }
-            $scope.recipient = "";
-        }, "/filedrop/api/ldap/" + recipient);
-    };
+        })
+        .then((response) => {
+            const person = response.data;
+            $log.debug("addRecipient;", currentUser.uid, "searched", recipient, "and found", person.cn);
+            if ($scope.isEmptyPerson(person)) {
+                $scope.recipients.push({name: recipient, mail: recipient})
+            } else {
+                $scope.recipients.push({name: person.cn, mail: person.mails[0], uid: person.uid});
+            }
+        },
+        (response) => {
+            $log.debug("addRecipient;", response.data.message);
+            $scope.error = { message: response.data.message };
+            if (response.status === 405) {
+                $scope.showPopup();
+            }
+        });
+
+        $scope.recipient = "";
+    }
+
+    $scope.isEmptyPerson = function (person) {
+        return !person.cn && !person.uid && person.mails.length === 0;
+    }
 
     $scope.removeRecipient = function(recipient) {
         if ($scope.currentUser().mails.includes(recipient.mail)) {
@@ -53,10 +72,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         if (index > -1) {
             $scope.recipients.splice(index, 1);
         }
-    };
-
-    $scope.clearRecipient = function() {
-        $scope.recipient = "";
     };
 
     $scope.getRecipients = function() {
@@ -131,29 +146,9 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
     $scope.getMessage = () => $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
 
-    $scope.getAllowlist = () => $window.allowlist;
-
     $scope.sender = {
         model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.currentUser().mails[0],
         mails: $scope.currentUser().mails
-    };
-
-    $scope.checkRecipient = function(recipient) {
-        if (recipient.uid === $scope.currentUser().uid) {
-            return true;
-        }
-
-        //TODO: use the backend checkRecipient somehow.
-        if ($scope.currentUser().affiliations.includes("student") || $scope.currentUser().affiliations.includes("affiliate")) {
-            return recipient.affiliations.includes("staff") ||
-                recipient.affiliations.includes("faculty") ||
-                $scope.getAllowlist().includes(recipient.uid);
-        } else if($scope.currentUser().affiliations.includes("other")) {
-            return recipient.affiliations.includes("staff") ||
-                recipient.affiliations.includes("faculty");
-        } else {
-            return $scope.currentUser().affiliations.includes("staff") || $scope.currentUser().affiliations.includes("faculty");
-        }
     };
 }
 
@@ -165,7 +160,7 @@ function PrepareModalController($scope, $uibModalInstance) {
     };
 
     $scope.cancel = function () {
-        $uibModalInstance.dismiss('cancel');
+        $uibModalInstance.dismiss();
     }
 }
 
