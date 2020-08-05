@@ -1,7 +1,7 @@
 <script type="text/ng-template" id="allowlistDeleteModal.html" th:fragment="copy">
     <div class="modal-header">
         <h5 class="modal-title">Delete Allowlist</h5>
-        <button type="button" class="close" ng-click="$dismiss('cancel')" aria-label="Close">
+        <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -32,7 +32,7 @@
 <script type="text/ng-template" id="allowlistAddModal.html" th:fragment="copy">
     <div class="modal-header">
         <h5 class="modal-title">New Allowlist</h5>
-        <button type="button" class="close" ng-click="$dismiss('cancel')" aria-label="Close">
+        <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
@@ -53,7 +53,7 @@
         </div>
         <div class="modal-footer">
             <button class="btn btn-success" type="submit">Save</button>
-            <button class="btn btn-secondary" type="button" ng-click="$dismiss('cancel')">Cancel</button>
+            <button class="btn btn-secondary" type="button" ng-click="$dismiss()">Cancel</button>
         </div>
     </form>
 </script>

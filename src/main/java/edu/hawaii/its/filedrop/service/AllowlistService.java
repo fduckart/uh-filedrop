@@ -64,6 +64,11 @@ public class AllowlistService {
         for (Allowlist allowlist : findAllAllowList()) {
             if (!ldapService.findByUhUuidOrUidOrMail(allowlist.getRegistrant()).isValid()) {
                 addCheck(allowlist, 1);
+            } else if (allowlist.isExpired()) {
+                allowlist.setExpired(false);
+                allowlist.setCheck(0);
+                addAllowlist(allowlist);
+                logger.debug("checkAllowlist; Unexpired: " + allowlist);
             }
         }
         logger.debug("Finished allowlist check.");
