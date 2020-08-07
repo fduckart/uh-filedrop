@@ -6,6 +6,12 @@
 
 <!--  Content container -->
 <div class="container" ng-controller="DashboardJsController" ng-init="init()">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/admin}">Admin</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+        </ol>
+    </nav>
     <div class="alert alert-success alert-dismissable" th:if="${addExpiration}">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span
             aria-hidden="true">&times;</span></button>

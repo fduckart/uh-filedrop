@@ -7,6 +7,12 @@
 
     <!--  Content container -->
     <div class="container" ng-controller="CampusJsController" data-ng-init="init()">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin}">Admin</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Campuses</li>
+            </ol>
+        </nav>
         <div class="card">
             <div class="card-header">
                 <form class="form-inline">

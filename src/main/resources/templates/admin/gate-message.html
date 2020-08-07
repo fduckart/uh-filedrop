@@ -5,6 +5,12 @@
 <body>
     <nav th:replace="menubar :: copy"></nav>
     <div class="container">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a th:href="@{/admin}">Admin</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Gate Message</li>
+            </ol>
+        </nav>
         <h3>Gate Message</h3>
         <div class="alert alert-success alert-dismissable" th:if="${success}">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span

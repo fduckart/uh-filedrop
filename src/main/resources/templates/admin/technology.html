@@ -5,7 +5,12 @@
 <body>
 <nav th:replace="menubar :: copy"></nav>
 <div class="container">
-
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a th:href="@{/admin}">Admin</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Technology</li>
+        </ol>
+    </nav>
     <div class="card">
         <div class="card-header bg-transparent pb-0">
             <h5 class="card-title">Technology</h5>
