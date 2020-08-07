@@ -1,5 +1,6 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.number.OrderingComparison.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
@@ -66,7 +67,7 @@ public class AllowlistServiceTest {
         allowlist.setCreated(localDate);
         allowlist.setExpired(false);
         allowlistService.addAllowlist(allowlist);
-        Allowlist allowlist2 = allowlistService.findAllowList(allowlist.getId());
+        Allowlist allowlist2 = allowlistService.findById(allowlist.getId());
         assertNotNull(allowlist);
         assertEquals("Test Entry", allowlist.getEntry());
         assertEquals("Some Person", allowlist.getRegistrant());
@@ -82,7 +83,7 @@ public class AllowlistServiceTest {
         Allowlist allowlist = allowlistService.addAllowlist(new LdapPersonEmpty(), new LdapPersonEmpty());
         allowlist.setCreated(LocalDateTime.of(2019, 12, 31, 0, 0, 0));
         allowlist = allowlistService.addAllowlist(allowlist);
-        allowlist = allowlistService.findAllowList(allowlist.getId());
+        allowlist = allowlistService.findById(allowlist.getId());
         assertNotNull(allowlist);
         assertEquals("", allowlist.getEntry());
         assertEquals("", allowlist.getRegistrant());
@@ -115,8 +116,8 @@ public class AllowlistServiceTest {
     @Test
     public void addCheckThresholdTest() {
         Allowlist allowlist = new Allowlist();
-        allowlist.setEntry("New Person");
-        allowlist.setRegistrant("Same Old Mistakes");
+        allowlist.setEntry("jwlennon");
+        allowlist.setRegistrant("help");
         allowlist.setCheck(0);
         LocalDateTime localDate = LocalDateTime.of(2019, 12, 31, 0, 0, 0);
         allowlist.setCreated(localDate);
@@ -130,7 +131,14 @@ public class AllowlistServiceTest {
 
         assertEquals(threshold, check);
         assertTrue(allowlist.isExpired());
-        assertTrue(allowlistService.isAllowlisted("New Person"));
+        assertTrue(allowlistService.isAllowlisted("jwlennon"));
+
+        allowlistService.checkAllowlists();
+        allowlistService.evictAllowlistCache();
+
+        allowlist = allowlistService.findById(allowlist.getId());
+        assertThat(allowlist.getCheck(), equalTo(0));
+        assertFalse(allowlist.isExpired());
     }
 
     @Test
@@ -145,7 +153,8 @@ public class AllowlistServiceTest {
         allowlist.setExpired(false);
         allowlist = allowlistService.addAllowlist(allowlist);
         allowlistService.checkAllowlists();
-        allowlist = allowlistService.findAllowList(allowlist.getId());
+        allowlistService.evictAllowlistCache();
+        allowlist = allowlistService.findById(allowlist.getId());
         assertThat(allowlist.getCheck(), greaterThanOrEqualTo(1));
         assertTrue(allowlistService.isAllowlisted(allowlist.getEntry()));
         allowlistService.deleteAllowlist(allowlist);
@@ -165,7 +174,8 @@ public class AllowlistServiceTest {
         JobDetail jobDetail = schedulerService.findJob("AllowlistCheckJob", "DEFAULT");
         scheduler.triggerJob(jobDetail.getKey());
         allowlistService.checkAllowlists();
-        allowlist = allowlistService.findAllowList(allowlist.getId());
+        allowlistService.evictAllowlistCache();
+        allowlist = allowlistService.findById(allowlist.getId());
         assertTrue(allowlistService.isAllowlisted(allowlist.getEntry()));
         assertTrue(allowlist.isExpired());
         schedulerService.deleteJob(jobDetail.getKey());
@@ -175,10 +185,5 @@ public class AllowlistServiceTest {
     public void notAllowlistedTest() {
         assertNull(allowlistRepository.findByEntry("testing"));
         assertFalse(allowlistService.isAllowlisted("testing"));
-    }
-
-    @Test
-    public void getAllowlistUidsTest() {
-        assertThat(allowlistService.getAllAllowlistUids().size(), greaterThanOrEqualTo(2));
     }
 }

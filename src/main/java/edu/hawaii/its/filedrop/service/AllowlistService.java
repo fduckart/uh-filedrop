@@ -2,17 +2,22 @@ package edu.hawaii.its.filedrop.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import edu.hawaii.its.filedrop.repository.AllowlistRepository;
 import edu.hawaii.its.filedrop.type.Allowlist;
 
+@Transactional
 @Service
 public class AllowlistService {
 
@@ -27,6 +32,36 @@ public class AllowlistService {
 
     private static final Log logger = LogFactory.getLog(AllowlistService.class);
 
+    @Cacheable(value = "allowlistCache")
+    public List<Allowlist> findAll() {
+        return allowlistRepository.findAll();
+    }
+
+    @Cacheable(value = "allowlistById", key = "#id")
+    public Allowlist findById(Integer id) {
+        return allowlistRepository.findById(id).orElse(null);
+    }
+
+    @CachePut(value = "allowlistById", key = "#result.id")
+    @CacheEvict(value = "allowlistCache", allEntries = true)
+    public Allowlist addAllowlist(Allowlist allowlist) {
+        return allowlistRepository.save(allowlist);
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "allowlistCache", allEntries = true),
+        @CacheEvict(value = "allowlistById", allEntries = true)})
+    public void evictAllowlistCache() {
+        // Empty.
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "allowlistCache", allEntries = true),
+        @CacheEvict(value = "allowlistById", allEntries = true)})
+    public void deleteAllowlist(Allowlist allowlist) {
+        allowlistRepository.delete(allowlist);
+    }
+
     public Allowlist addAllowlist(LdapPerson entry, LdapPerson registrant) {
         Allowlist allowlist = new Allowlist();
         allowlist.setEntry(entry.getUid());
@@ -35,14 +70,6 @@ public class AllowlistService {
         allowlist.setExpired(false);
         allowlist.setCreated(LocalDateTime.now());
         return addAllowlist(allowlist);
-    }
-
-    public Allowlist addAllowlist(Allowlist allowlist) {
-        return allowlistRepository.save(allowlist);
-    }
-
-    public void deleteAllowlist(Allowlist allowlist) {
-        allowlistRepository.delete(allowlist);
     }
 
     public long recordCount() {
@@ -56,42 +83,27 @@ public class AllowlistService {
             allowlist.setExpired(true);
         }
         allowlist = addAllowlist(allowlist);
+        logger.debug("addCheck; Add check: " + allowlist);
         return allowlist.getCheck();
     }
 
     public synchronized void checkAllowlists() {
         logger.debug("Starting allowlist check...");
-        for (Allowlist allowlist : findAllAllowList()) {
+        for (Allowlist allowlist : findAll()) {
             if (!ldapService.findByUhUuidOrUidOrMail(allowlist.getRegistrant()).isValid()) {
                 addCheck(allowlist, 1);
+            } else if (allowlist.isExpired()) {
+                allowlist.setExpired(false);
+                allowlist.setCheck(0);
+                addAllowlist(allowlist);
+                logger.debug("checkAllowlist; Unexpired: " + allowlist);
             }
         }
+        evictAllowlistCache();
         logger.debug("Finished allowlist check.");
-    }
-
-    public Allowlist findAllowList(Integer id) {
-        Allowlist allowlist = allowlistRepository.findById(id).orElse(null);
-        if (allowlist != null) {
-            allowlist.setEntryName(ldapService.findByUid(allowlist.getEntry()).getCn());
-            allowlist.setRegistrantName(ldapService.findByUid(allowlist.getRegistrant()).getCn());
-        }
-        return allowlist;
-    }
-
-    public List<Allowlist> findAllAllowList() {
-        List<Allowlist> allowlists = allowlistRepository.findAll();
-        allowlists.forEach(whitelist -> {
-            whitelist.setEntryName(ldapService.findByUhUuidOrUidOrMail(whitelist.getEntry()).getCn());
-            whitelist.setRegistrantName(ldapService.findByUhUuidOrUidOrMail(whitelist.getRegistrant()).getCn());
-        });
-        return allowlists;
     }
 
     public boolean isAllowlisted(String entry) {
         return allowlistRepository.findByEntry(entry) != null;
-    }
-
-    public List<String> getAllAllowlistUids() {
-        return findAllAllowList().stream().map(Allowlist::getEntry).collect(Collectors.toList());
     }
 }

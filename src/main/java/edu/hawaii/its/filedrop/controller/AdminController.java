@@ -26,13 +26,13 @@ import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.AllowlistService;
 import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapPersonEmpty;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.service.MessageService;
-import edu.hawaii.its.filedrop.service.AllowlistService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.Allowlist;
@@ -161,15 +161,13 @@ public class AdminController {
     @GetMapping("/api/admin/allowlist")
     public ResponseEntity<List<Allowlist>> getAllowList() {
         logger.debug("User at api/admin/allowlist");
-        List<Allowlist> allowlist = allowlistService.findAllAllowList();
+        List<Allowlist> allowlist = allowlistService.findAll();
         return ResponseEntity.ok(allowlist);
     }
 
     @PostMapping("/api/admin/allowlist")
     public ResponseEntity<Allowlist> addAllowlist(@RequestBody Allowlist allowlistBody) {
         Allowlist allowlist = allowlistBody;
-        allowlist.setEntryName(ldapService.findByUid(allowlist.getEntry()).getCn());
-        allowlist.setRegistrantName(ldapService.findByUid(allowlist.getRegistrant()).getCn());
         allowlist.setCheck(0);
         allowlist.setExpired(false);
         allowlist.setCreated(LocalDateTime.now());
@@ -180,7 +178,7 @@ public class AdminController {
 
     @DeleteMapping("/api/admin/allowlist/{allowlistId}")
     public ResponseEntity<Allowlist> deleteAllowlist(@PathVariable Integer allowlistId) {
-        Allowlist allowlist = allowlistService.findAllowList(allowlistId);
+        Allowlist allowlist = allowlistService.findById(allowlistId);
         allowlistService.deleteAllowlist(allowlist);
         logger.debug("User deleted Allowlist: " + allowlist);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).build();

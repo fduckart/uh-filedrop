@@ -12,9 +12,9 @@
             <div class="col-sm-8">
                 <div class="input-group">
                     <div class="input-group-prepend">
-                        <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
+                        <span class="input-group-text" id="search"><i class="fa fa-filter"></i></span>
                     </div>
-                    <input placeholder="Search UH username, date..." class="form-control" type="search"
+                    <input placeholder="Filter by UH username, date..." class="form-control" type="search"
                            ng-model="filter"
                            aria-describedby="search">
                 </div>
@@ -25,12 +25,26 @@
                 <div class="card mb-2"
                      ng-if="fileDrops.length > 0"
                      ng-class="{'border-danger': !fileDrop.valid, 'border-success': fileDrop.valid}"
-                     ng-repeat="fileDrop in fileDrops | orderBy:['-valid', -isRecipient, '-created'] | filter:filter"
+                     ng-repeat="fileDrop in fileDrops | orderBy:['-valid', '-created', -isRecipient] | filter:filter"
                      ng-cloak
                      ng-controller="HistoryCardController">
                     <div class="card-header">
-                        <span class="h5">Uploader: {{ fileDrop.uploader }}</span>
-                        <button class="btn btn-outline-primary float-right" ng-click="isCollapsed = !isCollapsed">{{ isCollapsed ? 'More Info' : 'Less Info' }}</button>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="row">
+                                    <h5>Uploader: <span class="lead">{{ fileDrop.uploader }}</span></h5>
+                                </div>
+                                <div class="row" ng-if="isCollapsed">
+                                    <small>Uploaded: {{ fileDrop.created }}</small>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <button class="btn btn-outline-primary float-right"
+                                        ng-click="isCollapsed = !isCollapsed">
+                                    {{ isCollapsed ? 'More Info' : 'Less Info' }}
+                                </button>
+                            </div>
+                        </div>
                     </div>
                     <div uib-collapse="isCollapsed" class="card-body">
                         <div class="row">
@@ -43,7 +57,7 @@
                         </div>
                         <div class="row">
                             <div class="col-sm-12">
-                                <span class="lead">Files:</span>
+                                <span class="lead">Files</span>
                                 <div class="mt-1 mb-3">
                                     <ul class="list-group">
                                         <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="fileSet in fileDrop.fileInfoList">

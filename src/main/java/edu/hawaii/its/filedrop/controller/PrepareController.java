@@ -335,7 +335,6 @@ public class PrepareController {
         model.addAttribute("cn", user.getName());
         model.addAttribute("mails", user.getAttributes().getMail());
         model.addAttribute("affiliations", user.getAttributes().getAffiliation());
-        model.addAttribute("allowlist", allowlistService.getAllAllowlistUids());
 
         if (logger.isDebugEnabled()) {
             logger.debug("User: " + user);
@@ -350,6 +349,7 @@ public class PrepareController {
     public ResponseEntity<?> addRecipient(@RequestParam("recipient") String user,
                                           @RequestParam("authenticationRequired") Boolean authRequired) {
         LdapPerson person = ldapService.findByUhUuidOrUidOrMail(user);
+        logger.debug(currentUser().getUid() + " looked for " + user + " and found " +  person);
 
         if (!person.isValid() && authRequired) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
