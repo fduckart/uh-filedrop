@@ -8,7 +8,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "allowlist")
@@ -33,12 +32,6 @@ public class Allowlist {
 
     @Column(name = "expired")
     private Boolean expired;
-
-    @Transient
-    private String entryName;
-
-    @Transient
-    private String registrantName;
 
     // Constructor.
     public Allowlist() {
@@ -91,22 +84,6 @@ public class Allowlist {
 
     public void setCreated(LocalDateTime created) {
         this.created = created;
-    }
-
-    public String getEntryName() {
-        return entryName;
-    }
-
-    public void setEntryName(String entryName) {
-        this.entryName = entryName;
-    }
-
-    public String getRegistrantName() {
-        return registrantName;
-    }
-
-    public void setRegistrantName(String registrantName) {
-        this.registrantName = registrantName;
     }
 
     @Override

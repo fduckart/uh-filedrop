@@ -342,11 +342,9 @@ public class AdminControllerTest {
         long count1 = allowlistService.recordCount();
         assertThat(count1, equalTo(count0 + 1));
 
-        allowlist = allowlistService.findAllowList(3);
+        allowlist = allowlistService.findById(3);
         assertEquals("help", allowlist.getEntry());
-        assertEquals("ITS Help Desk", allowlist.getEntryName());
         assertEquals("jwlennon", allowlist.getRegistrant());
-        assertEquals("John W Lennon", allowlist.getRegistrantName());
 
         allowlist = new Allowlist();
         allowlist.setExpired(false);
@@ -369,7 +367,7 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$[3].entry").value("help"))
                 .andExpect(jsonPath("$[3].registrant").value("jwlennon"));
 
-        allowlist = allowlistService.findAllowList(4);
+        allowlist = allowlistService.findById(4);
         assertEquals("help", allowlist.getEntry());
         assertEquals("jwlennon", allowlist.getRegistrant());
 
@@ -390,15 +388,11 @@ public class AdminControllerTest {
         mockMvc.perform(get("/api/admin/allowlist"))
                 .andExpect(jsonPath("$", hasSize(5)))
                 .andExpect(jsonPath("$[4].entry").value("testing"))
-                .andExpect(jsonPath("$[4].entryName").value(""))
-                .andExpect(jsonPath("$[4].registrant").value("testing"))
-                .andExpect(jsonPath("$[4].registrantName").value(""));
+                .andExpect(jsonPath("$[4].registrant").value("testing"));
 
-        allowlist = allowlistService.findAllowList(5);
+        allowlist = allowlistService.findById(5);
         assertEquals("testing", allowlist.getEntry());
-        assertEquals("", allowlist.getEntryName());
         assertEquals("testing", allowlist.getRegistrant());
-        assertEquals("", allowlist.getEntryName());
     }
 
     @Test
