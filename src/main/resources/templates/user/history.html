@@ -25,7 +25,7 @@
                 <div class="card mb-2"
                      ng-if="fileDrops.length > 0"
                      ng-class="{'border-danger': !fileDrop.valid, 'border-success': fileDrop.valid}"
-                     ng-repeat="fileDrop in fileDrops | orderBy:['-valid', -isRecipient, '-created'] | filter:filter"
+                     ng-repeat="fileDrop in fileDrops | orderBy:['-valid', '-created', -isRecipient] | filter:filter"
                      ng-cloak
                      ng-controller="HistoryCardController">
                     <div class="card-header">

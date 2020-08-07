@@ -38,26 +38,30 @@
         <div class="card-body">
             <div class="row" ng-cloak>
                 <div class="col-sm-12">
-                    <div class="table-responsive" ng-if="allowlist.length > 0">
+                    <div class="table-responsive table-hover" ng-if="allowlist.length > 0">
                         <table class="table">
-                            <tr>
-                                <th>Entry</th>
-                                <th>Requestor</th>
-                                <th>Created</th>
-                                <th>Expired</th>
-                                <th></th>
-                            </tr>
-                            <tr ng-repeat="allowed in allowlist | filter:filter">
-                                <td>{{ allowed.entry }}</td>
-                                <td>{{ allowed.registrant }}</td>
-                                <td>{{ allowed.created | date:'MM/dd/yyyy' }}</td>
-                                <td>{{ allowed.expired }}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-danger" ng-click="openDeleteModal(allowed)">
-                                        <i class="fa fa-trash"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                            <thead>
+                                <tr>
+                                    <th>Entry</th>
+                                    <th>Requestor</th>
+                                    <th>Created</th>
+                                    <th>Expired</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="allowed in allowlist | filter:filter">
+                                    <td>{{ allowed.entry }}</td>
+                                    <td>{{ allowed.registrant }}</td>
+                                    <td>{{ allowed.created | date:'MM/dd/yyyy' }}</td>
+                                    <td>{{ allowed.expired }}</td>
+                                    <td>
+                                        <button class="btn btn-sm btn-danger" ng-click="openDeleteModal(allowed)">
+                                            <i class="fa fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
                         </table>
                     </div>
                     <div class="text-center" ng-if="allowlist.length == 0">
