@@ -32,7 +32,9 @@ public class CachingConfig {
                 new ConcurrentMapCache("rolesByIdCache"),
                 new ConcurrentMapCache("messages"),
                 new ConcurrentMapCache("settings"),
-                new ConcurrentMapCache("settingsById")));
+                new ConcurrentMapCache("settingsById"),
+                new ConcurrentMapCache("allowlistCache"),
+                new ConcurrentMapCache("allowlistById")));
         return cacheManager;
     }
 
