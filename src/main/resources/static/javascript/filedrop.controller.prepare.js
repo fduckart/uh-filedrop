@@ -21,6 +21,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         const currentUser = $scope.currentUser();
 
         if ($scope.hasRecipient(recipient)) {
+            $scope.error = { message: "Recipient is already added." };
             return;
         }
 
