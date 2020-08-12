@@ -308,7 +308,7 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = { "/prepare" })
-    public String prepare(Model model) {
+    public String prepare(Model model, @RequestParam(value = "expiration", required = false) Integer defaultExpiration) {
         logger.debug("User at prepare.");
 
         User user = currentUser();
@@ -331,6 +331,7 @@ public class PrepareController {
             fileDropService.startUploadProcess(user);
         }
 
+        model.addAttribute("expiration", defaultExpiration);
         model.addAttribute("uid", user.getUid());
         model.addAttribute("cn", user.getName());
         model.addAttribute("mails", user.getAttributes().getMail());
