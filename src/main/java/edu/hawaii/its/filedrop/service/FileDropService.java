@@ -28,9 +28,11 @@ import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.repository.DownloadRepository;
+import edu.hawaii.its.filedrop.repository.FileDataRepository;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.repository.RecipientRepository;
+import edu.hawaii.its.filedrop.type.FileData;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.FileSet;
@@ -49,6 +51,9 @@ public class FileDropService {
 
     @Autowired
     private FileSetRepository fileSetRepository;
+
+    @Autowired
+    private FileDataRepository fileDataRepository;
 
     @Autowired
     private RecipientRepository recipientRepository;
@@ -139,12 +144,22 @@ public class FileDropService {
     public void uploadFile(User user, MultipartFile file, String comment, FileDrop fileDrop) {
         if (workflowService.atTask(user, "addFiles") && file != null) {
             FileSet fileSet = new FileSet();
-            fileSet.setFileName(file.getOriginalFilename());
+            fileSet.setFileName("");
             fileSet.setType(file.getContentType());
-            fileSet.setComment(comment);
+            fileSet.setComment("");
             fileSet.setFileDrop(fileDrop);
             fileSet.setSize(file.getSize());
-            saveFileSet(fileSet);
+
+            fileSet = saveFileSet(fileSet);
+
+            FileData fileData = new FileData();
+            fileData.setComment(comment);
+            fileData.setFileName(file.getOriginalFilename());
+            fileData.setFileSet(fileSet);
+
+            fileData = saveFileData(fileData);
+            fileSet.setFileData(fileData);
+            fileSet = saveFileSet(fileSet);
 
             Resource resource = file.getResource();
             resource = cipherService.encrypt(resource, fileSet.getFileDrop());
@@ -153,6 +168,7 @@ public class FileDropService {
                     Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()));
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);
+            logger.debug("FileData: " + fileSet.getFileData());
         }
     }
 
@@ -240,7 +256,12 @@ public class FileDropService {
             fileDropInfo.setRecipients(fileDrop.getRecipients().stream().map(Recipient::getName).collect(toList()));
             fileDropInfo.setFileInfoList(fileDrop.getFileSet().stream().map(fileSet -> {
                 FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
-                fileInfo.setFileName(fileSet.getFileName());
+                FileData fileData = fileDataRepository.findByFileSet(fileSet);
+                if (fileData != null) {
+                    fileInfo.setFileName(fileData.getFileName());
+                } else {
+                    fileInfo.setFileName(fileSet.getFileName());
+                }
                 fileInfo.setFileSize(fileSet.getSize());
                 fileInfo.setFileType(fileSet.getType());
                 fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
@@ -260,6 +281,14 @@ public class FileDropService {
 
     public FileSet saveFileSet(FileSet fileSet) {
         return fileSetRepository.save(fileSet);
+    }
+
+    public FileData saveFileData(FileData fileData) {
+        return fileDataRepository.save(fileData);
+    }
+
+    public FileData findByFileSet(FileSet fileSet) {
+        return fileDataRepository.findByFileSet(fileSet);
     }
 
     public List<FileSet> findFileSets(FileDrop fileDrop) {
