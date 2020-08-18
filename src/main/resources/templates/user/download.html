@@ -29,11 +29,19 @@
                             th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
                             class="btn btn-outline-dark btn-sm">
                             <i class="fa fa-cloud-download"></i></a></th>
-                        <td><a
+                        <td th:if="${fileSet.getFileData() != null}">
+                            <a
                             th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
-                            th:text="${fileSet.getFileName()}"></a></td>
+                            th:text="${fileSet.getFileData().getFileName()}"></a>
+                        </td>
+                        <td th:unless="${fileSet.getFileData() != null}">
+                            <a
+                                    th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
+                                    th:text="${fileSet.getFileName()}"></a>
+                        </td>
                         <td th:text="${fileSet.getSize()}"></td>
-                        <td th:text="${fileSet.getComment()}"></td>
+                        <td th:if="${fileSet.getFileData() != null}" th:text="${fileSet.getFileData().getComment()}"></td>
+                        <td th:unless="${fileSet.getFileData() != null}" th:text="${fileSet.getComment()}"></td>
                     </tr>
                     </tbody>
                 </table>

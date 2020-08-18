@@ -156,7 +156,11 @@ public class DownloadController {
                 return ResponseEntity.ok()
                         .contentType(MediaType.APPLICATION_OCTET_STREAM)
                         .header(HttpHeaders.CONTENT_DISPOSITION,
-                                "attachment; filename=\"" + foundFileSet.get().getFileName() + "\"")
+                            "attachment; filename=\"" +
+                                (foundFileSet.get().getFileData() != null ?
+                                    foundFileSet.get().getFileData().getFileName() :
+                                    foundFileSet.get().getFileName())
+                                + "\"")
                         .body(resource);
             } else {
 
