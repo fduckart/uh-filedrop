@@ -1,9 +1,8 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.io.Serializable;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -11,7 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -44,6 +45,9 @@ public class FileSet implements Serializable {
     @Column(name = "size", nullable = false)
     private Long size;
 
+    @OneToOne(mappedBy = "fileSet", cascade = CascadeType.ALL)
+    private FileData fileData;
+
     // Constructor.
     public FileSet() {
         // Empty.
@@ -63,6 +67,14 @@ public class FileSet implements Serializable {
 
     public void setFileDrop(FileDrop fileDrop) {
         this.fileDrop = fileDrop;
+    }
+
+    public FileData getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(FileData fileData) {
+        this.fileData = fileData;
     }
 
     public String getFileName() {
