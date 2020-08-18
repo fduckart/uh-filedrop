@@ -15,6 +15,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.apache.commons.logging.Log;
@@ -244,32 +245,35 @@ public class FileDropService {
         logger.debug("Finished expired FileDrops check. " + expiredFileDrops.size() + " FileDrop(s) expired.");
     }
 
+    public FileDropInfo getFileDropInfo(FileDrop fileDrop) {
+        FileDropInfo fileDropInfo = new FileDropInfo();
+        fileDropInfo.setUploader(fileDrop.getUploader());
+        fileDropInfo.setCreated(fileDrop.getCreated());
+        fileDropInfo.setExpiration(fileDrop.getExpiration());
+        fileDropInfo.setFileDropId(fileDrop.getId());
+        fileDropInfo.setValid(fileDrop.isValid());
+        fileDropInfo.setDownloadKey(fileDrop.getDownloadKey());
+        fileDropInfo.setRecipients(fileDrop.getRecipients().stream().map(Recipient::getName).collect(toList()));
+        List<FileSet> fileSets = fileSetRepository.findAllByFileDrop(fileDrop);
+        fileDropInfo.setFileInfoList(fileSets.stream().map(fileSet -> {
+            FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
+            FileData fileData = findByFileSet(fileSet);
+            if (fileData != null) {
+                fileInfo.setFileName(fileData.getFileName());
+            } else {
+                fileInfo.setFileName(fileSet.getFileName());
+            }
+            fileInfo.setFileSize(fileSet.getSize());
+            fileInfo.setFileType(fileSet.getType());
+            fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
+            return fileInfo;
+        }).collect(toList()));
+        fileDropInfo.setDownloads(fileDropInfo.getFileInfoList().stream().mapToInt(FileDropInfo.FileInfo::getDownloads).sum());
+        return fileDropInfo;
+    }
+
     public List<FileDropInfo> findAllFileDropsInfo() {
-        return findAllFileDrops().stream().map(fileDrop -> {
-            FileDropInfo fileDropInfo = new FileDropInfo();
-            fileDropInfo.setUploader(fileDrop.getUploader());
-            fileDropInfo.setCreated(fileDrop.getCreated());
-            fileDropInfo.setExpiration(fileDrop.getExpiration());
-            fileDropInfo.setFileDropId(fileDrop.getId());
-            fileDropInfo.setValid(fileDrop.isValid());
-            fileDropInfo.setDownloadKey(fileDrop.getDownloadKey());
-            fileDropInfo.setRecipients(fileDrop.getRecipients().stream().map(Recipient::getName).collect(toList()));
-            fileDropInfo.setFileInfoList(fileDrop.getFileSet().stream().map(fileSet -> {
-                FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
-                FileData fileData = fileDataRepository.findByFileSet(fileSet);
-                if (fileData != null) {
-                    fileInfo.setFileName(fileData.getFileName());
-                } else {
-                    fileInfo.setFileName(fileSet.getFileName());
-                }
-                fileInfo.setFileSize(fileSet.getSize());
-                fileInfo.setFileType(fileSet.getType());
-                fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
-                return fileInfo;
-            }).collect(toList()));
-            fileDropInfo.setDownloads(fileDropInfo.getFileInfoList().stream().mapToInt(FileDropInfo.FileInfo::getDownloads).sum());
-            return fileDropInfo;
-        }).collect(toList());
+        return findAllFileDrops().stream().map(this::getFileDropInfo).collect(toList());
     }
 
     public List<FileDropInfo> findAllUserFileDropInfo(User user) {

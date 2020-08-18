@@ -3,6 +3,8 @@ package edu.hawaii.its.filedrop.controller;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,23 +15,33 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.util.Collections;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.FileSystemStorageService;
+import edu.hawaii.its.filedrop.type.FileData;
 import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileDropInfo;
+import edu.hawaii.its.filedrop.type.FileSet;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -44,6 +56,9 @@ public class DownloadControllerTest {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @Autowired
+    private FileSystemStorageService fileSystemStorageService;
 
     @Autowired
     private WebApplicationContext context;
@@ -113,9 +128,12 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/download"))
                 .andExpect(model().attributeExists("fileDrop"));
 
-        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/4")
+        MvcResult mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/4")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"), equalTo("attachment; filename=\"test.txt\""));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/9999"))
                 .andExpect(status().is4xxClientError());
@@ -410,6 +428,78 @@ public class DownloadControllerTest {
         assertThat(fileDropService.containsRecipient(fileDrop, "krichards"), equalTo(false));
         assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
         assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
+    }
+
+    @Test
+    @WithMockUhUser
+    public void fileDataDownloadTest() throws Exception {
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setValid(true);
+        fileDrop.setExpiration(LocalDateTime.now().minusMinutes(1));
+        fileDrop.setCreated(LocalDateTime.now());
+        fileDrop.setAuthenticationRequired(true);
+        fileDrop.setDownloadKey("testdlkey");
+        fileDrop.setUploadKey("testulkey");
+        fileDrop.setEncryptionKey("testenckey");
+        fileDrop.setUploader("test2");
+        fileDrop.setUploaderFullName("Test 2");
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
+        fileDropService.addRecipients(fileDrop, "user");
+
+
+        MockMultipartFile mockMultipartFile =
+            new MockMultipartFile("file", "test.tst", "test/type", "test data".getBytes());
+
+        FileSet fileSet = new FileSet();
+        fileSet.setSize(mockMultipartFile.getSize());
+        fileSet.setType(mockMultipartFile.getContentType());
+        fileSet.setFileName(mockMultipartFile.getOriginalFilename());
+        fileSet.setComment("test comment");
+        fileSet.setFileDrop(fileDrop);
+        fileSet = fileDropService.saveFileSet(fileSet);
+
+        fileDrop = fileDropService.findFileDrop(fileDrop.getId());
+
+        assertNotNull(fileDrop);
+        assertNotNull(fileDrop.getFileSet());
+
+        fileSystemStorageService.storeFileSet(mockMultipartFile.getResource(),
+            Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()));
+        Resource resource = fileSystemStorageService.loadAsResource(
+            Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()).toString());
+        resource.getFile().deleteOnExit();
+
+        FileDropInfo fileDropInfo = fileDropService.getFileDropInfo(fileDrop);
+
+        assertNotNull(fileDropInfo);
+        assertNotNull(fileDropInfo.getFileInfoList().get(0));
+        assertEquals(fileDropInfo.getFileInfoList().get(0).getFileName(), "test.tst");
+
+        MvcResult mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + fileSet.getId()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"), equalTo("attachment; filename=\"test.tst\""));
+
+        FileData fileData = new FileData();
+        fileData.setFileName("test data.tst");
+        fileData.setComment("test comment");
+        fileData.setFileSet(fileSet);
+        fileData = fileDropService.saveFileData(fileData);
+
+        fileDropInfo = fileDropService.getFileDropInfo(fileDrop);
+        assertNotNull(fileDropInfo);
+        assertNotNull(fileDropInfo.getFileInfoList().get(0));
+        assertEquals(fileDropInfo.getFileInfoList().get(0).getFileName(), "test data.tst");
+
+        assertEquals(fileSet.getId(), fileData.getFileSet().getId());
+
+        mvcResult = mockMvc.perform(get("/dl/testdlkey/" + fileSet.getId()))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"), equalTo("attachment; filename=\"test data.tst\""));
+
     }
 
 }
