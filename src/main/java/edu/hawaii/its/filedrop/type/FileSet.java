@@ -1,7 +1,5 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.io.Serializable;
-
 import javax.persistence.Access;
 import javax.persistence.AccessType;
 import javax.persistence.Column;
@@ -12,11 +10,12 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "fileset")
+@Table(name = "file_data")
 public class FileSet implements Serializable {
 
     private static final long serialVersionUID = 101L;

@@ -100,8 +100,10 @@ public class PrepareControllerTest {
     @Test
     @WithMockUhUser
     public void addRecipientsTest() throws Exception {
-        mockMvc.perform(get("/prepare"))
+        mockMvc.perform(get("/prepare")
+                .param("expiration", "30"))
                 .andExpect(status().isOk())
+                .andExpect(model().attributeExists("expiration"))
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")

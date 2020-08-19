@@ -29,9 +29,10 @@
                             th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
                             class="btn btn-outline-dark btn-sm">
                             <i class="fa fa-cloud-download"></i></a></th>
-                        <td><a
-                            th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
-                            th:text="${fileSet.getFileName()}"></a></td>
+                        <td>
+                            <a th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
+                               th:text="${fileSet.getFileName()}"></a>
+                        </td>
                         <td th:text="${fileSet.getSize()}"></td>
                         <td th:text="${fileSet.getComment()}"></td>
                     </tr>
@@ -39,6 +40,9 @@
                 </table>
             </div>
             <br>
+            <a th:href="@{/dl/{downloadKey}/zip(downloadKey = ${fileDrop.getDownloadKey()})}" class="btn btn-outline-success mt-3">
+                <i class="fa fa-file-archive-o"></i> Zip download
+            </a>
             <button class="btn btn-danger mt-3 float-right" data-toggle="modal" data-target="#expireModal">
                 <i class="fa fa-trash"></i> Expire Now
             </button>

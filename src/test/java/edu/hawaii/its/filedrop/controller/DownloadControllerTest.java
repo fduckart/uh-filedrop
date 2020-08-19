@@ -3,6 +3,8 @@ package edu.hawaii.its.filedrop.controller;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -13,23 +15,31 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
+import edu.hawaii.its.filedrop.service.FileSystemStorageService;
 import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileDropInfo;
+import edu.hawaii.its.filedrop.type.FileSet;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -44,6 +54,9 @@ public class DownloadControllerTest {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @Autowired
+    private FileSystemStorageService fileSystemStorageService;
 
     @Autowired
     private WebApplicationContext context;
@@ -113,9 +126,27 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/download"))
                 .andExpect(model().attributeExists("fileDrop"));
 
-        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/4")
+        MvcResult mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/4")
                 .contentType(MediaType.APPLICATION_OCTET_STREAM))
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"), equalTo("attachment; filename=\"test.txt\""));
+
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/zip"))
+            .andExpect(status().is4xxClientError());
+
+        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
+
+        mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/zip")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"),
+            equalTo("attachment; filename=\"FileDrop(" + fileDrop.getDownloadKey() + ").zip\""));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/9999"))
                 .andExpect(status().is4xxClientError());
@@ -146,6 +177,12 @@ public class DownloadControllerTest {
 
         mockMvc.perform(get("/dl/downloadKey3/999"))
                 .andExpect(status().is4xxClientError());
+
+        mockMvc.perform(get("/dl/downloadKey3/zip"))
+            .andExpect(status().is4xxClientError());
+
+        mockMvc.perform(get("/dl/notarealkey/zip"))
+            .andExpect(status().is4xxClientError());
     }
 
     @Test
@@ -411,5 +448,4 @@ public class DownloadControllerTest {
         assertThat(fileDropService.containsRecipient(fileDrop, "test"), equalTo(false));
         assertThat(fileDropService.containsRecipient(fileDrop, "jwlennon"), equalTo(false));
     }
-
 }

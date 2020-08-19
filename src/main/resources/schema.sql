@@ -30,9 +30,9 @@ CREATE TABLE download (
   CONSTRAINT download_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS fileset;
+DROP TABLE IF EXISTS file_data;
 
-CREATE TABLE fileset (
+CREATE TABLE file_data (
   filedrop_id int(11) NOT NULL DEFAULT '0',
   file_name varchar(255) NOT NULL DEFAULT '',
   type varchar(255) NOT NULL DEFAULT '',
@@ -40,7 +40,7 @@ CREATE TABLE fileset (
   size BIGINT NOT NULL DEFAULT '0',
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id),
-  CONSTRAINT fileset_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
+  CONSTRAINT file_data_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS recipient;

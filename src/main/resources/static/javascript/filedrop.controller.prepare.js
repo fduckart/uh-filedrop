@@ -22,6 +22,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
         if ($scope.hasRecipient(recipient)) {
             $scope.error = { message: "Recipient is already added." };
+            $scope.recipient = "";
             return;
         }
 

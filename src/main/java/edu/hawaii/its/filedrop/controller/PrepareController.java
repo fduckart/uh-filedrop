@@ -2,6 +2,7 @@ package edu.hawaii.its.filedrop.controller;
 
 import static java.util.stream.Collectors.toList;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -215,7 +216,7 @@ public class PrepareController {
     }
 
     @GetMapping(value = "/complete/{uploadKey}")
-    public String completeFileDrop(@PathVariable String uploadKey) {
+    public String completeFileDrop(@PathVariable String uploadKey) throws IOException {
         logger.debug("completeFileDrop; start.");
         logger.info("completeFileDrop; uploadKey: " + uploadKey);
 
@@ -269,6 +270,7 @@ public class PrepareController {
             fileDropContext.put("sender", sender);
             emailService.send(mail, "receiver", new Context(Locale.ENGLISH, fileDropContext));
         }
+        fileDropService.makeZip(fileDrop);
         fileDropService.completeFileDrop(currentUser(), fileDrop);
 
         logger.debug("completeFileDrop; done.");
@@ -308,7 +310,7 @@ public class PrepareController {
 
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = { "/prepare" })
-    public String prepare(Model model) {
+    public String prepare(Model model, @RequestParam(value = "expiration", required = false) Integer defaultExpiration) {
         logger.debug("User at prepare.");
 
         User user = currentUser();
@@ -331,6 +333,7 @@ public class PrepareController {
             fileDropService.startUploadProcess(user);
         }
 
+        model.addAttribute("expiration", defaultExpiration);
         model.addAttribute("uid", user.getUid());
         model.addAttribute("cn", user.getName());
         model.addAttribute("mails", user.getAttributes().getMail());

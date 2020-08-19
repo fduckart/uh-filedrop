@@ -6,6 +6,9 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -16,6 +19,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.User;
@@ -49,7 +55,7 @@ public class FileDropService {
 
     @Autowired
     private FileSetRepository fileSetRepository;
-
+    
     @Autowired
     private RecipientRepository recipientRepository;
 
@@ -144,7 +150,7 @@ public class FileDropService {
             fileSet.setComment(comment);
             fileSet.setFileDrop(fileDrop);
             fileSet.setSize(file.getSize());
-            saveFileSet(fileSet);
+            fileSet = saveFileSet(fileSet);
 
             Resource resource = file.getResource();
             resource = cipherService.encrypt(resource, fileSet.getFileDrop());
@@ -154,6 +160,31 @@ public class FileDropService {
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);
         }
+    }
+
+    //TODO: add encryption
+    public void makeZip(FileDrop fileDrop) throws IOException {
+        String fileName = "FileDrop(" + fileDrop.getDownloadKey() + ").zip";
+        File file = new File(Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey(), fileName).toUri());
+        file.createNewFile();
+
+        List<FileSet> fileSets = findFileSets(fileDrop);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file));
+
+        for (FileSet fileSet : fileSets) {
+            Resource resource = fileSystemStorageService.loadAsResource(
+                Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()).toString());
+            ZipEntry zipEntry = new ZipEntry(fileSet.getFileName());
+            zipEntry.setSize(resource.contentLength());
+            zipOutputStream.putNextEntry(zipEntry);
+            StreamUtils.copy(resource.getInputStream(), zipOutputStream);
+            zipOutputStream.closeEntry();
+        }
+
+        zipOutputStream.finish();
+        zipOutputStream.close();
+
+        logger.debug("Created Zip of files for: " + fileDrop);
     }
 
     public void completeFileDrop(User user, FileDrop fileDrop) {
@@ -228,27 +259,30 @@ public class FileDropService {
         logger.debug("Finished expired FileDrops check. " + expiredFileDrops.size() + " FileDrop(s) expired.");
     }
 
+    public FileDropInfo getFileDropInfo(FileDrop fileDrop) {
+        FileDropInfo fileDropInfo = new FileDropInfo();
+        fileDropInfo.setUploader(fileDrop.getUploader());
+        fileDropInfo.setCreated(fileDrop.getCreated());
+        fileDropInfo.setExpiration(fileDrop.getExpiration());
+        fileDropInfo.setFileDropId(fileDrop.getId());
+        fileDropInfo.setValid(fileDrop.isValid());
+        fileDropInfo.setDownloadKey(fileDrop.getDownloadKey());
+        fileDropInfo.setRecipients(fileDrop.getRecipients().stream().map(Recipient::getName).collect(toList()));
+        List<FileSet> fileSets = fileSetRepository.findAllByFileDrop(fileDrop);
+        fileDropInfo.setFileInfoList(fileSets.stream().map(fileSet -> {
+            FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
+            fileInfo.setFileName(fileSet.getFileName());
+            fileInfo.setFileSize(fileSet.getSize());
+            fileInfo.setFileType(fileSet.getType());
+            fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
+            return fileInfo;
+        }).collect(toList()));
+        fileDropInfo.setDownloads(fileDropInfo.getFileInfoList().stream().mapToInt(FileDropInfo.FileInfo::getDownloads).sum());
+        return fileDropInfo;
+    }
+
     public List<FileDropInfo> findAllFileDropsInfo() {
-        return findAllFileDrops().stream().map(fileDrop -> {
-            FileDropInfo fileDropInfo = new FileDropInfo();
-            fileDropInfo.setUploader(fileDrop.getUploader());
-            fileDropInfo.setCreated(fileDrop.getCreated());
-            fileDropInfo.setExpiration(fileDrop.getExpiration());
-            fileDropInfo.setFileDropId(fileDrop.getId());
-            fileDropInfo.setValid(fileDrop.isValid());
-            fileDropInfo.setDownloadKey(fileDrop.getDownloadKey());
-            fileDropInfo.setRecipients(fileDrop.getRecipients().stream().map(Recipient::getName).collect(toList()));
-            fileDropInfo.setFileInfoList(fileDrop.getFileSet().stream().map(fileSet -> {
-                FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
-                fileInfo.setFileName(fileSet.getFileName());
-                fileInfo.setFileSize(fileSet.getSize());
-                fileInfo.setFileType(fileSet.getType());
-                fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
-                return fileInfo;
-            }).collect(toList()));
-            fileDropInfo.setDownloads(fileDropInfo.getFileInfoList().stream().mapToInt(FileDropInfo.FileInfo::getDownloads).sum());
-            return fileDropInfo;
-        }).collect(toList());
+        return findAllFileDrops().stream().map(this::getFileDropInfo).collect(toList());
     }
 
     public List<FileDropInfo> findAllUserFileDropInfo(User user) {
