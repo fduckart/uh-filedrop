@@ -6,6 +6,9 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
@@ -17,6 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -25,6 +30,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.User;
@@ -33,11 +39,13 @@ import edu.hawaii.its.filedrop.repository.FileDataRepository;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.repository.RecipientRepository;
+import edu.hawaii.its.filedrop.type.Download;
 import edu.hawaii.its.filedrop.type.FileData;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.type.Recipient;
+import edu.hawaii.its.filedrop.type.Role;
 
 @Service
 public class FileDropService {
@@ -171,6 +179,31 @@ public class FileDropService {
             logger.debug(user.getUsername() + " uploaded " + fileSet);
             logger.debug("FileData: " + fileSet.getFileData());
         }
+    }
+
+    //TODO: add encryption
+    public void makeZip(FileDrop fileDrop) throws IOException {
+        String fileName = "FileDrop(" + fileDrop.getDownloadKey() + ").zip";
+        File file = new File(Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey(), fileName).toUri());
+        file.createNewFile();
+
+        List<FileSet> fileSets = findFileSets(fileDrop);
+        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file));
+
+        for (FileSet fileSet : fileSets) {
+            Resource resource = fileSystemStorageService.loadAsResource(
+                Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()).toString());
+            ZipEntry zipEntry = new ZipEntry(fileSet.getFileData().getFileName());
+            zipEntry.setSize(resource.contentLength());
+            zipOutputStream.putNextEntry(zipEntry);
+            StreamUtils.copy(resource.getInputStream(), zipOutputStream);
+            zipOutputStream.closeEntry();
+        }
+
+        zipOutputStream.finish();
+        zipOutputStream.close();
+
+        logger.debug("Created Zip of files for: " + fileDrop);
     }
 
     public void completeFileDrop(User user, FileDrop fileDrop) {

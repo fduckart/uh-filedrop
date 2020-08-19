@@ -47,6 +47,9 @@
                 </table>
             </div>
             <br>
+            <a th:href="@{/dl/{downloadKey}/zip(downloadKey = ${fileDrop.getDownloadKey()})}" class="btn btn-outline-success mt-3">
+                <i class="fa fa-file-archive-o"></i> Zip download
+            </a>
             <button class="btn btn-danger mt-3 float-right" data-toggle="modal" data-target="#expireModal">
                 <i class="fa fa-trash"></i> Expire Now
             </button>

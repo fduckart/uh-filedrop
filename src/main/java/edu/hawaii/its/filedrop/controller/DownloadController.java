@@ -1,14 +1,17 @@
 package edu.hawaii.its.filedrop.controller;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -117,16 +120,71 @@ public class DownloadController {
         return "user/download";
     }
 
+    //TODO: Add decryption
+    @GetMapping(value = "/dl/{downloadKey}/zip")
+    public ResponseEntity<Resource> downloadFilesZip(@PathVariable String downloadKey,
+                                                     HttpServletRequest request) throws IOException {
+        FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
+        if (fileDrop == null || !fileDrop.isValid()) {
+            return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .header(HttpHeaders.LOCATION, "/")
+                .build();
+        }
+
+        if (isDownloadAllowed(fileDrop)) {
+            String fileName = "FileDrop(" + fileDrop.getDownloadKey() + ").zip";
+            File file = new File(
+                Paths.get(storageService.getRootLocation().toString(), fileDrop.getDownloadKey(), fileName).toUri());
+            List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
+            if (!currentUser().hasRole(Role.SecurityRole.ADMINISTRATOR)) {
+                for (FileSet fileSet : fileSets) {
+                    Download download = new Download();
+                    download.setFileDrop(fileDrop);
+                    download.setFileName(fileSet.getFileName());
+                    download.setStarted(LocalDateTime.now());
+                    download.setIpAddress(request.getRemoteAddr());
+                    download.setStatus("INPROGRESS");
+                    download.setCompleted(LocalDateTime.now());
+                    downloadRepository.save(download);
+                }
+            }
+
+            if (file.exists()) {
+                return ResponseEntity.ok()
+                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                    .header(HttpHeaders.CONTENT_DISPOSITION,
+                        "attachment; filename=\"" + fileName + "\"")
+                    .body(new FileUrlResource(file.getAbsolutePath()));
+            } else {
+
+                logger.debug("downloadZip; fileDrop: " + fileDrop + ", Could not download zip");
+
+                return ResponseEntity
+                    .status(HttpStatus.FORBIDDEN)
+                    .header(HttpHeaders.LOCATION, "/dl/" + downloadKey)
+                    .build();
+            }
+        }
+
+        logger.debug("downloadZip; Could not find fileDrop with key: " + downloadKey);
+
+        return ResponseEntity
+            .status(HttpStatus.FORBIDDEN)
+            .header(HttpHeaders.LOCATION, "/dl/" + downloadKey)
+            .build();
+    }
+
     @GetMapping(value = "/dl/{downloadKey}/{fileId}")
     public ResponseEntity<Resource> downloadFile(@PathVariable String downloadKey, @PathVariable Integer fileId,
-            HttpServletRequest httpServletRequest) throws IOException {
+                                                 HttpServletRequest httpServletRequest) throws IOException {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
 
         if (fileDrop == null || !fileDrop.isValid()) {
             return ResponseEntity
-                    .status(HttpStatus.NOT_FOUND)
-                    .header(HttpHeaders.LOCATION, "/")
-                    .build();
+                .status(HttpStatus.NOT_FOUND)
+                .header(HttpHeaders.LOCATION, "/")
+                .build();
         }
 
         if (isDownloadAllowed(fileDrop)) {
