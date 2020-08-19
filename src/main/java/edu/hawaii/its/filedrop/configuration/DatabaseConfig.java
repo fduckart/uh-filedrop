@@ -26,6 +26,9 @@ public class DatabaseConfig {
     @Value("${app.datasource.url}")
     private String url;
 
+    @Value("${app.datasource.connection-properties:}")
+    private String connectionProperties;
+
     @Value("${app.datasource.username}")
     private String username;
 
@@ -63,6 +66,7 @@ public class DatabaseConfig {
         logger.info("init; url: " + url);
         logger.info("init; username: " + username);
         logger.info("init; driverClassName: " + driverClassName);
+        logger.info("init; connectionProperties: " + connectionProperties);
         logger.info("init; hibernateDialect: " + hibernateDialect);
         logger.info("init; hibernateHbm2ddlAuto: " + hibernateHbm2ddlAuto);
         logger.info("init; flowableDatabaseSchema: " + flowableDatabaseSchema);
@@ -82,6 +86,7 @@ public class DatabaseConfig {
         BasicDataSource dataSource = new BasicDataSource();
         dataSource.setDriverClassName(driverClassName);
         dataSource.setUrl(url);
+        dataSource.setConnectionProperties(connectionProperties);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
 
