@@ -251,9 +251,9 @@ public class PrepareControllerTest {
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
         assertFalse(fileSets.isEmpty());
         assertEquals(1, fileSets.size());
-        assertEquals("test.txt", fileSets.get(0).getFileData().getFileName());
+        assertEquals("test.txt", fileSets.get(0).getFileName());
         assertEquals("text/plain", fileSets.get(0).getType());
-        assertEquals("test comment", fileSets.get(0).getFileData().getComment());
+        assertEquals("test comment", fileSets.get(0).getComment());
 
         mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
                 .andExpect(status().is3xxRedirection())
@@ -305,9 +305,9 @@ public class PrepareControllerTest {
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
         assertFalse(fileSets.isEmpty());
         assertEquals(1, fileSets.size());
-        assertEquals("test.txt", fileSets.get(0).getFileData().getFileName());
+        assertEquals("test.txt", fileSets.get(0).getFileName());
         assertEquals("text/plain", fileSets.get(0).getType());
-        assertEquals("test comment", fileSets.get(0).getFileData().getComment());
+        assertEquals("test comment", fileSets.get(0).getComment());
 
         mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
                 .andExpect(status().is3xxRedirection())

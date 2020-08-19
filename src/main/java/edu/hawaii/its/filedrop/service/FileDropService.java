@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -35,17 +34,13 @@ import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.repository.DownloadRepository;
-import edu.hawaii.its.filedrop.repository.FileDataRepository;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.repository.RecipientRepository;
-import edu.hawaii.its.filedrop.type.Download;
-import edu.hawaii.its.filedrop.type.FileData;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.type.Recipient;
-import edu.hawaii.its.filedrop.type.Role;
 
 @Service
 public class FileDropService {
@@ -60,10 +55,7 @@ public class FileDropService {
 
     @Autowired
     private FileSetRepository fileSetRepository;
-
-    @Autowired
-    private FileDataRepository fileDataRepository;
-
+    
     @Autowired
     private RecipientRepository recipientRepository;
 
@@ -153,21 +145,11 @@ public class FileDropService {
     public void uploadFile(User user, MultipartFile file, String comment, FileDrop fileDrop) {
         if (workflowService.atTask(user, "addFiles") && file != null) {
             FileSet fileSet = new FileSet();
-            fileSet.setFileName("");
+            fileSet.setFileName(file.getOriginalFilename());
             fileSet.setType(file.getContentType());
-            fileSet.setComment("");
+            fileSet.setComment(comment);
             fileSet.setFileDrop(fileDrop);
             fileSet.setSize(file.getSize());
-
-            fileSet = saveFileSet(fileSet);
-
-            FileData fileData = new FileData();
-            fileData.setComment(comment);
-            fileData.setFileName(file.getOriginalFilename());
-            fileData.setFileSet(fileSet);
-
-            fileData = saveFileData(fileData);
-            fileSet.setFileData(fileData);
             fileSet = saveFileSet(fileSet);
 
             Resource resource = file.getResource();
@@ -177,7 +159,6 @@ public class FileDropService {
                     Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()));
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);
-            logger.debug("FileData: " + fileSet.getFileData());
         }
     }
 
@@ -193,7 +174,7 @@ public class FileDropService {
         for (FileSet fileSet : fileSets) {
             Resource resource = fileSystemStorageService.loadAsResource(
                 Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()).toString());
-            ZipEntry zipEntry = new ZipEntry(fileSet.getFileData().getFileName());
+            ZipEntry zipEntry = new ZipEntry(fileSet.getFileName());
             zipEntry.setSize(resource.contentLength());
             zipOutputStream.putNextEntry(zipEntry);
             StreamUtils.copy(resource.getInputStream(), zipOutputStream);
@@ -290,12 +271,7 @@ public class FileDropService {
         List<FileSet> fileSets = fileSetRepository.findAllByFileDrop(fileDrop);
         fileDropInfo.setFileInfoList(fileSets.stream().map(fileSet -> {
             FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
-            FileData fileData = findByFileSet(fileSet);
-            if (fileData != null) {
-                fileInfo.setFileName(fileData.getFileName());
-            } else {
-                fileInfo.setFileName(fileSet.getFileName());
-            }
+            fileInfo.setFileName(fileSet.getFileName());
             fileInfo.setFileSize(fileSet.getSize());
             fileInfo.setFileType(fileSet.getType());
             fileInfo.setDownloads(downloadRepository.findAllByFileDropAndFileName(fileDrop, fileSet.getFileName()).size());
@@ -318,14 +294,6 @@ public class FileDropService {
 
     public FileSet saveFileSet(FileSet fileSet) {
         return fileSetRepository.save(fileSet);
-    }
-
-    public FileData saveFileData(FileData fileData) {
-        return fileDataRepository.save(fileData);
-    }
-
-    public FileData findByFileSet(FileSet fileSet) {
-        return fileDataRepository.findByFileSet(fileSet);
     }
 
     public List<FileSet> findFileSets(FileDrop fileDrop) {

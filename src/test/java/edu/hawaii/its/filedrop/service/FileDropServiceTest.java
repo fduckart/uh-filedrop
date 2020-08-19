@@ -32,11 +32,8 @@ import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.controller.WithMockUhUser;
-import edu.hawaii.its.filedrop.type.FileData;
 import edu.hawaii.its.filedrop.type.FileDrop;
-import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.FileSet;
-import edu.hawaii.its.filedrop.type.Recipient;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -596,60 +593,6 @@ public class FileDropServiceTest {
         fileDropService.checkFileDrops();
         fileDrop = fileDropService.findFileDrop(fileDrop.getId());
         assertFalse(fileDrop.isValid());
-    }
-
-    @Test
-    public void noFileDataTest() {
-        FileDrop fileDrop = new FileDrop();
-        fileDrop.setValid(true);
-        fileDrop.setExpiration(LocalDateTime.now().minusMinutes(1));
-        fileDrop.setCreated(LocalDateTime.now());
-        fileDrop.setAuthenticationRequired(true);
-        fileDrop.setDownloadKey("dlkey");
-        fileDrop.setUploadKey("ulkey");
-        fileDrop.setEncryptionKey("enckey");
-        fileDrop.setUploader("test2");
-        fileDrop.setUploaderFullName("Test 2");
-        fileDrop = fileDropService.saveFileDrop(fileDrop);
-
-        Recipient recipient = new Recipient();
-        recipient.setName("test2");
-        recipient.setFileDrop(fileDrop);
-        fileDrop.setRecipients(Collections.singletonList(recipient));
-
-        fileDrop = fileDropService.saveFileDrop(fileDrop);
-
-        FileSet fileSet = new FileSet();
-        fileSet.setSize(1000L);
-        fileSet.setType("test/type");
-        fileSet.setFileName("test.tst");
-        fileSet.setComment("test comment");
-        fileSet.setFileDrop(fileDrop);
-        fileSet = fileDropService.saveFileSet(fileSet);
-
-        fileDrop = fileDropService.findFileDrop(fileDrop.getId());
-
-        assertNotNull(fileDrop);
-        assertNotNull(fileDrop.getFileSet());
-
-        FileDropInfo fileDropInfo = fileDropService.getFileDropInfo(fileDrop);
-
-        assertNotNull(fileDropInfo);
-        assertNotNull(fileDropInfo.getFileInfoList().get(0));
-        assertEquals(fileDropInfo.getFileInfoList().get(0).getFileName(), "test.tst");
-
-        FileData fileData = new FileData();
-        fileData.setFileName("test data.tst");
-        fileData.setComment("test comment");
-        fileData.setFileSet(fileSet);
-        fileData = fileDropService.saveFileData(fileData);
-
-        fileDropInfo = fileDropService.getFileDropInfo(fileDrop);
-        assertNotNull(fileDropInfo);
-        assertNotNull(fileDropInfo.getFileInfoList().get(0));
-        assertEquals(fileDropInfo.getFileInfoList().get(0).getFileName(), "test data.tst");
-
-        assertEquals(fileSet.getId(), fileData.getFileSet().getId());
     }
 
     private Task currentTask(User user) {
