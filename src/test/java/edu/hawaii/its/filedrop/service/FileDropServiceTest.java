@@ -610,7 +610,13 @@ public class FileDropServiceTest {
         fileDrop.setEncryptionKey("enckey");
         fileDrop.setUploader("test2");
         fileDrop.setUploaderFullName("Test 2");
-        fileDrop.setRecipients(Collections.singletonList(new Recipient()));
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
+
+        Recipient recipient = new Recipient();
+        recipient.setName("test2");
+        recipient.setFileDrop(fileDrop);
+        fileDrop.setRecipients(Collections.singletonList(recipient));
+
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
         FileSet fileSet = new FileSet();

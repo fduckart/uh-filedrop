@@ -135,6 +135,21 @@ public class DownloadControllerTest {
 
         assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"), equalTo("attachment; filename=\"test.txt\""));
 
+        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/zip"))
+            .andExpect(status().is4xxClientError());
+
+        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
+
+        mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/zip")
+                .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(status().isOk())
+                .andReturn();
+
+        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"),
+            equalTo("attachment; filename=\"FileDrop(" + fileDrop.getDownloadKey() + ").zip\""));
+
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/9999"))
                 .andExpect(status().is4xxClientError());
     }
@@ -164,6 +179,12 @@ public class DownloadControllerTest {
 
         mockMvc.perform(get("/dl/downloadKey3/999"))
                 .andExpect(status().is4xxClientError());
+
+        mockMvc.perform(get("/dl/downloadKey3/zip"))
+            .andExpect(status().is4xxClientError());
+
+        mockMvc.perform(get("/dl/notarealkey/zip"))
+            .andExpect(status().is4xxClientError());
     }
 
     @Test
