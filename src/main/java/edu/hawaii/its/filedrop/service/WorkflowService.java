@@ -36,6 +36,15 @@ public class WorkflowService {
         startProcess(user, processKey, args);
     }
 
+    public void stopProcessAll(User user) {
+        List<Task> tasks = getCurrentTaskAll(user);
+        if (tasks != null && tasks.size() > 0) {
+            for (Task task : tasks) {
+                runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "stop");
+            }
+        }
+    }
+
     public void stopProcess(User user) {
         Task task = getCurrentTask(user);
         if (task != null) {
@@ -64,7 +73,16 @@ public class WorkflowService {
     }
 
     public Task getCurrentTask(User user) {
-        return taskService.createTaskQuery().taskAssignee(user.getUsername()).singleResult();
+        return taskService
+                .createTaskQuery()
+                .taskAssignee(user.getUsername()).singleResult();
+    }
+
+    public List<Task> getCurrentTaskAll(User user) {
+        return taskService
+                .createTaskQuery()
+                .taskAssignee(user.getUsername())
+                .list();
     }
 
     public void completeCurrentTask(User user) {

@@ -1,5 +1,11 @@
 package edu.hawaii.its.filedrop.service;
 
+import static org.hamcrest.Matchers.equalTo;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,10 +26,6 @@ import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.controller.WithMockUhUser;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -46,6 +48,7 @@ public class WorkflowServiceTest {
     public void startProcessTest() {
         AnonymousUser user = new AnonymousUser();
         assertNotNull(user);
+        workflowService.stopProcessAll(user);
         assertNull(workflowService.currentTask(user));
 
         Map<String, Object> args = new HashMap<>();
@@ -58,23 +61,18 @@ public class WorkflowServiceTest {
         List<Task> fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
 
         assertEquals(1, fileDropTasks.size());
-
         assertEquals("addRecipients", fileDropTasks.get(0).getName());
-
         assertEquals("anonymous", fileDropTasks.get(0).getAssignee());
 
         taskService.complete(fileDropTasks.get(0).getId(), args);
 
         fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
-
         assertEquals(1, fileDropTasks.size());
-
         assertEquals("addFiles", fileDropTasks.get(0).getName());
 
         taskService.complete(fileDropTasks.get(0).getId());
 
         fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
-
         assertEquals(0, fileDropTasks.size());
         assertNull(workflowService.getCurrentTask(user));
     }
@@ -83,6 +81,7 @@ public class WorkflowServiceTest {
     public void startProcessMultipleAnonymous() {
         AnonymousUser user = new AnonymousUser();
         assertNotNull(user);
+        workflowService.stopProcessAll(user);
         assertNull(workflowService.currentTask(user));
 
         Map<String, Object> args = new HashMap<>();
@@ -102,11 +101,9 @@ public class WorkflowServiceTest {
         assertNotNull(process2);
 
         List<Task> userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-
         assertEquals(2, userTasks.size());
 
         List<Task> processTask = taskService.createTaskQuery().processInstanceId(process.getId()).list();
-
         assertEquals(1, processTask.size());
 
         runtimeService.deleteProcessInstance(process.getId(), "test");
@@ -119,6 +116,7 @@ public class WorkflowServiceTest {
     public void startProcessUH() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
+        workflowService.stopProcessAll(user);
 
         assertNull(workflowService.currentTask(user));
 
@@ -130,7 +128,6 @@ public class WorkflowServiceTest {
         assertNotNull(workflowService.currentTask(user));
 
         List<Task> userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
-
         assertEquals(1, userTasks.size());
 
         userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
@@ -150,4 +147,48 @@ public class WorkflowServiceTest {
         assertEquals(0, userTasks.size());
         assertNull(workflowService.currentTask(user));
     }
+
+    @Test
+    @WithMockUhUser
+    public void specialCharacters() {
+        User user = userContextService.getCurrentUser();
+        workflowService.stopProcessAll(user);
+
+        final String s0 = "Kahakō in Hā Kūpuna";
+        final String s1 = "Kahakō";
+        final String s2 = "ʻokina";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("s0", s0);
+        map.put("i0", new Integer(0));
+        map.put("s1", s1);
+        map.put("i1", new Integer(1));
+        map.put("s2", s2);
+        map.put("i2", new Integer(2));
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("initiator", user.getUsername());
+
+        ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
+        assertNotNull(process);
+        assertNotNull(workflowService.currentTask(user));
+
+        Task task = workflowService.getCurrentTask(user);
+        assertNotNull(task);
+
+        workflowService.addProcessVariables(task, map);
+
+        Map<String, Object> result = workflowService.getProcessVariables(process.getId());
+
+        assertThat(result.get("s0"), equalTo(s0));
+        assertThat(result.get("s1"), equalTo(s1));
+        assertThat(result.get("s2"), equalTo(s2));
+
+        assertThat(result.get("i0"), equalTo(Integer.valueOf(0)));
+        assertThat(result.get("i1"), equalTo(Integer.valueOf(1)));
+        assertThat(result.get("i2"), equalTo(Integer.valueOf(2)));
+
+        runtimeService.deleteProcessInstance(process.getId(), "test");
+    }
+
 }
