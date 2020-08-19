@@ -465,7 +465,7 @@ public class AdminControllerTest {
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))))
                 .andExpect(jsonPath("$[0].uploader").value("test"))
                 .andExpect(jsonPath("$[0].fileInfoList").isNotEmpty())
-                .andExpect(jsonPath("$[0].fileInfoList[0].fileName").value("kahakō in Hā Kūpuna.txt"))
+                .andExpect(jsonPath("$[0].fileInfoList[0].fileName").value("test.txt"))
                 .andExpect(jsonPath("$[0].fileInfoList[0].fileType").value("text/plain"))
                 .andExpect(jsonPath("$[0].fileInfoList[0].fileSize").value("1000"))
                 .andExpect(jsonPath("$[0].fileInfoList[0].downloads").value("1"));
