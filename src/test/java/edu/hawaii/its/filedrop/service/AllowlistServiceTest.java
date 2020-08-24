@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.quartz.JobDetail;
@@ -164,6 +165,7 @@ public class AllowlistServiceTest {
         assertThat(allowlistService.recordCount(), greaterThanOrEqualTo(count - 1L));
     }
 
+    @Ignore
     @Test
     public void schedulerTest() throws SchedulerException {
         Allowlist allowlist = new Allowlist();
