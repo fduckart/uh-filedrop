@@ -17,6 +17,7 @@ import javax.mail.internet.MimeMessage;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -82,6 +83,7 @@ public class EmailServiceTest {
         assertThat(receivedMessages[0].getContent().toString(), containsString("Test"));
     }
 
+    @Ignore
     @Test
     public void sendNull() {
         assertTrue(emailService.isEnabled());
