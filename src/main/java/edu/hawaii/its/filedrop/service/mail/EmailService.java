@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.stereotype.Service;
@@ -28,7 +29,7 @@ public class EmailService {
     private static final Log logger = LogFactory.getLog(EmailService.class);
 
     @Autowired
-    private JavaMailSender javaMailSender;
+    private JavaMailSenderImpl javaMailSender;
 
     @Value("${app.mail.enabled}")
     private boolean isEnabled;
@@ -131,5 +132,9 @@ public class EmailService {
 
     public String getFrom() {
         return from;
+    }
+
+    public JavaMailSenderImpl getJavaMailSender() {
+        return javaMailSender;
     }
 }

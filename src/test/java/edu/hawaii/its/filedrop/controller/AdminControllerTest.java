@@ -49,12 +49,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.icegreen.greenmail.junit.GreenMailRule;
-import com.icegreen.greenmail.util.ServerSetup;
+import com.icegreen.greenmail.util.ServerSetupTest;
 import com.jayway.jsonpath.JsonPath;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.AllowlistService;
 import edu.hawaii.its.filedrop.service.ApplicationService;
+import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.Allowlist;
 import edu.hawaii.its.filedrop.type.Setting;
 
@@ -79,7 +80,10 @@ public class AdminControllerTest {
     private ApplicationService applicationService;
 
     @Rule
-    public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
+    public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
+
+    @Autowired
+    private EmailService emailService;
 
     private MockMvc mockMvc;
 
@@ -90,6 +94,7 @@ public class AdminControllerTest {
                 .build();
 
         server.start();
+        emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
     }
 
     @After

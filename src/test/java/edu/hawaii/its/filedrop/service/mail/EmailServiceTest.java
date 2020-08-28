@@ -24,6 +24,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.SocketUtils;
 import org.thymeleaf.context.Context;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
@@ -31,6 +32,7 @@ import com.icegreen.greenmail.store.MailFolder;
 import com.icegreen.greenmail.store.StoredMessage;
 import com.icegreen.greenmail.user.GreenMailUser;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.icegreen.greenmail.util.ServerSetupTest;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
@@ -44,7 +46,7 @@ public class EmailServiceTest {
     private EmailService emailService;
 
     @Rule
-    public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
+    public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
 
     @Autowired
     private FileDropService fileDropService;
@@ -52,6 +54,7 @@ public class EmailServiceTest {
     @Before
     public void setUp() {
         server.start();
+        emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
         emailService.setEnabled(true);
     }
 
