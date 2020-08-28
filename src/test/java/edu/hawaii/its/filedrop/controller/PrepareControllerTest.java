@@ -39,6 +39,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.icegreen.greenmail.util.ServerSetupTest;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
@@ -73,7 +74,7 @@ public class PrepareControllerTest {
     private MockMvc mockMvc;
 
     @Rule
-    public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
+    public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
 
     @Before
     public void construct() {
@@ -82,6 +83,7 @@ public class PrepareControllerTest {
                 .build();
 
         server.start();
+        emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
         emailService.setEnabled(true);
     }
 

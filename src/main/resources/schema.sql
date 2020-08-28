@@ -32,7 +32,7 @@ CREATE TABLE download (
 
 DROP TABLE IF EXISTS file_data;
 
-CREATE TABLE file_data (
+CREATE TABLE fd_fileset (
   filedrop_id int(11) NOT NULL DEFAULT '0',
   file_name varchar(255) NOT NULL DEFAULT '',
   type varchar(255) NOT NULL DEFAULT '',

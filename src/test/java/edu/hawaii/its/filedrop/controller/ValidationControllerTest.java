@@ -25,9 +25,11 @@ import org.springframework.web.context.WebApplicationContext;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
 import com.icegreen.greenmail.util.ServerSetup;
+import com.icegreen.greenmail.util.ServerSetupTest;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.ValidationRepository;
+import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.Validation;
 
 @RunWith(SpringRunner.class)
@@ -36,7 +38,7 @@ import edu.hawaii.its.filedrop.type.Validation;
 public class ValidationControllerTest {
 
     @Rule
-    public GreenMailRule server = new GreenMailRule(new ServerSetup(1025, "localhost", "smtp"));
+    public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
 
     private MockMvc mockMvc;
 
@@ -46,6 +48,9 @@ public class ValidationControllerTest {
     @Autowired
     private ValidationRepository validationRepository;
 
+    @Autowired
+    private EmailService emailService;
+
     @Before
     public void setUp() {
         mockMvc = webAppContextSetup(context)
@@ -53,6 +58,7 @@ public class ValidationControllerTest {
             .build();
 
         server.start();
+        emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
     }
 
     @After

@@ -15,7 +15,7 @@ import java.io.Serializable;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
-@Table(name = "file_data")
+@Table(name = "fd_fileset")
 public class FileSet implements Serializable {
 
     private static final long serialVersionUID = 101L;
