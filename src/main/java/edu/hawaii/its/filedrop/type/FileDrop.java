@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
-@Table(name = "filedrop")
+@Table(name = "fd_filedrop")
 public class FileDrop {
 
     @Id

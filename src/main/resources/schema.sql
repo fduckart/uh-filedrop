@@ -1,6 +1,6 @@
-DROP TABLE IF EXISTS filedrop;
+DROP TABLE IF EXISTS fd_filedrop;
 
-CREATE TABLE filedrop (
+CREATE TABLE fd_filedrop (
   id int(11) NOT NULL AUTO_INCREMENT,
   uploader varchar(255) NOT NULL DEFAULT '',
   uploader_fullname varchar(255) DEFAULT NULL,
