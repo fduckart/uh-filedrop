@@ -27,7 +27,7 @@ CREATE TABLE download (
   completed timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ip_addr varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (id),
-  CONSTRAINT download_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
+  CONSTRAINT download_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES fd_filedrop (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS fd_fileset;
@@ -40,7 +40,7 @@ CREATE TABLE fd_fileset (
   size BIGINT NOT NULL DEFAULT '0',
   id int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (id),
-  CONSTRAINT file_data_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
+  CONSTRAINT file_data_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES fd_filedrop (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS recipient;
@@ -50,7 +50,7 @@ CREATE TABLE recipient (
   filedrop_id int(11) NOT NULL,
   name varchar(255) NOT NULL,
   PRIMARY KEY (id),
-  CONSTRAINT recipient_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES filedrop (id) ON DELETE CASCADE
+  CONSTRAINT recipient_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES fd_filedrop (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS qrtz_job_details;

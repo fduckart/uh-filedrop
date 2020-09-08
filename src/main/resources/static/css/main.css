@@ -73,6 +73,10 @@ a:hover {
   border-color: #63aeff;
 }
 
+.breadcrumb-bg {
+  background-color: #F5F8FF;
+}
+
 .material-icons {
   font-family: 'Material Icons';
   font-weight: normal;
