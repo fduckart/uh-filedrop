@@ -16,9 +16,9 @@ CREATE TABLE fd_filedrop (
   UNIQUE KEY upload_key (upload_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-DROP TABLE IF EXISTS download;
+DROP TABLE IF EXISTS fd_download;
 
-CREATE TABLE download (
+CREATE TABLE fd_download (
   id int(11) NOT NULL AUTO_INCREMENT,
   filedrop_id int(11) NOT NULL DEFAULT '0',
   file_name varchar(255) NOT NULL DEFAULT '',
@@ -27,7 +27,7 @@ CREATE TABLE download (
   completed timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ip_addr varchar(16) NOT NULL DEFAULT '',
   PRIMARY KEY (id),
-  CONSTRAINT download_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES fd_filedrop (id) ON DELETE CASCADE
+  CONSTRAINT fd_download_ibfk_1 FOREIGN KEY (filedrop_id) REFERENCES fd_filedrop (id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 DROP TABLE IF EXISTS fd_fileset;
