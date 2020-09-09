@@ -273,8 +273,8 @@ CREATE TABLE system_role (
 
 CREATE TABLE setting (
   id int(11) NOT NULL AUTO_INCREMENT,
-  `key` varchar(255) NOT NULL,
+  setting_key varchar(255) NOT NULL,
   value varchar(255) NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE (`key`)
+  UNIQUE (setting_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
