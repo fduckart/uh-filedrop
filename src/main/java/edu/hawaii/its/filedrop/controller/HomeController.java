@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
+
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
@@ -23,6 +26,7 @@ import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.Message;
+import edu.hawaii.its.filedrop.type.Setting;
 import edu.hawaii.its.filedrop.util.Files;
 
 @Controller
@@ -57,6 +61,9 @@ public class HomeController {
     @Autowired
     private FileDropService fileDropService;
 
+    @Autowired
+    private ApplicationService applicationService;
+
     @GetMapping(value = { "/", "/home" })
     public String home(Model model) {
         logger.debug("User at home.");
@@ -66,7 +73,11 @@ public class HomeController {
         int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.GATE_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("gatemessage", message.getText());
-
+        Setting disableLanding = applicationService.findSetting(1);
+        if (Boolean.parseBoolean(disableLanding.getValue())) {
+            model.addAttribute("gatemessage", "System is unavailable.");
+        }
+        model.addAttribute("disableLanding", Boolean.parseBoolean(disableLanding.getValue()));
         return "home";
     }
 

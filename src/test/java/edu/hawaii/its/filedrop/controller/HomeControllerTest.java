@@ -31,7 +31,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
+import edu.hawaii.its.filedrop.type.Setting;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
@@ -56,6 +58,9 @@ public class HomeControllerTest {
 
     @Autowired
     private SpaceCheckService spaceCheckService;
+
+    @Autowired
+    private ApplicationService applicationService;
 
     @Before
     public void setUp() {
@@ -91,6 +96,26 @@ public class HomeControllerTest {
                 .andExpect(model().attribute("gatemessage",
                         equalTo("FileDrop is currently unavailable.")));
         spaceCheckService.update();
+    }
+
+    @Test
+    public void requestHomeDisableLanding() throws Exception {
+        mockMvc.perform(get("/"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("home"))
+            .andExpect(model().attribute("disableLanding", equalTo(false)));
+        Setting disableLanding = applicationService.findSetting(1);
+        disableLanding.setValue("true");
+        disableLanding = applicationService.saveSetting(disableLanding);
+
+        mockMvc.perform(get("/"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("home"))
+            .andExpect(model().attribute("disableLanding", equalTo(true)))
+            .andExpect(model().attribute("gatemessage", equalTo("System is unavailable.")));
+
+        disableLanding.setValue("false");
+        applicationService.saveSetting(disableLanding);
     }
 
     @Test
