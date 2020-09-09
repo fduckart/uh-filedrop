@@ -11,7 +11,7 @@ import javax.persistence.Table;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "download")
+@Table(name = "fd_download")
 public class Download {
 
     @Id
