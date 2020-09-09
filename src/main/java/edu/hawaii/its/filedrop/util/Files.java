@@ -1,6 +1,8 @@
 package edu.hawaii.its.filedrop.util;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 
 import org.apache.commons.io.FileUtils;
 
@@ -30,6 +32,19 @@ public final class Files {
     public static long fileSize(String path) {
         File file = new File(path);
         return file.length();
+    }
+
+    public static void deleteDirectory(Path path) throws IOException {
+        File dir = path.toFile();
+        if (dir.exists()) {
+            if (dir.isDirectory()) {
+                File[] files = dir.listFiles();
+                for (File file : files) {
+                    deleteDirectory(file.toPath());
+                }
+            }
+            dir.delete();
+        }
     }
 
 }
