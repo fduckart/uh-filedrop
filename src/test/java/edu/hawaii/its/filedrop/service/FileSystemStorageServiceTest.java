@@ -120,24 +120,11 @@ public class FileSystemStorageServiceTest {
         assertTrue(storageService.exists(dirname));
         assertTrue(Files.exists(path));
 
-        deleteDirectory(path);
+        edu.hawaii.its.filedrop.util.Files.deleteDirectory(path);
 
         assertFalse(storageService.exists(dirname));
         assertFalse(Files.exists(path));
 
-    }
-
-    private void deleteDirectory(Path path) throws IOException {
-        File dir = path.toFile();
-        if (dir.exists()) {
-            if (dir.isDirectory()) {
-                File[] files = dir.listFiles();
-                for (int i = 0; i < files.length; i++) {
-                    deleteDirectory(files[i].toPath());
-                }
-            }
-            dir.delete();
-        }
     }
 
     @Test

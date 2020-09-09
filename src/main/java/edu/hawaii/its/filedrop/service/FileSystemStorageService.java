@@ -122,9 +122,7 @@ public class FileSystemStorageService implements StorageService {
     @Override
     public void delete(Path path) {
         try {
-            if(!Files.deleteIfExists(path)) {
-                logger.warn("No file to delete: " + path.toString());
-            }
+            edu.hawaii.its.filedrop.util.Files.deleteDirectory(path);
         } catch(Exception e) {
             throw new StorageException(e);
         }
