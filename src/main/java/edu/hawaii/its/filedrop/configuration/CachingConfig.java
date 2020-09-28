@@ -34,7 +34,9 @@ public class CachingConfig {
                 new ConcurrentMapCache("settings"),
                 new ConcurrentMapCache("settingsById"),
                 new ConcurrentMapCache("allowlistCache"),
-                new ConcurrentMapCache("allowlistById")));
+                new ConcurrentMapCache("allowlistById"),
+                new ConcurrentMapCache("faqCache"),
+                new ConcurrentMapCache("faqById")));
         return cacheManager;
     }
 

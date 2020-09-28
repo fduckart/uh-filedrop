@@ -13,8 +13,11 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import edu.hawaii.its.filedrop.repository.FaqRepository;
 import edu.hawaii.its.filedrop.repository.OfficeRepository;
 import edu.hawaii.its.filedrop.repository.SettingRepository;
+import edu.hawaii.its.filedrop.type.Allowlist;
+import edu.hawaii.its.filedrop.type.Faq;
 import edu.hawaii.its.filedrop.type.Office;
 import edu.hawaii.its.filedrop.type.Setting;
 
@@ -29,6 +32,9 @@ public class ApplicationService {
 
     @Autowired
     private SettingRepository settingRepository;
+
+    @Autowired
+    private FaqRepository faqRepository;
 
     @PostConstruct
     public void init() {
@@ -78,6 +84,37 @@ public class ApplicationService {
 
     @Caching(evict = @CacheEvict(value = "settings", allEntries = true))
     public void evictSettingCache() {
+        // Empty.
+    }
+
+    @Cacheable(value = "faqCache")
+    public List<Faq> findFaqs() {
+        return faqRepository.findAll();
+    }
+
+    @Cacheable(value = "faqById", key = "#id")
+    public Faq findFaq(Integer id) {
+        return faqRepository.findById(id).orElse(null);
+    }
+
+    @CachePut(value = "faqById", key = "#result.id")
+    @CacheEvict(value = "faqCache", allEntries = true)
+    public Faq saveFaq(Faq faq) {
+        return faqRepository.save(faq);
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "faqCache", allEntries = true),
+        @CacheEvict(value = "faqById", allEntries = true) })
+    public void deleteFaq(Faq faq) {
+        faqRepository.delete(faq);
+    }
+
+    @Caching(evict = {
+        @CacheEvict(value = "faqCache", allEntries = true),
+        @CacheEvict(value = "faqById", allEntries = true)
+    })
+    public void evictFaqCache() {
         // Empty.
     }
 }
