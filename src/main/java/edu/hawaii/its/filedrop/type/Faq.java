@@ -64,6 +64,8 @@ public class Faq {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((id == null) ? 0 : id.hashCode());
+        result = prime * result + ((question == null) ? 0 : question.hashCode());
+        result = prime * result + ((answer == null) ? 0 : answer.hashCode());
         return result;
     }
 
