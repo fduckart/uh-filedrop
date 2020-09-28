@@ -278,3 +278,10 @@ CREATE TABLE setting (
   PRIMARY KEY(id),
   UNIQUE (setting_key)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE faq (
+  id int(11) NOT NULL AUTO_INCREMENT,
+  question text NOT NULL,
+  answer text NOT NULL,
+  PRIMARY KEY(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
