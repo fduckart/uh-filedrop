@@ -32,6 +32,13 @@ public class LdapPersonAttributesMapper implements AttributesMapper<LdapPerson> 
             person.addAffiliation(affiliation);
         }
 
+        List<String> orgAffiliations = get(attrs, "uhOrgAffiliation");
+        for (String orgAffiliation : orgAffiliations) {
+            String affiliation = orgAffiliation.split(",")[1].split("=")[1];
+            if (!person.getOrgAffiliations().contains(affiliation)) {
+                person.addOrgAffiliation(affiliation);
+            }
+        }
         return person;
     }
 

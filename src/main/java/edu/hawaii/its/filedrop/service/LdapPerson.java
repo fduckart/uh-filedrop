@@ -17,6 +17,7 @@ public class LdapPerson implements PersonIdentifiable {
     private String title;
     private List<String> emails = new ArrayList<>();
     private List<String> affiliations = new ArrayList<>();
+    private List<String> orgAffiliations = new ArrayList<>();
 
     public void addMail(String mail) {
         emails.add(mail);
@@ -24,6 +25,10 @@ public class LdapPerson implements PersonIdentifiable {
 
     public void addAffiliation(String affiliation) {
         affiliations.add(affiliation);
+    }
+
+    public void addOrgAffiliation(String orgAffiliation) {
+        orgAffiliations.add(orgAffiliation);
     }
 
     public String getCn() {
@@ -91,6 +96,10 @@ public class LdapPerson implements PersonIdentifiable {
         return Collections.unmodifiableList(affiliations);
     }
 
+    public List<String> getOrgAffiliations() {
+        return Collections.unmodifiableList(orgAffiliations);
+    }
+
     public List<String> getMails() {
         return Collections.unmodifiableList(emails);
     }
@@ -105,6 +114,7 @@ public class LdapPerson implements PersonIdentifiable {
                 + ", uid=" + uid
                 + ", mail=" + emails
                 + ", affiliations=" + affiliations
+                + ", orgAffiliations=" + orgAffiliations
                 + "]";
     }
 

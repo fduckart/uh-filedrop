@@ -57,6 +57,7 @@ import edu.hawaii.its.filedrop.service.AllowlistService;
 import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.Allowlist;
+import edu.hawaii.its.filedrop.type.Faq;
 import edu.hawaii.its.filedrop.type.Setting;
 
 @RunWith(SpringRunner.class)
@@ -571,10 +572,43 @@ public class AdminControllerTest {
             .andExpect(flash().attributeExists("alert"));
     }
 
-    public String objectToJSON(Allowlist allowlist) throws JsonProcessingException {
+    @Test
+    @WithMockUhAdmin
+    public void faqTest() throws Exception {
+        Faq faq = new Faq();
+        faq.setQuestion("test question");
+        faq.setAnswer("test answer");
+
+        mockMvc.perform(get("/admin/faq"))
+            .andExpect(status().isOk())
+            .andExpect(view().name("admin/faq"));
+
+        mockMvc.perform(post("/api/admin/faq")
+            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+            .content(objectToJSON(faq)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.question").value("test question"))
+            .andExpect(jsonPath("$.answer").value("test answer"));
+
+        faq = applicationService.findFaq(applicationService.findFaqs().size() - 1);
+
+        mockMvc.perform(post("/api/admin/faq/" + faq.getId())
+            .param("question", "new question")
+            .param("answer", "test answer"))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.question").value("new question"))
+            .andExpect(jsonPath("$.answer").value("test answer"));
+
+        mockMvc.perform(delete("/api/admin/faq/" + faq.getId()))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.question").value("new question"))
+            .andExpect(jsonPath("$.answer").value("test answer"));
+    }
+
+    public String objectToJSON(Object object) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(SerializationFeature.WRAP_ROOT_VALUE, false);
         ObjectWriter objectWriter = objectMapper.writer().withDefaultPrettyPrinter();
-        return objectWriter.writeValueAsString(allowlist);
+        return objectWriter.writeValueAsString(object);
     }
 }

@@ -2,6 +2,7 @@ package edu.hawaii.its.filedrop.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
@@ -18,6 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.type.Faq;
 import edu.hawaii.its.filedrop.type.Office;
 import edu.hawaii.its.filedrop.type.Setting;
 
@@ -131,5 +133,50 @@ public class ApplicationServiceTest {
         setting = applicationService.saveSetting(setting);
         applicationService.evictSettingCache();
         assertThat(setting.getValue(), equalTo("false"));
+    }
+
+    @Test
+    public void findFaq() {
+        List<Faq> faqs = applicationService.findFaqs();
+        assertThat(faqs.size(), greaterThanOrEqualTo(1));
+        assertThat(faqs.get(0).getId(), equalTo(1));
+        assertThat(faqs.get(0).getQuestion(), containsString("How does it work?"));
+        assertThat(faqs.get(0).getAnswer(), startsWith("The basic idea behind"));
+
+        List<Faq> cache = applicationService.findFaqs();
+
+        assertSame(faqs, cache);
+
+        applicationService.evictFaqCache();
+
+        assertNotSame(cache, applicationService.findFaqs());
+    }
+
+    @Test
+    public void findFaqById() {
+        Faq faq = applicationService.findFaq(1);
+        Faq faq1 = applicationService.findFaq(1);
+
+        assertThat(faq.getId(), equalTo(1));
+        assertThat(faq.getQuestion(), containsString("How does it work?"));
+        assertThat(faq.getAnswer(), startsWith("The basic idea behind"));
+        assertThat(faq1.getId(), equalTo(1));
+        assertThat(faq1.getQuestion(), containsString("How does it work?"));
+        assertThat(faq1.getAnswer(), startsWith("The basic idea behind"));
+
+        assertSame(faq, faq1);
+    }
+
+    @Test
+    public void saveFaq() {
+        Faq faq = applicationService.findFaq(1);
+        faq.setAnswer("test answer");
+        assertThat(faq.getAnswer(), equalTo("test answer"));
+        Faq faq1 = applicationService.saveFaq(faq);
+        assertThat(faq1.getAnswer(), equalTo("test answer"));
+        faq.setAnswer("another answer");
+        faq = applicationService.saveFaq(faq);
+        applicationService.evictSettingCache();
+        assertThat(faq.getAnswer(), equalTo("another answer"));
     }
 }

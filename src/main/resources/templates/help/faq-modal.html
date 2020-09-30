@@ -1,4 +1,4 @@
-<div class="modal" tabindex="-1" role="dialog" id="faqModal" th:fragment="copy">
+<div class="modal" tabindex="-1" role="dialog" id="faqModal" th:fragment="copy" ng-app="filedropApp">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -7,97 +7,19 @@
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" ng-controller="FaqJsController" ng-init="init()">
                 <table class="table table-bordered">
-                    <tbody>
+                    <thead>
                     <tr>
-                        <td colspan="2" align="left" valign="top"><b>General Questions</b></td>
+                        <th>Question</th>
+                        <th>Answer</th>
                     </tr>
-                    <tr>
-                        <td align="left" valign="top" class="faq-question">
-                            Q: <span th:text="#{faq.question.1}"></span>
-                        </td>
-                        <td align="left" valign="top">
-                            <p>
-                                A: <span th:utext="#{faq.answer.1}"></span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top" class="faq-question">
-                            Q: <span th:text="#{faq.question.2}"></span>
-                        </td>
-                        <td align="left" valign="top">
-                            <p>
-                                A: <span th:utext="#{faq.answer.2}"></span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top" class="faq-question">
-                            Q: <span th:text="#{faq.question.3}"></span>
-                        </td>
-                        <td align="left" valign="top">
-                            <p>
-                                A: <span th:utext="#{faq.answer.3}"></span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top" class="faq-question">
-                            <a id="size" class="faq-anchor-link"></a>
-                            Q: <span th:text="#{faq.question.4}"></span>
-                        </td>
-                        <td align="left" valign="top">
-                            <p>
-                                A: <span th:utext="#{faq.answer.4(#{maxSize})}"></span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top" class="faq-question">
-                            Q: <span th:text="#{faq.question.5}"></span>
-                        </td>
-                        <td align="left" valign="top">
-                            <p>
-                                A: <span th:utext="#{faq.answer.5}"></span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top" class="faq-question">
-                            Q: <span th:text="#{faq.question.6}"></span>
-                            <a id="auth"></a>
-                        </td>
-                        <td align="left" valign="top">
-                            <p>
-                                A: <span th:utext="#{faq.answer.6}"></span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top" class="faq-question">
-                            Q: <span th:text="#{faq.question.7}"></span>
-                        </td>
-                        <td align="left" valign="top">
-                            <p>
-                                A: <span th:utext="#{faq.answer.7}"></span>
-                            </p>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" align="left" valign="top"><b>Resources</b></td>
-                    </tr>
-                    <tr>
-                        <td align="left" valign="top" class="faq-question">
-                            Q: <span th:text="#{faq.question.8}"></span>
-                        </td>
-                        <td align="left" valign="top">
-                            <p>
-                                A: <span th:utext="#{faq.answer.8}"></span>
-                            </p>
-                        </td>
-                    </tr>
+                    </thead>
+                    <tbody ng-cloak>
+                        <tr ng-repeat="faq in faqList | filter:filter">
+                            <td ng-bind-html="renderHtml(faq.question)"></td>
+                            <td ng-bind-html="renderHtml(faq.answer)"></td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -107,3 +29,97 @@
         </div>
     </div>
 </div>
+
+<script type="text/ng-template" id="faqDeleteModal.html" th:fragment="copy">
+    <div class="modal-header">
+        <h5 class="modal-title">Delete FAQ</h5>
+        <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="card bg-light">
+            <div class="card-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-sm-2">
+                            <i class="fa fa-exclamation-circle text-danger" style="font-size: 3rem" aria-hidden="true"></i>
+                        </div>
+                        <div class="col-sm-10 my-auto">
+                            <p>
+                                Are you sure you want to delete?
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-danger" type="button" ng-click="ok()">Yes</button>
+        <button class="btn btn-secondary" type="button" ng-click="cancel()">Cancel</button>
+    </div>
+</script>
+
+<script type="text/ng-template" id="faqAddModal.html" th:fragment="copy">
+    <div class="modal-header">
+        <h5 class="modal-title">New FAQ</h5>
+        <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <form id="faqForm" ng-submit="ok()">
+        <div class="modal-body">
+            <div class="form-group">
+                <label for="question">Question</label>
+                <textarea class="form-control" aria-label="Question"
+                       aria-describedby="faq-question" id="question" ng-model="question" name="question" required>
+                </textarea>
+            </div>
+            <div class="form-group">
+                <label for="answer">Answer</label>
+                <textarea rows="10" class="form-control" aria-label="Answer"
+                       aria-describedby="faq-answer" id="answer" ng-model="answer"
+                       name="answer" required>
+                </textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success" type="submit">Save</button>
+            <button class="btn btn-secondary" type="button" ng-click="$dismiss()">Cancel</button>
+        </div>
+    </form>
+</script>
+
+<script type="text/ng-template" id="faqEditModal.html" th:fragment="copy">
+    <div class="modal-header">
+        <h5 class="modal-title">Edit FAQ</h5>
+        <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <form id="faqEditForm" ng-submit="ok()">
+        <div class="modal-body">
+            <input type="hidden" ng-value="faq.id" name="id">
+            <div class="form-group">
+                <label for="question">Question</label>
+                <textarea class="form-control" aria-label="Question"
+                          aria-describedby="faq-question" id="question" ng-value="faq.question" ng-model="newFaq.question" name="question">
+                </textarea>
+            </div>
+            <div class="form-group">
+                <label for="answer">Answer</label>
+                <textarea rows="10" class="form-control" aria-label="Answer"
+                          aria-describedby="faq-answer" id="answer" ng-value="faq.answer" ng-model="newFaq.answer"
+                          name="answer">
+                </textarea>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-success" type="submit">Save</button>
+            <button class="btn btn-secondary" type="button" ng-click="$dismiss()">Cancel</button>
+        </div>
+    </form>
+</script>

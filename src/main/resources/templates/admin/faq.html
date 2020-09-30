@@ -1,0 +1,84 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="header :: copy"></head>
+<body ng-app="filedropApp">
+<nav th:replace="menubar :: copy"></nav>
+
+<!--  Content container -->
+<div class="container" ng-controller="FaqJsController" ng-init="init()">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb breadcrumb-bg">
+            <li class="breadcrumb-item"><a th:href="@{/admin}">Admin</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Faq</li>
+        </ol>
+    </nav>
+    <div class="card">
+        <div class="card-header bg-transparent pb-0">
+            <div class="row">
+                <div class="col-sm-2 align-center">
+                    <h5 class="card-title mt-2">FAQ</h5>
+                </div>
+
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="search"><i class="fa fa-search"></i></span>
+                        </div>
+                        <input placeholder="Search question or answer" class="form-control" type="search"
+                               ng-model="filter"
+                               aria-describedby="search">
+                    </div>
+                </div>
+
+                <div class="col-sm-2 mt-sm-2 mt-md-0">
+                    <button type="button" class="btn btn-primary float-md-right" ng-click="openAddModal()">Add</button>
+                </div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="row" ng-cloak>
+                <div class="col-sm-12">
+                    <div class="table-responsive table-hover" ng-if="faqList.length > 0">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Question</th>
+                                <th>Answer</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr ng-repeat="faq in faqList | filter:filter">
+                                <td>{{ faq.question }}</td>
+                                <td>{{ faq.answer }}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-success" ng-click="openEditModal(faq)">
+                                        <i class="fa fa-edit"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-danger" ng-click="openDeleteModal(faq)">
+                                        <i class="fa fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center" ng-if="faqList.length == 0">
+                        <div class="spinner-border" style="width: 2rem; height: 2rem; text-align: center" role="status">
+                            <span class="sr-only">Loading FAQ...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="admin/allowlist-modal :: copy"></div>
+</div>
+<!-- / Content container. -->
+
+<div th:replace="footer :: copy"></div>
+</body>
+</html>

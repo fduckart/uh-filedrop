@@ -163,6 +163,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.authorizeRequests()
                 .antMatchers("/").permitAll()
+                .antMatchers("/api/faq").permitAll()
                 .antMatchers("/api/**").authenticated()
                 .antMatchers("/css/**").permitAll()
                 .antMatchers("/fonts/**").permitAll()
@@ -182,6 +183,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/holidays").hasRole("ADMINISTRATOR")
                 .antMatchers("/holidaygrid").hasRole("ADMINISTRATOR")
                 .antMatchers("/holidaysgrid").hasRole("ADMINISTRATOR")
+                .antMatchers("/api/admin/**").hasRole("ADMINISTRATOR")
                 .antMatchers("/admin/**").hasRole("ADMINISTRATOR")
                 .antMatchers("/user").hasRole("UH")
                 .antMatchers("/user/data").hasRole("UH")

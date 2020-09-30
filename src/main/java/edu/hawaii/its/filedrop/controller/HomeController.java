@@ -11,18 +11,20 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
+import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
+import edu.hawaii.its.filedrop.type.Faq;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.Message;
+import edu.hawaii.its.filedrop.type.Setting;
 import edu.hawaii.its.filedrop.util.Files;
 
 @Controller
@@ -57,6 +59,9 @@ public class HomeController {
     @Autowired
     private FileDropService fileDropService;
 
+    @Autowired
+    private ApplicationService applicationService;
+
     @GetMapping(value = { "/", "/home" })
     public String home(Model model) {
         logger.debug("User at home.");
@@ -66,7 +71,11 @@ public class HomeController {
         int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.GATE_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("gatemessage", message.getText());
-
+        Setting disableLanding = applicationService.findSetting(1);
+        if (Boolean.parseBoolean(disableLanding.getValue())) {
+            model.addAttribute("gatemessage", "System is unavailable.");
+        }
+        model.addAttribute("disableLanding", Boolean.parseBoolean(disableLanding.getValue()));
         return "home";
     }
 
@@ -149,6 +158,11 @@ public class HomeController {
         List<FileDropInfo> fileDrops = fileDropService.findAllUserFileDropInfo(currentUser());
 
         return ResponseEntity.ok().body(fileDrops);
+    }
+
+    @GetMapping("/api/faq")
+    public ResponseEntity<List<Faq>> getFaqs() {
+        return ResponseEntity.ok().body(applicationService.findFaqs());
     }
 
     @GetMapping(value = "/404")

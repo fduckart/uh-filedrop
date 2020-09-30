@@ -36,6 +36,7 @@ import edu.hawaii.its.filedrop.service.MessageService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.service.mail.Mail;
 import edu.hawaii.its.filedrop.type.Allowlist;
+import edu.hawaii.its.filedrop.type.Faq;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.Message;
@@ -249,6 +250,38 @@ public class AdminController {
         logger.debug("addSetting; User created new setting: " + setting);
         redirectAttributes.addFlashAttribute("alert", "Setting added");
         return "redirect:/admin/settings";
+    }
+
+    @GetMapping("/admin/faq")
+    public String faq() {
+        return "admin/faq";
+    }
+
+    @PostMapping("/api/admin/faq")
+    public ResponseEntity<Faq> createFaq(@RequestBody Faq faq) {
+        faq = applicationService.saveFaq(faq);
+        logger.debug("createFaq; Created: " + faq);
+        return ResponseEntity.ok().body(faq);
+    }
+
+    @PostMapping("/api/admin/faq/{id}")
+    public ResponseEntity<Faq> editFaq(@PathVariable("id") Integer id,
+                                       @RequestParam("question") String question,
+                                       @RequestParam("answer") String answer) {
+        Faq faq = applicationService.findFaq(id);
+        faq.setQuestion(question);
+        faq.setAnswer(answer);
+        faq = applicationService.saveFaq(faq);
+        logger.debug("editFaq; Saved: " + faq);
+        return ResponseEntity.ok().body(faq);
+    }
+
+    @DeleteMapping("/api/admin/faq/{id}")
+    public ResponseEntity<Faq> deleteFaq(@PathVariable("id") Integer id) {
+        Faq faq = applicationService.findFaq(id);
+        applicationService.deleteFaq(faq);
+        logger.debug("deleteFaq; Deleted: " + faq);
+        return ResponseEntity.ok().body(faq);
     }
 
     private User currentUser() {
