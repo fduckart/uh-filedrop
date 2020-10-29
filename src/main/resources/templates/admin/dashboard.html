@@ -43,7 +43,12 @@
                 </div>
             </div>
         </div>
-        <div class="row" ng-repeat="fileDrop in fileDrops | filter:filter | orderBy:'-created'" ng-cloak>
+        <div class="text-center" ng-if="fileDrops.length == 0">
+            <div class="spinner-border" style="width: 2rem; height: 2rem; text-align: center" role="status">
+                <span class="sr-only">Loading FileDrops...</span>
+            </div>
+        </div>
+        <div class="row" ng-if="fileDrops.length > 0" ng-repeat="fileDrop in fileDrops | filter:filter | orderBy:'-created'" ng-cloak>
             <table class="table table-sm table-bordered mb-0">
                 <thead class="thead-light">
                 <th scope="col">uploaded by</th>
