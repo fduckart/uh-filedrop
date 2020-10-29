@@ -9,10 +9,11 @@ import java.security.GeneralSecurityException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
+import edu.hawaii.its.filedrop.crypto.Cipher;
 import edu.hawaii.its.filedrop.crypto.CipherFilter;
+import edu.hawaii.its.filedrop.crypto.CipherLocator;
 import edu.hawaii.its.filedrop.crypto.Ciphers;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
@@ -25,14 +26,53 @@ public class CipherService {
     @Autowired
     private Ciphers ciphers;
 
-    public Resource encrypt(Resource resource, FileDrop fileDrop) {
-        String encryptionKey = fileDrop.getEncryptionKey();
-        return resource;
+    @Autowired
+    private CipherLocator cipherLocator;
+
+    public File encrypt(File resource, FileDrop fileDrop)
+        throws GeneralSecurityException, IOException {
+        String[] encryptionKey = fileDrop.getEncryptionKey().split(":");
+        Cipher cipher = cipherLocator.find(encryptionKey[0]);
+        javax.crypto.Cipher xcipher = cipher.encrypt(encryptionKey[1]);
+
+        FileInputStream inputStream = new FileInputStream(resource);
+        byte[] input = new byte[(int) resource.length()];
+        inputStream.read(input);
+
+        byte[] output = xcipher.doFinal(input);
+
+        File encryptedFile = new File(resource.getAbsolutePath() + ".enc");
+        FileOutputStream outputStream = new FileOutputStream(encryptedFile);
+        outputStream.write(output);
+
+        inputStream.close();
+        outputStream.close();
+
+        resource.delete();
+
+        return encryptedFile;
     }
 
-    public Resource decrypt(Resource resource, FileDrop fileDrop) {
-        String encryptionKey = fileDrop.getEncryptionKey();
-        return resource;
+    public File decrypt(File resource, FileDrop fileDrop)
+        throws GeneralSecurityException, IOException {
+        String[] encryptionKey = fileDrop.getEncryptionKey().split(":");
+        Cipher cipher = cipherLocator.find(encryptionKey[0]);
+        javax.crypto.Cipher xcipher = cipher.decrypt(encryptionKey[1]);
+
+        FileInputStream inputStream = new FileInputStream(resource);
+        byte[] input = new byte[(int) resource.length()];
+        inputStream.read(input);
+
+        byte[] output = xcipher.doFinal(input);
+
+        File decryptedFile = new File(resource.getAbsolutePath().substring(0, resource.getAbsolutePath().length() - 5));
+        FileOutputStream outputStream = new FileOutputStream(decryptedFile);
+        outputStream.write(output);
+
+        inputStream.close();
+        outputStream.close();
+
+        return decryptedFile;
     }
 
     public void encryptFile(String encryptionKey, File original, File encrypted) {
