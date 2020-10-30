@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -152,20 +153,24 @@ public class FileDropService {
             fileSet.setSize(file.getSize());
             fileSet = saveFileSet(fileSet);
 
-            Resource resource = file.getResource();
-            resource = cipherService.encrypt(resource, fileSet.getFileDrop());
+            Resource resource = fileSystemStorageService.storeFileSet(file.getResource(),
+                Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()));
 
-            fileSystemStorageService.storeFileSet(resource,
-                    Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()));
+            try {
+                cipherService.encrypt(resource, fileSet, null);
+            } catch (GeneralSecurityException | IOException e) {
+                e.printStackTrace();
+            }
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);
         }
     }
 
-    //TODO: add encryption
     public void makeZip(FileDrop fileDrop) throws IOException {
         String fileName = "FileDrop(" + fileDrop.getDownloadKey() + ").zip";
-        File file = new File(Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey(), fileName).toUri());
+        Path path =
+            Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey(), fileName);
+        File file = new File(path.toUri());
         file.createNewFile();
 
         List<FileSet> fileSets = findFileSets(fileDrop);
@@ -179,11 +184,19 @@ public class FileDropService {
             zipOutputStream.putNextEntry(zipEntry);
             StreamUtils.copy(resource.getInputStream(), zipOutputStream);
             zipOutputStream.closeEntry();
+            resource.getFile().delete();
         }
 
         zipOutputStream.finish();
         zipOutputStream.close();
 
+        Resource zip = fileSystemStorageService.loadAsResource(file.getAbsolutePath());
+        try {
+            cipherService.encrypt(zip, fileSets.get(0), path);
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+        file.delete();
         logger.debug("Created Zip of files for: " + fileDrop);
     }
 
