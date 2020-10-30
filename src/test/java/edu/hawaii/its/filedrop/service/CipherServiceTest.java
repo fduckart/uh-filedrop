@@ -17,22 +17,25 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.crypto.Ciphers;
 import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileSet;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SpringBootWebApplication.class })
+@SpringBootTest(classes = {SpringBootWebApplication.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class CipherServiceTest {
 
@@ -41,6 +44,9 @@ public class CipherServiceTest {
 
     @Autowired
     private Ciphers ciphers;
+
+    @Autowired
+    private FileSystemStorageService storageService;
 
     @Test
     public void construct() {
@@ -62,8 +68,11 @@ public class CipherServiceTest {
 
     @Test
     public void testNewCrypto() throws IOException, GeneralSecurityException {
-        File original = File.createTempFile("~filedrop.store.original", "txt");
+        Path path = Paths.get(storageService.getRootLocation().toString(), "dlkeytest");
+        Files.createDirectories(path);
+        File original = Files.createFile(Paths.get(path.toString(), "2")).toFile();
         original.deleteOnExit();
+        path.toFile().deleteOnExit();
         assertTrue(original.exists());
 
         BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter(original));
@@ -83,11 +92,16 @@ public class CipherServiceTest {
         assertThat(Files.size(original.toPath()), equalTo(original.length()));
 
         FileDrop fileDrop = new FileDrop();
+        fileDrop.setDownloadKey("dlkeytest");
         fileDrop.setEncryptionKey("aes:test");
+        FileSet fileSet = new FileSet();
+        fileSet.setFileDrop(fileDrop);
+        fileSet.setId(2);
 
-        File encrypted = cipherService.encrypt(original, fileDrop);
+        Resource resource = storageService.loadAsResource(original.getAbsolutePath());
+        Resource encrypted = cipherService.encrypt(resource, fileSet, null);
 
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(encrypted));
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(encrypted.getFile()));
         StringBuilder builder = new StringBuilder();
 
         bufferedReader.lines().forEach(builder::append);
@@ -95,9 +109,10 @@ public class CipherServiceTest {
 
         assertThat(builder.toString(), not(equalTo(content.toString())));
 
-        File decrypted = cipherService.decrypt(encrypted, fileDrop);
+        resource = storageService.loadAsResource(encrypted.getFile().getAbsolutePath());
+        Resource decrypted = cipherService.decrypt(resource, fileSet, null, null);
 
-        bufferedReader = new BufferedReader(new FileReader(decrypted));
+        bufferedReader = new BufferedReader(new FileReader(decrypted.getFile()));
         builder = new StringBuilder();
 
         bufferedReader.lines().forEach(builder::append);
