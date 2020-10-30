@@ -91,9 +91,8 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public boolean storeFileSet(Resource resource, Path filePath) {
-        boolean successful = false;
-
+    public Resource storeFileSet(Resource resource, Path filePath) {
+        Path file;
         try {
             String newFilename = filePath.toString();
             Path path = rootLocation.resolve(newFilename);
@@ -105,13 +104,13 @@ public class FileSystemStorageService implements StorageService {
             }
 
             Files.copy(resource.getInputStream(), path);
-            successful = true;
+            file = path;
 
         } catch(Exception e) {
             throw new StorageException(e.toString(), e);
         }
 
-        return successful;
+        return loadAsResource(file.toString());
     }
 
     @Override
