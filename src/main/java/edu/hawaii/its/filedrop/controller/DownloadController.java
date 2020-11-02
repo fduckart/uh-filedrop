@@ -126,7 +126,6 @@ public class DownloadController {
         return "user/download";
     }
 
-    //TODO: Add decryption
     @GetMapping(value = "/dl/{downloadKey}/zip")
     public void downloadFilesZip(@PathVariable String downloadKey,
                                  HttpServletRequest request, HttpServletResponse response)
@@ -134,7 +133,7 @@ public class DownloadController {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
         if (fileDrop == null || !fileDrop.isValid()) {
             response.setStatus(404);
-            response.sendRedirect("/dl/" + downloadKey);
+            response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
             return;
         }
 
@@ -170,7 +169,7 @@ public class DownloadController {
         logger.debug("downloadZip; Could not find fileDrop with key: " + downloadKey);
 
         response.setStatus(404);
-        response.sendRedirect("/dl/" + downloadKey);
+        response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
     }
 
     @GetMapping(value = "/dl/{downloadKey}/{fileId}")
@@ -182,7 +181,7 @@ public class DownloadController {
 
         if (fileDrop == null || !fileDrop.isValid()) {
             response.setStatus(404);
-            response.sendRedirect("/");
+            response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
             return;
         }
 
@@ -222,7 +221,7 @@ public class DownloadController {
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", Could not find fileSet: " + fileId);
 
                 response.setStatus(404);
-                response.sendRedirect("/dl/" + downloadKey);
+                response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
                 return;
             }
         }
@@ -230,7 +229,7 @@ public class DownloadController {
         logger.debug("downloadFile; Could not find fileDrop with key: " + downloadKey);
 
         response.setStatus(403);
-        response.sendRedirect("/dl/" + downloadKey);
+        response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
     }
 
     public boolean isDownloadAllowed(FileDrop fileDrop) {
