@@ -145,7 +145,8 @@ public class FileDropService {
         }
     }
 
-    public void uploadFile(User user, MultipartFile file, String comment, FileDrop fileDrop) {
+    public void uploadFile(User user, MultipartFile file, String comment, FileDrop fileDrop)
+        throws IOException, GeneralSecurityException {
         if (workflowService.atTask(user, "addFiles") && file != null) {
             FileSet fileSet = new FileSet();
             fileSet.setFileName(file.getOriginalFilename());
@@ -160,11 +161,7 @@ public class FileDropService {
 
             path.toFile().mkdir();
 
-            try {
-                cipherService.encrypt(file.getInputStream(), fileSet, null);
-            } catch (GeneralSecurityException | IOException e) {
-                e.printStackTrace();
-            }
+            cipherService.encrypt(file.getInputStream(), fileSet, null);
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);
         }
@@ -198,11 +195,7 @@ public class FileDropService {
         zipOutputStream.close();
 
         Resource zip = fileSystemStorageService.loadAsResource(file.getAbsolutePath());
-        try {
-            cipherService.encrypt(zip.getInputStream(), fileSets.get(0), path);
-        } catch (GeneralSecurityException e) {
-            e.printStackTrace();
-        }
+        cipherService.encrypt(zip.getInputStream(), fileSets.get(0), path);
         file.delete();
         logger.debug("Created Zip of files for: " + fileDrop);
     }

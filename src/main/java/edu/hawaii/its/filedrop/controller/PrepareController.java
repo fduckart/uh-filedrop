@@ -381,10 +381,8 @@ public class PrepareController {
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare/files/{uploadKey}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void uploadFiles(HttpServletRequest httpServletRequest, @RequestParam String comment,
-                            @PathVariable String uploadKey) {
-        MultipartHttpServletRequest multipartHttpServletRequest = (MultipartHttpServletRequest) httpServletRequest;
-        MultipartFile file = multipartHttpServletRequest.getFile("file");
+    public void uploadFiles(@RequestParam MultipartFile file, @RequestParam String comment,
+                            @PathVariable String uploadKey) throws IOException, GeneralSecurityException {
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
         fileDropService.uploadFile(currentUser(), file, comment, fileDrop);
     }
