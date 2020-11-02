@@ -12,15 +12,20 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 
+import org.apache.commons.io.IOUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -99,9 +104,9 @@ public class CipherServiceTest {
         fileSet.setId(2);
 
         Resource resource = storageService.loadAsResource(original.getAbsolutePath());
-        Resource encrypted = cipherService.encrypt(resource, fileSet, null);
-
-        BufferedReader bufferedReader = new BufferedReader(new FileReader(encrypted.getFile()));
+        cipherService.encrypt(resource.getInputStream(), fileSet, null);
+        Resource encResource = storageService.loadAsResource(Paths.get(path.toString(), "2.enc").toString());
+        BufferedReader bufferedReader = new BufferedReader(new FileReader(encResource.getFile()));
         StringBuilder builder = new StringBuilder();
 
         bufferedReader.lines().forEach(builder::append);
@@ -109,10 +114,11 @@ public class CipherServiceTest {
 
         assertThat(builder.toString(), not(equalTo(content.toString())));
 
-        resource = storageService.loadAsResource(encrypted.getFile().getAbsolutePath());
-        Resource decrypted = cipherService.decrypt(resource, fileSet, null, null);
-
-        bufferedReader = new BufferedReader(new FileReader(decrypted.getFile()));
+        resource = storageService.loadAsResource(encResource.getFile().getAbsolutePath());
+        ByteArrayOutputStream decrypted =
+            (ByteArrayOutputStream)cipherService.decrypt(resource.getInputStream(), fileSet);
+        ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(decrypted.toByteArray());
+        bufferedReader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
         builder = new StringBuilder();
 
         bufferedReader.lines().forEach(builder::append);
