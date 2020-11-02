@@ -6,6 +6,8 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static java.util.stream.Collectors.toList;
 
 import javax.annotation.PostConstruct;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -153,11 +155,13 @@ public class FileDropService {
             fileSet.setSize(file.getSize());
             fileSet = saveFileSet(fileSet);
 
-            Resource resource = fileSystemStorageService.storeFileSet(file.getResource(),
-                Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()));
+            Path path = Paths
+                .get(fileSystemStorageService.getRootLocation().toString(), fileSet.getFileDrop().getDownloadKey());
+
+            path.toFile().mkdir();
 
             try {
-                cipherService.encrypt(resource, fileSet, null);
+                cipherService.encrypt(file.getInputStream(), fileSet, null);
             } catch (GeneralSecurityException | IOException e) {
                 e.printStackTrace();
             }
@@ -166,7 +170,7 @@ public class FileDropService {
         }
     }
 
-    public void makeZip(FileDrop fileDrop) throws IOException {
+    public void makeZip(FileDrop fileDrop) throws IOException, GeneralSecurityException {
         String fileName = "FileDrop(" + fileDrop.getDownloadKey() + ").zip";
         Path path =
             Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey(), fileName);
@@ -178,13 +182,16 @@ public class FileDropService {
 
         for (FileSet fileSet : fileSets) {
             Resource resource = fileSystemStorageService.loadAsResource(
-                Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString()).toString());
+                Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString() + ".enc").toString());
+            ByteArrayOutputStream outputStream =
+                (ByteArrayOutputStream) cipherService.decrypt(resource.getInputStream(), fileSet);
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
             ZipEntry zipEntry = new ZipEntry(fileSet.getFileName());
             zipEntry.setSize(resource.contentLength());
             zipOutputStream.putNextEntry(zipEntry);
-            StreamUtils.copy(resource.getInputStream(), zipOutputStream);
+            StreamUtils.copy(inputStream, zipOutputStream);
+            inputStream.close();
             zipOutputStream.closeEntry();
-            resource.getFile().delete();
         }
 
         zipOutputStream.finish();
@@ -192,7 +199,7 @@ public class FileDropService {
 
         Resource zip = fileSystemStorageService.loadAsResource(file.getAbsolutePath());
         try {
-            cipherService.encrypt(zip, fileSets.get(0), path);
+            cipherService.encrypt(zip.getInputStream(), fileSets.get(0), path);
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
