@@ -15,6 +15,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -53,7 +55,7 @@ public class FileDropServiceTest {
 
     @Test
     @WithMockUhUser
-    public void testWithService() {
+    public void testWithService() throws IOException, GeneralSecurityException {
         User user = userContextService.getCurrentUser();
         workflowService.stopProcess(user);
         assertNotNull(user);
@@ -76,7 +78,7 @@ public class FileDropServiceTest {
 
     @Test
     @WithMockUhUser
-    public void testMultipleProcess() {
+    public void testMultipleProcess() throws IOException, GeneralSecurityException {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
         workflowService.stopProcess(user);
