@@ -16,7 +16,7 @@ public interface StorageService {
 
     String store(Resource resource, Path parent);
 
-    boolean storeFileSet(Resource resource, Path filePath);
+    Resource storeFileSet(Resource resource, Path filePath);
 
     void delete(String fileName, String directory);
 

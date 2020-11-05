@@ -3,8 +3,6 @@ package edu.hawaii.its.filedrop.controller;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -15,15 +13,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithAnonymousUser;
@@ -36,9 +32,7 @@ import org.springframework.web.context.WebApplicationContext;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
-import edu.hawaii.its.filedrop.service.FileSystemStorageService;
 import edu.hawaii.its.filedrop.type.FileDrop;
-import edu.hawaii.its.filedrop.type.FileDropInfo;
 import edu.hawaii.its.filedrop.type.FileSet;
 
 @RunWith(SpringRunner.class)
@@ -54,9 +48,6 @@ public class DownloadControllerTest {
 
     @Autowired
     private FileDropService fileDropService;
-
-    @Autowired
-    private FileSystemStorageService fileSystemStorageService;
 
     @Autowired
     private WebApplicationContext context;
@@ -118,32 +109,32 @@ public class DownloadControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/sl/" + fileDrop.getDownloadKey()));
+            .andExpect(status().is3xxRedirection())
+            .andExpect(view().name("redirect:/sl/" + fileDrop.getDownloadKey()));
 
         mockMvc.perform(get("/sl/" + fileDrop.getDownloadKey()))
-                .andExpect(status().isOk())
-                .andExpect(view().name("user/download"))
-                .andExpect(model().attributeExists("fileDrop"));
-
-        MvcResult mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/4")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"), equalTo("attachment; filename=\"test.txt\""));
-
-        mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/zip"))
-            .andExpect(status().is4xxClientError());
+            .andExpect(status().isOk())
+            .andExpect(view().name("user/download"))
+            .andExpect(model().attributeExists("fileDrop"));
 
         mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
             .andExpect(status().is3xxRedirection())
             .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
 
+        List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
+
+        MvcResult mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + fileSets.get(0).getId())
+            .contentType(MediaType.APPLICATION_OCTET_STREAM))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"),
+            equalTo("attachment; filename=\"test.txt\""));
+
         mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/zip")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM))
-                .andExpect(status().isOk())
-                .andReturn();
+            .contentType(MediaType.APPLICATION_OCTET_STREAM))
+            .andExpect(status().isOk())
+            .andReturn();
 
         assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"),
             equalTo("attachment; filename=\"FileDrop(" + fileDrop.getDownloadKey() + ").zip\""));

@@ -1,22 +1,24 @@
 package edu.hawaii.its.filedrop.controller;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.File;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileUrlResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,6 +29,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.repository.DownloadRepository;
+import edu.hawaii.its.filedrop.service.CipherService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.FileSystemStorageService;
 import edu.hawaii.its.filedrop.type.Download;
@@ -50,6 +53,9 @@ public class DownloadController {
 
     @Autowired
     private DownloadRepository downloadRepository;
+
+    @Autowired
+    private CipherService cipherService;
 
     @GetMapping(value = "/expire/{downloadKey}")
     public String expire(Model model, RedirectAttributes redirectAttributes, @PathVariable String downloadKey) {
@@ -120,22 +126,22 @@ public class DownloadController {
         return "user/download";
     }
 
-    //TODO: Add decryption
     @GetMapping(value = "/dl/{downloadKey}/zip")
-    public ResponseEntity<Resource> downloadFilesZip(@PathVariable String downloadKey,
-                                                     HttpServletRequest request) throws IOException {
+    public void downloadFilesZip(@PathVariable String downloadKey,
+                                 HttpServletRequest request, HttpServletResponse response)
+        throws IOException, GeneralSecurityException {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
         if (fileDrop == null || !fileDrop.isValid()) {
-            return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .header(HttpHeaders.LOCATION, "/")
-                .build();
+            response.setStatus(404);
+            response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
+            return;
         }
 
         if (isDownloadAllowed(fileDrop)) {
             String fileName = "FileDrop(" + fileDrop.getDownloadKey() + ").zip";
-            File file = new File(
-                Paths.get(storageService.getRootLocation().toString(), fileDrop.getDownloadKey(), fileName).toUri());
+            Path path = Paths.get(storageService.getRootLocation().toString(), fileDrop.getDownloadKey());
+            Path encPath = Paths.get(path.toString(), fileName + ".enc");
+            Resource zip = storageService.loadAsResource(encPath.toString());
             List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
             if (!currentUser().hasRole(Role.SecurityRole.ADMINISTRATOR)) {
                 for (FileSet fileSet : fileSets) {
@@ -149,42 +155,34 @@ public class DownloadController {
                     downloadRepository.save(download);
                 }
             }
-
-            if (file.exists()) {
-                return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                    .header(HttpHeaders.CONTENT_DISPOSITION,
-                        "attachment; filename=\"" + fileName + "\"")
-                    .body(new FileUrlResource(file.getAbsolutePath()));
-            } else {
-
-                logger.debug("downloadZip; fileDrop: " + fileDrop + ", Could not download zip");
-
-                return ResponseEntity
-                    .status(HttpStatus.FORBIDDEN)
-                    .header(HttpHeaders.LOCATION, "/dl/" + downloadKey)
-                    .build();
-            }
+            response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+            response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                "attachment; filename=\"" + fileName + "\"");
+            ByteArrayOutputStream outputStream =
+                (ByteArrayOutputStream) cipherService.decrypt(zip.getInputStream(), fileSets.get(0));
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
+            IOUtils.copy(inputStream, response.getOutputStream());
+            response.setStatus(200);
+            return;
         }
 
         logger.debug("downloadZip; Could not find fileDrop with key: " + downloadKey);
 
-        return ResponseEntity
-            .status(HttpStatus.FORBIDDEN)
-            .header(HttpHeaders.LOCATION, "/dl/" + downloadKey)
-            .build();
+        response.setStatus(404);
+        response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
     }
 
     @GetMapping(value = "/dl/{downloadKey}/{fileId}")
-    public ResponseEntity<Resource> downloadFile(@PathVariable String downloadKey, @PathVariable Integer fileId,
-                                                 HttpServletRequest httpServletRequest) throws IOException {
+    public void downloadFile(@PathVariable String downloadKey, @PathVariable Integer fileId,
+                             HttpServletRequest request,
+                             HttpServletResponse response)
+        throws IOException, GeneralSecurityException {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
 
         if (fileDrop == null || !fileDrop.isValid()) {
-            return ResponseEntity
-                .status(HttpStatus.NOT_FOUND)
-                .header(HttpHeaders.LOCATION, "/")
-                .build();
+            response.setStatus(404);
+            response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
+            return;
         }
 
         if (isDownloadAllowed(fileDrop)) {
@@ -196,43 +194,42 @@ public class DownloadController {
 
             if (foundFileSet.isPresent()) {
                 Resource resource = storageService.loadAsResource(
-                    Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString());
-
+                    Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString() + ".enc");
+                ByteArrayOutputStream outputStream =
+                    (ByteArrayOutputStream) cipherService.decrypt(resource.getInputStream(), foundFileSet.get());
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", fileSet: " + foundFileSet.get());
 
-                if(!currentUser().hasRole(Role.SecurityRole.ADMINISTRATOR)) {
+                if (!currentUser().hasRole(Role.SecurityRole.ADMINISTRATOR)) {
                     Download download = new Download();
                     download.setFileDrop(fileDrop);
                     download.setFileName(foundFileSet.get().getFileName());
                     download.setStarted(LocalDateTime.now());
-                    download.setIpAddress(httpServletRequest.getRemoteAddr());
+                    download.setIpAddress(request.getRemoteAddr());
                     download.setStatus("INPROGRESS");
                     download.setCompleted(LocalDateTime.now());
                     downloadRepository.save(download);
                 }
-
-                return ResponseEntity.ok()
-                        .contentType(MediaType.APPLICATION_OCTET_STREAM)
-                        .header(HttpHeaders.CONTENT_DISPOSITION,
-                            "attachment; filename=\"" + foundFileSet.get().getFileName() + "\"")
-                        .body(resource);
+                response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+                response.setHeader(HttpHeaders.CONTENT_DISPOSITION,
+                    "attachment; filename=\"" + foundFileSet.get().getFileName() + "\"");
+                ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(outputStream.toByteArray());
+                IOUtils.copy(byteArrayInputStream, response.getOutputStream());
+                response.setStatus(200);
+                return;
             } else {
 
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", Could not find fileSet: " + fileId);
 
-                return ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .header(HttpHeaders.LOCATION, "/dl/" + downloadKey)
-                        .build();
+                response.setStatus(404);
+                response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
+                return;
             }
         }
 
         logger.debug("downloadFile; Could not find fileDrop with key: " + downloadKey);
 
-        return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
-                .header(HttpHeaders.LOCATION, "/dl/" + downloadKey)
-                .build();
+        response.setStatus(403);
+        response.setHeader(HttpHeaders.LOCATION, "/dl/" + downloadKey);
     }
 
     public boolean isDownloadAllowed(FileDrop fileDrop) {

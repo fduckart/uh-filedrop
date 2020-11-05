@@ -2,7 +2,9 @@ package edu.hawaii.its.filedrop.controller;
 
 import static java.util.stream.Collectors.toList;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.Context;
 
@@ -130,7 +133,7 @@ public class PrepareController {
         fileDrop.setUploader(sender);
         fileDrop.setUploaderFullName(sender);
         fileDrop.setAuthenticationRequired(true);
-        fileDrop.setEncryptionKey(Strings.generateRandomString());
+        fileDrop.setEncryptionKey("aes:" + Strings.generateRandomString());
         fileDrop.setDownloadKey(Strings.generateRandomString());
         fileDrop.setUploadKey(Strings.generateRandomString());
         fileDrop.setCreated(LocalDateTime.now());
@@ -176,7 +179,7 @@ public class PrepareController {
             fileDrop.setAuthenticationRequired(validation);
         } else {
             fileDrop = new FileDrop();
-            fileDrop.setEncryptionKey(Strings.generateRandomString());
+            fileDrop.setEncryptionKey("aes:" + Strings.generateRandomString());
             fileDrop.setDownloadKey(Strings.generateRandomString());
             fileDrop.setUploadKey(Strings.generateRandomString());
             fileDrop.setUploader(user.getUsername());
@@ -216,7 +219,7 @@ public class PrepareController {
     }
 
     @GetMapping(value = "/complete/{uploadKey}")
-    public String completeFileDrop(@PathVariable String uploadKey) throws IOException {
+    public String completeFileDrop(@PathVariable String uploadKey) throws IOException, GeneralSecurityException {
         logger.debug("completeFileDrop; start.");
         logger.info("completeFileDrop; uploadKey: " + uploadKey);
 
@@ -379,7 +382,7 @@ public class PrepareController {
     @PostMapping(value = "/prepare/files/{uploadKey}")
     @ResponseStatus(value = HttpStatus.OK)
     public void uploadFiles(@RequestParam MultipartFile file, @RequestParam String comment,
-            @PathVariable String uploadKey) {
+                            @PathVariable String uploadKey) throws IOException, GeneralSecurityException {
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
         fileDropService.uploadFile(currentUser(), file, comment, fileDrop);
     }
