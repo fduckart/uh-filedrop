@@ -39,10 +39,6 @@ public class FileSetTest {
 
     @Test
     public void testToString() {
-        System.out.println("aaa");
-        System.out.println(">>>>>>>>>>>>>>>>> fileSet: " + fileSet);
-        System.out.println("bbb");
-
         assertThat(fileSet.toString(), containsString("FileSet [id=null,"));
         fileSet.setId(1);
         assertThat(fileSet.toString(), containsString("FileSet [id=1,"));

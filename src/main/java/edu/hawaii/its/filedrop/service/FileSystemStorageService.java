@@ -5,8 +5,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -18,8 +16,6 @@ import edu.hawaii.its.filedrop.exception.StorageFileNotFoundException;
 
 @Service
 public class FileSystemStorageService implements StorageService {
-
-    private final Log logger = LogFactory.getLog(FileSystemStorageService.class);
 
     private final Path rootLocation;
 
@@ -39,23 +35,23 @@ public class FileSystemStorageService implements StorageService {
             Path file = rootLocation.resolve(fileName);
             Resource resource = new UrlResource(file.toUri());
 
-            if(!resource.exists()) {
+            if (!resource.exists()) {
                 String msg = "Path does not exist: " + file;
                 throw new StorageFileNotFoundException(msg);
             }
 
             return resource;
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new StorageFileNotFoundException("Error reading file: " + fileName, e);
         }
     }
 
     public void createDirectories(String directory) {
-        if(!exists(directory)) {
+        if (!exists(directory)) {
             try {
                 Path dirPath = rootLocation.resolve(directory);
                 Files.createDirectories(dirPath);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 String msg = "Unable to create directory " + directory;
                 throw new StorageException(msg, e);
             }
@@ -71,7 +67,7 @@ public class FileSystemStorageService implements StorageService {
     public String store(Resource resource, Path parent) {
         Path resolvedPath = null;
         try {
-            if(resource.contentLength() == 0L) {
+            if (resource.contentLength() == 0L) {
                 String msg = "Failed to store empty file " + resource.getFilename();
                 throw new StorageException(msg);
             }
@@ -83,7 +79,7 @@ public class FileSystemStorageService implements StorageService {
             createDirectories(parentDir);
             Files.copy(resource.getInputStream(), resolvedPath);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new StorageException(e.toString(), e);
         }
 
@@ -98,7 +94,7 @@ public class FileSystemStorageService implements StorageService {
             Path path = rootLocation.resolve(newFilename);
             Path parent = path.getParent();
 
-            if(parent != null) {
+            if (parent != null) {
                 Path absolutePath = parent.toAbsolutePath();
                 createDirectories(absolutePath.toString());
             }
@@ -106,7 +102,7 @@ public class FileSystemStorageService implements StorageService {
             Files.copy(resource.getInputStream(), path);
             file = path;
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new StorageException(e.toString(), e);
         }
 
@@ -122,7 +118,7 @@ public class FileSystemStorageService implements StorageService {
     public void delete(Path path) {
         try {
             edu.hawaii.its.filedrop.util.Files.deleteDirectory(path);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new StorageException(e);
         }
     }

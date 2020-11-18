@@ -50,14 +50,14 @@ public class AllowlistService {
 
     @Caching(evict = {
             @CacheEvict(value = "allowlistCache", allEntries = true),
-            @CacheEvict(value = "allowlistById", allEntries = true) })
+            @CacheEvict(value = "allowlistById", allEntries = true)})
     public void evictAllowlistCache() {
         // Empty.
     }
 
     @Caching(evict = {
             @CacheEvict(value = "allowlistCache", allEntries = true),
-            @CacheEvict(value = "allowlistById", allEntries = true) })
+            @CacheEvict(value = "allowlistById", allEntries = true)})
     public void deleteAllowlist(Allowlist allowlist) {
         allowlistRepository.delete(allowlist);
     }
@@ -89,19 +89,15 @@ public class AllowlistService {
 
     public synchronized void checkAllowlists() {
         logger.debug("Starting allowlist check...");
-        try { // TODO: Remove this try/catch.
-            for (Allowlist allowlist : findAll()) {
-                if (!ldapService.findByUhUuidOrUidOrMail(allowlist.getRegistrant()).isValid()) {
-                    addCheck(allowlist, 1);
-                } else if (allowlist.isExpired()) {
-                    allowlist.setExpired(false);
-                    allowlist.setCheck(0);
-                    addAllowlist(allowlist);
-                    logger.debug("checkAllowlist; Unexpired: " + allowlist);
-                }
+        for (Allowlist allowlist : findAll()) {
+            if (!ldapService.findByUhUuidOrUidOrMail(allowlist.getRegistrant()).isValid()) {
+                addCheck(allowlist, 1);
+            } else if (allowlist.isExpired()) {
+                allowlist.setExpired(false);
+                allowlist.setCheck(0);
+                addAllowlist(allowlist);
+                logger.debug("checkAllowlist; Unexpired: " + allowlist);
             }
-        } catch (Exception e) {
-            logger.error("Error:", e);
         }
         evictAllowlistCache();
         logger.debug("Finished allowlist check.");

@@ -36,7 +36,7 @@ import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SpringBootWebApplication.class })
+@SpringBootTest(classes = {SpringBootWebApplication.class})
 public class FileDropServiceTest {
 
     @Autowired
@@ -53,7 +53,7 @@ public class FileDropServiceTest {
 
     @Test
     @WithMockUhUser
-    public void testWithService() {
+    public void testWithService() throws Exception {
         User user = userContextService.getCurrentUser();
         workflowService.stopProcess(user);
         assertNotNull(user);
@@ -64,7 +64,7 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", currentTask(user).getName());
 
-        String[] recipients = { "test" };
+        String[] recipients = {"test"};
         fileDropService.addRecipients(user, recipients);
 
         assertEquals("addFiles", currentTask(user).getName());
@@ -76,7 +76,7 @@ public class FileDropServiceTest {
 
     @Test
     @WithMockUhUser
-    public void testMultipleProcess() {
+    public void testMultipleProcess() throws Exception {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
         workflowService.stopProcess(user);
@@ -86,7 +86,7 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", currentTask(user).getName());
 
-        String[] recipients = { "test" };
+        String[] recipients = {"test"};
         fileDropService.addRecipients(user, recipients);
 
         assertEquals("addFiles", currentTask(user).getName());
@@ -253,7 +253,7 @@ public class FileDropServiceTest {
 
         fileDropService.startUploadProcess(user);
 
-        String[] recipients = { "test", "lukemcd9" };
+        String[] recipients = {"test", "lukemcd9"};
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(user.getUid());
@@ -314,7 +314,7 @@ public class FileDropServiceTest {
 
         fileDropService.startUploadProcess(user);
 
-        String[] recipients = { "test", "lukemcd9" };
+        String[] recipients = {"test", "lukemcd9"};
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(user.getUid());

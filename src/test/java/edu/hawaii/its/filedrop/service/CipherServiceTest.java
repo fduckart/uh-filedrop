@@ -8,8 +8,6 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -19,13 +17,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 
-import org.apache.commons.io.IOUtils;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -116,7 +115,7 @@ public class CipherServiceTest {
 
         resource = storageService.loadAsResource(encResource.getFile().getAbsolutePath());
         ByteArrayOutputStream decrypted =
-            (ByteArrayOutputStream)cipherService.decrypt(resource.getInputStream(), fileSet);
+                (ByteArrayOutputStream) cipherService.decrypt(resource.getInputStream(), fileSet);
         ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(decrypted.toByteArray());
         bufferedReader = new BufferedReader(new InputStreamReader(byteArrayInputStream));
         builder = new StringBuilder();

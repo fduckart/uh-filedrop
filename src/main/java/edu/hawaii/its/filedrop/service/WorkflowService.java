@@ -37,8 +37,8 @@ public class WorkflowService {
     }
 
     public void stopProcessAll(User user) {
-        List<Task> tasks = getCurrentTaskAll(user);
-        if (tasks != null && tasks.size() > 0) {
+        List<Task> tasks = currentTaskAll(user);
+        if (tasks.size() > 0) {
             for (Task task : tasks) {
                 runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "stop");
             }
@@ -78,7 +78,7 @@ public class WorkflowService {
                 .taskAssignee(user.getUsername()).singleResult();
     }
 
-    public List<Task> getCurrentTaskAll(User user) {
+    private List<Task> currentTaskAll(User user) {
         return taskService
                 .createTaskQuery()
                 .taskAssignee(user.getUsername())
