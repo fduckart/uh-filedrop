@@ -11,7 +11,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.time.LocalDateTime;
 
-import org.junit.Ignore;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.quartz.JobDetail;
@@ -29,9 +30,11 @@ import edu.hawaii.its.filedrop.repository.AllowlistRepository;
 import edu.hawaii.its.filedrop.type.Allowlist;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SpringBootWebApplication.class })
+@SpringBootTest(classes = {SpringBootWebApplication.class})
 @DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class AllowlistServiceTest {
+
+    private static final Log logger = LogFactory.getLog(AllowlistServiceTest.class);
 
     @Autowired
     private AllowlistService allowlistService;
@@ -50,6 +53,7 @@ public class AllowlistServiceTest {
 
     @Test
     public void allowlistTest() {
+        logger.debug("allowlistTest start");
         Allowlist allowlist = new Allowlist();
         allowlist.setId(999);
         allowlist.setEntry("Test Entry");
@@ -63,6 +67,7 @@ public class AllowlistServiceTest {
 
     @Test
     public void addAllowlistTest() {
+        logger.debug("addAllowlistTest start");
         Allowlist allowlist = new Allowlist();
         allowlist.setEntry("Test Entry");
         allowlist.setRegistrant("Some Person");
@@ -84,6 +89,7 @@ public class AllowlistServiceTest {
 
     @Test
     public void addAllowlistLdapTest() {
+        logger.debug("addAllowlistLdapTest start");
         Allowlist allowlist = allowlistService.addAllowlist(new LdapPersonEmpty(), new LdapPersonEmpty());
         allowlist.setCreated(LocalDateTime.of(2019, 12, 31, 0, 0, 0));
         allowlist = allowlistService.addAllowlist(allowlist);
@@ -99,6 +105,7 @@ public class AllowlistServiceTest {
 
     @Test
     public void addCheckTest() {
+        logger.debug("addCheckTest start");
         Allowlist allowlist = new Allowlist();
         allowlist.setEntry("New Entry");
         allowlist.setRegistrant("New Person");
@@ -119,6 +126,7 @@ public class AllowlistServiceTest {
 
     @Test
     public void addCheckThresholdTest() {
+        logger.debug("addCheckThresholdTest start");
         Allowlist allowlist = new Allowlist();
         allowlist.setEntry("jwlennon");
         allowlist.setRegistrant("help");
@@ -147,6 +155,7 @@ public class AllowlistServiceTest {
 
     @Test
     public void schedulerCheckTest() {
+        logger.debug("schedulerCheckTest start");
         long count = allowlistService.recordCount();
         Allowlist allowlist = new Allowlist();
         allowlist.setEntry("Gavin Dance");
@@ -165,9 +174,9 @@ public class AllowlistServiceTest {
         assertThat(allowlistService.recordCount(), greaterThanOrEqualTo(count - 1L));
     }
 
-    @Ignore
     @Test
     public void schedulerTest() throws SchedulerException {
+        logger.debug("schedulerTest start");
         Allowlist allowlist = new Allowlist();
         allowlist.setEntry("Tame Impala");
         allowlist.setRegistrant("Kevin Parker");
@@ -188,6 +197,7 @@ public class AllowlistServiceTest {
 
     @Test
     public void notAllowlistedTest() {
+        logger.debug("notAllowlistedTest start");
         assertNull(allowlistRepository.findByEntry("testing"));
         assertFalse(allowlistService.isAllowlisted("testing"));
     }
