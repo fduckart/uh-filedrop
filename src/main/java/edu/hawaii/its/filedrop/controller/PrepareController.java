@@ -355,7 +355,7 @@ public class PrepareController {
 
         if (!person.isValid() && authRequired) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .body(Collections.singletonMap("message", "Could not add non-UH recipient when authentication is required."));
+                .body(Collections.singletonMap("message", "Could not add non-UH recipient when authentication is required."));
         }
 
         if (fileDropService.checkRecipient(currentUser(), person, authRequired)) {
