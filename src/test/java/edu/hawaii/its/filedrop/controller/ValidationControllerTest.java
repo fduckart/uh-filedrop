@@ -24,7 +24,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
-import com.icegreen.greenmail.util.ServerSetup;
 import com.icegreen.greenmail.util.ServerSetupTest;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
@@ -33,7 +32,7 @@ import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.Validation;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SpringBootWebApplication.class })
+@SpringBootTest(classes = {SpringBootWebApplication.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ValidationControllerTest {
 
@@ -54,8 +53,8 @@ public class ValidationControllerTest {
     @Before
     public void setUp() {
         mockMvc = webAppContextSetup(context)
-            .apply(springSecurity())
-            .build();
+                .apply(springSecurity())
+                .build();
 
         server.start();
         emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
@@ -70,12 +69,12 @@ public class ValidationControllerTest {
     public void validateTest() throws Exception {
         server.start();
         mockMvc.perform(post("/validate")
-            .param("name", "Jon Mess")
-            .param("value", "jmess@test.com")
-            .param("email", ""))
-            .andExpect(view().name("validation/validation-sent"))
-            .andExpect(model().attribute("email", "jmess@test.com"))
-            .andReturn();
+                .param("name", "Jon Mess")
+                .param("value", "jmess@test.com")
+                .param("email", ""))
+                .andExpect(view().name("validation/validation-sent"))
+                .andExpect(model().attribute("email", "jmess@test.com"))
+                .andReturn();
         server.stop();
 
         Validation validation = validationRepository.findAll().get(0);
@@ -91,12 +90,12 @@ public class ValidationControllerTest {
     @Test
     public void validateSpamTest() throws Exception {
         mockMvc.perform(post("/validate")
-            .param("name", "Jon Mess")
-            .param("value", "jmess@test.com")
-            .param("email", "spam@test.com"))
-            .andExpect(view().name("validation/validation-sent"))
-            .andExpect(model().attribute("email", "spam@test.com"))
-            .andReturn();
+                .param("name", "Jon Mess")
+                .param("value", "jmess@test.com")
+                .param("email", "spam@test.com"))
+                .andExpect(view().name("validation/validation-sent"))
+                .andExpect(model().attribute("email", "spam@test.com"))
+                .andReturn();
     }
 
 }

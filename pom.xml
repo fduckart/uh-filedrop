@@ -112,7 +112,7 @@
     <dependency>
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-core</artifactId>
-      <version>5.4.16.Final</version>
+      <version>5.4.16.Final</version><!--$NO-MVN-MAN-VER$-->
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -143,7 +143,7 @@
     <dependency>
       <groupId>org.quartz-scheduler</groupId>
       <artifactId>quartz</artifactId>
-      <version>2.3.2</version>
+      <version>2.3.2</version><!--$NO-MVN-MAN-VER$-->
     </dependency>
 
     <!-- Flowable -->
@@ -270,7 +270,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>${maven-enforcer-plugin.version}</version>
         <executions>
           <execution>
             <id>enforce-versions</id>
@@ -290,7 +289,6 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>${maven-war-plugin.version}</version>
         <configuration>
           <warName>${project.name}</warName>
           <failOnMissingWebXml>false</failOnMissingWebXml>
@@ -390,14 +388,14 @@
               <tasks>
                 <echo>Now that you have a clean project,</echo>
                 <echo>here are some common goals for this project:</echo>
-                <echo>$ ./mvnw clean test</echo>
-                <echo>$ ./mvnw clean test -Dtest=*Test</echo>
-                <echo>$ ./mvnw clean package</echo>
-                <echo>$ ./mvnw -Dmaven.test.skip=true clean package</echo>
-                <echo>$ ./mvnw jasmine:test</echo>
-                <echo>$ ./mvnw clean test jacoco:report</echo>
-                <echo>$ ./mvnw clean compile site</echo>
-                <echo>$ ./mvnw clean spring-boot:run</echo>
+                <echo>$ mvn clean test</echo>
+                <echo>$ mvn clean test -Dtest=*Test</echo>
+                <echo>$ mvn clean package</echo>
+                <echo>$ mvn -Dmaven.test.skip=true clean package</echo>
+                <echo>$ mvn jasmine:test</echo>
+                <echo>$ mvn clean test jacoco:report</echo>
+                <echo>$ mvn clean compile site</echo>
+                <echo>$ mvn clean spring-boot:run</echo>
               </tasks>
             </configuration>
           </execution>
@@ -448,7 +446,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-site-plugin</artifactId>
-        <version>3.8.2</version>
+        <version>3.8.2</version><!--$NO-MVN-MAN-VER$-->
       </plugin>
     </plugins>
   </build>

@@ -2,7 +2,6 @@ package edu.hawaii.its.filedrop.controller;
 
 import static java.util.stream.Collectors.toList;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
@@ -28,13 +27,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.thymeleaf.context.Context;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
-import edu.hawaii.its.filedrop.service.AllowlistService;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
@@ -67,9 +64,6 @@ public class PrepareController {
 
     @Autowired
     private EmailService emailService;
-
-    @Autowired
-    private AllowlistService allowlistService;
 
     @Value("${app.mail.help}")
     private String helpName;
@@ -125,9 +119,9 @@ public class PrepareController {
 
     @PostMapping(value = "/helpdesk")
     public String addHelpdesk(@RequestParam String sender,
-            @RequestParam Integer expiration,
-            @RequestParam(required = false) Integer ticketNumber,
-            RedirectAttributes redirectAttributes) {
+                              @RequestParam Integer expiration,
+                              @RequestParam(required = false) Integer ticketNumber,
+                              RedirectAttributes redirectAttributes) {
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(sender);
@@ -160,10 +154,10 @@ public class PrepareController {
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
     public String addRecipients(@RequestParam("sender") String sender,
-            @RequestParam("validation") Boolean validation,
-            @RequestParam("expiration") Integer expiration,
-            @RequestParam("recipients") String[] recipients,
-            @RequestParam("message") String message) {
+                                @RequestParam("validation") Boolean validation,
+                                @RequestParam("expiration") Integer expiration,
+                                @RequestParam("recipients") String[] recipients,
+                                @RequestParam("message") String message) {
 
         User user = currentUser();
 
@@ -294,8 +288,10 @@ public class PrepareController {
     }
 
     @GetMapping(value = "/helpdesk/successful/{uploadKey}")
-    public String helpdeskSuccessful(RedirectAttributes redirectAttributes, @PathVariable String uploadKey,
-            @RequestParam String expiration, @RequestParam(required = false) String ticketNumber) {
+    public String helpdeskSuccessful(RedirectAttributes redirectAttributes,
+                                     @PathVariable String uploadKey,
+                                     @RequestParam String expiration,
+                                     @RequestParam(required = false) String ticketNumber) {
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
         LocalDateTime now = LocalDateTime.now();
         fileDrop.setCreated(now);
@@ -312,7 +308,7 @@ public class PrepareController {
     }
 
     @PreAuthorize("hasRole('UH')")
-    @GetMapping(value = { "/prepare" })
+    @GetMapping(value = {"/prepare"})
     public String prepare(Model model, @RequestParam(value = "expiration", required = false) Integer defaultExpiration) {
         logger.debug("User at prepare.");
 
@@ -351,15 +347,15 @@ public class PrepareController {
     }
 
     @PreAuthorize("isAuthenticated()")
-    @PostMapping(value = { "/prepare/recipient/add" })
+    @PostMapping(value = {"/prepare/recipient/add"})
     public ResponseEntity<?> addRecipient(@RequestParam("recipient") String user,
                                           @RequestParam("authenticationRequired") Boolean authRequired) {
         LdapPerson person = ldapService.findByUhUuidOrUidOrMail(user);
-        logger.debug(currentUser().getUid() + " looked for " + user + " and found " +  person);
+        logger.debug(currentUser().getUid() + " looked for " + user + " and found " + person);
 
         if (!person.isValid() && authRequired) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-                .body(Collections.singletonMap("message", "Could not add non-UH recipient when authentication is required."));
+                    .body(Collections.singletonMap("message", "Could not add non-UH recipient when authentication is required."));
         }
 
         if (fileDropService.checkRecipient(currentUser(), person, authRequired)) {
@@ -367,7 +363,7 @@ public class PrepareController {
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-            .body(Collections.singletonMap("message", "Could not add recipient due to restrictions."));
+                .body(Collections.singletonMap("message", "Could not add recipient due to restrictions."));
     }
 
     @GetMapping(value = "/helpdesk")
@@ -381,16 +377,19 @@ public class PrepareController {
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare/files/{uploadKey}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void uploadFiles(@RequestParam MultipartFile file, @RequestParam String comment,
-                            @PathVariable String uploadKey) throws IOException, GeneralSecurityException {
+    public void uploadFiles(@RequestParam MultipartFile file,
+                            @RequestParam String comment,
+                            @PathVariable String uploadKey)
+            throws IOException, GeneralSecurityException {
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
         fileDropService.uploadFile(currentUser(), file, comment, fileDrop);
     }
 
     @PostMapping(value = "/helpdesk/files/{uploadKey}")
     @ResponseStatus(value = HttpStatus.OK)
-    public void uploadFilesHelpdesk(@PathVariable String uploadKey, @RequestParam MultipartFile file,
-            @RequestParam("comment") String comment) {
+    public void uploadFilesHelpdesk(@PathVariable String uploadKey,
+                                    @RequestParam MultipartFile file,
+                                    @RequestParam("comment") String comment) {
         FileSet fileSet = new FileSet();
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());

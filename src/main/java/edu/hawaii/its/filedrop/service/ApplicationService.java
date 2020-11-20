@@ -1,7 +1,8 @@
 package edu.hawaii.its.filedrop.service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,7 +17,6 @@ import org.springframework.transaction.annotation.Transactional;
 import edu.hawaii.its.filedrop.repository.FaqRepository;
 import edu.hawaii.its.filedrop.repository.OfficeRepository;
 import edu.hawaii.its.filedrop.repository.SettingRepository;
-import edu.hawaii.its.filedrop.type.Allowlist;
 import edu.hawaii.its.filedrop.type.Faq;
 import edu.hawaii.its.filedrop.type.Office;
 import edu.hawaii.its.filedrop.type.Setting;
@@ -61,7 +61,7 @@ public class ApplicationService {
 
     @Caching(evict = {
             @CacheEvict(value = "offices", allEntries = true),
-            @CacheEvict(value = "officesById", allEntries = true) })
+            @CacheEvict(value = "officesById", allEntries = true)})
     public void evictOfficeCaches() {
         // Empty.
     }
@@ -104,15 +104,15 @@ public class ApplicationService {
     }
 
     @Caching(evict = {
-        @CacheEvict(value = "faqCache", allEntries = true),
-        @CacheEvict(value = "faqById", allEntries = true) })
+            @CacheEvict(value = "faqCache", allEntries = true),
+            @CacheEvict(value = "faqById", allEntries = true)})
     public void deleteFaq(Faq faq) {
         faqRepository.delete(faq);
     }
 
     @Caching(evict = {
-        @CacheEvict(value = "faqCache", allEntries = true),
-        @CacheEvict(value = "faqById", allEntries = true)
+            @CacheEvict(value = "faqCache", allEntries = true),
+            @CacheEvict(value = "faqById", allEntries = true)
     })
     public void evictFaqCache() {
         // Empty.

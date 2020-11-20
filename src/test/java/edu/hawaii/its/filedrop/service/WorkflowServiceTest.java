@@ -28,7 +28,7 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.controller.WithMockUhUser;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { SpringBootWebApplication.class })
+@SpringBootTest(classes = {SpringBootWebApplication.class})
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class WorkflowServiceTest {
 
@@ -146,6 +146,47 @@ public class WorkflowServiceTest {
 
         assertEquals(0, userTasks.size());
         assertNull(workflowService.currentTask(user));
+    }
+
+    @Test
+    public void stopProcessAll() {
+        AnonymousUser user = new AnonymousUser();
+        assertNotNull(user);
+        workflowService.stopProcessAll(user);
+        assertNull(workflowService.currentTask(user));
+
+        Map<String, Object> args = new HashMap<>();
+        args.put("initiator", user.getUsername());
+
+        ProcessInstance process = runtimeService.startProcessInstanceByKey("fileUpload", args);
+        assertNotNull(process);
+        assertNotNull(workflowService.currentTask(user));
+
+        AnonymousUser anotherUser = new AnonymousUser();
+        assertNotNull(anotherUser);
+
+        Map<String, Object> args2 = new HashMap<>();
+        args2.put("initiator", anotherUser.getUsername());
+
+        ProcessInstance process2 = runtimeService.startProcessInstanceByKey("fileUpload", args2);
+        assertNotNull(process2);
+
+        List<Task> userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
+        assertEquals(2, userTasks.size());
+
+        workflowService.stopProcessAll(user);
+
+        userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
+        assertEquals(0, userTasks.size());
+
+        // Just to make sure it doesn't barf.
+        workflowService.stopProcessAll(user);
+
+        userTasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
+        assertEquals(0, userTasks.size());
+
+        userTasks = taskService.createTaskQuery().taskAssignee("gonzo").list();
+        assertEquals(0, userTasks.size());
     }
 
     @Test
