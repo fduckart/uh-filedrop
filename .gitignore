@@ -13,3 +13,4 @@ node/
 node_modules/
 package-lock.json
 babel/
+src/main/resources/data/
