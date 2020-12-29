@@ -393,6 +393,7 @@
                 <echo>$ mvn clean package</echo>
                 <echo>$ mvn -Dmaven.test.skip=true clean package</echo>
                 <echo>$ mvn jasmine:test</echo>
+                <echo>$ mvn clean test -Denv=dev jacoco:report</echo>
                 <echo>$ mvn clean test jacoco:report</echo>
                 <echo>$ mvn clean compile site</echo>
                 <echo>$ mvn clean spring-boot:run</echo>
