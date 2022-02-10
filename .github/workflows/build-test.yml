@@ -10,7 +10,7 @@ jobs:
   test:
     strategy:
       matrix:
-        platform: [macosx10.15]
+        platform: [ macos-latest ]
     runs-on: ${{ matrix.platform }}
     name: Running Java ${{ matrix.java }} compile
     steps:
