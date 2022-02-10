@@ -17,7 +17,6 @@ import javax.mail.internet.MimeMessage;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -36,7 +35,7 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 
-@SpringBootTest(classes = {SpringBootWebApplication.class})
+@SpringBootTest(classes = { SpringBootWebApplication.class })
 @RunWith(SpringRunner.class)
 public class EmailServiceTest {
 
@@ -84,7 +83,6 @@ public class EmailServiceTest {
         assertThat(receivedMessages[0].getContent().toString(), containsString("Test"));
     }
 
-    @Ignore
     @Test
     public void sendNull() {
         assertTrue(emailService.isEnabled());

@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -496,7 +495,7 @@ public class AdminControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(greaterThanOrEqualTo(1))))
                 .andExpect(jsonPath("$[0].uploader").value("test"))
-                .andExpect(jsonPath("$[0].expiration").value("2021-11-16T08:30:18.023"));
+                .andExpect(jsonPath("$[0].expiration").value("2051-11-16T08:30:18.023"));
     }
 
     @Test
@@ -507,7 +506,6 @@ public class AdminControllerTest {
                 .andExpect(redirectedUrlPattern(casLoginUrl + "**"));
     }
 
-    @Ignore
     @Test
     @WithMockUhAdmin
     public void expireTest() throws Exception {
@@ -550,26 +548,26 @@ public class AdminControllerTest {
                 .andExpect(model().attributeExists("settings"));
 
         mockMvc.perform(post("/admin/settings/1")
-            .param("value", "false"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/admin/settings"))
-            .andExpect(flash().attributeExists("alert"));
+                .param("value", "false"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/settings"))
+                .andExpect(flash().attributeExists("alert"));
 
         Setting setting = applicationService.findSetting(1);
         assertThat(setting.getValue(), equalTo("false"));
 
         mockMvc.perform(post("/admin/settings/1")
-            .param("value", "true"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/admin/settings"))
-            .andExpect(flash().attributeExists("alert"));
+                .param("value", "true"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/settings"))
+                .andExpect(flash().attributeExists("alert"));
 
         mockMvc.perform(post("/admin/settings")
-            .param("key", "test")
-            .param("value", "1"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/admin/settings"))
-            .andExpect(flash().attributeExists("alert"));
+                .param("key", "test")
+                .param("value", "1"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/admin/settings"))
+                .andExpect(flash().attributeExists("alert"));
     }
 
     @Test
@@ -580,29 +578,29 @@ public class AdminControllerTest {
         faq.setAnswer("test answer");
 
         mockMvc.perform(get("/admin/faq"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("admin/faq"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("admin/faq"));
 
         mockMvc.perform(post("/api/admin/faq")
-            .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
-            .content(objectToJSON(faq)))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.question").value("test question"))
-            .andExpect(jsonPath("$.answer").value("test answer"));
+                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .content(objectToJSON(faq)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.question").value("test question"))
+                .andExpect(jsonPath("$.answer").value("test answer"));
 
         faq = applicationService.findFaq(applicationService.findFaqs().size() - 1);
 
         mockMvc.perform(post("/api/admin/faq/" + faq.getId())
-            .param("question", "new question")
-            .param("answer", "test answer"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.question").value("new question"))
-            .andExpect(jsonPath("$.answer").value("test answer"));
+                .param("question", "new question")
+                .param("answer", "test answer"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.question").value("new question"))
+                .andExpect(jsonPath("$.answer").value("test answer"));
 
         mockMvc.perform(delete("/api/admin/faq/" + faq.getId()))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$.question").value("new question"))
-            .andExpect(jsonPath("$.answer").value("test answer"));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.question").value("new question"))
+                .andExpect(jsonPath("$.answer").value("test answer"));
     }
 
     public String objectToJSON(Object object) throws JsonProcessingException {

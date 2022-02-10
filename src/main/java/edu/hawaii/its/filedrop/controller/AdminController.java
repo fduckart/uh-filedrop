@@ -188,7 +188,10 @@ public class AdminController {
     @GetMapping("/api/admin/filedrops")
     public ResponseEntity<List<FileDropInfo>> getFileDrops() {
         logger.debug("User at api/admin/filedrops");
-        List<FileDropInfo> fileDrops = fileDropService.findAllFileDropsInfo().stream().filter(FileDropInfo::isValid).collect(toList());
+        List<FileDropInfo> fileDrops = fileDropService.findAllFileDropsInfo()
+                .stream()
+                .filter(FileDropInfo::isValid)
+                .collect(toList());
         return ResponseEntity.ok().body(fileDrops);
     }
 
@@ -228,8 +231,8 @@ public class AdminController {
 
     @PostMapping("/admin/settings/{id}")
     public String changeSetting(@PathVariable("id") Integer id,
-                                @RequestParam("value") String value,
-                                RedirectAttributes redirectAttributes) {
+            @RequestParam("value") String value,
+            RedirectAttributes redirectAttributes) {
         Setting setting = applicationService.findSetting(id);
         setting.setValue(value);
         setting = applicationService.saveSetting(setting);
@@ -240,8 +243,8 @@ public class AdminController {
 
     @PostMapping("/admin/settings")
     public String addSetting(@RequestParam("key") String key,
-                             @RequestParam("value") String value,
-                             RedirectAttributes redirectAttributes) {
+            @RequestParam("value") String value,
+            RedirectAttributes redirectAttributes) {
         Setting setting = new Setting();
         setting.setKey(key);
         setting.setValue(value);
@@ -266,8 +269,8 @@ public class AdminController {
 
     @PostMapping("/api/admin/faq/{id}")
     public ResponseEntity<Faq> editFaq(@PathVariable("id") Integer id,
-                                       @RequestParam("question") String question,
-                                       @RequestParam("answer") String answer) {
+            @RequestParam("question") String question,
+            @RequestParam("answer") String answer) {
         Faq faq = applicationService.findFaq(id);
         faq.setQuestion(question);
         faq.setAnswer(answer);

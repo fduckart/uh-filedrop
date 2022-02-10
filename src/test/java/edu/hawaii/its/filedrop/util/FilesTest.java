@@ -58,10 +58,14 @@ public class FilesTest {
         bw.write(text.toString());
         bw.close();
 
+        assertFalse(Files.isFile(null));
+        assertFalse(Files.isFile(""));
+        assertFalse(Files.isDirectory(null));
         assertTrue(Files.isFile(file.getAbsolutePath()));
         assertTrue(Files.exists(file.getAbsolutePath()));
         assertFalse(Files.isDirectory(file.getAbsolutePath()));
         assertTrue(Files.isDirectory(file.getParent()));
+        assertFalse(Files.exists(file.getAbsolutePath() + "<><>"));
 
         String path = file.getAbsolutePath();
         assertTrue(file.length() > 0L);
