@@ -57,8 +57,8 @@ insert into allowlist (id, entry, registrant, created, expiration_check, expired
 insert into allowlist (id, entry, registrant, created, expiration_check, expired) values (2, 'help', 'lukemcd9', '2019-06-26', 0, false);
 
 insert into fd_filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (1, 'test', 'Test', '2019-11-14T08:30:18.023', 'uploadKey',  'downloadKey',  'encryptionKey',  '2019-11-15T08:30:18.023', 'Y', 'Y');
-insert into fd_filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (2, 'test', 'Test', '2019-11-14T08:30:18.023', 'uploadKey2', 'downloadKey2', 'encryptionKey2', '2021-11-15T08:30:18.023', 'Y', 'N');
-insert into fd_filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (3, 'jwlennon@hawaii.edu', 'John W Lennon', '2019-11-14T08:30:18.023', 'uploadKey3', 'downloadKey3', 'encryptionKey3', '2021-11-15T08:30:18.023', 'Y', 'Y');
+insert into fd_filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (2, 'test', 'Test', '2019-11-14T08:30:18.023', 'uploadKey2', 'downloadKey2', 'encryptionKey2', '2051-11-15T08:30:18.023', 'Y', 'N');
+insert into fd_filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (3, 'jwlennon@hawaii.edu', 'John W Lennon', '2019-11-14T08:30:18.023', 'uploadKey3', 'downloadKey3', 'encryptionKey3', '2051-11-15T08:30:18.023', 'Y', 'Y');
 insert into fd_filedrop (id, uploader, uploader_fullname, created, upload_key, download_key, encrypt_key, valid_until, is_valid, require_auth) values (4, 'jwlennon@hawaii.edu', 'John W Lennon', '2019-11-14T08:30:18.023', 'uploadKey4', 'downloadKey4', 'encryptionKey4', '2019-11-15T08:30:18.023', 'N', 'N');
 
 insert into recipient (id, filedrop_id, name) values (1, 1, 'test');
