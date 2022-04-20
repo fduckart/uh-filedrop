@@ -322,17 +322,16 @@ public class PrepareController {
             workflowService.revertTask(user, "recipientsTask");
             ProcessVariableHolder processVariableHolder =
                     new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
-            String recipients = Arrays.toString(processVariableHolder.getStrings("recipients"));
             model.addAttribute("sender", processVariableHolder.getString("sender"));
             model.addAttribute("expiration", processVariableHolder.getInteger("expirationLength"));
             model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
-            model.addAttribute("recipients", recipients);
+            model.addAttribute("recipients", processVariableHolder.getStrings("recipients"));
             model.addAttribute("message", processVariableHolder.getString("message"));
         } else {
             fileDropService.startUploadProcess(user);
+            model.addAttribute("expiration", defaultExpiration);
         }
 
-        model.addAttribute("expiration", defaultExpiration);
         model.addAttribute("uid", user.getUid());
         model.addAttribute("cn", user.getName());
         model.addAttribute("mails", user.getAttributes().getMail());
@@ -355,7 +354,7 @@ public class PrepareController {
 
         if (!person.isValid() && authRequired) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .body(Collections.singletonMap("message", "Could not add non-UH recipient when authentication is required."));
+                .body(Collections.singletonMap("message", "Could not add non-UH recipient when authentication is required."));
         }
 
         if (fileDropService.checkRecipient(currentUser(), person, authRequired)) {
