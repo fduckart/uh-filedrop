@@ -4,10 +4,10 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         $scope.recipient = "";
         $scope.recipients = [];
         $scope.sendToSelf = false;
-        $scope.loadRecipients();
         $scope.authentication = $scope.getAuthentication();
         $scope.expiration = $scope.getExpiration();
         $scope.message = $scope.getMessage();
+        $scope.loadRecipients();
         $log.debug("init; Sender:", $scope.sender);
         $log.debug("init; Current user:", $scope.currentUser().uid);
         $log.debug("init; Recipients:", $scope.recipients);
@@ -125,15 +125,13 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     $scope.getFileDrop = () => $window.fileDrop;
 
     $scope.loadRecipients = function() {
-        let recipientsStr = $scope.getFileDrop().recipients;
-        if (recipientsStr && recipientsStr.length > 0) {
-            let recipientsSub = recipientsStr.substring(1, recipientsStr.length - 1)
-                                             .split(",");
-            for (let r of recipientsSub) {
-                if ($scope.currentUser().mails.includes(r)) {
+        const recipients = $scope.getFileDrop().recipients;
+        if (recipients && recipients.length > 0) {
+            for (let recipient of recipients) {
+                if ($scope.currentUser().mails.includes(recipient)) {
                     $scope.sendToSelf = true;
                 }
-                $scope.addRecipient(r);
+                $scope.addRecipient(recipient);
             }
         }
     };

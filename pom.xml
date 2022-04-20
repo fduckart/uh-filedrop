@@ -22,7 +22,7 @@
   </parent>
 
   <properties>
-    <maven-enforcer-plugin.version>3.0.0</maven-enforcer-plugin.version>
+    <maven-enforcer-plugin.version>3.0.0-M3</maven-enforcer-plugin.version>
     <maven.version>3.5.2</maven.version>
     <java.version>1.8</java.version>
     <cas.client-version>3.4.1</cas.client-version>
@@ -264,6 +264,13 @@
       <groupId>org.webjars</groupId>
       <artifactId>material-design-icons</artifactId>
       <version>3.0.1</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-enforcer-plugin</artifactId>
+      <version>${maven-enforcer-plugin.version}</version>
+      <type>maven-plugin</type>
     </dependency>
   </dependencies>
   <build>
