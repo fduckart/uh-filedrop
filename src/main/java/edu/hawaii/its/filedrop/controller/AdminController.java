@@ -1,7 +1,5 @@
 package edu.hawaii.its.filedrop.controller;
 
-import static java.util.stream.Collectors.toList;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -188,10 +186,7 @@ public class AdminController {
     @GetMapping("/api/admin/filedrops")
     public ResponseEntity<List<FileDropInfo>> getFileDrops() {
         logger.debug("User at api/admin/filedrops");
-        List<FileDropInfo> fileDrops = fileDropService.findAllFileDropsInfo()
-                .stream()
-                .filter(FileDropInfo::isValid)
-                .collect(toList());
+        List<FileDropInfo> fileDrops = fileDropService.convertToFileDropInfo(fileDropService.findAllValidFileDrops());
         return ResponseEntity.ok().body(fileDrops);
     }
 
