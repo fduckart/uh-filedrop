@@ -71,7 +71,7 @@ insert into recipient (id, filedrop_id, name) values (6, 2, 'lukemcd9');
 insert into fd_fileset (id, filedrop_id, file_name, type, comment, size) values (1, 2, 'test.txt', 'text/plain', '', 1000);
 insert into fd_download (id, filedrop_id, file_name, started, completed, ip_addr) values (1, 2, 'test.txt', '2019-11-14T08:30:18.023', '2019-11-14T08:31:18.023', '0.0.0.0');
 
-insert into setting (id, setting_key, value) values (1, 'disableLanding', 'false');
+insert into setting (id, `key`, `value`) values (1, 'disableLanding', 'false');
 
 
 insert into faq(id, question, answer) values (1, 'How does it work?', 'The basic idea behind this service is simple: we allow people to upload potentially large files (although not too <a href="#size">large</a>) to our servers, where they will be stored for a limited period. Once the files have been completely uploaded, we send an email containing a download URL to the address or UH username you have specified as the recipient. That''s it, in a nutshell. <br/><br/>There are, of course, a few additional complications. First, this service is provided to the UH community, and is not meant to be open to the general public. However, we do wish to provide the ability for people unaffiliated with the University to use the service to share files with people within UH. In all cases, we require at least one end of the transaction (sender or receiver, that is) to be UH staff or faculty. The only practical consequence of this is that for a UH person to send files to a non-UH person, the UH person must use the link on the service home page to login prior to uploading files.');
