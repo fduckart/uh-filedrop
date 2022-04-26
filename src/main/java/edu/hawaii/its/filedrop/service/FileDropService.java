@@ -1,9 +1,14 @@
 package edu.hawaii.its.filedrop.service;
 
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.isExpiring;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.isValid;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withId;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withRecipient;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploadKey;
+import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploader;
 import static java.util.stream.Collectors.toList;
+import static org.springframework.data.jpa.domain.Specification.where;
 
 import javax.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
@@ -14,14 +19,14 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -264,8 +269,7 @@ public class FileDropService {
     public synchronized void checkFileDrops() {
         logger.debug("Starting expired FileDrops check");
 
-        List<FileDrop> expiredFileDrops = findAllFileDrops().stream().filter(fileDrop ->
-            fileDrop.getExpiration().isBefore(LocalDateTime.now()) && fileDrop.isValid()).collect(Collectors.toList());
+        List<FileDrop> expiredFileDrops = findAllExpiringFileDrops();
 
         expiredFileDrops.forEach(this::expire);
 
@@ -294,15 +298,12 @@ public class FileDropService {
         return fileDropInfo;
     }
 
-    public List<FileDropInfo> findAllFileDropsInfo() {
-        return findAllFileDrops().stream().map(this::getFileDropInfo).collect(toList());
+    public List<FileDropInfo> convertToFileDropInfo(List<FileDrop> fileDrops) {
+        return fileDrops.stream().map(this::getFileDropInfo).collect(toList());
     }
 
     public List<FileDropInfo> findAllUserFileDropInfo(User user) {
-        return findAllFileDropsInfo().stream().filter(fileDropInfo ->
-            fileDropInfo.getUploader().equals(user.getUsername()) ||
-            fileDropInfo.getRecipients().contains(user.getUsername()))
-            .collect(toList());
+        return convertToFileDropInfo(findAllUserFileDrops(user));
     }
 
     public FileSet saveFileSet(FileSet fileSet) {
@@ -331,6 +332,22 @@ public class FileDropService {
 
     public FileDrop findFileDropUploadKey(String key) {
         return fileDropRepository.findOne(withUploadKey(key)).orElse(null);
+    }
+
+    public List<FileDrop> findAllUserFileDrops(User user) {
+        Set<FileDrop> fileDrops = new HashSet<>(fileDropRepository.findAll(
+            where(withUploader(user.getUsername())
+                .or(withRecipient(user.getUsername())))
+        ));
+        return new ArrayList<>(fileDrops);
+    }
+
+    public List<FileDrop> findAllValidFileDrops() {
+        return fileDropRepository.findAll(isValid(true));
+    }
+
+    public List<FileDrop> findAllExpiringFileDrops() {
+        return fileDropRepository.findAll(isExpiring());
     }
 
     public List<FileDrop> findAllFileDrops() {

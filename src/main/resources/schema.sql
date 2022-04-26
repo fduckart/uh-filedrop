@@ -276,7 +276,7 @@ CREATE TABLE setting (
   `key` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
   PRIMARY KEY(id),
-  UNIQUE (setting_key)
+  UNIQUE (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE faq (
