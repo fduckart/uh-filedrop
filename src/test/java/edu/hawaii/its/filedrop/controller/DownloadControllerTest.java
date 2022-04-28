@@ -109,35 +109,27 @@ public class DownloadControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/sl/" + fileDrop.getDownloadKey()));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/sl/" + fileDrop.getDownloadKey()));
 
         mockMvc.perform(get("/sl/" + fileDrop.getDownloadKey()))
-            .andExpect(status().isOk())
-            .andExpect(view().name("user/download"))
-            .andExpect(model().attributeExists("fileDrop"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/download"))
+                .andExpect(model().attributeExists("fileDrop"));
 
         mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
 
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
 
         MvcResult mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + fileSets.get(0).getId())
-            .contentType(MediaType.APPLICATION_OCTET_STREAM))
-            .andExpect(status().isOk())
-            .andReturn();
+                .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                .andExpect(status().isOk())
+                .andReturn();
 
         assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"),
-            equalTo("attachment; filename=\"test.txt\""));
-
-        mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/zip")
-            .contentType(MediaType.APPLICATION_OCTET_STREAM))
-            .andExpect(status().isOk())
-            .andReturn();
-
-        assertThat(mvcResult.getResponse().getHeaderValue("Content-Disposition"),
-            equalTo("attachment; filename=\"FileDrop(" + fileDrop.getDownloadKey() + ").zip\""));
+                equalTo("attachment; filename=\"test.txt\""));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/9999"))
                 .andExpect(status().is4xxClientError());
@@ -168,12 +160,6 @@ public class DownloadControllerTest {
 
         mockMvc.perform(get("/dl/downloadKey3/999"))
                 .andExpect(status().is4xxClientError());
-
-        mockMvc.perform(get("/dl/downloadKey3/zip"))
-            .andExpect(status().is4xxClientError());
-
-        mockMvc.perform(get("/dl/notarealkey/zip"))
-            .andExpect(status().is4xxClientError());
     }
 
     @Test

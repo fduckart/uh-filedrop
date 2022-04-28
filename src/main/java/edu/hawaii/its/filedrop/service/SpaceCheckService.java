@@ -41,6 +41,7 @@ public class SpaceCheckService {
         Assert.notNull(root, "property 'root' is required");
 
         logger.info("init; root exists?: " + root.exists());
+        logger.info("init;         root: " + root);
 
         logger.info("init; bytesFree: " + bytesFree);
         logger.info("init; bytesUsed: " + bytesUsed);

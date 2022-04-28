@@ -39,19 +39,19 @@
             <div class="row">
                 <div class="col-sm-12 mb-3">
                     <label for="recipient" class="filedrop-label">Recipients</label>
-
                     <span href="#" class="ml-1 text-primary"
                        th:attr="uib-popover=#{prepare.recipient.popup.text}, popover-title=#{prepare.recipient.popup.title}"
                        popover-trigger="'mouseenter click'">
                         <i class="fa fa-info-circle fa-lg"></i>
                     </span>
-
                     <form ng-submit="addRecipient(recipient)">
                         <div class="input-group">
                             <input class="form-control" id="recipient" type="search" name="recipient"
                                    ng-change="error = null"
                                    ng-model="recipient"
-                                   placeholder="UH username, email address..." valid-recipient="true"
+                                   placeholder="UH username, email address..."
+                                   autocomplete="off" 
+                                   valid-recipient="true"                                   
                                    ng-class="{ 'is-invalid': error }">
                             <div class="input-group-append">
                                 <button type="submit" ng-disabled="recipient.length === 0"
@@ -59,7 +59,7 @@
                                 </button>
                                 <button type="button" ng-click="sendSelf()" ng-disabled="disableSendSelf() || recipient.length > 0"
                                         class="btn btn-success">
-                                    Send To Self
+                                    Add Self
                                 </button>
                             </div>
                         </div>

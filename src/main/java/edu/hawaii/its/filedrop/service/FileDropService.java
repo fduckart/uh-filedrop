@@ -10,11 +10,6 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.jpa.domain.Specification.where;
 
-import javax.annotation.PostConstruct;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -27,17 +22,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.flowable.task.api.Task;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import edu.hawaii.its.filedrop.access.User;
@@ -63,7 +56,7 @@ public class FileDropService {
 
     @Autowired
     private FileSetRepository fileSetRepository;
-    
+
     @Autowired
     private RecipientRepository recipientRepository;
 
@@ -151,7 +144,7 @@ public class FileDropService {
     }
 
     public void uploadFile(User user, MultipartFile file, String comment, FileDrop fileDrop)
-        throws IOException, GeneralSecurityException {
+            throws IOException, GeneralSecurityException {
         if (workflowService.atTask(user, "addFiles") && file != null) {
             FileSet fileSet = new FileSet();
             fileSet.setFileName(file.getOriginalFilename());
@@ -162,7 +155,7 @@ public class FileDropService {
             fileSet = saveFileSet(fileSet);
 
             Path path = Paths
-                .get(fileSystemStorageService.getRootLocation().toString(), fileSet.getFileDrop().getDownloadKey());
+                    .get(fileSystemStorageService.getRootLocation().toString(), fileSet.getFileDrop().getDownloadKey());
 
             path.toFile().mkdir();
 
@@ -170,39 +163,6 @@ public class FileDropService {
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);
         }
-    }
-
-    public void makeZip(FileDrop fileDrop) throws IOException, GeneralSecurityException {
-        String fileName = "FileDrop(" + fileDrop.getDownloadKey() + ").zip";
-        Path path =
-            Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey(), fileName);
-        File file = new File(path.toUri());
-        file.createNewFile();
-
-        List<FileSet> fileSets = findFileSets(fileDrop);
-        ZipOutputStream zipOutputStream = new ZipOutputStream(new FileOutputStream(file));
-
-        for (FileSet fileSet : fileSets) {
-            Resource resource = fileSystemStorageService.loadAsResource(
-                Paths.get(fileDrop.getDownloadKey(), fileSet.getId().toString() + ".enc").toString());
-            ByteArrayOutputStream outputStream =
-                (ByteArrayOutputStream) cipherService.decrypt(resource.getInputStream(), fileSet);
-            ByteArrayInputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray());
-            ZipEntry zipEntry = new ZipEntry(fileSet.getFileName());
-            zipEntry.setSize(resource.contentLength());
-            zipOutputStream.putNextEntry(zipEntry);
-            StreamUtils.copy(inputStream, zipOutputStream);
-            inputStream.close();
-            zipOutputStream.closeEntry();
-        }
-
-        zipOutputStream.finish();
-        zipOutputStream.close();
-
-        Resource zip = fileSystemStorageService.loadAsResource(file.getAbsolutePath());
-        cipherService.encrypt(zip.getInputStream(), fileSets.get(0), path);
-        file.delete();
-        logger.debug("Created Zip of files for: " + fileDrop);
     }
 
     public void completeFileDrop(User user, FileDrop fileDrop) {
@@ -336,9 +296,8 @@ public class FileDropService {
 
     public List<FileDrop> findAllUserFileDrops(User user) {
         Set<FileDrop> fileDrops = new HashSet<>(fileDropRepository.findAll(
-            where(withUploader(user.getUsername())
-                .or(withRecipient(user.getUsername())))
-        ));
+                where(withUploader(user.getUsername())
+                        .or(withRecipient(user.getUsername())))));
         return new ArrayList<>(fileDrops);
     }
 

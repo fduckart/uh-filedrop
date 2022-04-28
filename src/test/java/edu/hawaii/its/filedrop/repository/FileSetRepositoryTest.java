@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.repository;
 
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
@@ -123,8 +124,8 @@ public class FileSetRepositoryTest {
 
     @Test
     public void acomment() {
-        long countFileDrop0 = fileDropRepository.count();
-        long countFileSet0 = fileSetRepository.count();
+        final long countFileDrop0 = fileDropRepository.count();
+        final long countFileSet0 = fileSetRepository.count();
 
         FileDrop fd0 = fileDropRepository.findById(1).get();
         assertThat(fd0, not(equalTo(null)));
@@ -138,21 +139,21 @@ public class FileSetRepositoryTest {
 
         fs0 = fileSetRepository.save(fs0);
 
+        assertThat(fs0.getId(), notNullValue());
         assertThat(fs0.getId(), greaterThan(1));
+        assertThat(fs0.getComment(), notNullValue());
 
-        long countFileDrop1 = fileDropRepository.count();
+        final long countFileDrop1 = fileDropRepository.count();
         assertThat(countFileDrop1, equalTo(countFileDrop0));
-        long countFileSet1 = fileSetRepository.count();
+        final long countFileSet1 = fileSetRepository.count();
         assertThat(countFileSet1, equalTo(countFileSet0 + 1));
-
-        assertThat(fs0.getId(), not(equalTo(null)));
-        assertThat(fs0.getComment(), not(equalTo(null)));
 
         fileSetRepository.delete(fs0);
 
-        long countFileDrop2 = fileDropRepository.count();
+        final long countFileDrop2 = fileDropRepository.count();
         assertThat(countFileDrop2, equalTo(countFileDrop0));
-        long countFileSet2 = fileSetRepository.count();
+        final long countFileSet2 = fileSetRepository.count();
+        assertThat(countFileSet2, equalTo(countFileSet1 - 1));
         assertThat(countFileSet2, equalTo(countFileSet0));
     }
 }

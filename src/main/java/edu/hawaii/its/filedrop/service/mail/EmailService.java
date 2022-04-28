@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,9 +53,16 @@ public class EmailService {
     @Value("${url.base}")
     private String url;
 
-    // Constructor
+    // Constructor.
     public EmailService() {
-        // empty
+        // Empty
+    }
+
+    @PostConstruct
+    public void init() {
+        logger.info("init; starting");
+        logger.info("init; enabled? " + isEnabled);
+        logger.info("init; finished");
     }
 
     public boolean isEnabled() {
@@ -62,6 +71,10 @@ public class EmailService {
 
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
+    }
+
+    public void send(Mail mail, String template, Map<String, Object> map) {
+        send(mail, template, new Context(Locale.ENGLISH, map));
     }
 
     public void send(Mail mail, String template, Context context) {
@@ -80,6 +93,7 @@ public class EmailService {
                 messageHelper.setText(htmlContent, true);
             };
 
+            logger.debug("Send email: " + mail);
             javaMailSender.send(msg);
         }
     }
