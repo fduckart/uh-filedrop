@@ -21,8 +21,6 @@ import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
@@ -30,8 +28,7 @@ import edu.hawaii.its.filedrop.repository.AllowlistRepository;
 import edu.hawaii.its.filedrop.type.Allowlist;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringBootWebApplication.class})
-@DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
+@SpringBootTest(classes = { SpringBootWebApplication.class })
 public class AllowlistServiceTest {
 
     private static final Log logger = LogFactory.getLog(AllowlistServiceTest.class);
