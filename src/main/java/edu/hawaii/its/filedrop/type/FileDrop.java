@@ -188,6 +188,8 @@ public class FileDrop {
                 + ", expiration=" + expiration
                 + ", valid=" + valid
                 + ", authenticationRequired=" + authenticationRequired
+                + ", recipients=" + recipients
+                + ", files=" + fileSet
                 + "]";
     }
 }
