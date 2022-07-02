@@ -243,6 +243,11 @@ public class PrepareController {
         fileDrop.setValid(true);
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("completeFileDrop; fileDrop: " + fileDrop);
+            logger.debug("completeFileDrop; recipients: " + Arrays.asList(recipients));
+        }
+
         fileDropService.addRecipients(fileDrop, recipients);
 
         String sender = processVariables.getString("sender");
