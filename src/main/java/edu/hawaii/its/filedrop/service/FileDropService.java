@@ -185,7 +185,11 @@ public class FileDropService {
             }
         });
 
-        logger.debug("addRecipients; recipientList: " + recipientList);
+        if (logger.isDebugEnabled()) {
+            logger.debug("addRecipients; fileDrop: " + fileDrop);
+            logger.debug("addRecipients; recipientList: " + recipientList);
+        }
+
         ///recipientRepository.saveAll(recipientList);
 
         fileDrop.setRecipients(recipientList);
