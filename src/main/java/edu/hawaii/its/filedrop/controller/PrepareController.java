@@ -92,7 +92,10 @@ public class PrepareController {
             return "redirect:/prepare";
         }
 
-        FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
+        FileDrop filedrop = fileDropService.findFileDropUploadKey(uploadKey);
+        if (logger.isDebugEnabled()) {
+            logger.debug("addFiles; filedrop: " + filedrop);
+        }
 
         ProcessVariableHolder processVariableHolder =
                 new ProcessVariableHolder(workflowService.getProcessVariables(user));
@@ -109,8 +112,8 @@ public class PrepareController {
 
         model.addAttribute("recipients", recipientsList);
         model.addAttribute("maxUploadSize", maxUploadSize);
-        model.addAttribute("uploadKey", fileDrop.getUploadKey());
-        model.addAttribute("authentication", fileDrop.isAuthenticationRequired());
+        model.addAttribute("uploadKey", filedrop.getUploadKey());
+        model.addAttribute("authentication", filedrop.isAuthenticationRequired());
 
         return "user/files";
     }
