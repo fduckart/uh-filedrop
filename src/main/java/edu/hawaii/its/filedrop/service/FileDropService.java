@@ -49,7 +49,13 @@ public class FileDropService {
     private static final Log logger = LogFactory.getLog(FileDropService.class);
 
     @Autowired
-    private WorkflowService workflowService;
+    private AllowlistService allowlistService;
+
+    @Autowired
+    private CipherService cipherService;
+
+    @Autowired
+    private DownloadRepository downloadRepository;
 
     @Autowired
     private FileDropRepository fileDropRepository;
@@ -64,13 +70,7 @@ public class FileDropService {
     private FileSystemStorageService fileSystemStorageService;
 
     @Autowired
-    private AllowlistService allowlistService;
-
-    @Autowired
-    private CipherService cipherService;
-
-    @Autowired
-    private DownloadRepository downloadRepository;
+    private WorkflowService workflowService;
 
     @Value("${app.restrictions.sender.student}")
     private List<String> studentRestrictions;
@@ -154,8 +154,8 @@ public class FileDropService {
             fileSet.setSize(file.getSize());
             fileSet = saveFileSet(fileSet);
 
-            Path path = Paths
-                    .get(fileSystemStorageService.getRootLocation().toString(), fileSet.getFileDrop().getDownloadKey());
+            Path path = Paths.get(fileSystemStorageService.getRootLocation().toString(),
+                    fileSet.getFileDrop().getDownloadKey());
 
             path.toFile().mkdir();
 
@@ -185,7 +185,11 @@ public class FileDropService {
             }
         });
 
-        recipientRepository.saveAll(recipientList);
+        logger.debug("addRecipients; recipientList: " + recipientList);
+        ///recipientRepository.saveAll(recipientList);
+
+        fileDrop.setRecipients(recipientList);
+
         saveFileDrop(fileDrop);
     }
 

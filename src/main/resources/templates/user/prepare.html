@@ -27,8 +27,10 @@
                 <div class="col-sm-12 mb-3">
                     <label for="email" class="filedrop-label">Sender</label>
                     <div class="input-group">
-                        <input name="email" class="form-control" type="text" disabled ng-value="sender.model"
-                            ng-if="!userHasMultipleEmails()">
+                        <input name="email" class="form-control" type="text" disabled 
+                            ng-value="sender.model"
+                            ng-if="!userHasMultipleEmails()"
+                            autocomplete="off">
                         <select ng-if="userHasMultipleEmails()" class="custom-select" name="email" id="email"
                             ng-model="sender.model" ng-cloak ng-disabled="recipient.length > 0">
                             <option ng-repeat="mail in sender.mails" value="{{mail}}">{{mail}}</option>

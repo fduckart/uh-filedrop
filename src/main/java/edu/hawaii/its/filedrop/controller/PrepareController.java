@@ -183,6 +183,10 @@ public class PrepareController {
         fileDrop.setValid(true);
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("fileDrop saved: " + fileDrop);
+        }
+
         ProcessVariableHolder processVariableHolder = new ProcessVariableHolder();
         processVariableHolder.add("fileDropId", fileDrop.getId());
         processVariableHolder.add("fileDropDownloadKey", fileDrop.getDownloadKey());

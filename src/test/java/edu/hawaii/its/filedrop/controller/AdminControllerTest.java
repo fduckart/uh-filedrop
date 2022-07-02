@@ -338,7 +338,7 @@ public class AdminControllerTest {
         String jsonRequest = objectToJSON(allowlist);
 
         mockMvc.perform(post("/api/admin/allowlist")
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.entry").value("help"))
@@ -358,7 +358,7 @@ public class AdminControllerTest {
         jsonRequest = objectToJSON(allowlist);
 
         mockMvc.perform(post("/api/admin/allowlist")
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.entry").value("help"))
@@ -383,7 +383,7 @@ public class AdminControllerTest {
         jsonRequest = objectToJSON(allowlist);
 
         mockMvc.perform(post("/api/admin/allowlist")
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest))
                 .andExpect(status().isOk());
 
@@ -409,7 +409,7 @@ public class AdminControllerTest {
         allowlist.setRegistrant("jwlennon");
         String jsonRequest = objectToJSON(allowlist);
         MvcResult result = mockMvc.perform(post("/api/admin/allowlist")
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -582,7 +582,7 @@ public class AdminControllerTest {
                 .andExpect(view().name("admin/faq"));
 
         mockMvc.perform(post("/api/admin/faq")
-                .contentType(MediaType.APPLICATION_JSON_UTF8_VALUE)
+                .contentType(MediaType.APPLICATION_JSON)
                 .content(objectToJSON(faq)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.question").value("test question"))

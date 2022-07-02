@@ -3,6 +3,7 @@ package edu.hawaii.its.filedrop.service;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.endsWith;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
@@ -19,7 +20,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.flowable.task.api.Task;
 import org.junit.Test;
@@ -36,7 +39,7 @@ import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringBootWebApplication.class})
+@SpringBootTest(classes = { SpringBootWebApplication.class })
 public class FileDropServiceTest {
 
     @Autowired
@@ -64,7 +67,7 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", currentTask(user).getName());
 
-        String[] recipients = {"test"};
+        String[] recipients = { "test" };
         fileDropService.addRecipients(user, recipients);
 
         assertEquals("addFiles", currentTask(user).getName());
@@ -86,7 +89,7 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", currentTask(user).getName());
 
-        String[] recipients = {"test"};
+        String[] recipients = { "test" };
         fileDropService.addRecipients(user, recipients);
 
         assertEquals("addFiles", currentTask(user).getName());
@@ -253,7 +256,7 @@ public class FileDropServiceTest {
 
         fileDropService.startUploadProcess(user);
 
-        String[] recipients = {"test", "lukemcd9"};
+        String[] recipients = { "test", "lukemcd9" };
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(user.getUid());
@@ -269,6 +272,15 @@ public class FileDropServiceTest {
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
         fileDropService.addRecipients(fileDrop, recipients);
+
+        FileDrop fd = fileDropService.findFileDrop(fileDrop.getId());
+        assertThat(fd.getRecipients().size(), equalTo(2));
+        List<String> names = fd.getRecipients()
+                .stream()
+                .map(f -> f.getName())
+                .collect(Collectors.toList());
+        assertThat(names, hasItem("test"));
+        assertThat(names, hasItem("lukemcd9"));
 
         Map<String, Object> args = new HashMap<>();
         args.put("fileDropId", fileDrop.getId());
@@ -314,7 +326,7 @@ public class FileDropServiceTest {
 
         fileDropService.startUploadProcess(user);
 
-        String[] recipients = {"test", "lukemcd9"};
+        String[] recipients = { "test", "lukemcd9" };
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(user.getUid());
