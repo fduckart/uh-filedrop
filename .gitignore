@@ -3,7 +3,7 @@
 /.idea
 edu.hawaii.its.iml
 .DS_Store
-*output.txt
+*output*.txt
 /.settings
 /bin
 /target
