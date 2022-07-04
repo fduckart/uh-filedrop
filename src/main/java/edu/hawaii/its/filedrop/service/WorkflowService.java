@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.flowable.engine.RuntimeService;
 import org.flowable.engine.TaskService;
 import org.flowable.task.api.Task;
@@ -15,6 +17,8 @@ import edu.hawaii.its.filedrop.access.User;
 @Service
 public class WorkflowService {
 
+    private static final Log logger = LogFactory.getLog(WorkflowService.class);
+
     @Autowired
     private RuntimeService runtimeService;
 
@@ -22,6 +26,11 @@ public class WorkflowService {
     private TaskService taskService;
 
     public void startProcess(User user, String processKey, Map<String, Object> args) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("startProcess; user: " + user);
+            logger.debug("startProcess; processKey: " + processKey);
+        }
+
         if (hasTask(user)) {
             List<Task> tasks = taskService.createTaskQuery().taskAssignee(user.getUsername()).list();
             for (Task task : tasks) {

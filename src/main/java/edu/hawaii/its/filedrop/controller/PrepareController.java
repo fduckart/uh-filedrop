@@ -326,12 +326,19 @@ public class PrepareController {
 
         User user = currentUser();
         Task currentTask = workflowService.getCurrentTask(user);
+        if (logger.isDebugEnabled()) {
+            logger.debug("prepare; currentTask: " + currentTask);
+        }
 
         if (currentTask != null && currentTask.getTaskDefinitionKey().equalsIgnoreCase("filesTask")) {
             FileDrop fileDrop =
                     fileDropService.findFileDrop(fileDropService.getFileDropId(user));
 
+            if (logger.isDebugEnabled()) {
+                logger.debug("prepare; revert task.");
+            }
             workflowService.revertTask(user, "recipientsTask");
+
             ProcessVariableHolder processVariableHolder =
                     new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
             model.addAttribute("sender", processVariableHolder.getString("sender"));
@@ -340,6 +347,9 @@ public class PrepareController {
             model.addAttribute("recipients", processVariableHolder.getStrings("recipients"));
             model.addAttribute("message", processVariableHolder.getString("message"));
         } else {
+            if (logger.isDebugEnabled()) {
+                logger.debug("prepare; start upload process ");
+            }
             fileDropService.startUploadProcess(user);
             model.addAttribute("expiration", defaultExpiration);
         }
@@ -350,8 +360,8 @@ public class PrepareController {
         model.addAttribute("affiliations", user.getAttributes().getAffiliation());
 
         if (logger.isDebugEnabled()) {
-            logger.debug("User: " + user);
-            logger.debug("Current Task: " + currentTask);
+            logger.debug("prepare; user: " + user);
+            logger.debug("prepare; currentTask: " + currentTask);
         }
 
         return "user/prepare";
