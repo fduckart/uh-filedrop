@@ -1,24 +1,24 @@
 package edu.hawaii.its.filedrop.type;
 
-import org.junit.Before;
-import org.junit.Test;
-
-import edu.hawaii.its.filedrop.type.Role.SecurityRole;
-
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
 public class RoleTest {
 
     private Role role;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         role = new Role();
     }

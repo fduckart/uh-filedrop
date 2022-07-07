@@ -2,20 +2,20 @@ package edu.hawaii.its.filedrop.job;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class JobFactoryTest {
 
     private JobFactory jobFactory;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         jobFactory = new JobFactory(Collections.emptyList());
     }

@@ -1,9 +1,9 @@
 package edu.hawaii.its.filedrop.configuration;
 
-import org.junit.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsEqual.equalTo;
+
+import org.junit.jupiter.api.Test;
 
 public class StoragePropertiesTest {
 

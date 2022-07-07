@@ -3,16 +3,16 @@ package edu.hawaii.its.filedrop.type;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class SettingTest {
 
     Setting setting;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         setting = new Setting();
     }

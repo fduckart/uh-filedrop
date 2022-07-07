@@ -1,10 +1,11 @@
 package edu.hawaii.its.filedrop.service;
 
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.quartz.JobDetail;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,8 +59,9 @@ public class SchedulerServiceTest {
         assertNull(jobDetail);
     }
 
-    @Test(expected = NullPointerException.class)
+    @Test
     public void nullJob() throws SchedulerException {
-        schedulerService.addJob(null);
+        assertThrows(NullPointerException.class,
+                () -> schedulerService.addJob(null));
     }
 }

@@ -1,10 +1,10 @@
 package edu.hawaii.its.filedrop.exception;
 
-import org.junit.Test;
-
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import org.junit.jupiter.api.Test;
 
 public class StorageExceptionTest {
 

@@ -2,16 +2,16 @@ package edu.hawaii.its.filedrop.service;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -36,7 +36,7 @@ public class MessageServiceTest {
         assertTrue(message.getText().contains("University of Hawai'i"));
 
         // Turn down logging just for a second, just
-        // to reduce the Exception noise a little bit.
+        // to reduce the Exception noise a little.
         Logger logger = (Logger) LoggerFactory.getLogger(MessageService.class);
         Level level = logger.getLevel();
         logger.setLevel(Level.OFF);

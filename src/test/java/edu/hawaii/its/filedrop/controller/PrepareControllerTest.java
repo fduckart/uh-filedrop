@@ -76,14 +76,11 @@ public class PrepareControllerTest {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-
-        //emailServer.start();
         emailService.setEnabled(true);
     }
 
     @AfterEach
     public void tearDown() {
-        //emailServer.stop();
         emailService.setEnabled(false);
     }
 

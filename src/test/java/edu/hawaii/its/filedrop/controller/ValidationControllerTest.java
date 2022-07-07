@@ -2,7 +2,7 @@ package edu.hawaii.its.filedrop.controller;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
@@ -11,17 +11,17 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 import java.time.LocalDateTime;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
@@ -33,8 +33,8 @@ import edu.hawaii.its.filedrop.type.Validation;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ValidationControllerTest {
 
-    @Rule
-    public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
+    @RegisterExtension
+    static GreenMailExtension server = new GreenMailExtension(ServerSetupTest.SMTP);
 
     private MockMvc mockMvc;
 
@@ -47,23 +47,19 @@ public class ValidationControllerTest {
     @Autowired
     private EmailService emailService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-
-        server.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
-        server.stop();
     }
 
     @Test
     public void validateTest() throws Exception {
-        server.start();
         mockMvc.perform(post("/validate")
                         .param("name", "Jon Mess")
                         .param("value", "jmess@test.com")
@@ -71,7 +67,6 @@ public class ValidationControllerTest {
                 .andExpect(view().name("validation/validation-sent"))
                 .andExpect(model().attribute("email", "jmess@test.com"))
                 .andReturn();
-        server.stop();
 
         Validation validation = validationRepository.findAll().get(0);
         validation.setValidationKey("validationKey");

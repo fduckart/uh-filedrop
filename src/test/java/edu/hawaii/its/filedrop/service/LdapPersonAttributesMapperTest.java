@@ -2,9 +2,9 @@ package edu.hawaii.its.filedrop.service;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.hasItem;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -12,14 +12,14 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
 import javax.naming.directory.BasicAttributes;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class LdapPersonAttributesMapperTest {
 
     private LdapPersonAttributesMapper ldapPersonAttributesMapper;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         ldapPersonAttributesMapper = new LdapPersonAttributesMapper();
     }

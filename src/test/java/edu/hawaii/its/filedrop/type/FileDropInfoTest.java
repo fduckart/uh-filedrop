@@ -1,19 +1,19 @@
 package edu.hawaii.its.filedrop.type;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class FileDropInfoTest {
     FileDropInfo fileDropInfo;
-    
-    @Before
+
+    @BeforeEach
     public void setup() {
         fileDropInfo = new FileDropInfo();
     }
@@ -29,12 +29,12 @@ public class FileDropInfoTest {
         fileDropInfo.setExpiration(LocalDateTime.of(2020, 4, 21, 4, 20, 20));
         assertThat(fileDropInfo.getFileDropId(), equalTo(666));
         assertThat(fileDropInfo.getCreated(),
-            equalTo(LocalDateTime.of(2020, 04, 20, 4, 20, 20)));
+                equalTo(LocalDateTime.of(2020, 04, 20, 4, 20, 20)));
         assertThat(fileDropInfo.getExpiration(),
-            equalTo(LocalDateTime.of(2020, 04, 21, 4, 20, 20)));
+                equalTo(LocalDateTime.of(2020, 04, 21, 4, 20, 20)));
 
         List<FileDropInfo.FileInfo> fileInfoList = new ArrayList<>();
-        for(int i = 0; i < 5; i++) {
+        for (int i = 0; i < 5; i++) {
             FileDropInfo.FileInfo fileInfo = new FileDropInfo.FileInfo();
             fileInfo.setDownloads(1);
             fileInfo.setFileType("text");

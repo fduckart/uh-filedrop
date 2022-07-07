@@ -1,13 +1,13 @@
 package edu.hawaii.its.filedrop.access;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
@@ -15,7 +15,7 @@ public class AnonymousUserTest {
 
     private User user;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         user = new AnonymousUser();
     }

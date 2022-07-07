@@ -3,8 +3,8 @@ package edu.hawaii.its.filedrop.service.mail;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -14,15 +14,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.thymeleaf.context.Context;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.store.MailFolder;
 import com.icegreen.greenmail.store.StoredMessage;
 import com.icegreen.greenmail.user.GreenMailUser;
@@ -35,22 +35,22 @@ import edu.hawaii.its.filedrop.type.FileDrop;
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 public class EmailServiceTest {
 
-    @Rule
-    public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
+    @RegisterExtension
+    static GreenMailExtension server = new GreenMailExtension(ServerSetupTest.SMTP);
+
     @Autowired
     private EmailService emailService;
+
     @Autowired
     private FileDropService fileDropService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
-        server.start();
         emailService.setEnabled(true);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
-        server.stop();
         emailService.setEnabled(false);
     }
 

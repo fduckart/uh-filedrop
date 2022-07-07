@@ -1,13 +1,13 @@
 package edu.hawaii.its.filedrop.controller;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -26,10 +26,10 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,7 +45,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 import com.jayway.jsonpath.JsonPath;
 
@@ -61,35 +61,38 @@ import edu.hawaii.its.filedrop.type.Setting;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class AdminControllerTest {
 
-    @Rule
-    public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
+    @RegisterExtension
+    static GreenMailExtension server = new GreenMailExtension(ServerSetupTest.SMTP);
+
     @Value("${cas.login.url}")
     private String casLoginUrl;
+
     @Autowired
     private AdminController adminController;
+
     @Autowired
     private WebApplicationContext context;
+
     @Autowired
     private AllowlistService allowlistService;
+
     @Autowired
     private ApplicationService applicationService;
+
     @Autowired
     private EmailService emailService;
 
     private MockMvc mockMvc;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
-
-        server.start();
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
-        server.stop();
     }
 
     @Test
@@ -411,7 +414,6 @@ public class AdminControllerTest {
     @Test
     @WithMockUhAdmin
     public void email() throws Exception {
-        server.start();
         mockMvc.perform(get("/admin/email"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/emails"));
@@ -433,7 +435,6 @@ public class AdminControllerTest {
                         .param("recipient", "admin@example.com"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/email"));
-        server.stop();
     }
 
     @Test
