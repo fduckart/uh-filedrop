@@ -1,25 +1,22 @@
 package edu.hawaii.its.filedrop.repository;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.type.FileDrop;
-import edu.hawaii.its.filedrop.type.Recipient;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 
-@RunWith(SpringRunner.class)
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.Recipient;
+
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 public class RecipientRepositoryTest {
 

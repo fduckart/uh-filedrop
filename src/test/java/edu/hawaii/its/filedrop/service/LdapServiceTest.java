@@ -12,17 +12,14 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class LdapServiceTest {
@@ -52,9 +49,9 @@ public class LdapServiceTest {
     }
 
     @Test
-    public void findByCnConstains() {
+    public void findByCnContains() {
         String name = "Rich";
-        List<LdapPerson> people = ldapService.findByCnConstains(name);
+        List<LdapPerson> people = ldapService.findByCnContains(name);
 
         assertFalse(people.isEmpty());
         assertTrue(people.get(0).getCn().contains(name));
@@ -69,9 +66,9 @@ public class LdapServiceTest {
     }
 
     @Test
-    public void findByCnConstainsEmptyResult() {
+    public void findByCnContainsEmptyResult() {
         String name = "-not-found-";
-        List<LdapPerson> people = ldapService.findByCnConstains(name);
+        List<LdapPerson> people = ldapService.findByCnContains(name);
 
         assertTrue(people.isEmpty());
     }

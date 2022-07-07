@@ -1,19 +1,5 @@
 package edu.hawaii.its.filedrop.access;
 
-import java.util.Set;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.annotation.DirtiesContext.ClassMode;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.service.PersonService;
-import edu.hawaii.its.filedrop.type.Role.SecurityRole;
-
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ADMINISTRATOR;
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.ANONYMOUS;
 import static edu.hawaii.its.filedrop.type.Role.SecurityRole.NON_UH;
@@ -25,7 +11,18 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringRunner.class)
+import java.util.Set;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.annotation.DirtiesContext.ClassMode;
+
+import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.service.PersonService;
+import edu.hawaii.its.filedrop.type.Role.SecurityRole;
+
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = ClassMode.BEFORE_CLASS)
 public class AuthorizationServiceTest {

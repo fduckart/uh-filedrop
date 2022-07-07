@@ -2,13 +2,11 @@ package edu.hawaii.its.filedrop.service;
 
 import static org.springframework.ldap.query.LdapQueryBuilder.query;
 
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.ldap.core.LdapTemplate;
 import org.springframework.ldap.query.LdapQuery;
@@ -24,7 +22,6 @@ public class LdapService {
     private String[] searchAttributes;
 
     // Constructor.
-    @Autowired
     public LdapService(LdapTemplate ldapTemplate) {
         this.ldapTemplate = ldapTemplate;
     }
@@ -79,7 +76,7 @@ public class LdapService {
         return new LdapPersonEmpty();
     }
 
-    public List<LdapPerson> findByCnConstains(String value) {
+    public List<LdapPerson> findByCnContains(String value) {
         LdapPersonAttributesMapper mapper = new LdapPersonAttributesMapper();
         LdapQuery ldapQuery = queryByCnContains(value);
         List<LdapPerson> list = ldapTemplate.search(ldapQuery, mapper);

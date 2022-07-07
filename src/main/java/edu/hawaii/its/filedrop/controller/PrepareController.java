@@ -46,7 +46,7 @@ import edu.hawaii.its.filedrop.util.Strings;
 @Controller
 public class PrepareController {
 
-    private Log logger = LogFactory.getLog(PrepareController.class);
+    private final Log logger = LogFactory.getLog(PrepareController.class);
 
     @Autowired
     private UserContextService userContextService;
@@ -120,9 +120,9 @@ public class PrepareController {
 
     @PostMapping(value = "/helpdesk")
     public String addHelpdesk(@RequestParam String sender,
-            @RequestParam Integer expiration,
-            @RequestParam(required = false) Integer ticketNumber,
-            RedirectAttributes redirectAttributes) {
+                              @RequestParam Integer expiration,
+                              @RequestParam(required = false) Integer ticketNumber,
+                              RedirectAttributes redirectAttributes) {
 
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(sender);
@@ -155,21 +155,23 @@ public class PrepareController {
     @PreAuthorize("hasRole('UH')")
     @PostMapping(value = "/prepare")
     public String addRecipients(@RequestParam("sender") String sender,
-            @RequestParam("validation") Boolean validation,
-            @RequestParam("expiration") Integer expiration,
-            @RequestParam("recipients") String[] recipients,
-            @RequestParam("message") String message) {
+                                @RequestParam("validation") Boolean validation,
+                                @RequestParam("expiration") Integer expiration,
+                                @RequestParam("recipients") String[] recipients,
+                                @RequestParam("message") String message) {
 
         User user = currentUser();
+        boolean hasFileDrop = workflowService.hasFileDrop(user);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("User: " + user);
-            logger.debug("User added recipients: " + Arrays.toString(recipients));
+            logger.debug("addRecipients; user: " + user);
+            logger.debug("addRecipients; hasFileDrop: " + hasFileDrop);
+            logger.debug("addRecipients;  recipients: " + Arrays.toString(recipients));
         }
 
         FileDrop fileDrop;
 
-        if (workflowService.hasFileDrop(user)) {
+        if (hasFileDrop) {
             fileDrop = fileDropService.findFileDrop(fileDropService.getFileDropId(user));
             fileDrop.setAuthenticationRequired(validation);
         } else {
@@ -187,7 +189,7 @@ public class PrepareController {
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("fileDrop saved: " + fileDrop);
+            logger.debug("addRecipients; fileDrop saved: " + fileDrop);
         }
 
         ProcessVariableHolder processVariableHolder = new ProcessVariableHolder();
@@ -204,16 +206,18 @@ public class PrepareController {
         for (String recipient : recipients) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient);
             boolean checkRecipient = fileDropService.checkRecipient(user, ldapPerson, fileDrop.isAuthenticationRequired());
-            logger.debug("checkRecipient; " + recipient + ": " + checkRecipient);
-
+            logger.debug("addRecipients; checkRecipient => " + recipient + ": " + checkRecipient);
             if (!checkRecipient) {
+                logger.debug("addRecipients; redirect to /prepare ...");
                 return "redirect:/prepare";
             }
         }
 
-        logger.debug(user.getUsername() + " created new " + fileDrop);
-        logger.debug("Sender: " + sender);
-
+        if (logger.isDebugEnabled()) {
+            logger.debug("addRecipients; User '" + user.getUsername() + "' created " + fileDrop);
+            logger.debug("addRecipients; Sender: " + sender);
+            logger.debug("addRecipients; returning...");
+        }
         return "redirect:/prepare/files/" + fileDrop.getUploadKey();
     }
 
@@ -222,7 +226,11 @@ public class PrepareController {
         logger.debug("completeFileDrop; start.");
         logger.info("completeFileDrop; uploadKey: " + uploadKey);
 
-        Task currentTask = workflowService.getCurrentTask(currentUser());
+        if ("off".equals("")) {
+            throw new NullPointerException("Stop the Music!");
+        }
+
+        Task currentTask = workflowService.currentTask(currentUser());
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
 
         boolean isUploader = fileDrop.getUploader().equals(currentUser().getUsername());
@@ -301,9 +309,9 @@ public class PrepareController {
 
     @GetMapping(value = "/helpdesk/successful/{uploadKey}")
     public String helpdeskSuccessful(RedirectAttributes redirectAttributes,
-            @PathVariable String uploadKey,
-            @RequestParam String expiration,
-            @RequestParam(required = false) String ticketNumber) {
+                                     @PathVariable String uploadKey,
+                                     @RequestParam String expiration,
+                                     @RequestParam(required = false) String ticketNumber) {
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
         LocalDateTime now = LocalDateTime.now();
         fileDrop.setCreated(now);
@@ -320,22 +328,27 @@ public class PrepareController {
     }
 
     @PreAuthorize("hasRole('UH')")
-    @GetMapping(value = { "/prepare" })
+    @GetMapping(value = { "/prepare", "/prepare/" })
     public String prepare(Model model, @RequestParam(value = "expiration", required = false) Integer defaultExpiration) {
-        logger.debug("User at prepare.");
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("prepare; defaultExpiration: " + defaultExpiration);
+        }
 
         User user = currentUser();
-        Task currentTask = workflowService.getCurrentTask(user);
+        Task currentTask = workflowService.currentTask(user);
         if (logger.isDebugEnabled()) {
+            logger.debug("prepare; currentUser: " + user);
             logger.debug("prepare; currentTask: " + currentTask);
         }
 
         if (currentTask != null && currentTask.getTaskDefinitionKey().equalsIgnoreCase("filesTask")) {
-            FileDrop fileDrop =
-                    fileDropService.findFileDrop(fileDropService.getFileDropId(user));
+            Integer fileDropId = fileDropService.getFileDropId(user);
+            FileDrop fileDrop = fileDropService.findFileDrop(fileDropId);
 
             if (logger.isDebugEnabled()) {
-                logger.debug("prepare; revert task.");
+                logger.debug("prepare; fileDropId: " + fileDropId);
+                logger.debug("prepare; revertTask...");
             }
             workflowService.revertTask(user, "recipientsTask");
 
@@ -362,6 +375,7 @@ public class PrepareController {
         if (logger.isDebugEnabled()) {
             logger.debug("prepare; user: " + user);
             logger.debug("prepare; currentTask: " + currentTask);
+            logger.debug("prepare; returning...");
         }
 
         return "user/prepare";
@@ -370,7 +384,7 @@ public class PrepareController {
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = { "/prepare/recipient/add" })
     public ResponseEntity<?> addRecipient(@RequestParam("recipient") String user,
-            @RequestParam("authenticationRequired") Boolean authRequired) {
+                                          @RequestParam("authenticationRequired") Boolean authRequired) {
         LdapPerson person = ldapService.findByUhUuidOrUidOrMail(user);
         logger.debug(currentUser().getUid() + " looked for " + user + " and found " + person);
 
@@ -399,8 +413,8 @@ public class PrepareController {
     @PostMapping(value = "/prepare/files/{uploadKey}")
     @ResponseStatus(value = HttpStatus.OK)
     public void uploadFiles(@RequestParam MultipartFile file,
-            @RequestParam String comment,
-            @PathVariable String uploadKey)
+                            @RequestParam String comment,
+                            @PathVariable String uploadKey)
             throws IOException, GeneralSecurityException {
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
         fileDropService.uploadFile(currentUser(), file, comment, fileDrop);
@@ -409,8 +423,8 @@ public class PrepareController {
     @PostMapping(value = "/helpdesk/files/{uploadKey}")
     @ResponseStatus(value = HttpStatus.OK)
     public void uploadFilesHelpdesk(@PathVariable String uploadKey,
-            @RequestParam MultipartFile file,
-            @RequestParam("comment") String comment) {
+                                    @RequestParam MultipartFile file,
+                                    @RequestParam("comment") String comment) {
         FileSet fileSet = new FileSet();
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());

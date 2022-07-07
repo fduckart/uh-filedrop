@@ -1,37 +1,21 @@
 <!DOCTYPE HTML>
-<html xmlns:th="http://www.thymeleaf.org"
-      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
+<html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
 <body>
     <nav th:replace="menubar :: copy"></nav>
-
-    <!--   Content container -->
-    <div class='container'>
-        <div class='row'>
-            <div class='col-xs-12'>
-                <h4>Error</h4>
-
-                <!--  As we are using Thymeleaf, you might consider using
-                      ${#httpServletRequest.requestURL}. But that returns the path
-                      to this error page.  Hence we explicitly add the url to the
-                      Model in some of the example code. -->
-                <p th:if="${url}">
-                    <b>Page:</b> <span th:text="${url}">Page URL</span>
-                </p>
-
-                <p th:if="${timestamp}" id='created'>
-                    <b>Occurred:</b> <span th:text="${timestamp}">Timestamp</span>
-                </p>
-
-                <p th:if="${status}">
-                    <b>Response Status:</b> <span th:text="${status}">status-code</span> <span
-                        th:if="${error}" th:text="'('+${error}+')'">error ...</span>
-                </p>
+    
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-12">
+                <h3><span th:text="#{error.page.lead}"></span></h3>
+                <div class="alert alert-warning" role="alert">
+                    <span class="text-dark" th:text="${error}"></span><br/><br/>
+                    <span class="text-dark" th:text="${message}"></span>
+                </div>            
             </div>
         </div>
     </div>
-    <!-- / Contact container -->
-
+    
     <div th:replace="footer :: copy"></div>
 </body>
 </html>

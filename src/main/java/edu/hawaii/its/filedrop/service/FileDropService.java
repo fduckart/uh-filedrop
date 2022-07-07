@@ -10,6 +10,7 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.jpa.domain.Specification.where;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -22,8 +23,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -136,7 +135,7 @@ public class FileDropService {
 
     public void addRecipients(User user, String... recipients) {
         if (workflowService.atTask(user, "addRecipients")) {
-            Task recipientTask = workflowService.getCurrentTask(user);
+            Task recipientTask = workflowService.currentTask(user);
             logger.debug(user.getUsername() + " added recipients: " + Arrays.toString(recipients));
             workflowService.addProcessVariables(recipientTask, Collections.singletonMap("recipients", recipients));
             workflowService.completeCurrentTask(user);
@@ -156,10 +155,9 @@ public class FileDropService {
 
             Path path = Paths.get(fileSystemStorageService.getRootLocation().toString(),
                     fileSet.getFileDrop().getDownloadKey());
-
             path.toFile().mkdir();
 
-            cipherService.encrypt(file.getInputStream(), fileSet, null);
+            cipherService.encrypt(file.getInputStream(), fileSet);
 
             logger.debug(user.getUsername() + " uploaded " + fileSet);
         }

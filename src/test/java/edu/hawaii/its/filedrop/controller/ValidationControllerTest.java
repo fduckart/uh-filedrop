@@ -15,11 +15,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
@@ -31,8 +29,7 @@ import edu.hawaii.its.filedrop.repository.ValidationRepository;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.Validation;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringBootWebApplication.class})
+@SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ValidationControllerTest {
 
@@ -57,7 +54,6 @@ public class ValidationControllerTest {
                 .build();
 
         server.start();
-        emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
     }
 
     @After
@@ -69,9 +65,9 @@ public class ValidationControllerTest {
     public void validateTest() throws Exception {
         server.start();
         mockMvc.perform(post("/validate")
-                .param("name", "Jon Mess")
-                .param("value", "jmess@test.com")
-                .param("email", ""))
+                        .param("name", "Jon Mess")
+                        .param("value", "jmess@test.com")
+                        .param("email", ""))
                 .andExpect(view().name("validation/validation-sent"))
                 .andExpect(model().attribute("email", "jmess@test.com"))
                 .andReturn();
@@ -90,9 +86,9 @@ public class ValidationControllerTest {
     @Test
     public void validateSpamTest() throws Exception {
         mockMvc.perform(post("/validate")
-                .param("name", "Jon Mess")
-                .param("value", "jmess@test.com")
-                .param("email", "spam@test.com"))
+                        .param("name", "Jon Mess")
+                        .param("value", "jmess@test.com")
+                        .param("email", "spam@test.com"))
                 .andExpect(view().name("validation/validation-sent"))
                 .andExpect(model().attribute("email", "spam@test.com"))
                 .andReturn();

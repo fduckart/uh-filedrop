@@ -37,15 +37,20 @@ public class CipherService {
     @Autowired
     private FileSystemStorageService storageService;
 
+    public OutputStream encrypt(InputStream inputStream, FileSet fileSet)
+            throws GeneralSecurityException, IOException {
+        return encrypt(inputStream, fileSet, null);
+    }
+
     public OutputStream encrypt(InputStream inputStream, FileSet fileSet, Path path)
-        throws GeneralSecurityException, IOException {
-        Path file;
-        if (path == null) {
-            file = Paths.get(storageService.getRootLocation().toString(), fileSet.getFileDrop().getDownloadKey(),
-                fileSet.getId().toString());
-        } else {
-            file = path;
+            throws GeneralSecurityException, IOException {
+        Path file = path;
+        if (file == null) {
+            file = Paths.get(storageService.getRootLocation().toString(),
+                    fileSet.getFileDrop().getDownloadKey(),
+                    fileSet.getId().toString());
         }
+        
         String[] encryptionKey = fileSet.getFileDrop().getEncryptionKey().split(":");
         Cipher cipher = cipherLocator.find(encryptionKey[0]);
         javax.crypto.Cipher xcipher = cipher.encrypt(encryptionKey[1]);
@@ -54,7 +59,7 @@ public class CipherService {
 
         byte[] output = xcipher.doFinal(input);
 
-        File encryptedFile = new File(file.toAbsolutePath().toString() + ".enc");
+        File encryptedFile = new File(file.toAbsolutePath() + ".enc");
         FileOutputStream outputStream = new FileOutputStream(encryptedFile);
         outputStream.write(output);
 
@@ -65,7 +70,7 @@ public class CipherService {
     }
 
     public OutputStream decrypt(InputStream inputStream, FileSet fileSet)
-        throws GeneralSecurityException, IOException {
+            throws GeneralSecurityException, IOException {
         String[] encryptionKey = fileSet.getFileDrop().getEncryptionKey().split(":");
         Cipher cipher = cipherLocator.find(encryptionKey[0]);
         javax.crypto.Cipher xcipher = cipher.decrypt(encryptionKey[1]);
@@ -88,7 +93,7 @@ public class CipherService {
             CipherFilter filter = ciphers.getDefault(encryptionKey);
             filter.write(new FileInputStream(original), new FileOutputStream(encrypted));
         } catch (GeneralSecurityException | IOException e) {
-            logger.error("Cipher Error: " + e.toString());
+            logger.error("Cipher Error: " + e);
         }
     }
 
@@ -96,8 +101,8 @@ public class CipherService {
         try {
             CipherFilter filter = ciphers.getDefault(encryptionKey);
             filter.read(new FileInputStream(encrypted), new FileOutputStream(original));
-        } catch (GeneralSecurityException  | IOException e) {
-            logger.error("Cipher Error: " + e.toString());
+        } catch (GeneralSecurityException | IOException e) {
+            logger.error("Cipher Error: " + e);
         }
     }
 

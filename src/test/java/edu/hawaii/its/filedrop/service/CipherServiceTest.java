@@ -8,6 +8,8 @@ import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
@@ -22,24 +24,18 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.crypto.Ciphers;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringBootWebApplication.class})
+@SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class CipherServiceTest {
 
@@ -103,7 +99,7 @@ public class CipherServiceTest {
         fileSet.setId(2);
 
         Resource resource = storageService.loadAsResource(original.getAbsolutePath());
-        cipherService.encrypt(resource.getInputStream(), fileSet, null);
+        cipherService.encrypt(resource.getInputStream(), fileSet);
         Resource encResource = storageService.loadAsResource(Paths.get(path.toString(), "2.enc").toString());
         BufferedReader bufferedReader = new BufferedReader(new FileReader(encResource.getFile()));
         StringBuilder builder = new StringBuilder();

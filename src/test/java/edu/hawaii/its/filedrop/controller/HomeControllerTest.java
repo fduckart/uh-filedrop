@@ -2,10 +2,8 @@ package edu.hawaii.its.filedrop.controller;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.startsWith;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -17,14 +15,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithAnonymousUser;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -35,7 +31,6 @@ import edu.hawaii.its.filedrop.service.ApplicationService;
 import edu.hawaii.its.filedrop.service.SpaceCheckService;
 import edu.hawaii.its.filedrop.type.Setting;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 public class HomeControllerTest {
 
@@ -62,7 +57,7 @@ public class HomeControllerTest {
     @Autowired
     private ApplicationService applicationService;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         // Make sure the email service does not send emails.
         homeController.getEmailService().setEnabled(false);
@@ -101,18 +96,18 @@ public class HomeControllerTest {
     @Test
     public void requestHomeDisableLanding() throws Exception {
         mockMvc.perform(get("/"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("home"))
-            .andExpect(model().attribute("disableLanding", equalTo(false)));
+                .andExpect(status().isOk())
+                .andExpect(view().name("home"))
+                .andExpect(model().attribute("disableLanding", equalTo(false)));
         Setting disableLanding = applicationService.findSetting(1);
         disableLanding.setValue("true");
         disableLanding = applicationService.saveSetting(disableLanding);
 
         mockMvc.perform(get("/"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("home"))
-            .andExpect(model().attribute("disableLanding", equalTo(true)))
-            .andExpect(model().attribute("gatemessage", equalTo("System is unavailable.")));
+                .andExpect(status().isOk())
+                .andExpect(view().name("home"))
+                .andExpect(model().attribute("disableLanding", equalTo(true)))
+                .andExpect(model().attribute("gatemessage", equalTo("System is unavailable.")));
 
         disableLanding.setValue("false");
         applicationService.saveSetting(disableLanding);
@@ -258,33 +253,33 @@ public class HomeControllerTest {
     @WithMockUhUser
     public void permissionsTest() throws Exception {
         mockMvc.perform(get("/help/permissions"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("help/permissions"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("help/permissions"));
     }
 
     @Test
     @WithMockUhUser
     public void historyTest() throws Exception {
         mockMvc.perform(get("/history"))
-            .andExpect(status().isOk())
-            .andExpect(view().name("user/history"))
-            .andExpect(model().attributeExists("user"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/history"))
+                .andExpect(model().attributeExists("user"));
     }
 
     @Test
     @WithMockUhUser(username = "test")
     public void fileDropsTest() throws Exception {
         mockMvc.perform(get("/api/filedrops"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(2)));
     }
 
     @Test
     @WithAnonymousUser
     public void faqTest() throws Exception {
         mockMvc.perform(get("/api/faq"))
-            .andExpect(status().isOk())
-            .andExpect(jsonPath("$", hasSize(8)));
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$", hasSize(8)));
     }
 
 }

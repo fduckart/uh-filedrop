@@ -6,23 +6,20 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.mail.MessagingException;
-import javax.mail.internet.MimeMessage;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.thymeleaf.context.Context;
 
 import com.icegreen.greenmail.junit.GreenMailRule;
@@ -36,22 +33,18 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 
 @SpringBootTest(classes = { SpringBootWebApplication.class })
-@RunWith(SpringRunner.class)
 public class EmailServiceTest {
-
-    @Autowired
-    private EmailService emailService;
 
     @Rule
     public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
-
+    @Autowired
+    private EmailService emailService;
     @Autowired
     private FileDropService fileDropService;
 
     @Before
     public void setUp() {
         server.start();
-        emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
         emailService.setEnabled(true);
     }
 

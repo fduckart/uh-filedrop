@@ -30,7 +30,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -38,7 +37,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
@@ -59,29 +57,22 @@ import edu.hawaii.its.filedrop.type.Allowlist;
 import edu.hawaii.its.filedrop.type.Faq;
 import edu.hawaii.its.filedrop.type.Setting;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class AdminControllerTest {
 
-    @Value("${cas.login.url}")
-    private String casLoginUrl;
-
-    @Autowired
-    private AdminController adminController;
-
-    @Autowired
-    private WebApplicationContext context;
-
-    @Autowired
-    private AllowlistService allowlistService;
-
-    @Autowired
-    private ApplicationService applicationService;
-
     @Rule
     public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
-
+    @Value("${cas.login.url}")
+    private String casLoginUrl;
+    @Autowired
+    private AdminController adminController;
+    @Autowired
+    private WebApplicationContext context;
+    @Autowired
+    private AllowlistService allowlistService;
+    @Autowired
+    private ApplicationService applicationService;
     @Autowired
     private EmailService emailService;
 
@@ -94,7 +85,6 @@ public class AdminControllerTest {
                 .build();
 
         server.start();
-        emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
     }
 
     @After
@@ -195,7 +185,7 @@ public class AdminControllerTest {
     @WithMockUhAdmin(username = "beno")
     public void adminLookupLdapViaAdmin() throws Exception {
         mockMvc.perform(post("/admin/lookup/")
-                .param("search", "rthompson"))
+                        .param("search", "rthompson"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/lookup"))
                 .andExpect(model().attributeExists("person"))
@@ -209,8 +199,8 @@ public class AdminControllerTest {
     @WithMockUhAdmin(username = "duckart")
     public void adminLookupLdapViaAdminAgain() throws Exception {
         MvcResult result = mockMvc.perform(post("/admin/lookup/")
-                .param("search", "rthompson")
-                .with(csrf()))
+                        .param("search", "rthompson")
+                        .with(csrf()))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/lookup"))
                 .andExpect(model().attributeExists("person"))
@@ -260,9 +250,9 @@ public class AdminControllerTest {
     @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void setGateMessage() throws Exception {
         mockMvc.perform(post("/admin/gate-message")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", "1")
-                .param("text", "Testing"))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("id", "1")
+                        .param("text", "Testing"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("admin/gate-message"))
                 .andExpect(model().attribute("message", hasProperty("id", is(1))))
@@ -272,9 +262,9 @@ public class AdminControllerTest {
     @Test
     public void setGateMessageNonAdmin() throws Exception {
         mockMvc.perform(post("/admin/gate-message")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", "1")
-                .param("text", "Testing"))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("id", "1")
+                        .param("text", "Testing"))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -282,9 +272,9 @@ public class AdminControllerTest {
     @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void setGateMessageWrongType() throws Exception {
         mockMvc.perform(post("/admin/gate-message")
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .param("id", "Test")
-                .param("text", "Testing"))
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                        .param("id", "Test")
+                        .param("text", "Testing"))
                 .andExpect(status().is3xxRedirection());
     }
 
@@ -338,8 +328,8 @@ public class AdminControllerTest {
         String jsonRequest = objectToJSON(allowlist);
 
         mockMvc.perform(post("/api/admin/allowlist")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.entry").value("help"))
                 .andExpect(jsonPath("$.registrant").value("jwlennon"));
@@ -358,8 +348,8 @@ public class AdminControllerTest {
         jsonRequest = objectToJSON(allowlist);
 
         mockMvc.perform(post("/api/admin/allowlist")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.entry").value("help"))
                 .andExpect(jsonPath("$.registrant").value("jwlennon"));
@@ -383,8 +373,8 @@ public class AdminControllerTest {
         jsonRequest = objectToJSON(allowlist);
 
         mockMvc.perform(post("/api/admin/allowlist")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
                 .andExpect(status().isOk());
 
         long count3 = allowlistService.recordCount();
@@ -409,8 +399,8 @@ public class AdminControllerTest {
         allowlist.setRegistrant("jwlennon");
         String jsonRequest = objectToJSON(allowlist);
         MvcResult result = mockMvc.perform(post("/api/admin/allowlist")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonRequest))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(jsonRequest))
                 .andExpect(status().isOk())
                 .andReturn();
         Integer id = JsonPath.read(result.getResponse().getContentAsString(), "$.id");
@@ -427,20 +417,20 @@ public class AdminControllerTest {
                 .andExpect(view().name("admin/emails"));
 
         mockMvc.perform(post("/admin/email")
-                .param("template", "receiver")
-                .param("recipient", "admin@example.com"))
+                        .param("template", "receiver")
+                        .param("recipient", "admin@example.com"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/email"));
 
         mockMvc.perform(post("/admin/email")
-                .param("template", "uploader")
-                .param("recipient", "admin@example.com"))
+                        .param("template", "uploader")
+                        .param("recipient", "admin@example.com"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/email"));
 
         mockMvc.perform(post("/admin/email")
-                .param("template", "allowlist")
-                .param("recipient", "admin@example.com"))
+                        .param("template", "allowlist")
+                        .param("recipient", "admin@example.com"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/email"));
         server.stop();
@@ -548,7 +538,7 @@ public class AdminControllerTest {
                 .andExpect(model().attributeExists("settings"));
 
         mockMvc.perform(post("/admin/settings/1")
-                .param("value", "false"))
+                        .param("value", "false"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/settings"))
                 .andExpect(flash().attributeExists("alert"));
@@ -557,14 +547,14 @@ public class AdminControllerTest {
         assertThat(setting.getValue(), equalTo("false"));
 
         mockMvc.perform(post("/admin/settings/1")
-                .param("value", "true"))
+                        .param("value", "true"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/settings"))
                 .andExpect(flash().attributeExists("alert"));
 
         mockMvc.perform(post("/admin/settings")
-                .param("key", "test")
-                .param("value", "1"))
+                        .param("key", "test")
+                        .param("value", "1"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/admin/settings"))
                 .andExpect(flash().attributeExists("alert"));
@@ -582,8 +572,8 @@ public class AdminControllerTest {
                 .andExpect(view().name("admin/faq"));
 
         mockMvc.perform(post("/api/admin/faq")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectToJSON(faq)))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectToJSON(faq)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.question").value("test question"))
                 .andExpect(jsonPath("$.answer").value("test answer"));
@@ -591,8 +581,8 @@ public class AdminControllerTest {
         faq = applicationService.findFaq(applicationService.findFaqs().size() - 1);
 
         mockMvc.perform(post("/api/admin/faq/" + faq.getId())
-                .param("question", "new question")
-                .param("answer", "test answer"))
+                        .param("question", "new question")
+                        .param("answer", "test answer"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.question").value("new question"))
                 .andExpect(jsonPath("$.answer").value("test answer"));

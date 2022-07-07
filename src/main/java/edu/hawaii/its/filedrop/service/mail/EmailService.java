@@ -1,10 +1,9 @@
 package edu.hawaii.its.filedrop.service.mail;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -29,29 +28,32 @@ public class EmailService {
 
     private static final Log logger = LogFactory.getLog(EmailService.class);
 
-    @Autowired
-    private JavaMailSenderImpl javaMailSender;
-
     @Value("${app.mail.enabled}")
     private boolean isEnabled;
 
     @Value("${app.mail.from:no-reply}")
     private String from;
 
+    @Value("${spring.mail.port:-1}")
+    private int port;
+
+    @Value("${url.base}")
+    private String url;
+
+    @Autowired
+    private FileDropService fileDropService;
+
     @Autowired
     private ITemplateEngine htmlTemplateEngine;
 
     @Autowired
-    private MailComponentLocator mailComponentLocator;
+    private JavaMailSenderImpl javaMailSender;
 
     @Autowired
     private LdapService ldapService;
 
     @Autowired
-    private FileDropService fileDropService;
-
-    @Value("${url.base}")
-    private String url;
+    private MailComponentLocator mailComponentLocator;
 
     // Constructor.
     public EmailService() {
@@ -62,6 +64,8 @@ public class EmailService {
     public void init() {
         logger.info("init; starting");
         logger.info("init; enabled? " + isEnabled);
+        javaMailSender.setPort(port);
+        logger.info("init; port: " + javaMailSender.getPort());
         logger.info("init; finished");
     }
 

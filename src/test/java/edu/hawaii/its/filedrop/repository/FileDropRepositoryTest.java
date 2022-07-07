@@ -1,24 +1,5 @@
 package edu.hawaii.its.filedrop.repository;
 
-import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-
-import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
-import edu.hawaii.its.filedrop.type.FileDrop;
-import edu.hawaii.its.filedrop.type.FileSet;
-import edu.hawaii.its.filedrop.type.Recipient;
-import edu.hawaii.its.filedrop.util.Strings;
-
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withDownloadKey;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withEncryptionKey;
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withFileSetId;
@@ -29,7 +10,23 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-@RunWith(SpringRunner.class)
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
+import org.junit.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+
+import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
+import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.type.FileSet;
+import edu.hawaii.its.filedrop.type.Recipient;
+import edu.hawaii.its.filedrop.util.Strings;
+
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 public class FileDropRepositoryTest {
 

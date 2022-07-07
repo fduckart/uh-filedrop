@@ -147,7 +147,8 @@ public class DownloadController {
 
             if (foundFileSet.isPresent()) {
                 Resource resource = storageService.loadAsResource(
-                        Paths.get(fileDrop.getDownloadKey(), foundFileSet.get().getId().toString()).toString() + ".enc");
+                        Paths.get(fileDrop.getDownloadKey(),
+                                foundFileSet.get().getId().toString()).toString() + ".enc");
                 ByteArrayOutputStream outputStream =
                         (ByteArrayOutputStream) cipherService.decrypt(resource.getInputStream(), foundFileSet.get());
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", fileSet: " + foundFileSet.get());

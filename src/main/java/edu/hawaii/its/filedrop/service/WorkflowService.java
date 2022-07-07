@@ -55,14 +55,14 @@ public class WorkflowService {
     }
 
     public void stopProcess(User user) {
-        Task task = getCurrentTask(user);
+        Task task = currentTask(user);
         if (task != null) {
             runtimeService.deleteProcessInstance(task.getProcessInstanceId(), "stop");
         }
     }
 
     public void revertTask(User user, String previousTask) {
-        Task task = getCurrentTask(user);
+        Task task = currentTask(user);
         runtimeService.createChangeActivityStateBuilder()
                 .processInstanceId(task.getProcessInstanceId())
                 .moveActivityIdTo(task.getTaskDefinitionKey(), previousTask)
@@ -70,21 +70,18 @@ public class WorkflowService {
     }
 
     public boolean atTask(User user, String taskName) {
-        return hasTask(user) && getCurrentTask(user).getName().equalsIgnoreCase(taskName);
+        return hasTask(user) && currentTask(user).getName().equalsIgnoreCase(taskName);
     }
 
     public boolean hasTask(User user) {
-        return user != null && getCurrentTask(user) != null;
+        return user != null && currentTask(user) != null;
     }
 
     public Task currentTask(User user) {
-        return getCurrentTask(user);
-    }
-
-    public Task getCurrentTask(User user) {
         return taskService
                 .createTaskQuery()
-                .taskAssignee(user.getUsername()).singleResult();
+                .taskAssignee(user.getUsername())
+                .singleResult();
     }
 
     private List<Task> currentTaskAll(User user) {
@@ -95,7 +92,7 @@ public class WorkflowService {
     }
 
     public void completeCurrentTask(User user) {
-        taskService.complete(getCurrentTask(user).getId());
+        taskService.complete(currentTask(user).getId());
     }
 
     public void addProcessVariables(String processId, Map<String, Object> variables) {
@@ -107,7 +104,7 @@ public class WorkflowService {
     }
 
     public void addProcessVariables(User user, ProcessVariableHolder holder) {
-        addProcessVariables(getCurrentTask(user), holder.getMap());
+        addProcessVariables(currentTask(user), holder.getMap());
     }
 
     public Map<String, Object> getProcessVariables(String processId) {
@@ -119,10 +116,10 @@ public class WorkflowService {
     }
 
     public Map<String, Object> getProcessVariables(User user) {
-        return getProcessVariables(getCurrentTask(user));
+        return getProcessVariables(currentTask(user));
     }
 
     public boolean hasFileDrop(User user) {
-        return getProcessVariables(getCurrentTask(user)).containsKey("fileDropId");
+        return getProcessVariables(currentTask(user)).containsKey("fileDropId");
     }
 }

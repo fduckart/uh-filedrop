@@ -17,14 +17,12 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.security.test.context.support.WithAnonymousUser;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.web.context.WebApplicationContext;
@@ -35,7 +33,6 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class DownloadControllerTest {
@@ -84,11 +81,11 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "test")
-                .param("recipients", "jwlennon")
-                .param("message", "test")
-                .param("validation", "true")
-                .param("expiration", "5"))
+                        .param("sender", "test")
+                        .param("recipients", "jwlennon")
+                        .param("message", "test")
+                        .param("validation", "true")
+                        .param("expiration", "5"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -103,9 +100,9 @@ public class DownloadControllerTest {
                 new MockMultipartFile("file", "test.txt", "text/plain", "test data".getBytes());
 
         mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
-                .file(mockMultipartFile)
-                .param("comment", "test comment")
-                .characterEncoding("UTF-8"))
+                        .file(mockMultipartFile)
+                        .param("comment", "test comment")
+                        .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
@@ -124,7 +121,7 @@ public class DownloadControllerTest {
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
 
         MvcResult mvcResult = mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/" + fileSets.get(0).getId())
-                .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().isOk())
                 .andReturn();
 
@@ -191,11 +188,11 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "test")
-                .param("recipients", "user")
-                .param("message", "test")
-                .param("validation", "true")
-                .param("expiration", "5"))
+                        .param("sender", "test")
+                        .param("recipients", "user")
+                        .param("message", "test")
+                        .param("validation", "true")
+                        .param("expiration", "5"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -210,9 +207,9 @@ public class DownloadControllerTest {
                 new MockMultipartFile("file", "test.txt", "text/plain", "test data".getBytes());
 
         mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
-                .file(mockMultipartFile)
-                .param("comment", "test comment")
-                .characterEncoding("UTF-8"))
+                        .file(mockMultipartFile)
+                        .param("comment", "test comment")
+                        .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
@@ -230,7 +227,7 @@ public class DownloadControllerTest {
                 .andExpect(model().attributeExists("expiration"));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/1")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().is4xxClientError());
     }
 
@@ -242,11 +239,11 @@ public class DownloadControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "test")
-                .param("recipients", "user")
-                .param("message", "test")
-                .param("validation", "false")
-                .param("expiration", "5"))
+                        .param("sender", "test")
+                        .param("recipients", "user")
+                        .param("message", "test")
+                        .param("validation", "false")
+                        .param("expiration", "5"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -261,9 +258,9 @@ public class DownloadControllerTest {
                 new MockMultipartFile("file", "test.txt", "text/plain", "test data".getBytes());
 
         mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
-                .file(mockMultipartFile)
-                .param("comment", "test comment")
-                .characterEncoding("UTF-8"))
+                        .file(mockMultipartFile)
+                        .param("comment", "test comment")
+                        .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
@@ -276,7 +273,7 @@ public class DownloadControllerTest {
                 .andExpect(model().attributeExists("expiration"));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/1")
-                .contentType(MediaType.APPLICATION_OCTET_STREAM))
+                        .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().is4xxClientError());
     }
 

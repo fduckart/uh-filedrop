@@ -26,10 +26,8 @@ import java.util.stream.Collectors;
 
 import org.flowable.task.api.Task;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.access.User;
 import edu.hawaii.its.filedrop.access.UserContextService;
@@ -38,7 +36,6 @@ import edu.hawaii.its.filedrop.controller.WithMockUhUser;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 public class FileDropServiceTest {
 
@@ -608,7 +605,7 @@ public class FileDropServiceTest {
     }
 
     private Task currentTask(User user) {
-        return workflowService.getCurrentTask(user);
+        return workflowService.currentTask(user);
     }
 
     private LdapPerson findByUhUuidOrUidOrMail(String value) {

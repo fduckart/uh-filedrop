@@ -15,11 +15,9 @@ import org.flowable.engine.TaskService;
 import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import edu.hawaii.its.filedrop.access.AnonymousUser;
 import edu.hawaii.its.filedrop.access.User;
@@ -27,8 +25,7 @@ import edu.hawaii.its.filedrop.access.UserContextService;
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.controller.WithMockUhUser;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringBootWebApplication.class})
+@SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class WorkflowServiceTest {
 
@@ -74,7 +71,7 @@ public class WorkflowServiceTest {
 
         fileDropTasks = taskService.createTaskQuery().processInstanceId(process.getId()).list();
         assertEquals(0, fileDropTasks.size());
-        assertNull(workflowService.getCurrentTask(user));
+        assertNull(workflowService.currentTask(user));
     }
 
     @Test
@@ -214,7 +211,7 @@ public class WorkflowServiceTest {
         assertNotNull(process);
         assertNotNull(workflowService.currentTask(user));
 
-        Task task = workflowService.getCurrentTask(user);
+        Task task = workflowService.currentTask(user);
         assertNotNull(task);
 
         workflowService.addProcessVariables(task, map);

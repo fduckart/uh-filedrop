@@ -3,12 +3,12 @@ package edu.hawaii.its.filedrop.controller;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -19,25 +19,22 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
 
+import javax.mail.internet.MimeMessage;
 import java.util.List;
 
-import javax.mail.internet.MimeMessage;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
-import com.icegreen.greenmail.junit.GreenMailRule;
+import com.icegreen.greenmail.junit5.GreenMailExtension;
 import com.icegreen.greenmail.util.ServerSetupTest;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
@@ -47,10 +44,12 @@ import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = {SpringBootWebApplication.class})
+@SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class PrepareControllerTest {
+
+    @RegisterExtension
+    static GreenMailExtension emailServer = new GreenMailExtension(ServerSetupTest.SMTP);
 
     @Value("${app.mail.help}")
     private String helpName;
@@ -72,23 +71,19 @@ public class PrepareControllerTest {
 
     private MockMvc mockMvc;
 
-    @Rule
-    public GreenMailRule server = new GreenMailRule(ServerSetupTest.SMTP);
-
-    @Before
+    @BeforeEach
     public void construct() {
         mockMvc = webAppContextSetup(context)
                 .apply(springSecurity())
                 .build();
 
-        server.start();
-        emailService.getJavaMailSender().setPort(server.getSmtp().getPort());
+        //emailServer.start();
         emailService.setEnabled(true);
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
-        server.stop();
+        //emailServer.stop();
         emailService.setEnabled(false);
     }
 
@@ -102,17 +97,17 @@ public class PrepareControllerTest {
     @WithMockUhUser
     public void addRecipientsTest() throws Exception {
         mockMvc.perform(get("/prepare")
-                .param("expiration", "30"))
+                        .param("expiration", "30"))
                 .andExpect(status().isOk())
                 .andExpect(model().attributeExists("expiration"))
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "test")
-                .param("recipients", "jwlennon@hawaii.edu", "test2")
-                .param("validation", "false")
-                .param("expiration", "5")
-                .param("message", "Test Message"))
+                        .param("sender", "test")
+                        .param("recipients", "jwlennon@hawaii.edu", "test2")
+                        .param("validation", "false")
+                        .param("expiration", "5")
+                        .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -128,11 +123,11 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "test")
-                .param("recipients", "jwlennon@hawaii.edu", "test2")
-                .param("validation", "false")
-                .param("expiration", "5")
-                .param("message", "Test Message"))
+                        .param("sender", "test")
+                        .param("recipients", "jwlennon@hawaii.edu", "test2")
+                        .param("validation", "false")
+                        .param("expiration", "5")
+                        .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -154,11 +149,11 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "jwlennon@hawaii.edu")
-                .param("recipients", "jwlennon")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message"))
+                        .param("sender", "jwlennon@hawaii.edu")
+                        .param("recipients", "jwlennon")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -182,11 +177,11 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "jwlennon@hawaii.edu")
-                .param("recipients", "")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message"))
+                        .param("sender", "jwlennon@hawaii.edu")
+                        .param("recipients", "")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -224,11 +219,11 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "jwlennon@hawaii.edu")
-                .param("recipients", "krichards@example.com")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message"))
+                        .param("sender", "jwlennon@hawaii.edu")
+                        .param("recipients", "krichards@example.com")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -243,9 +238,9 @@ public class PrepareControllerTest {
                 "text/plain", "test data".getBytes());
 
         mockMvc.perform(multipart("/prepare/files/" + fileDrop.getUploadKey())
-                .file(mockMultipartFile)
-                .param("comment", "test comment")
-                .characterEncoding("UTF-8"))
+                        .file(mockMultipartFile)
+                        .param("comment", "test comment")
+                        .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
         assertNotNull(fileDrop);
 
@@ -260,7 +255,10 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
 
-        MimeMessage[] receivedMessages = server.getReceivedMessages();
+        System.out.println(">>>>> emailServer: " + emailServer);
+        System.out.println(">>>>> emailServer.isRunning : " + emailServer.isRunning());
+
+        MimeMessage[] receivedMessages = emailServer.getReceivedMessages();
         assertThat(receivedMessages.length, equalTo(2));
         assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
         assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
@@ -277,11 +275,11 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "jwlennon@hawaii.edu")
-                .param("recipients", "test2@test.com")
-                .param("validation", "false")
-                .param("expiration", "5")
-                .param("message", "Test Message"))
+                        .param("sender", "jwlennon@hawaii.edu")
+                        .param("recipients", "test2@test.com")
+                        .param("validation", "false")
+                        .param("expiration", "5")
+                        .param("message", "Test Message"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
@@ -295,9 +293,9 @@ public class PrepareControllerTest {
                 "text/plain", "test data".getBytes());
 
         mockMvc.perform(multipart("/prepare/files/" + filedrop.getUploadKey())
-                .file(mockMultipartFile)
-                .param("comment", "test comment")
-                .characterEncoding("UTF-8"))
+                        .file(mockMultipartFile)
+                        .param("comment", "test comment")
+                        .characterEncoding("UTF-8"))
                 .andExpect(status().isOk());
 
         FileDrop fileDrop = fileDropService.findFileDrop(count);
@@ -314,7 +312,7 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
 
-        MimeMessage[] receivedMessages = server.getReceivedMessages();
+        MimeMessage[] receivedMessages = emailServer.getReceivedMessages();
         assertThat(receivedMessages.length, equalTo(2));
         assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("test2@test.com"));
         assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
@@ -338,9 +336,9 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare-helpdesk"));
 
         mockMvc.perform(post("/helpdesk")
-                .param("sender", "Test")
-                .param("expiration", "30")
-                .param("ticketNumber", "123456"))
+                        .param("sender", "Test")
+                        .param("expiration", "30")
+                        .param("ticketNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/helpdesk/files/{uploadKey}"));
 
@@ -356,9 +354,9 @@ public class PrepareControllerTest {
                 "text/plain", "test data".getBytes());
 
         mockMvc.perform(multipart("/helpdesk/files/" + fileDrop.getUploadKey())
-                .file(mockMultipartFile)
-                .param("comment", "test")
-                .param("expiration", "30"))
+                        .file(mockMultipartFile)
+                        .param("comment", "test")
+                        .param("expiration", "30"))
                 .andExpect(status().isOk());
 
         List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
@@ -369,8 +367,8 @@ public class PrepareControllerTest {
         assertEquals("test", fileSets.get(0).getComment());
 
         mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey())
-                .param("expiration", "30")
-                .param("ticketNumber", "123456"))
+                        .param("expiration", "30")
+                        .param("ticketNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
     }
@@ -383,75 +381,75 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "krichards", "beno", "help"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "krichards", "beno", "help"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files/")));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "uhmfund"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "jwlennon")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "jwlennon")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("John W Lennon"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "teststudent")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "teststudent")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test Student"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test21")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test21")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test Staff2"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "user")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "user")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test User"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "false"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "false"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").isEmpty());
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "help")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "help")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("ITS Help Desk"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "uhmfund")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "uhmfund")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
@@ -465,75 +463,75 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "krichards", "beno", "help"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "krichards", "beno", "help"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files/")));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "uhmfund"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "jwlennon")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "jwlennon")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("John W Lennon"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "teststudent")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "teststudent")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test Student"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test21")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test21")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test Staff2"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "user")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "user")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test User"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "false"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "false"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").isEmpty());
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "help")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "help")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("ITS Help Desk"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "uhmfund")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "uhmfund")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
@@ -547,75 +545,75 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "krichards", "beno", "help"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "krichards", "beno", "help"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "uhmfund"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "jwlennon")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "jwlennon")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("John W Lennon"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "teststudent")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "teststudent")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test21")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test21")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test Staff2"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "user")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "user")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "false"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "false"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").isEmpty());
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "help")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "help")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("ITS Help Desk"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "uhmfund")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "uhmfund")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
@@ -629,75 +627,75 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "krichards", "beno", "help"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "krichards", "beno", "help"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "uhmfund"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "jwlennon")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "jwlennon")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("John W Lennon"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "teststudent")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "teststudent")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test21")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test21")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test Staff2"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "user")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "user")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "false"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "false"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").isEmpty());
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "help")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "help")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("ITS Help Desk"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "uhmfund")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "uhmfund")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
@@ -711,84 +709,84 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "krichards", "beno"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "krichards", "beno"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "help"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "help"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
 
         mockMvc.perform(post("/prepare")
-                .param("sender", "user@test.edu")
-                .param("validation", "true")
-                .param("expiration", "5")
-                .param("message", "Test Message")
-                .param("recipients", "uhmfund"))
+                        .param("sender", "user@test.edu")
+                        .param("validation", "true")
+                        .param("expiration", "5")
+                        .param("message", "Test Message")
+                        .param("recipients", "uhmfund"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/prepare"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "jwlennon")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "jwlennon")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("John W Lennon"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "teststudent")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "teststudent")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test21")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test21")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").value("Test Staff2"));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "user")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "user")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "test@google.com")
-                .param("authenticationRequired", "false"))
+                        .param("recipient", "test@google.com")
+                        .param("authenticationRequired", "false"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.cn").isEmpty());
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "help")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "help")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
 
         mockMvc.perform(post("/prepare/recipient/add")
-                .param("recipient", "uhmfund")
-                .param("authenticationRequired", "true"))
+                        .param("recipient", "uhmfund")
+                        .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
                 .andExpect(jsonPath("$.message").value("Could not add recipient due to restrictions."));
