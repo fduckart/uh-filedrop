@@ -1,6 +1,7 @@
 package edu.hawaii.its.filedrop.controller;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.hamcrest.Matchers.hasProperty;
@@ -251,7 +252,7 @@ public class AdminControllerTest {
 
     @Test
     @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
-    public void setGateMessage() throws Exception {
+    public void updateGateMessage() throws Exception {
         mockMvc.perform(post("/admin/gate-message")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("id", "1")
@@ -263,7 +264,7 @@ public class AdminControllerTest {
     }
 
     @Test
-    public void setGateMessageNonAdmin() throws Exception {
+    public void updateGateMessageNonAdmin() throws Exception {
         mockMvc.perform(post("/admin/gate-message")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("id", "1")
@@ -273,12 +274,17 @@ public class AdminControllerTest {
 
     @Test
     @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
-    public void setGateMessageWrongType() throws Exception {
-        mockMvc.perform(post("/admin/gate-message")
+    public void updateGateMessageWrongType() throws Exception {
+        MvcResult result = mockMvc.perform(post("/admin/gate-message")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                         .param("id", "Test")
                         .param("text", "Testing"))
-                .andExpect(status().is3xxRedirection());
+                .andExpect(status().isOk())
+                .andExpect(view().name("error"))
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+        assertThat(content, containsString("An Error Occurred"));
     }
 
     @Test
