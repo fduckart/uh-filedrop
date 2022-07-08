@@ -45,22 +45,22 @@ public class HomeController {
     private String urlBase;
 
     @Autowired
+    private ApplicationService applicationService;
+
+    @Autowired
+    private FileDropService fileDropService;
+
+    @Autowired
     private EmailService emailService;
 
     @Autowired
     private MessageService messageService;
 
     @Autowired
-    private UserContextService userContextService;
-
-    @Autowired
     private SpaceCheckService spaceCheckService;
 
     @Autowired
-    private FileDropService fileDropService;
-
-    @Autowired
-    private ApplicationService applicationService;
+    private UserContextService userContextService;
 
     @GetMapping(value = { "/", "/home" })
     public String home(Model model) {
@@ -126,7 +126,7 @@ public class HomeController {
         return "help/faq";
     }
 
-    @GetMapping(value = {"/help/permissions", "/help/permission", "/help/restrictions", "/help/restriction"})
+    @GetMapping(value = { "/help/permissions", "/help/permission", "/help/restrictions", "/help/restriction" })
     public String permissions() {
         logger.debug("User at help/permissions");
         return "help/permissions";
@@ -164,6 +164,11 @@ public class HomeController {
     public ResponseEntity<List<Faq>> getFaqs() {
         return ResponseEntity.ok().body(applicationService.findFaqs());
     }
+
+//    @RequestMapping("/error")
+//    public String handleError(HttpServletRequest request, Model model) {
+//        return "error";
+//    }
 
     @GetMapping(value = "/404")
     public String invalid() {

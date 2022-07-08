@@ -56,8 +56,6 @@ public class FileSystemStorageServiceTest {
 
     @Test
     public void store() throws Exception {
-        boolean finished = false;
-
         Path dirPath = storageService.getRootLocation();
         String filename = "~filename.txt~";
         Path absPath = Paths.get(dirPath.toAbsolutePath().toString(), filename);
@@ -72,7 +70,6 @@ public class FileSystemStorageServiceTest {
                     "text/plain",
                     "some data".getBytes());
             storageService.store(firstFile.getResource());
-            finished = true;
         } catch (Exception e) {
             fail("Unexpected error: " + e);
         } finally {
@@ -80,8 +77,6 @@ public class FileSystemStorageServiceTest {
                 Files.delete(absPath);
             }
         }
-
-        assertThat("Test did not finish properly.", equalTo(finished));
     }
 
     @Test

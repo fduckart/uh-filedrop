@@ -2,20 +2,24 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
 <body>
-    <nav th:replace="menubar :: copy"></nav>
-    
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-12">
-                <h3><span th:text="#{error.page.lead}"></span></h3>
-                <div class="alert alert-warning" role="alert">
-                    <span class="text-dark" th:text="${error}"></span><br/><br/>
-                    <span class="text-dark" th:text="${message}"></span>
-                </div>            
+<nav th:replace="menubar :: copy"></nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12">
+            <h3 class="text-danger"><span th:text="#{error.page.lead}"></span></h3>
+            <div class="alert alert-warning" role="alert">
+                <span class="text-dark" th:utext="#{error.page.message}"></span><br/><br/>
+            </div>
+            <div>
+                <a class="btn btn-outline-success" th:href="@{/prepare}">
+                    Click here to Start Over
+                </a>
             </div>
         </div>
     </div>
-    
-    <div th:replace="footer :: copy"></div>
+</div>
+
+<div th:replace="footer :: copy"></div>
 </body>
 </html>

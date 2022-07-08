@@ -11,8 +11,8 @@
 </script>
 <body ng-app="filedropApp">
 <nav th:replace="menubar :: copy"></nav>
-<div class="container" ng-controller="UploadHelpdeskJsController"
-    ng-init="init()" ng-cloak>
+<div class="container" ng-cloak
+     ng-controller="UploadHelpdeskJsController" ng-init="init()">
     <div class="card border-success">
         <div class="card-body">
             <div class="row">
@@ -20,7 +20,7 @@
                     <div class="mb-1">
                         <span class="filedrop-label">Recipients </span>
                         <ul class="list-inline">
-                            <li th:each="recipient : ${recipients}" class="list-inline-item">
+                            <li class="list-inline-item" th:each="recipient : ${recipients}">
                                 <span class="badge badge-light border-secondary border"
                                       style="font-size: .85em; color: #4d4d4d" th:text="${recipient}">
                                 </span>
@@ -33,8 +33,8 @@
             <div class="row">
                 <div class="col-sm-12 mb-1">
                     <form id="filesForm" ng-submit="submit()">
-                        <div class="card bg-light" style="cursor: pointer;" ngf-drag-over-class="'border-success'"
-                            ngf-drop ngf-select ngf-change="addFiles($files)" ngf-multiple="true">
+                        <div class="card bg-light" ngf-change="addFiles($files)" ngf-drag-over-class="'border-success'"
+                             ngf-drop ngf-multiple="true" ngf-select style="cursor: pointer;">
                             <div class="card-body text-center m-auto">
                                 Drag Files or Click here
                             </div>
@@ -44,7 +44,7 @@
 
                 <div class="col-sm-12 my-2">
                     <div class="table-responsive">
-                        <table ng-if="files.length > 0" class="table">
+                        <table class="table" ng-if="files.length > 0">
                             <thead>
                             <tr>
                                 <th scope="col">Name</th>
@@ -59,7 +59,7 @@
                                 <td>{{ file.name }}</td>
                                 <td>{{ file.size | bytes}}</td>
                                 <td class="d-sm-none d-md-block">{{ file.type ? file.type : 'unknown' }}</td>
-                                <td><input type="text" class="form-control" ng-model="file.comment"></td>
+                                <td><input class="form-control" ng-model="file.comment" type="text"></td>
                                 <td>
                                     <button class="btn btn-danger btn-sm" ng-click="removeFile(file)">
                                         <i class="fa fa-trash"></i>
@@ -75,20 +75,20 @@
             <div class="row">
                 <div class="col mb-3" ng-if="progress > 0">
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped progress-bar-animated w-{{ progress }}"
-                             role="progressbar"
-                             aria-valuenow="{{ progress }}" aria-valuemin="0" aria-valuemax="100">
+                        <div aria-valuemax="100"
+                             aria-valuemin="0"
+                             aria-valuenow="{{ progress }}" class="progress-bar progress-bar-striped progress-bar-animated w-{{ progress }}" role="progressbar">
                         </div>
                     </div>
                 </div>
                 <div class="col-sm-12">
                     <p ng-class="isUploadLarge() ? 'text-danger' : ''" ng-if="uploadSize > 0">Upload size: {{uploadSize
                         | bytes}} / {{maxUploadSize | bytes}} </p>
-                    <button class="btn pull-right" 
-                        ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'"
-                        type="submit"
-                        ng-disabled="isUploadLarge() || disableUpload"
-                        form="filesForm">
+                    <button class="btn pull-right"
+                            form="filesForm"
+                            ng-class="isUploadLarge() ? 'btn-danger' : 'btn-primary'"
+                            ng-disabled="isUploadLarge() || disableUpload "
+                            type="submit">
                         <span ng-show="disableUpload">
                             <span class="spinner-border spinner-border-sm"></span> Uploading...
                         </span>
@@ -97,7 +97,7 @@
                     <p class="text-danger d-inline-block" ng-if="isUploadLarge()">Upload size is too
                         <strong>large</strong>.
                     </p>
-                    <a th:href="@{/helpdesk/}" class="btn btn-primary">Back</a>
+                    <a class="btn btn-primary" th:href="@{/helpdesk/}">Back</a>
                 </div>
             </div>
         </div>

@@ -91,8 +91,11 @@ public class AdminController {
     @GetMapping("/admin/gate-message")
     public String gateMessage(Model model) {
         int messageId = Message.GATE_MESSAGE;
+        System.out.println("  ### >>> messageId: " + messageId);
         Message message = messageService.findMessage(messageId);
+        System.out.println("  ### >>>   message: " + message);
         model.addAttribute("message", message);
+        System.out.println("  ### >>>     model: " + model);
         return "admin/gate-message";
     }
 
@@ -198,7 +201,7 @@ public class AdminController {
 
     @GetMapping("/admin/add-expiration/{id}/{amount}")
     public String addExpiration(@PathVariable Integer id, @PathVariable Integer amount,
-            RedirectAttributes redirectAttributes) {
+                                RedirectAttributes redirectAttributes) {
         FileDrop fileDrop = fileDropService.findFileDrop(id);
         fileDrop.setExpiration(Dates.add(fileDrop.getExpiration(), amount));
         fileDropService.saveFileDrop(fileDrop);
@@ -226,8 +229,8 @@ public class AdminController {
 
     @PostMapping("/admin/settings/{id}")
     public String changeSetting(@PathVariable("id") Integer id,
-            @RequestParam("value") String value,
-            RedirectAttributes redirectAttributes) {
+                                @RequestParam("value") String value,
+                                RedirectAttributes redirectAttributes) {
         Setting setting = applicationService.findSetting(id);
         setting.setValue(value);
         setting = applicationService.saveSetting(setting);
@@ -238,8 +241,8 @@ public class AdminController {
 
     @PostMapping("/admin/settings")
     public String addSetting(@RequestParam("key") String key,
-            @RequestParam("value") String value,
-            RedirectAttributes redirectAttributes) {
+                             @RequestParam("value") String value,
+                             RedirectAttributes redirectAttributes) {
         Setting setting = new Setting();
         setting.setKey(key);
         setting.setValue(value);
@@ -264,8 +267,8 @@ public class AdminController {
 
     @PostMapping("/api/admin/faq/{id}")
     public ResponseEntity<Faq> editFaq(@PathVariable("id") Integer id,
-            @RequestParam("question") String question,
-            @RequestParam("answer") String answer) {
+                                       @RequestParam("question") String question,
+                                       @RequestParam("answer") String answer) {
         Faq faq = applicationService.findFaq(id);
         faq.setQuestion(question);
         faq.setAnswer(answer);
