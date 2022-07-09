@@ -335,6 +335,10 @@ public class PrepareController {
             logger.debug("prepare; defaultExpiration: " + defaultExpiration);
         }
 
+        if ("off".equals("")) {
+            throw new NullPointerException("Hey Now!");
+        }
+
         User user = currentUser();
         Task currentTask = workflowService.currentTask(user);
         if (logger.isDebugEnabled()) {

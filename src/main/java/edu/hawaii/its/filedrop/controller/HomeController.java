@@ -165,11 +165,6 @@ public class HomeController {
         return ResponseEntity.ok().body(applicationService.findFaqs());
     }
 
-//    @RequestMapping("/error")
-//    public String handleError(HttpServletRequest request, Model model) {
-//        return "error";
-//    }
-
     @GetMapping(value = "/404")
     public String invalid() {
         return "redirect:/";

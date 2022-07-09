@@ -2,7 +2,9 @@ function HistoryJsController($scope, dataProvider, $window) {
 
     $scope.init = () => {
         $scope.fileDrops = [];
+        $scope.loading = true;
         $scope.loadData();
+        $scope.loading = false;
     };
 
     $scope.loadData = () => {

@@ -1,87 +1,87 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="header :: copy"></head>
-    <body ng-app="filedropApp">
-    <script th:inline="javascript">
-        var user = [[${user}]];
-    </script>
-    <nav th:replace="menubar :: copy"></nav>
+<head th:replace="header :: copy"></head>
+<body ng-app="filedropApp">
+<script th:inline="javascript">
+    var user = [[${user}]];
+</script>
+<nav th:replace="menubar :: copy"></nav>
 
-    <div class="container" ng-controller="HistoryJsController" ng-init="init()">
-        <div class="row justify-content-center mb-2">
-            <div class="col-sm-8">
-                <div class="input-group">
-                    <div class="input-group-prepend">
-                        <span class="input-group-text" id="search"><i class="fa fa-filter"></i></span>
-                    </div>
-                    <input placeholder="Filter by UH username, date..." class="form-control" type="search"
-                           ng-model="filter"
-                           aria-describedby="search">
+<div class="container" ng-controller="HistoryJsController" ng-init="init()">
+    <div class="row justify-content-center mb-2">
+        <div class="col-sm-8">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="search"><i class="fa fa-filter"></i></span>
                 </div>
+                <input aria-describedby="search" class="form-control" ng-model="filter"
+                       placeholder="Filter by UH username, date..."
+                       type="search">
             </div>
         </div>
-        <div class="row justify-content-center">
-            <div class="col-sm-8">
-                <div class="card mb-2"
-                     ng-if="fileDrops.length > 0"
-                     ng-class="{'border-danger': !fileDrop.valid, 'border-success': fileDrop.valid}"
-                     ng-repeat="fileDrop in fileDrops | orderBy:['-valid', '-created', -isRecipient] | filter:filter"
-                     ng-cloak
-                     ng-controller="HistoryCardController">
-                    <div class="card-header py-2">
-                        <div class="row">
-                            <div class="col-sm-6">
-                                <div class="row">
-                                    <h5>Uploader: <span class="lead">{{ fileDrop.uploader }}</span></h5>
-                                </div>
-                                <div class="row" ng-if="isCollapsed">
-                                    <small>Uploaded: {{ fileDrop.created }}</small>
-                                </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-sm-8">
+            <div class="card mb-2"
+                 ng-class="{'border-danger': !fileDrop.valid, 'border-success': fileDrop.valid}"
+                 ng-cloak
+                 ng-controller="HistoryCardController"
+                 ng-if="fileDrops.length > 0"
+                 ng-repeat="fileDrop in fileDrops | orderBy:['-valid', '-created', -isRecipient] | filter:filter">
+                <div class="card-header py-2">
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="row">
+                                <h5>Uploader: <span class="lead">{{ fileDrop.uploader }}</span></h5>
                             </div>
-                            <div class="col-sm-6">
-                                <button class="btn btn-outline-primary float-right"
-                                        ng-click="isCollapsed = !isCollapsed">
-                                    {{ isCollapsed ? 'More Info' : 'Less Info' }}
-                                </button>
+                            <div class="row" ng-if="isCollapsed">
+                                <small>Uploaded: {{ fileDrop.created }}</small>
                             </div>
                         </div>
-                    </div>
-                    <div uib-collapse="isCollapsed" class="card-body p-2">
-                        <div class="row">
-                            <div class="col-sm-12 col-md-6">
-                                <span class="lead text-nowrap">Uploaded: {{ fileDrop.created }}</span>
-                            </div>
-                            <div class="col-sm-12 col-md-6">
-                                <span class="lead float-md-right">{{ fileDrop.valid ? 'Expires' : 'Expired' }}: {{ fileDrop.expiration }}</span>
-                            </div>
+                        <div class="col-sm-6">
+                            <button class="btn btn-outline-primary float-right"
+                                    ng-click="isCollapsed = !isCollapsed">
+                                {{ isCollapsed ? 'More Info' : 'Less Info' }}
+                            </button>
                         </div>
-                        <div class="row">
-                            <div class="col-sm-12">
-                                <span class="lead">Files</span>
-                                <div class="mt-1">
-                                    <ul class="list-group">
-                                        <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="fileSet in fileDrop.fileInfoList">
-                                            {{ fileSet.fileName }}
-                                            <span class="badge badge-primary badge-pill" ng-if="fileDrop.valid"><i class="fa fa-cloud-download"></i>&nbsp;{{ fileSet.downloads }}</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-footer bg-transparent p-2" ng-if="fileDrop.valid">
-                        <a ng-href="/filedrop/dl/{{fileDrop.downloadKey}}" class="btn btn-outline-success">View</a>
                     </div>
                 </div>
-                <div class="text-center" ng-if="fileDrops.length == 0">
-                    <div class="spinner-border" style="width: 2rem; height: 2rem; text-align: center" role="status">
-                        <span class="sr-only">Loading FileDrops...</span>
+                <div class="card-body p-2" uib-collapse="isCollapsed">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-6">
+                            <span class="lead text-nowrap">Uploaded: {{ fileDrop.created }}</span>
+                        </div>
+                        <div class="col-sm-12 col-md-6">
+                            <span class="lead float-md-right">{{ fileDrop.valid ? 'Expires' : 'Expired' }}: {{ fileDrop.expiration }}</span>
+                        </div>
                     </div>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <span class="lead">Files</span>
+                            <div class="mt-1">
+                                <ul class="list-group">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="fileSet in fileDrop.fileInfoList">
+                                        {{ fileSet.fileName }}
+                                        <span class="badge badge-primary badge-pill" ng-if="fileDrop.valid"><i class="fa fa-cloud-download"></i>&nbsp;{{ fileSet.downloads }}</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-transparent p-2" ng-if="fileDrop.valid">
+                    <a class="btn btn-outline-success" ng-href="/filedrop/dl/{{fileDrop.downloadKey}}">View</a>
+                </div>
+            </div>
+            <div class="text-center" ng-if="loading">
+                <div class="spinner-border" role="status" style="width: 2rem; height: 2rem; text-align: center">
+                    <span class="sr-only">Loading FileDrops...</span>
                 </div>
             </div>
         </div>
     </div>
+</div>
 
-    <div th:replace="footer :: copy"></div>
-    </body>
+<div th:replace="footer :: copy"></div>
+</body>
 </html>
