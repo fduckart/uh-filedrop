@@ -46,6 +46,11 @@ public class AllowlistServiceTest {
     private Scheduler scheduler;
 
     @Test
+    public void config() {
+        assertThat(threshold, equalTo(5));
+    }
+
+    @Test
     public void allowlistTest() {
         logger.debug("allowlistTest start");
         Allowlist allowlist = new Allowlist();

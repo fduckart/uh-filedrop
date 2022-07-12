@@ -56,10 +56,13 @@
                                    type="search"
                                    valid-recipient="true">
                             <div class="input-group-append">
-                                <button class="btn btn-primary mx-2" ng-disabled="recipient.length === 0"
+                                <button class="btn btn-primary mx-2"
+                                        ng-disabled="recipient.length === 0"
                                         type="submit">Add Recipient
                                 </button>
-                                <button class="btn btn-success" ng-click="sendSelf()" ng-disabled="disableSendSelf() || recipient.length > 0"
+                                <button class="btn btn-success"
+                                        ng-disabled="disableSendSelf() || recipient.length > 0"
+                                        ng-click="sendSelf()"
                                         type="button">
                                     Add Self
                                 </button>

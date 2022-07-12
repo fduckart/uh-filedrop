@@ -34,4 +34,5 @@ public class AppConfigLocal extends AppConfig {
     public LdapContextSource ldapContextSource() {
         return new LdapContextSource();
     }
+
 }

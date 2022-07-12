@@ -416,7 +416,7 @@
                                 <echo>$ mvn clean package</echo>
                                 <echo>$ mvn -Djs-tests.skip=true -Dmaven.test.skip=true clean package</echo>
                                 <echo>$ mvn jasmine:test</echo>
-                                <echo>$ mvn clean test jacoco:report</echo>
+                                <echo>$ mvn clean test -Djs-tests.skip=true jacoco:report</echo>
                                 <echo>$ mvn clean compile site</echo>
                                 <echo>$ mvn clean spring-boot:run</echo>
                             </tasks>
