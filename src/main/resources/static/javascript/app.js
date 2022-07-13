@@ -1,7 +1,7 @@
-let filedropApp = angular.module("filedropApp", ["ngFileUpload", "ui.bootstrap"]);
+var filedropApp = angular.module("filedropApp", ["ngFileUpload", "ui.bootstrap"]);
 
-filedropApp.filter("bytes", function () {
-    return function (bytes, precision) {
+filedropApp.filter("bytes", function() {
+    return function(bytes, precision) {
         if (isNaN(parseFloat(bytes)) || !isFinite(bytes)) {
             return "-";
         }

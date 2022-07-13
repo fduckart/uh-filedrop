@@ -1,23 +1,21 @@
-describe("CampusJsController", function() {
+describe("PrepareJsController", function() {
 
     beforeEach(module('filedropApp'));
     const test = 'test';
-    let scope;
-    let controller;
-    let dataProvider;
-    let log;
+    var scope;
+    var controller;
+    var dataProvider;
 
-    beforeEach(inject(function($rootScope, $controller, $logScope, dataProvider) {
+    beforeEach(inject(function($rootScope, $controller, dataProvider) {
         scope = $rootScope.$new();
-        log = $logScope.$new();
-        controller = $controller('CampusJsController', {
+        controller = $controller('PrepareJsController', {
             $scope: scope,
             dataProvider: dataProvider
         });
     }));
 
     it("checkInitFunction", function() {
-        spyOn(dataProvider, "loadData").withArgs(null, null).and.callFake(function() {
+        spyOn(scope, "loadData").and.callFake(function() {
             scope.campuses.push({
                 "id": 1,
                 "code": "HA",
@@ -47,7 +45,7 @@ describe("CampusJsController", function() {
 
         expect(scope.campuses[1].id).toEqual(10);
         expect(scope.campuses[1].code).toEqual("WO");
-        expect(scope.campuses[1].description).toEqual("UH West Oahu");
+        expect(scope.campuses[1].description).toEqual("UH West Oahu!");
     });
 
 });
