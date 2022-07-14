@@ -1,51 +1,41 @@
 describe("PrepareJsController", function() {
 
     beforeEach(module('filedropApp'));
-    const test = 'test';
-    var scope;
-    var controller;
-    var dataProvider;
+    let scope;
+    let controller;
+    let dataProvider;
 
-    beforeEach(inject(function($rootScope, $controller, dataProvider) {
+    beforeEach(inject(function($rootScope, $controller, _dataProvider_) {
         scope = $rootScope.$new();
+        dataProvider = _dataProvider_;
         controller = $controller('PrepareJsController', {
             $scope: scope,
-            dataProvider: dataProvider
+            dataProvider: _dataProvider_
         });
     }));
 
     it("checkInitFunction", function() {
-        spyOn(scope, "loadData").and.callFake(function() {
-            scope.campuses.push({
-                "id": 1,
-                "code": "HA",
-                "description": "Hawaii Community College"
+        spyOn(scope, 'getFileDrop').and
+            .callFake(function() {
+                return {
+                    authentication: true,
+                    sender: "duckart@hawaii.edu"
+                }
             });
-            scope.campuses.push({
-                "id": 10,
-                "code": "WO",
-                "description": "UH West Oahu"
-            });
-        });
 
         expect(controller).toBeDefined();
-        expect(scope.campuses).toBeDefined();
-        expect(scope.campuses.length).toEqual(0);
+        // expect(scope.recipient).toBeDefined();
+        // expect(scope.recipients.length).toEqual(0);
+        // expect(scope.sendToSelf).toBeDefined();
 
         // What we are testing:
         scope.init();
 
-        expect(scope.loadData).toHaveBeenCalled();
-        expect(scope.campuses).toBeDefined();
-        expect(scope.campuses.length).toEqual(2);
-
-        expect(scope.campuses[0].id).toEqual(1);
-        expect(scope.campuses[0].code).toEqual("HA");
-        expect(scope.campuses[0].description).toEqual("Hawaii Community College");
-
-        expect(scope.campuses[1].id).toEqual(10);
-        expect(scope.campuses[1].code).toEqual("WO");
-        expect(scope.campuses[1].description).toEqual("UH West Oahu!");
+        expect(scope.recipient).toBeDefined();
+        expect(scope.recipients).toBeDefined();
+        expect(scope.recipients.length).toEqual(0);
+        expect(scope.sendToSelf).toBeDefined();
+        expect(scope.sendToSelf).toEqual(false);
     });
 
 });

@@ -399,9 +399,10 @@
                         <include>app.js</include>
                         <include>app.service.js</include>
                         <include>filedrop.controller.campus.js</include>
+                        <include>filedrop.controller.prepare.js</include>
                     </sourceIncludes>
                     <specIncludes>
-                        <include>**/*.campus.test.js</include>
+                        <include>**/*.prepare.test.js</include>
                     </specIncludes>
                     <preloadSources>
                         <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>
