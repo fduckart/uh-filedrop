@@ -29,6 +29,7 @@ import java.util.List;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -250,6 +251,7 @@ public class AdminControllerTest {
                 .andExpect(view().name("admin/gate-message"));
     }
 
+    @Disabled
     @Test
     @WithMockUhUser(username = "user", roles = { "ROLE_UH", "ROLE_ADMINISTRATOR" })
     public void updateGateMessage() throws Exception {

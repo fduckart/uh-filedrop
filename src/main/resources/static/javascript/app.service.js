@@ -1,13 +1,4 @@
 (function() {
-
-    filedropApp.factory("whatsUp", function() {
-        return {
-            testme: function() {
-                // Do nothing.
-            }
-        };
-    });
-
     filedropApp.factory("dataProvider", function($http, $log) {
         return {
             loadData: function loadData(callback, url) {

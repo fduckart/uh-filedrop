@@ -85,14 +85,14 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                 authenticationRequired: $scope.authentication
             }
         }).then((response) => {
-            const person = response.data;
-            $log.debug("addRecipient;", currentUser.uid, "searched", recipient, "and found", person.cn);
-            if ($scope.isEmptyPerson(person)) {
-                $scope.recipients.push({name: recipient, mail: recipient})
-            } else {
-                $scope.recipients.push({name: person.cn, mail: person.mails[0], uid: person.uid});
-            }
-        },
+                const person = response.data;
+                $log.debug("addRecipient;", currentUser.uid, "searched", recipient, "and found", person.cn);
+                if ($scope.isEmptyPerson(person)) {
+                    $scope.recipients.push({name: recipient, mail: recipient})
+                } else {
+                    $scope.recipients.push({name: person.cn, mail: person.mails[0], uid: person.uid});
+                }
+            },
             (response) => {
                 $log.debug("addRecipient;", response.data.message);
                 $scope.error = {message: response.data.message};
@@ -199,10 +199,11 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
     $scope.getMessage = () => $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
 
-    // $scope.sender = {
-    //     model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.currentUser().mails[0],
-    //     mails: $scope.currentUser().mails
-    // };
+    $scope.sender = {
+        ///model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.currentUser().mails[0],
+        ///mails: $scope.currentUser().mails
+        mails: []
+    };
 }
 
 filedropApp.controller("PrepareJsController", PrepareJsController);
