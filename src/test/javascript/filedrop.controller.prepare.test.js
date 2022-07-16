@@ -10,7 +10,7 @@ describe("PrepareJsController", function() {
 
             this.fileDrop = {
                 sender: this.user.mails[1],
-                recipients: ["a@b.c", "b@c.d", "c@d.e"],
+                recipients: ["a@b.c", "b@c.d", "c@d.e", this.user.mails[0]],
                 expiration: "4800",
                 authentication: true,
                 message: "What is the what?"
@@ -57,9 +57,12 @@ describe("PrepareJsController", function() {
 
         // See mock above.
         let fileDrop = scope.getFileDrop();
-        expect(fileDrop.sender).toEqual("d@h.y");
-        expect(fileDrop.recipients.length).toEqual(3);
-        expect(fileDrop.recipients).toEqual(["a@b.c", "b@c.d", "c@d.e"]);
+        // expect(fileDrop.sender).toEqual(user.mails);
+        expect(fileDrop.recipients.length).toEqual(4);
+        expect(fileDrop.recipients[0]).toEqual("a@b.c");
+        expect(fileDrop.recipients[1]).toEqual("b@c.d");
+        expect(fileDrop.recipients[2]).toEqual("c@d.e",);
+        expect(fileDrop.recipients[3]).toEqual(user.mails[0]);
         expect(fileDrop.expiration).toEqual("4800");
         expect(fileDrop.authentication).toEqual(true);
         expect(fileDrop.message).toEqual("What is the what?");
@@ -89,9 +92,11 @@ describe("PrepareJsController", function() {
 
         expect(scope.recipient).toBeDefined();
         expect(scope.recipients).toBeDefined();
-        expect(scope.recipients.length).toEqual(0);
+        expect(scope.recipients.length).toEqual(1);
+        expect(scope.recipients[0].uid).toEqual("fd");
+        expect(scope.recipients[0].name).toEqual("f r d"); // Weird.
         expect(scope.sendToSelf).toBeDefined();
-        expect(scope.sendToSelf).toEqual(false);
+        expect(scope.sendToSelf).toEqual(true); // See mock.
         expect(scope.authentication).toBeDefined();
         expect(scope.authentication).toEqual(true);
         expect(scope.getFileDrop().authentication).toEqual(true); // See mock.
@@ -103,8 +108,8 @@ describe("PrepareJsController", function() {
         expect(scope.sender).toBeDefined();
         expect(scope.sender.mails).toBeDefined();
         expect(scope.sender.mails.length).toEqual(2);
-        expect(scope.sender.mails[0]).toEqual("f@h.x");
-        expect(scope.sender.mails[1]).toEqual("d@h.y");
+        // expect(scope.sender.mails[0]).toEqual("f@h.x");
+        // expect(scope.sender.mails[1]).toEqual("d@h.y");
     });
 
 });
