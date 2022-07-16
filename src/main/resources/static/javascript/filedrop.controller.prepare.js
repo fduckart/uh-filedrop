@@ -10,7 +10,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         $scope.loadRecipients();
         if ("off" === "") {
             $log.debug("init; Sender:", $scope.sender);
-            $log.debug("init; Current user:", $scope.currentUser().uid);
+            $log.debug("init; Current user:", $scope.getCurrentUser().uid);
             $log.debug("init; Recipients:", $scope.recipients);
             $log.debug("init; Authentication:", $scope.authentication);
             $log.debug("init; Expiration:", $scope.expiration);
@@ -20,7 +20,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     };
 
     $scope.addRecipient = function(recipient) {
-        const currentUser = $scope.currentUser();
+        const currentUser = $scope.getCurrentUser();
 
         $log.debug("hmmm; currentUser: ", currentUser);
         $log.debug("hmmm;   recipient: ", recipient);
@@ -109,7 +109,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     }
 
     $scope.removeRecipient = function(recipient) {
-        if ($scope.currentUser().mails.includes(recipient.mail)) {
+        if ($scope.getCurrentUser().mails.includes(recipient.mail)) {
             $scope.sendToSelf = false;
         }
 
@@ -146,7 +146,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     };
 
     $scope.userHasMultipleEmails = function() {
-        return $scope.currentUser().mails.length > 1;
+        return $scope.getCurrentUser().mails.length > 1;
     };
 
     $scope.showPopup = function() {
@@ -162,7 +162,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
     $scope.sendSelf = function() {
         $scope.sendToSelf = !$scope.sendToSelf;
-        $scope.addRecipient($scope.currentUser().uid);
+        $scope.addRecipient($scope.getCurrentUser().uid);
     };
 
     $scope.disableSendSelf = function() {
@@ -173,7 +173,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         return $scope.recipient.length > 0 || $scope.recipients.length === 0;
     };
 
-    $scope.currentUser = () => $window.user;
+    $scope.getCurrentUser = () => $window.user;
 
     $scope.getFileDrop = () => $window.fileDrop;
 
@@ -181,7 +181,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         const recipients = $scope.getFileDrop().recipients;
         if (recipients && recipients.length > 0) {
             for (let recipient of recipients) {
-                if ($scope.currentUser().mails.includes(recipient)) {
+                if ($scope.getCurrentUser().mails.includes(recipient)) {
                     $scope.sendToSelf = true;
                 }
                 $scope.addRecipient(recipient);
@@ -200,9 +200,8 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     $scope.getMessage = () => $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
 
     $scope.sender = {
-        ///model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.currentUser().mails[0],
-        ///mails: $scope.currentUser().mails
-        mails: []
+        //model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.getCurrentUser().mails[0],
+        mails: $scope.getCurrentUser().mails
     };
 }
 
