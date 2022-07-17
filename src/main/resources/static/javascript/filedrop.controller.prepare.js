@@ -8,22 +8,17 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         $scope.expiration = $scope.getExpiration();
         $scope.message = $scope.getMessage();
         $scope.loadRecipients();
-        if ("off" === "") {
-            $log.debug("init; Sender:", $scope.sender);
-            $log.debug("init; Current user:", $scope.getCurrentUser().uid);
-            $log.debug("init; Recipients:", $scope.recipients);
-            $log.debug("init; Authentication:", $scope.authentication);
-            $log.debug("init; Expiration:", $scope.expiration);
-            $log.debug("init; Message:", $scope.message);
-            $log.debug("init; FileDrop Sender:", $scope.getFileDrop().sender);
-        }
+        $log.debug("init; Sender:", $scope.sender);
+        $log.debug("init; Current user:", $scope.getCurrentUser().uid);
+        $log.debug("init; Recipients:", $scope.recipients);
+        $log.debug("init; Authentication:", $scope.authentication);
+        $log.debug("init; Expiration:", $scope.expiration);
+        $log.debug("init; Message:", $scope.message);
+        $log.debug("init; FileDrop Sender:", $scope.getFileDrop().sender);
     };
 
     $scope.addRecipient = function(recipient) {
         const currentUser = $scope.getCurrentUser();
-
-        $log.debug("hmmm; currentUser: ", currentUser);
-        $log.debug("hmmm;   recipient: ", recipient);
 
         if ($scope.hasRecipient(recipient)) {
             $scope.error = {message: "Recipient is already added."};
@@ -31,11 +26,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
             return;
         }
 
-        $log.debug("hmmm; after check... $scope.recipients: ");
         $scope.recipients.forEach(r => $log.debug("     $scope.recipients mail: " + r.mail));
-
-        $log.debug("hmmm; after check... currentUser.mails.includes: " + currentUser.mails.includes(recipient));
-        $log.debug("hmmm; after check... $scope.recipients.includes: " + $scope.recipients.includes(recipient));
 
         let userEmail = currentUser.mails[0];
         let isUserEmail = currentUser.mails.includes(recipient);
@@ -48,21 +39,14 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
         let isRecipient = false;
         for (let m of currentUser.mails) {
-            $log.debug("   <><><>  mail: " + m + "  ???--->  " + recipient.toLowerCase());
             if (isRecipient === false) {
                 for (let r of $scope.recipients) {
-                    $log.debug("     <><><>  r.mail: " + r.mail + "  ???--->  " + recipient.toLowerCase() + "  EQUAL? " + (r.mail.toLowerCase() === recipient.toLowerCase()));
                     if (r.mail.toLowerCase() === recipient.toLowerCase()) {
-                        $log.debug("     <><><>  RETURN TRUE");
                         isRecipient = true;
                     }
                 }
             }
         }
-
-        $log.debug("hmmm; after check... isUserEmail: " + isUserEmail);
-        $log.debug("hmmm; after check... isRecipient: " + isRecipient);
-        $log.debug("hmmm; .......................................................");
 
         if (recipient === currentUser.uid || isUserEmail || isRecipient) {
             $scope.sendToSelf = true;
@@ -85,14 +69,14 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                 authenticationRequired: $scope.authentication
             }
         }).then((response) => {
-                const person = response.data;
-                $log.debug("addRecipient;", currentUser.uid, "searched", recipient, "and found", person.cn);
-                if ($scope.isEmptyPerson(person)) {
-                    $scope.recipients.push({name: recipient, mail: recipient})
-                } else {
-                    $scope.recipients.push({name: person.cn, mail: person.mails[0], uid: person.uid});
-                }
-            },
+            const person = response.data;
+            $log.debug("addRecipient;", currentUser.uid, "searched", recipient, "and found", person.cn);
+            if ($scope.isEmptyPerson(person)) {
+                $scope.recipients.push({name: recipient, mail: recipient})
+            } else {
+                $scope.recipients.push({name: person.cn, mail: person.mails[0], uid: person.uid});
+            }
+        },
             (response) => {
                 $log.debug("addRecipient;", response.data.message);
                 $scope.error = {message: response.data.message};
@@ -200,7 +184,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     $scope.getMessage = () => $scope.getFileDrop().message ? $scope.getFileDrop().message : "";
 
     $scope.sender = {
-        //model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.getCurrentUser().mails[0],
+        model: $scope.getFileDrop().sender ? $scope.getFileDrop().sender : $scope.getCurrentUser().mails[0],
         mails: $scope.getCurrentUser().mails
     };
 }

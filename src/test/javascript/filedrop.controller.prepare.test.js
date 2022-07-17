@@ -101,15 +101,27 @@ describe("PrepareJsController", function() {
         expect(scope.authentication).toEqual(true);
         expect(scope.getFileDrop().authentication).toEqual(true); // See mock.
         expect(scope.expiration).toBeDefined();
+
         let fileDrop = scope.getFileDrop();
         expect(scope.expiration).toEqual(fileDrop.expiration);
         expect(scope.message).toBeDefined();
         expect(scope.message).toEqual(fileDrop.message);
         expect(scope.sender).toBeDefined();
+
+        let user = scope.getCurrentUser();
         expect(scope.sender.mails).toBeDefined();
-        expect(scope.sender.mails.length).toEqual(2);
-        // expect(scope.sender.mails[0]).toEqual("f@h.x");
-        // expect(scope.sender.mails[1]).toEqual("d@h.y");
+        expect(scope.sender.mails.length).toEqual(user.mails.length);
+        expect(scope.sender.mails[0]).toEqual(user.mails[0]);
+        expect(scope.sender.mails[1]).toEqual(user.mails[1]);
+
+        expect(scope.sender.model).toBeDefined();
+        expect(scope.sender.model).toEqual(fileDrop.sender);
+        expect(scope.sender.model).toEqual(scope.sender.mails[1]);
+
+        scope.sender.model = null;
+        expect(scope.sender.model).toBeDefined();
+        expect(scope.sender.model).toEqual(null);
+
     });
 
 });
