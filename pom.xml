@@ -46,8 +46,8 @@
         <h2.version>1.4.199</h2.version>
         <jquery-version>3.4.1</jquery-version>
         <popper.js-version>1.16.0</popper.js-version>
-        <angularjs-version>1.7.9</angularjs-version>
-        <angular-mocks-version>1.7.5</angular-mocks-version>
+        <angularjs-version>1.8.2</angularjs-version>
+        <angular-mocks-version>1.8.2</angular-mocks-version>
         <js-tests.skip>false</js-tests.skip>
 
         <spotbugs-maven-plugin.version>4.6.0.0</spotbugs-maven-plugin.version>

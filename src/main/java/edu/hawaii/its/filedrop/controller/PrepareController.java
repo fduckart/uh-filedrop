@@ -390,19 +390,22 @@ public class PrepareController {
     public ResponseEntity<?> addRecipient(@RequestParam("recipient") String user,
                                           @RequestParam("authenticationRequired") Boolean authRequired) {
         LdapPerson person = ldapService.findByUhUuidOrUidOrMail(user);
-        logger.debug(currentUser().getUid() + " looked for " + user + " and found " + person);
+        User currentUser = currentUser();
+        logger.debug(currentUser.getUid() + " looked for " + user + " and found " + person);
 
         if (!person.isValid() && authRequired) {
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .body(Collections.singletonMap("message", "Could not add non-UH recipient when authentication is required."));
+                    .body(Collections.singletonMap("message",
+                            "Could not add non-UH recipient when authentication is required."));
         }
 
-        if (fileDropService.checkRecipient(currentUser(), person, authRequired)) {
+        if (fileDropService.checkRecipient(currentUser, person, authRequired)) {
             return ResponseEntity.ok().body(person);
         }
 
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(Collections.singletonMap("message", "Could not add recipient due to restrictions."));
+                .body(Collections.singletonMap("message",
+                        "Could not add recipient due to restrictions."));
     }
 
     @GetMapping(value = "/helpdesk")

@@ -15,6 +15,10 @@
                 $http.post(encodeURI(url), data).then(callback, function(response, status) {
                     $log.error("Error in dataProvider; status: ", status);
                 });
+            },
+            postData: function(url, data, successCallback, errorCallback) {
+                $http.post(encodeURI(url), data, {})
+                    .then(successCallback, errorCallback);
             }
         };
     });
