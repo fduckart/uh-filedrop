@@ -40,7 +40,7 @@ describe("PrepareJsController", function() {
     //     $httpBackend.verifyNoOutstandingRequest();
     // });
 
-    xit("construction", function() {
+    it("construction", function() {
         expect(controller).toBeDefined();
         expect(scope.recipient).not.toBeDefined();
         expect(scope.recipients).not.toBeDefined();
@@ -81,7 +81,7 @@ describe("PrepareJsController", function() {
         expect(scope.sender.mails[1]).toEqual("d@h.y");
     });
 
-    xit("init", function() {
+    it("init", function() {
         expect(controller).toBeDefined();
         expect(scope.recipient).not.toBeDefined();
         expect(scope.recipients).not.toBeDefined();
@@ -124,7 +124,7 @@ describe("PrepareJsController", function() {
         expect(scope.sender.model).toEqual(scope.sender.mails[1]);
     });
 
-    xit ("isCurrentUserMail", function() {
+    it ("isCurrentUserMail", function() {
         expect(scope.isCurrentUserMail(null)).toBeFalse();
         expect(scope.isCurrentUserMail("")).toBeFalse();
         expect(scope.isCurrentUserMail(undefined)).toBeFalse();
@@ -135,7 +135,7 @@ describe("PrepareJsController", function() {
         expect(scope.isCurrentUserMail("_" + user.mails[1])).toBeFalse();
     });
 
-    xit ("isCurrentUserUid", function() {
+    it ("isCurrentUserUid", function() {
         expect(scope.isCurrentUserUid(null)).toBeFalse();
         expect(scope.isCurrentUserUid("")).toBeFalse();
         expect(scope.isCurrentUserUid(undefined)).toBeFalse();
@@ -145,7 +145,7 @@ describe("PrepareJsController", function() {
         expect(scope.isCurrentUserUid("_" + user.uid)).toBeFalse();
     });
 
-    xit ("isEmptyPerson", function() {
+    it ("isEmptyPerson", function() {
         expect(scope.isEmptyPerson(null)).toBeTrue();
         expect(scope.isEmptyPerson("")).toBeTrue();
         expect(scope.isEmptyPerson(undefined)).toBeTrue();
@@ -190,7 +190,7 @@ describe("PrepareJsController", function() {
         expect(scope.isEmptyPerson(person)).toBeFalse();
     });
 
-    it ("getRecipients", function() {
+    xit ("getRecipients", function() {
         expect(scope.error).toBeUndefined();
         expect(scope.addStep).toBeUndefined();
         expect(scope.sendToSelf).toBeUndefined();
@@ -268,3 +268,187 @@ describe("PrepareJsController", function() {
     });
 
 });
+
+describe("PrepareJsController#getRecipients", function() {
+    beforeEach(module('filedropApp', function($provide) {
+        $provide.service('$window', function() {
+            this.user = {
+                uid: "fd",
+                cn: "f r d",
+                mails: ["f@h.x", "d@h.y"]
+            };
+            this.fileDrop = {
+                sender: null,
+                recipients: null,
+                expiration: null,
+                authentication: null,
+                message: null
+            };
+        });
+    }));
+
+    let scope;
+    let controller;
+    let window;
+    let dataProvider;
+
+    beforeEach(inject(function($rootScope, $controller, _$window_, _dataProvider_, _$httpBackend_) {
+        scope = $rootScope.$new();
+        window = _$window_;
+        dataProvider = _dataProvider_;
+        $httpBackend = _$httpBackend_;
+        controller = $controller('PrepareJsController', {
+            $scope: scope,
+            dataProvider: _dataProvider_,
+            $window: _$window_
+        });
+    }));
+
+    afterEach(function() {
+        $httpBackend.verifyNoOutstandingExpectation();
+        $httpBackend.verifyNoOutstandingRequest();
+    });
+
+    it ("start-of-new-filedrop", function() {
+        expect(scope.error).toBeUndefined();
+        expect(scope.addStep).toBeUndefined();
+        expect(scope.sendToSelf).toBeUndefined();
+        let recipients = scope.getRecipients();
+        expect(typeof recipients).toEqual("object");
+        expect(recipients.length).toEqual(0);
+        let recipientsStr = scope.getRecipientsString();
+        expect(typeof recipientsStr).toEqual("string");
+        expect(recipientsStr.length).toEqual(0);
+        expect(scope.error).toBeUndefined();
+        expect(scope.sendToSelf).toBeUndefined();
+        expect(scope.addStep).toBeUndefined();
+        const currentUser = scope.currentUser();
+        expect(currentUser.uid).toEqual("fd");
+        expect(currentUser.cn).toEqual("f r d");
+        expect(currentUser.mails.length).toEqual(2);
+        expect(currentUser.mails[0]).toEqual("f@h.x");
+        expect(currentUser.mails[1]).toEqual("d@h.y");
+
+        scope.init(); // <-- Note.
+
+        expect(scope.addStep).toEqual("");
+        expect(scope.sendToSelf).toBeFalse();
+        expect(scope.error).toBeUndefined();
+        recipients = scope.getRecipients();
+        expect(recipients.length).toEqual(0);
+        recipientsStr = scope.getRecipientsString();
+        expect(recipientsStr).toEqual("");
+        expect(scope.recipient).toEqual("");
+        expect(scope.authentication).toBeTrue();
+        expect(scope.error).toBeUndefined();
+        expect(scope.addStep).toEqual("");
+
+        const person0 = {name: "p", mails: ["s@t.u"], uid: "d"};
+        expect(scope.isEmptyPerson(person0)).toEqual(false);
+        expect(scope.isEmptyPerson(person0)).toBeFalse();
+
+        let recipientToAdd = person0.uid;
+        expect(scope.hasRecipient(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
+        expect(scope.addStep).toEqual("");
+
+        const postUrlBase = "/filedrop/prepare/recipient/add";
+        let postUrl = postUrlBase + "?recipient=" + recipientToAdd;
+        $httpBackend.whenPOST(postUrl).respond(200, person0);
+        $httpBackend.expectPOST(postUrl);
+
+        scope.addRecipient(recipientToAdd);
+
+        $httpBackend.flush();
+
+        expect(scope.addStep).toEqual("_four_");
+        expect(scope.recipient).toEqual("");
+        recipientsStr = scope.getRecipientsString();
+        expect(recipientsStr.length).toEqual(1);
+        expect(recipientsStr).toEqual("d");
+        recipients = scope.getRecipients();
+        expect(recipients.length).toEqual(1);
+
+        const expectedRecipient0 =
+            scope.makeRecipient(person0.cn, person0.mails[0], person0.mails, person0.uid);
+        expect(recipients[0]).toBeDefined();
+        expect(recipients[0]).toEqual(expectedRecipient0);
+        expect(recipients[0].name).toEqual(undefined); // Hmm.
+        expect(recipients[0].mail).toEqual(expectedRecipient0.mail);
+        expect(recipients[0].mails).toEqual(expectedRecipient0.mails);
+        expect(recipients[0].uid).toEqual(expectedRecipient0.uid);
+
+        const person1 = {name: "q", mails: ["w@y.z"], uid: "c"};
+        expect(scope.isEmptyPerson(person0)).toEqual(false);
+        expect(scope.isEmptyPerson(person0)).toBeFalse();
+
+        recipientToAdd = person1.uid;
+        expect(scope.hasRecipient(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
+        expect(scope.addStep).toEqual("_four_");
+
+        postUrl = postUrlBase + "?recipient=" + recipientToAdd;
+        $httpBackend.whenPOST(postUrl).respond(200, person1);
+        $httpBackend.expectPOST(postUrl);
+
+        scope.addRecipient(recipientToAdd);
+
+        $httpBackend.flush();
+
+        expect(scope.addStep).toEqual("_four_");
+        const expectedRecipient1 =
+            scope.makeRecipient(person1.cn, person1.mails[0], person1.mails, person1.uid);
+        expect(recipients[1]).toBeDefined();
+        expect(recipients[1]).toEqual(expectedRecipient1);
+        expect(recipients[1].name).toEqual(undefined); // Hmm.
+        expect(recipients[1].mail).toEqual(expectedRecipient1.mail);
+        expect(recipients[1].mails).toEqual(expectedRecipient1.mails);
+        expect(recipients[1].uid).toEqual(expectedRecipient1.uid);
+        // Check that the previous one is still there.
+        expect(recipients[0]).toBeDefined();
+        expect(recipients[0]).toEqual(expectedRecipient0);
+        expect(recipients[0].name).toEqual(undefined); // Hmm.
+        expect(recipients[0].mail).toEqual(expectedRecipient0.mail);
+        expect(recipients[0].mails).toEqual(expectedRecipient0.mails);
+        expect(recipients[0].uid).toEqual(expectedRecipient0.uid);
+
+        // Try re-adding the first person.
+        recipientToAdd = person0.uid;
+        expect(scope.hasRecipient(recipientToAdd)).toBeTrue();
+        expect(person0.uid).not.toEqual(currentUser.uid);
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
+
+        if ("off" === "") {
+            throw new Error("STOP test: ["
+            + JSON.stringify(person0) + "] -- ["
+            + JSON.stringify(person1));
+        }
+
+        //
+        // Don't need a mocked post for this add attempt.
+        //
+
+        scope.addRecipient(recipientToAdd);
+
+        expect(scope.addStep).toEqual("_already_added_");
+        expect(scope.recipient).toEqual("");
+        expect(scope.error).toBeDefined();
+        expect(scope.error.message).toEqual("Recipient is already added.");
+        recipientsStr = scope.getRecipientsString();
+        expect(recipientsStr.length).toEqual(3);
+        expect(recipientsStr).toEqual("d,c");
+        recipients = scope.getRecipients();
+        expect(recipients.length).toEqual(2);
+
+        expect(recipients[0]).toBeDefined();
+        expect(recipients[0]).toEqual(expectedRecipient0);
+        expect(recipients[0].name).toEqual(undefined); // Hmm.
+        expect(recipients[0].mail).toEqual(expectedRecipient0.mail);
+        expect(recipients[0].mails).toEqual(expectedRecipient0.mails);
+        expect(recipients[0].uid).toEqual(expectedRecipient0.uid);
+    });
+});
+

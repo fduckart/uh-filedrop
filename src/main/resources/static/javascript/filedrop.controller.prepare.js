@@ -56,11 +56,31 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         return false; // Not found.
     };
 
+    $scope.makeRecipient = function(name, mail, mails, uid) {
+        // Note: cannot do this yet.
+        // let Recipient = class {
+        //     constructor() {
+        //         this.name = name;
+        //         this.mail = mail;
+        //         this.mails = mails;
+        //         this.uid = uid;
+        //     }
+        // }
+        // return new Recipient(name, mail, mails, uid);
+
+        return {
+            name: name,
+            mail: mail,
+            mails: mails,
+            uid: uid
+        };
+    }
+
     $scope.addRecipient = function(recipientToAdd) {
         if ($scope.hasRecipient(recipientToAdd)) {
             $scope.error = {message: "Recipient is already added."};
             $scope.recipient = "";
-            $scope.addStep = "_one_"
+            $scope.addStep = "_already_added_"
             return;
         }
 
@@ -69,12 +89,13 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         if ($scope.isCurrentUserUid(recipientToAdd) || $scope.isCurrentUserMail(recipientToAdd)) {
             $scope.sendToSelf = true;
             //if (!isRecipient) {
-            $scope.recipients.push({
-                name: currentUser.cn,
-                mail: currentUser.mails[0],
-                mails: [currentUser.mails[0]],
-                uid: currentUser.uid
-            });
+            $scope.recipients.push(
+                $scope.makeRecipient(
+                    currentUser.cn,
+                    currentUser.mails[0],
+                    [currentUser.mails[0]],
+                    currentUser.uid)
+                );
             //}
             $scope.recipient = "";
             $scope.addStep = "_two_"
@@ -91,35 +112,15 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         $http({
             method: "POST",
             url: "/filedrop/prepare/recipient/add",
-            // params: {
-            //     recipient: recipientToAdd,
-            //     authenticationRequired: $scope.authentication
-            // }
+            params: {
+                recipient: recipientToAdd,
+                //authenticationRequired: $scope.authentication
+            }
         }).then((response) => {
             const person = response.data;
             $log.debug("addRecipient;", currentUser.uid, "searched", recipientToAdd, "and found", person.cn);
-            if ($scope.isEmptyPerson(person)) {
-                $scope.recipients.push({name: recipientToAdd, mail: recipientToAdd})
-                $scope.addStep = "_three_"
 
-                if ("" === "") {
-                    //  {name: "n", mail: "m@n.o", uid: "u"}
-                    throw new Error("STOP, success: "
-                    + response.data.name + ", "
-                    + response.data.mail + ", "
-                    + response.data.uid + ", ");
-                }
-
-            } else {
-                if ("" === "off") {
-                    //  {name: "n", mail: "m@n.o", uid: "u"}
-                    throw new Error("STOP, succesa: "
-                    + response.data.name + ", "
-                    + response.data.mail + ", "
-                    + response.data.mails + ", "
-                    + response.data.uid + ", ");
-                }
-
+            if (!($scope.isEmptyPerson(person))) {
                 $scope.recipients.push({
                     name: person.cn,
                     mail: person.mails[0],
@@ -127,17 +128,18 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     uid: person.uid
                 });
                 $scope.addStep = "_four_"
+            } else {
+                $scope.recipients.push({name: recipientToAdd, mail: recipientToAdd})
+                $scope.addStep = "_three_"
             }
+
         }, (response) => {
-            if ("" === "") {
-                throw new Error("STOP, failed!");
-            }
             $log.debug("addRecipient;", response.data.message);
             $scope.error = {message: response.data.message};
             if (response.status === 405) {
                 $scope.showPopup();
             }
-            $scope.addStep = "_five_"
+            $scope.addStep = "_add_failure_"
         });
 
         $scope.addStep = "_done_"
@@ -181,11 +183,27 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     };
 
     $scope.hasRecipient = function(recipient) {
-        return $scope.recipients.includes($scope.recipients.find(function(r) {
-            return (r.uid ? r.uid.toUpperCase() === recipient.toUpperCase() : false) ||
-                r.name.toUpperCase() === recipient.toUpperCase() ||
-                r.mail.toUpperCase() === recipient.toUpperCase();
-        }));
+        if (recipient) {
+            const value = recipient.toLowerCase();
+            let recipients = $scope.getRecipients();
+            for (let r of recipients) {
+                if (r.uid && r.uid.toLowerCase() === value) {
+                    return true;
+                } else if (r.mail && r.mail.toLowerCase() === value) {
+                    return true;
+                } else if (r.name && r.name.toLowerCase() === value) {
+                    return true;
+                }
+            }
+        }
+        return false;
+
+        // return $scope.recipients.includes($scope.recipients.find(function(r) {
+        //     return
+        //     (r.uid ? r.uid.toLowerCase() === recipient.toLowerCase() : false) ||
+        //     (r.name ? r.name.toLowerCase() === recipient.toLowerCase() : false) ||
+        //     (r.mail ? r.mail.toUpperCase() === recipient.mail.toUpperCase() : false);
+        // }));
     };
 
     $scope.userHasMultipleEmails = function() {
