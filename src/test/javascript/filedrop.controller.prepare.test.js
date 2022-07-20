@@ -191,7 +191,7 @@ describe("PrepareJsController", function() {
         expect(scope.isEmptyPerson(person)).toBeFalse();
     });
 
-    xit("getRecipients", function() {
+    it("getRecipients", function() {
         expect(scope.error).toBeUndefined();
         expect(scope.addStep).toBeUndefined();
         expect(scope.sendToSelf).toBeUndefined();
@@ -215,10 +215,23 @@ describe("PrepareJsController", function() {
         const currentUser = scope.currentUser();
         let user = {
             name: currentUser.cn,
-            mail: currentUser.mails[0],
-            mails: [currentUser.mails[0]],
+            mail: currentUser.mail,
+            mails: currentUser.mails,
             uid: currentUser.uid
         }
+
+        if ("off" === "") {
+            throw new Error("STOP test: ["
+            + JSON.stringify(user) + "] == ["
+            + JSON.stringify(recipients[0]) + "]");
+        }
+        /*
+         Error: STOP test:
+         [{"name":"f r d","mail":"f@h.x","mails":["f@h.x"],"uid":"fd"}] ==
+         [{"name":"f r d","mail":"f@h.x","mails":["f@h.x","d@h.y"],"uid":"fd"}]
+
+        */
+
         expect(recipients[0]).toEqual(user); // Note.
         recipientsStr = scope.getRecipientsString();
         expect(recipientsStr).toEqual("fd");
@@ -227,19 +240,18 @@ describe("PrepareJsController", function() {
         expect(scope.error).toBeUndefined();
         expect(scope.addStep).toEqual("");
 
+        const recipientToAdd = "sy";
+
         expect(scope.hasRecipient("sy")).toBeFalse();
         expect(scope.isCurrentUserUid("sy")).toBeFalse();
         expect(scope.isCurrentUserMail("sy")).toBeFalse();
         expect(scope.addStep).toEqual("");
 
-        const recipientToAdd = "sy";
-
-        const person = {name: "n", mails: ["m@n.o"], uid: "u"};
+        const person = {name: "n", mail: "m@n.o", mails: ["m@n.o"], uid: "sy"};
         expect(scope.isEmptyPerson(person)).toEqual(false);
         expect(scope.isEmptyPerson(person)).toBeFalse();
 
         const postUrl = "/filedrop/prepare/recipient/add";
-
         $httpBackend.whenPOST(postUrl).respond(200, person);
         $httpBackend.expectPOST(postUrl);
 
@@ -451,8 +463,8 @@ describe("PrepareJsController#getRecipients", function() {
 
         if ("off" === "") {
             throw new Error("STOP test: ["
-                + JSON.stringify(person0) + "] -- ["
-                + JSON.stringify(person1));
+            + JSON.stringify(person0) + "] -- ["
+            + JSON.stringify(person1));
         }
 
         //
@@ -466,13 +478,12 @@ describe("PrepareJsController#getRecipients", function() {
         expect(scope.recipient).toEqual("");
         expect(scope.error).toBeDefined();
         expect(scope.error.message).toEqual("Recipient is already added.");
-        recipientsStr = scope.getRecipientsString();
-        expect(recipientsStr.length).toEqual(3);
-        expect(recipientsStr).toEqual("d,c");
         recipients = scope.getRecipients();
         expect(recipients.length).toEqual(2);
+        recipientsStr = scope.getRecipientsString();
+        expect(recipientsStr).toEqual("d,c");
 
-        // Try re-adding the current user by uid.
+        // Try adding the current user by uid.
         recipientToAdd = currentUser.uid;
         expect(scope.hasRecipient(recipientToAdd)).toBeFalse();
         expect(scope.isCurrentUserUid(recipientToAdd)).toBeTrue();
@@ -493,37 +504,71 @@ describe("PrepareJsController#getRecipients", function() {
         recipientsStr = scope.getRecipientsString();
         expect(recipientsStr).toEqual("d,c,fd");
 
-        if ("off" === "") {
-            throw new Error("STOP test: ["
-                + JSON.stringify(currentUser) + "]");
-        }
-
-        // {"uid":"fd","cn":"f r d","mails":["f@h.x","d@h.y"]}
-
         expect(recipients[2]).toBeDefined();
         const expectedRecipient2 =
             scope.makeRecipient(currentUser.cn, currentUser.mails[0],
                 currentUser.mails, currentUser.uid);
-        // expect(recipients[2]).toEqual(expectedRecipient2);
+
+        expect(recipients[2]).toEqual(expectedRecipient2);
         expect(recipients[2].name).toEqual(expectedRecipient2.name);
+        expect(currentUser.name).toBeUndefined(); // Note.
+        expect(recipients[2].name).toEqual(currentUser.cn); // Note.
+        expect(recipients[2].cn).toBeUndefined(); // Note.
+        expect(expectedRecipient2.cn).toBeUndefined(); // Note.
         expect(recipients[2].mail).toEqual(expectedRecipient2.mail);
         expect(recipients[2].mail).toEqual(currentUser.mail);
         expect(recipients[2].uid).toEqual(expectedRecipient2.uid);
         expect(recipients[2].uid).toEqual(currentUser.uid);
 
-        expect(expectedRecipient2.cn).toBeUndefined(); // Note.
-        expect(recipients[2].cn).toBeUndefined(); // Note.
-        expect(currentUser.name).toBeUndefined(); // Note.
+        // Try re-adding the current user by mail.
+        recipientToAdd = currentUser.mails[0];
+        expect(scope.hasRecipient(recipientToAdd)).toBeTrue();
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeTrue();
 
-        // expect(recipients[2].mails).toEqual(expectedRecipient2.mails);
+        //
+        // Don't need a mocked post for this add attempt
+        // because it is handled before the POST happens.
+        //
 
-        // return {
-        //     name: name,
-        //     mail: mail,
-        //     mails: mails,
-        //     uid: uid
-        // };
+        scope.addRecipient(recipientToAdd);
 
+        expect(scope.addStep).toEqual("_already_added_");
+        expect(scope.recipient).toEqual("");
+        expect(scope.error).toBeDefined();
+        expect(scope.error.message).toEqual("Recipient is already added.");
+        recipientsStr = scope.getRecipientsString();
+        recipients = scope.getRecipients();
+        expect(recipients.length).toEqual(3);
+        expect(recipientsStr).toEqual("d,c,fd");
+
+        // Try re-adding the current user by mail.
+        recipientToAdd = currentUser.mails[1];
+        expect(scope.hasRecipient(recipientToAdd)).toBeTrue();
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeTrue();
+
+        //
+        // Don't need a mocked post for this add attempt
+        // because it is handled before the POST happens.
+        //
+
+        scope.addRecipient(recipientToAdd);
+
+        expect(scope.addStep).toEqual("_already_added_");
+        expect(scope.recipient).toEqual("");
+        expect(scope.error).toBeDefined();
+        expect(scope.error.message).toEqual("Recipient is already added.");
+        recipientsStr = scope.getRecipientsString();
+        recipients = scope.getRecipients();
+        expect(recipients.length).toEqual(3);
+        expect(recipientsStr).toEqual("d,c,fd");
+
+        // if ("off" === "") {
+        //     throw new Error("STOP test: ["
+        //     + JSON.stringify(expectedRecipient2) + "] == ["
+        //     + JSON.stringify(recipients[2]) + "]");
+        // }
     });
 });
 

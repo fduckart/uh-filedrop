@@ -92,9 +92,9 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                 $scope.makeRecipient(
                     currentUser.cn,
                     currentUser.mails[0],
-                    [currentUser.mails[0]],
+                    currentUser.mails,
                     currentUser.uid)
-            );
+                );
             $scope.error = undefined;
             $scope.recipient = "";
             $scope.addStep = "_two_"
@@ -186,11 +186,17 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
             const value = recipient.toLowerCase();
             let recipients = $scope.getRecipients();
             for (let r of recipients) {
+                if (r.mails) {
+                    for (let s of r.mails) {
+                        if (s && s.toLowerCase() === value) {
+                            return true;
+                        }
+                    }
+                }
                 if (r.uid && r.uid.toLowerCase() === value) {
                     return true;
-                } else if (r.mail && r.mail.toLowerCase() === value) {
-                    return true;
-                } else if (r.name && r.name.toLowerCase() === value) {
+                }
+                if (r.name && r.name.toLowerCase() === value) {
                     return true;
                 }
             }
