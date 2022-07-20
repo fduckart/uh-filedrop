@@ -88,15 +88,14 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
         if ($scope.isCurrentUserUid(recipientToAdd) || $scope.isCurrentUserMail(recipientToAdd)) {
             $scope.sendToSelf = true;
-            //if (!isRecipient) {
             $scope.recipients.push(
                 $scope.makeRecipient(
                     currentUser.cn,
                     currentUser.mails[0],
                     [currentUser.mails[0]],
                     currentUser.uid)
-                );
-            //}
+            );
+            $scope.error = undefined;
             $scope.recipient = "";
             $scope.addStep = "_two_"
 

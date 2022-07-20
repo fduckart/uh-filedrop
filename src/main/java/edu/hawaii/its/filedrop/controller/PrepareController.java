@@ -373,8 +373,9 @@ public class PrepareController {
 
         model.addAttribute("uid", user.getUid());
         model.addAttribute("cn", user.getName());
-        model.addAttribute("mails", user.getAttributes().getMail());
         model.addAttribute("affiliations", user.getAttributes().getAffiliation());
+        model.addAttribute("mails", user.getAttributes().getMail());
+        model.addAttribute("mail", user.getAttribute("uhMail"));
 
         if (logger.isDebugEnabled()) {
             logger.debug("prepare; user: " + user);

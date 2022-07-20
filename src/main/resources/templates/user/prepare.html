@@ -7,6 +7,7 @@
     var user = {
         cn: [[${cn}]],
         uid: [[${uid}]],
+        mail: [[${mail}]],
         mails: [[${mails}]]
     };
     var fileDrop = {
@@ -61,8 +62,8 @@
                                         type="submit">Add Recipient
                                 </button>
                                 <button class="btn btn-success"
-                                        ng-disabled="disableSendSelf() || recipient.length > 0"
                                         ng-click="sendSelf()"
+                                        ng-disabled="disableSendSelf() || recipient.length > 0"
                                         type="button">
                                     Add Self
                                 </button>

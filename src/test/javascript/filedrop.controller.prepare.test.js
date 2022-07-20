@@ -5,7 +5,8 @@ describe("PrepareJsController", function() {
             this.user = {
                 uid: "fd",
                 cn: "f r d",
-                mails: ["f@h.x", "d@h.y"]
+                mails: ["f@h.x", "d@h.y"],
+                mail: "f@h.x"
             };
 
             this.fileDrop = {
@@ -124,7 +125,7 @@ describe("PrepareJsController", function() {
         expect(scope.sender.model).toEqual(scope.sender.mails[1]);
     });
 
-    it ("isCurrentUserMail", function() {
+    it("isCurrentUserMail", function() {
         expect(scope.isCurrentUserMail(null)).toBeFalse();
         expect(scope.isCurrentUserMail("")).toBeFalse();
         expect(scope.isCurrentUserMail(undefined)).toBeFalse();
@@ -135,7 +136,7 @@ describe("PrepareJsController", function() {
         expect(scope.isCurrentUserMail("_" + user.mails[1])).toBeFalse();
     });
 
-    it ("isCurrentUserUid", function() {
+    it("isCurrentUserUid", function() {
         expect(scope.isCurrentUserUid(null)).toBeFalse();
         expect(scope.isCurrentUserUid("")).toBeFalse();
         expect(scope.isCurrentUserUid(undefined)).toBeFalse();
@@ -145,7 +146,7 @@ describe("PrepareJsController", function() {
         expect(scope.isCurrentUserUid("_" + user.uid)).toBeFalse();
     });
 
-    it ("isEmptyPerson", function() {
+    it("isEmptyPerson", function() {
         expect(scope.isEmptyPerson(null)).toBeTrue();
         expect(scope.isEmptyPerson("")).toBeTrue();
         expect(scope.isEmptyPerson(undefined)).toBeTrue();
@@ -190,7 +191,7 @@ describe("PrepareJsController", function() {
         expect(scope.isEmptyPerson(person)).toBeFalse();
     });
 
-    xit ("getRecipients", function() {
+    xit("getRecipients", function() {
         expect(scope.error).toBeUndefined();
         expect(scope.addStep).toBeUndefined();
         expect(scope.sendToSelf).toBeUndefined();
@@ -260,11 +261,6 @@ describe("PrepareJsController", function() {
         expect(recipients[2]).toEqual({name: undefined, mail: 'm@n.o', mails: ['m@n.o'], uid: 'u'});
         expect(recipients[3]).toEqual({name: undefined, mail: 'm@n.o', mails: ['m@n.o'], uid: 'u'});
         expect(recipients[4]).toEqual({name: undefined, mail: 'm@n.o', mails: ['m@n.o'], uid: 'u'});
-
-        // scope.isEmptyPerson(person)
-
-        // $httpBackend.verifyNoOutstandingExpectation();
-        // $httpBackend.verifyNoOutstandingRequest();
     });
 
 });
@@ -275,7 +271,8 @@ describe("PrepareJsController#getRecipients", function() {
             this.user = {
                 uid: "fd",
                 cn: "f r d",
-                mails: ["f@h.x", "d@h.y"]
+                mails: ["f@h.x", "d@h.y"],
+                mail: "f@h.x"
             };
             this.fileDrop = {
                 sender: null,
@@ -309,7 +306,7 @@ describe("PrepareJsController#getRecipients", function() {
         $httpBackend.verifyNoOutstandingRequest();
     });
 
-    it ("start-of-new-filedrop", function() {
+    it("add-and-get-recipients", function() {
         expect(scope.error).toBeUndefined();
         expect(scope.addStep).toBeUndefined();
         expect(scope.sendToSelf).toBeUndefined();
@@ -421,14 +418,9 @@ describe("PrepareJsController#getRecipients", function() {
         expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
         expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
 
-        if ("off" === "") {
-            throw new Error("STOP test: ["
-            + JSON.stringify(person0) + "] -- ["
-            + JSON.stringify(person1));
-        }
-
         //
-        // Don't need a mocked post for this add attempt.
+        // Don't need a mocked post for this add attempt
+        // because it is handled before the POST happens.
         //
 
         scope.addRecipient(recipientToAdd);
@@ -449,6 +441,89 @@ describe("PrepareJsController#getRecipients", function() {
         expect(recipients[0].mail).toEqual(expectedRecipient0.mail);
         expect(recipients[0].mails).toEqual(expectedRecipient0.mails);
         expect(recipients[0].uid).toEqual(expectedRecipient0.uid);
+
+        // Try re-adding the second person using an email.
+        recipientToAdd = person1.mails[0];
+        expect(scope.hasRecipient(recipientToAdd)).toBeTrue();
+        expect(person1.uid).not.toEqual(currentUser.uid);
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
+
+        if ("off" === "") {
+            throw new Error("STOP test: ["
+                + JSON.stringify(person0) + "] -- ["
+                + JSON.stringify(person1));
+        }
+
+        //
+        // Don't need a mocked post for this add attempt
+        // because it is handled before the POST happens.
+        //
+
+        scope.addRecipient(recipientToAdd);
+
+        expect(scope.addStep).toEqual("_already_added_");
+        expect(scope.recipient).toEqual("");
+        expect(scope.error).toBeDefined();
+        expect(scope.error.message).toEqual("Recipient is already added.");
+        recipientsStr = scope.getRecipientsString();
+        expect(recipientsStr.length).toEqual(3);
+        expect(recipientsStr).toEqual("d,c");
+        recipients = scope.getRecipients();
+        expect(recipients.length).toEqual(2);
+
+        // Try re-adding the current user by uid.
+        recipientToAdd = currentUser.uid;
+        expect(scope.hasRecipient(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeTrue();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
+
+        //
+        // Don't need a mocked post for this add attempt
+        // because it is handled before the POST happens.
+        //
+
+        scope.addRecipient(recipientToAdd);
+
+        expect(scope.addStep).toEqual("_two_");
+        expect(scope.recipient).toEqual("");
+        expect(scope.error).toBeUndefined();
+        recipients = scope.getRecipients();
+        expect(recipients.length).toEqual(3);
+        recipientsStr = scope.getRecipientsString();
+        expect(recipientsStr).toEqual("d,c,fd");
+
+        if ("off" === "") {
+            throw new Error("STOP test: ["
+                + JSON.stringify(currentUser) + "]");
+        }
+
+        // {"uid":"fd","cn":"f r d","mails":["f@h.x","d@h.y"]}
+
+        expect(recipients[2]).toBeDefined();
+        const expectedRecipient2 =
+            scope.makeRecipient(currentUser.cn, currentUser.mails[0],
+                currentUser.mails, currentUser.uid);
+        // expect(recipients[2]).toEqual(expectedRecipient2);
+        expect(recipients[2].name).toEqual(expectedRecipient2.name);
+        expect(recipients[2].mail).toEqual(expectedRecipient2.mail);
+        expect(recipients[2].mail).toEqual(currentUser.mail);
+        expect(recipients[2].uid).toEqual(expectedRecipient2.uid);
+        expect(recipients[2].uid).toEqual(currentUser.uid);
+
+        expect(expectedRecipient2.cn).toBeUndefined(); // Note.
+        expect(recipients[2].cn).toBeUndefined(); // Note.
+        expect(currentUser.name).toBeUndefined(); // Note.
+
+        // expect(recipients[2].mails).toEqual(expectedRecipient2.mails);
+
+        // return {
+        //     name: name,
+        //     mail: mail,
+        //     mails: mails,
+        //     uid: uid
+        // };
+
     });
 });
 
