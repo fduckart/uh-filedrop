@@ -226,10 +226,6 @@ public class PrepareController {
         logger.debug("completeFileDrop; start.");
         logger.info("completeFileDrop; uploadKey: " + uploadKey);
 
-        if ("off".equals("")) {
-            throw new NullPointerException("Stop the Music!");
-        }
-
         Task currentTask = workflowService.currentTask(currentUser());
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
 

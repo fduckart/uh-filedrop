@@ -1,4 +1,17 @@
-var filedropApp = angular.module("filedropApp", ["ngFileUpload", "ui.bootstrap"]);
+/*eslint no-undef: "error"*/
+"use strict";
+const filedropApp = angular.module("filedropApp", ["ngFileUpload", "ui.bootstrap"]);
+
+filedropApp.constant("App", {
+    Url: {
+        Api: {
+            ADMIN_ALLOWLIST: "/api/admin/allowlist",
+            HISTORY: "/filedrop/api/filedrops",
+            PREPARE_ADD_RECIPIENT: "/filedrop/prepare/recipient/add",
+            ROLE: "/filedrop/api/roles"
+        }
+    }
+});
 
 filedropApp.filter("bytes", function() {
     return function(bytes, precision) {

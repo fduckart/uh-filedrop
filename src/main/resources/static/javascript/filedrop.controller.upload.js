@@ -8,7 +8,7 @@ function UploadJsController($scope, Upload, $window) {
         $scope.disableUpload = false;
     };
 
-    $scope.submit = function () {
+    $scope.submit = function() {
         if ($scope.files && $scope.files.length) {
             $scope.disableUpload = true;
             let count = 0;
@@ -21,26 +21,26 @@ function UploadJsController($scope, Upload, $window) {
                     },
                     arrayKey: ""
                 })
-                .success(() => {
-                    count++;
-                    $scope.progress = 100 * (count / $scope.files.length);
-                    if (count === $scope.files.length) {
-                        $window.location.href = "/filedrop/complete/" + $scope.uploadKey;
-                    }
-                });
+                    .success(() => {
+                        count++;
+                        $scope.progress = 100 * (count / $scope.files.length);
+                        if (count === $scope.files.length) {
+                            $window.location.href = "/filedrop/complete/" + $scope.uploadKey;
+                        }
+                    });
             });
         }
     };
 
-    $scope.addFiles = function (files) {
+    $scope.addFiles = function(files) {
         $scope.files = $scope.files.concat(files);
-        angular.forEach(files, function (file) {
+        angular.forEach(files, function(file) {
             file.comment = "";
             $scope.uploadSize += file.size;
         });
     };
 
-    $scope.removeFile = function (file) {
+    $scope.removeFile = function(file) {
         let index = $scope.files.indexOf(file);
         if (index > -1) {
             $scope.files.splice(index, 1);
@@ -48,7 +48,7 @@ function UploadJsController($scope, Upload, $window) {
         }
     };
 
-    $scope.isUploadLarge = function () {
+    $scope.isUploadLarge = function() {
         return $scope.uploadSize > $scope.maxUploadSize;
     };
 }

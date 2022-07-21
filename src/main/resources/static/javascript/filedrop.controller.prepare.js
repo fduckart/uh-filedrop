@@ -1,12 +1,14 @@
 function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibModal) {
 
     $scope.init = function() {
+        $scope.addStep = ["_init_"];
         $scope.recipient = "";
         $scope.recipients = [];
         $scope.sendToSelf = false;
         $scope.authentication = $scope.getAuthentication();
         $scope.expiration = $scope.getExpiration();
         $scope.message = $scope.getMessage();
+
         $scope.loadRecipients();
 
         $log.debug("init; Sender:", $scope.sender);
@@ -16,8 +18,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         $log.debug("init; Expiration:", $scope.expiration);
         $log.debug("init; Message:", $scope.message);
         $log.debug("init; FileDrop Sender:", $scope.getFileDrop().sender);
-
-        $scope.addStep = "";
     };
 
     $scope.isCurrentUserMail = function(mail) {
@@ -57,17 +57,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     };
 
     $scope.makeRecipient = function(name, mail, mails, uid) {
-        // Note: cannot do this yet.
-        // let Recipient = class {
-        //     constructor() {
-        //         this.name = name;
-        //         this.mail = mail;
-        //         this.mails = mails;
-        //         this.uid = uid;
-        //     }
-        // }
-        // return new Recipient(name, mail, mails, uid);
-
         return {
             name: name,
             mail: mail,
@@ -77,10 +66,17 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     }
 
     $scope.addRecipient = function(recipientToAdd) {
+
+        $scope.addStep.push("_add_start_");
+
+        if ("off" === "") {
+            throw new Error("STOP addrecipient; recipientToAdd: " + recipientToAdd);
+        }
+
         if ($scope.hasRecipient(recipientToAdd)) {
             $scope.error = {message: "Recipient is already added."};
             $scope.recipient = "";
-            $scope.addStep = "_already_added_"
+            $scope.addStep.push("_already_added_");
             return;
         }
 
@@ -94,19 +90,64 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     currentUser.mails[0],
                     currentUser.mails,
                     currentUser.uid)
-                );
+            );
             $scope.error = undefined;
             $scope.recipient = "";
-            $scope.addStep = "_two_"
+            $scope.addStep.push("_add_current_user_");
 
             return;
         }
 
-        const url = "/filedrop/prepare/recipient/add";
-        const data = {
-            recipient: recipientToAdd,
-            authenticationRequired: $scope.authentication
+        if ("off" === "") {
+            throw new Error("STOP addrecipient: ["
+                + JSON.stringify(recipientToAdd) + "] == ["
+                + JSON.stringify(currentUser) + "] == ["
+                + JSON.stringify(currentUser) + "]");
+        }
+
+        let successCallback = function(response) {
+            const person = response.data;
+            $log.debug("addRecipient;", currentUser.uid, "searched", recipientToAdd, "and found", person.cn);
+
+            if (!($scope.isEmptyPerson(person))) {
+                if ("aaa" === "") {
+                    throw new Error("BBB addrecipient; recipientToAdd: " + recipientToAdd);
+                }
+                $scope.recipients.push({
+                    name: person.cn,
+                    mail: person.mails[0],
+                    mails: person.mails,
+                    uid: person.uid
+                });
+                $scope.addStep.push("_add_person_");
+            } else {
+                if ("" === "") {
+                    throw new Error("CCC addrecipient; recipientToAdd: " + recipientToAdd);
+                }
+
+                $scope.recipients.push({name: recipientToAdd, mail: recipientToAdd})
+                $scope.addStep.push("_add_emtpy_person_");
+            }
         };
+
+        let errorCallback = function(response) {
+            $log.debug("addRecipient;", response.data.message);
+            $scope.error = {message: response.data.message};
+            if (response.status === 405) {
+                $scope.showPopup();
+            }
+            $scope.addStep.push("_add_failure_");
+
+            if ("" === "") {
+                throw new Error("DDD addrecipient; recipientToAdd: " + recipientToAdd);
+            }
+        };
+
+        // const url = "/filedrop/prepare/recipient/add";
+        // const data = {
+        //     recipient: recipientToAdd,
+        //     authenticationRequired: $scope.authentication
+        // };
 
         $http({
             method: "POST",
@@ -115,36 +156,34 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                 recipient: recipientToAdd,
                 //authenticationRequired: $scope.authentication
             }
-        }).then((response) => {
-            const person = response.data;
-            $log.debug("addRecipient;", currentUser.uid, "searched", recipientToAdd, "and found", person.cn);
+        }).then(successCallback, errorCallback);
 
-            if (!($scope.isEmptyPerson(person))) {
-                $scope.recipients.push({
-                    name: person.cn,
-                    mail: person.mails[0],
-                    mails: person.mails,
-                    uid: person.uid
-                });
-                $scope.addStep = "_four_"
-            } else {
-                $scope.recipients.push({name: recipientToAdd, mail: recipientToAdd})
-                $scope.addStep = "_three_"
-            }
+        if ("ggg" === "") {
+            throw new Error("GGG addrecipient; recipientToAdd: " + recipientToAdd);
+        }
 
-        }, (response) => {
-            $log.debug("addRecipient;", response.data.message);
-            $scope.error = {message: response.data.message};
-            if (response.status === 405) {
-                $scope.showPopup();
-            }
-            $scope.addStep = "_add_failure_"
-        });
-
-        $scope.addStep = "_done_"
+        $scope.addStep.push("_add_done_");
 
         $scope.recipient = "";
     }
+
+    $scope.loadRecipients = function() {
+        const recipients = $scope.getFileDrop().recipients;
+
+        if ("off" === "") {
+            throw new Error("STOP addrecipient: ["
+                + JSON.stringify(recipients) + "]");
+        }
+
+        if (recipients && recipients.length > 0) {
+            for (let recipient of recipients) {
+                if ($scope.currentUser().mails.includes(recipient)) {
+                    $scope.sendToSelf = true;
+                }
+                $scope.addRecipient(recipient);
+            }
+        }
+    };
 
     $scope.isEmptyPerson = function(person) {
         if (!person || !person.mails) {
@@ -242,18 +281,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     $scope.currentUser = () => $window.user;
 
     $scope.getFileDrop = () => $window.fileDrop;
-
-    $scope.loadRecipients = function() {
-        const recipients = $scope.getFileDrop().recipients;
-        if (recipients && recipients.length > 0) {
-            for (let recipient of recipients) {
-                if ($scope.currentUser().mails.includes(recipient)) {
-                    $scope.sendToSelf = true;
-                }
-                $scope.addRecipient(recipient);
-            }
-        }
-    };
 
     $scope.getAuthentication = () => $scope.getFileDrop().authentication !== null ?
         $scope.getFileDrop().authentication : true;
