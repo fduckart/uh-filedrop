@@ -13,7 +13,7 @@ public class CasUserDetailsService extends AbstractCasAssertionUserDetailsServic
 
     private static final Log logger = LogFactory.getLog(CasUserDetailsService.class);
 
-    private UserBuilder userBuilder;
+    private final UserBuilder userBuilder;
 
     public CasUserDetailsService(UserBuilder userBuilder) {
         super();

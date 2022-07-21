@@ -11,8 +11,8 @@ import java.security.spec.KeySpec;
 
 public class Aes256 implements Cipher {
 
-    private String iv;
-    private String salt;
+    private final String iv;
+    private final String salt;
 
     public Aes256(String iv, String salt) {
         this.iv = iv;
@@ -32,7 +32,6 @@ public class Aes256 implements Cipher {
         cipher.init(cipherMode, secret, new IvParameterSpec(iv));
         return cipher;
     }
-
 
     @Override
     public javax.crypto.Cipher decrypt(String key) throws GeneralSecurityException {

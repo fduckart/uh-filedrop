@@ -43,8 +43,6 @@ public class CipherLocatorTest {
     }
 
     public void encryptionProcessTest() throws IOException {
-        //        Cipher cipher = cipherLocator.find("rc2");
-        //        CipherFilter cipherFilter = new CipherFilter("test");
         File original = File.createTempFile("~filedrop.store.original", "txt");
         original.deleteOnExit();
         assertTrue(original.exists());

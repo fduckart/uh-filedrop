@@ -22,7 +22,7 @@ public interface AdministratorRepository extends JpaRepository<Administrator, In
     @Query(value = "select a from Administrator a "
             + "where (a.roleId = 13 or a.roleId = 14) "
             + "and a.person.uhUuid = ?1 "
-            + "order by a.role")
+            + "order by a.roleId")
     List<Administrator> findAllByPersonUhUuid(String uhUuid);
 
     @Query(value = "select c from Administrator c "

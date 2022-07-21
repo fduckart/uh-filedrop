@@ -283,38 +283,28 @@ describe("PrepareJsController", function() {
         expect(recipients[0]).toEqual(user); // Note.
 
         recipientsStr = scope.getRecipientsString();
-        expect(recipientsStr).toEqual("fd,,,");
+        expect(recipientsStr).toEqual("fd,,,"); // FIXME
         expect(scope.recipient).toEqual("");
         expect(scope.authentication).toBeTrue();
         expect(scope.error).toBeUndefined();
         // expect(scope.addStep).toEqual("");
 
-        if (false) {
+        const person = {
+            name: "n",
+            mail: "m@n.o",
+            mails: ["m@n.o"],
+            uid: "sy"
+        };
+        expect(scope.isEmptyPerson(person)).toEqual(false);
+        expect(scope.isEmptyPerson(person)).toBeFalse();
 
-            const person = {
-                name: "n",
-                mail: "m@n.o",
-                mails: ["m@n.o"],
-                uid: "sy"
-            };
-            expect(scope.isEmptyPerson(person)).toEqual(false);
-            expect(scope.isEmptyPerson(person)).toBeFalse();
+        const recipientToAdd = person.uid;
+        expect(scope.hasRecipient(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
+        // expect(scope.addStep).toEqual("");
 
-            if ("off" === "") {
-                throw new Error("STOP test: ["
-                + JSON.stringify(person) + "] == ["
-                + JSON.stringify(user) + "] == ["
-                + JSON.stringify(recipients[0]) + "]");
-            }
-            /*
-            */
-
-            const recipientToAdd = person.uid;
-            expect(scope.hasRecipient(recipientToAdd)).toBeFalse();
-            expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
-            expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
-            expect(scope.addStep).toEqual("");
-
+        if ("off" === "") {
             expect(recipientToAdd).toEqual("sy");
             expect(recipientToAdd).toEqual(person.uid);
 

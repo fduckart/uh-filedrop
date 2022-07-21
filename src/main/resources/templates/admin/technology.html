@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-    lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head th:replace="header :: copy"></head>
 <body>
 <nav th:replace="menubar :: copy"></nav>
@@ -8,7 +8,7 @@
     <nav aria-label="breadcrumb">
         <ol class="breadcrumb breadcrumb-bg">
             <li class="breadcrumb-item"><a th:href="@{/admin}">Admin</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Technology</li>
+            <li aria-current="page" class="breadcrumb-item active">Technology</li>
         </ol>
     </nav>
     <div class="card">
@@ -30,9 +30,9 @@
                         <li>
                             Spring Security
                             <a href="https://docs.spring.io/spring-security/site/docs/5.1.5.RELEASE/reference/htmlsingle/"
-                                target="_sprsecgu">(Guide)</a>
+                               target="_sprsecgu">(Guide)</a>
                             <a href="https://docs.spring.io/spring-security/site/docs/5.1.5.RELEASE/api/"
-                                target="_sprsecapi">(API)</a>
+                               target="_sprsecapi">(API)</a>
                         </li>
                         <li>
                             Spring Data JPA
@@ -42,30 +42,30 @@
                         <li>
                             Spring Data Commons
                             <a href="https://docs.spring.io/spring-data/commons/docs/2.1.9.RELEASE/reference/html/"
-                                target="_sprdatcogu">(Guide)</a>
+                               target="_sprdatcogu">(Guide)</a>
                             <a href="https://docs.spring.io/spring-data/commons/docs/2.1.9.RELEASE/api/"
-                                target="_sprdatcoapi">(API)</a>
+                               target="_sprdatcoapi">(API)</a>
                         </li>
                         <li>
                             Spring LDAP
                             <a href="https://docs.spring.io/spring-ldap/docs/2.3.2.RELEASE/reference/"
-                                target="_sprldapgu">(Guide)</a>
+                               target="_sprldapgu">(Guide)</a>
                             <a href="https://docs.spring.io/spring-ldap/docs/2.3.2.RELEASE/apidocs/" target="_sprldapapi">(API)</a>
                         </li>
                         <li>
                             Flowable Engine
                             <a href="https://flowable.com/open-source/docs/javadocs/index.html"
-                                target="_flowapi">(API)</a>                        
+                               target="_flowapi">(API)</a>
                         </li>
                         <li>
                             Flowable Task Service
                             <a href="https://flowable.com/open-source/docs/task-javadocs/index.html"
-                                target="_flowapi">(API)</a>                        
+                               target="_flowapi">(API)</a>
                         </li>
                         <li>
                             Thymeleaf
                             <a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html#introducing-thymeleaf"
-                                target="_thylgu">(Guide)</a>
+                               target="_thylgu">(Guide)</a>
                         </li>
                         <li>
                             Bootstrap
@@ -82,17 +82,18 @@
                         </li>
                         <li>
                             JQuery
-                            <a href="http://api.jquery.com/" target="_jquapi">(API)</a>
+                            <a href="https://api.jquery.com/" target="_jquapi">(API)</a>
                         </li>
                         <li>
                             Jasmine
-                            <a href="https://jasmine.github.io/" target="_jasmine">(Guide)</a>
+                            <a href="https://jasmine.github.io/" target="_jasmine_git">(Github)</a>
+                            <a href="https://jasmine.github.io/api/4.1/global" target="_jasmine_guide">(Guide)</a>
                         </li>
                     </ul>
                 </div>
-            </div>                    
-        </div>                    
-    </div>                    
+            </div>
+        </div>
+    </div>
 </div>
 <!-- / Content container. -->
 
