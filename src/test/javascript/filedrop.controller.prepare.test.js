@@ -254,10 +254,10 @@ describe("PrepareJsController", function() {
         expect(scope.addStep[5]).toEqual("_add_start_");
         expect(scope.addStep[6]).toEqual("_add_done_");
         expect(scope.addStep[7]).toEqual("_add_start_");
-        expect(scope.addStep[8]).toEqual("_add_current_user_");
-        expect(scope.addStep[9]).toEqual("_add_person_");
-        expect(scope.addStep[10]).toEqual("_add_person_");
-        expect(scope.addStep[11]).toEqual("_add_person_");
+        expect(scope.addStep[8]).toEqual("_add_current_user_" + filedropRecipients[3]);
+        expect(scope.addStep[9]).toEqual("_add_person_" + filedropRecipients[0]);
+        expect(scope.addStep[10]).toEqual("_add_person_" + filedropRecipients[1]);
+        expect(scope.addStep[11]).toEqual("_add_person_" + filedropRecipients[2]);
         expect(scope.sendToSelf).toBeTrue();
         expect(scope.error).toBeUndefined();
         recipients = scope.getRecipients();
@@ -302,9 +302,9 @@ describe("PrepareJsController", function() {
 
             if ("off" === "") {
                 throw new Error("STOP test: ["
-                    + JSON.stringify(person) + "] == ["
-                    + JSON.stringify(user) + "] == ["
-                    + JSON.stringify(recipients[0]) + "]");
+                + JSON.stringify(person) + "] == ["
+                + JSON.stringify(user) + "] == ["
+                + JSON.stringify(recipients[0]) + "]");
             }
             /*
             */

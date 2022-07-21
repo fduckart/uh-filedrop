@@ -90,19 +90,19 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     currentUser.mails[0],
                     currentUser.mails,
                     currentUser.uid)
-            );
+                );
             $scope.error = undefined;
             $scope.recipient = "";
-            $scope.addStep.push("_add_current_user_");
+            $scope.addStep.push("_add_current_user_" + recipientToAdd);
 
             return;
         }
 
         if ("off" === "") {
             throw new Error("STOP addrecipient: ["
-                + JSON.stringify(recipientToAdd) + "] == ["
-                + JSON.stringify(currentUser) + "] == ["
-                + JSON.stringify(currentUser) + "]");
+            + JSON.stringify(recipientToAdd) + "] == ["
+            + JSON.stringify(currentUser) + "] == ["
+            + JSON.stringify(currentUser) + "]");
         }
 
         let successCallback = function(response) {
@@ -119,14 +119,14 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     mails: person.mails,
                     uid: person.uid
                 });
-                $scope.addStep.push("_add_person_");
+                $scope.addStep.push("_add_person_" + recipientToAdd);
             } else {
                 if ("" === "") {
                     throw new Error("CCC addrecipient; recipientToAdd: " + recipientToAdd);
                 }
 
                 $scope.recipients.push({name: recipientToAdd, mail: recipientToAdd})
-                $scope.addStep.push("_add_emtpy_person_");
+                $scope.addStep.push("_add_emtpy_person_" + recipientToAdd);
             }
         };
 
@@ -137,10 +137,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                 $scope.showPopup();
             }
             $scope.addStep.push("_add_failure_");
-
-            if ("" === "") {
-                throw new Error("DDD addrecipient; recipientToAdd: " + recipientToAdd);
-            }
         };
 
         // const url = "/filedrop/prepare/recipient/add";
@@ -172,7 +168,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
         if ("off" === "") {
             throw new Error("STOP addrecipient: ["
-                + JSON.stringify(recipients) + "]");
+            + JSON.stringify(recipients) + "]");
         }
 
         if (recipients && recipients.length > 0) {
