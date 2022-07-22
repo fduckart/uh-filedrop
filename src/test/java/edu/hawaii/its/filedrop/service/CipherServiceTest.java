@@ -68,7 +68,7 @@ public class CipherServiceTest {
 
     @Test
     public void testNewCrypto() throws IOException, GeneralSecurityException {
-        Path path = Paths.get(storageService.getRootLocation().toString(), "dlkeytest");
+        final Path path = Paths.get(storageService.getRootLocation().toString(), "dlkeytest");
         Files.createDirectories(path);
         File original = Files.createFile(Paths.get(path.toString(), "2")).toFile();
         original.deleteOnExit();
@@ -120,6 +120,8 @@ public class CipherServiceTest {
         bufferedReader.close();
 
         assertThat(builder.toString(), equalTo(content.toString()));
+
+        edu.hawaii.its.filedrop.util.Files.deleteDirectory(path);
     }
 
     @Test

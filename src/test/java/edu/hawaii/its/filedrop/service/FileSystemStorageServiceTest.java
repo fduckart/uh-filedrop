@@ -1,5 +1,6 @@
 package edu.hawaii.its.filedrop.service;
 
+import static edu.hawaii.its.filedrop.util.Files.deleteDirectory;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
@@ -82,7 +83,8 @@ public class FileSystemStorageServiceTest {
     @Test
     public void rootLocation() {
         assertNotNull(storageService.getRootLocation());
-        assertThat("StorageProperties [location=" + storageProperties.getLocation() + "]", equalTo(storageProperties.toString()));
+        assertThat("StorageProperties [location=" + storageProperties.getLocation() + "]",
+                equalTo(storageProperties.toString()));
     }
 
     @Test
@@ -111,11 +113,10 @@ public class FileSystemStorageServiceTest {
         assertTrue(storageService.exists(dirname));
         assertTrue(Files.exists(path));
 
-        edu.hawaii.its.filedrop.util.Files.deleteDirectory(path);
+        deleteDirectory(path.getParent());
 
         assertFalse(storageService.exists(dirname));
         assertFalse(Files.exists(path));
-
     }
 
     @Test
@@ -177,6 +178,9 @@ public class FileSystemStorageServiceTest {
 
         assertFalse(storageService.exists(filepath.toString(), fileName));
         assertFalse(storageService.exists(filepath.getParent().toString(), fileName));
+
+        deleteDirectory(filepath);
+        assertFalse(Files.exists(filepath));
     }
 
     @Test
@@ -239,6 +243,9 @@ public class FileSystemStorageServiceTest {
 
         assertFalse(storageService.exists(filepath.toString(), fileName));
         assertFalse(storageService.exists(filepath.getParent().toString(), fileName));
+
+        deleteDirectory(filepath);
+        assertFalse(Files.exists(filepath));
     }
 
     @Test
