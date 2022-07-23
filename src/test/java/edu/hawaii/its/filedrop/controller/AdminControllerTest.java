@@ -8,7 +8,9 @@ import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.core.Is.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -27,6 +29,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
@@ -86,6 +89,11 @@ public class AdminControllerTest {
 
     private MockMvc mockMvc;
 
+    @AfterAll
+    public static void afterAllTearDown() {
+        // Empty, so far.
+    }
+
     @BeforeEach
     public void setUp() {
         mockMvc = webAppContextSetup(context)
@@ -95,6 +103,7 @@ public class AdminControllerTest {
 
     @AfterEach
     public void tearDown() {
+        // Empty, so far.
     }
 
     @Test
@@ -322,7 +331,7 @@ public class AdminControllerTest {
 
         mockMvc.perform(get("/api/admin/allowlist"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(5)))
+                .andExpect(jsonPath("$", hasSize(4)))
                 .andExpect(jsonPath("$[0].entry").exists())
                 .andExpect(jsonPath("$[1].entry").exists());
     }
@@ -399,6 +408,10 @@ public class AdminControllerTest {
         allowlist = allowlistService.findById(5);
         assertEquals("testing", allowlist.getEntry());
         assertEquals("testing", allowlist.getRegistrant());
+
+        allowlistService.deleteAllowlist(allowlist);
+        assertNull(allowlistService.findById(5));
+        assertFalse(allowlistService.isAllowlisted("testing"));
     }
 
     @Test

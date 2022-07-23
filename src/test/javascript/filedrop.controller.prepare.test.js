@@ -331,6 +331,14 @@ describe("PrepareJsController", function() {
             expect(recipients[3]).toEqual({name: undefined, mail: 'm@n.o', mails: ['m@n.o'], uid: 'u'});
             expect(recipients[4]).toEqual({name: undefined, mail: 'm@n.o', mails: ['m@n.o'], uid: 'u'});
         }
+
+        let a = {what: "hey"};
+        let b = {what: "hey"};
+
+        expect(a).not.toBe(b);
+        expect(a.what).toBe(b.what);
+        expect(a).toEqual(b);
+
     });
 
 });

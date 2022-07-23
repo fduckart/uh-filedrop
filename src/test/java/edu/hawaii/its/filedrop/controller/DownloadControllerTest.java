@@ -91,6 +91,7 @@ public class DownloadControllerTest {
 
         Integer count = Long.valueOf(fileDropRepository.count()).intValue();
         FileDrop fileDrop = fileDropService.findFileDrop(count);
+        Integer fileDropId = fileDrop.getId();
 
         mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
@@ -130,6 +131,10 @@ public class DownloadControllerTest {
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/9999"))
                 .andExpect(status().is4xxClientError());
+
+        mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
     }
 
     @Test
