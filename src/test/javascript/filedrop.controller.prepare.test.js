@@ -197,7 +197,8 @@ describe("PrepareJsController", function() {
         expect(scope.sendToSelf).toBeUndefined();
         let recipients = scope.getRecipients();
         expect(typeof recipients).toEqual("object");
-        expect(recipients.length).toEqual(0);
+        var expectedRecipientCount = 0;
+        expect(recipients.length).toEqual(expectedRecipientCount);
         let recipientsStr = scope.getRecipientsString();
         expect(typeof recipientsStr).toEqual("string");
         expect(recipientsStr.length).toEqual(0);
@@ -228,15 +229,19 @@ describe("PrepareJsController", function() {
         expect(scope.isEmptyPerson(filedropRecipients[2])).toEqual(true);
         expect(scope.isEmptyPerson(filedropRecipients[3])).toEqual(true);
 
+        expect(scope.getRecipients().length).toEqual(expectedRecipientCount);
+
         const postUrlBase = "/filedrop/prepare/recipient/add";
         // Only three will result in a http post because
         // the fourth address is the current user.
+        // expectedRecipientCount = expectedRecipientCount + 4; // ?? 4 ??
         for (let i = 0; i < 3; i++) {
             let r = filedropRecipients[i];
             let url = postUrlBase + "?recipient=" + r;
             $httpBackend.whenPOST(url)
                 .respond(200, scope.makeRecipient(undefined, r, [r], undefined));
             $httpBackend.expectPOST(url);
+            expectedRecipientCount++;
         }
 
         scope.init(); // <-- Note.
@@ -261,7 +266,7 @@ describe("PrepareJsController", function() {
         expect(scope.sendToSelf).toBeTrue();
         expect(scope.error).toBeUndefined();
         recipients = scope.getRecipients();
-        expect(recipients.length).toEqual(4);
+        expect(recipients.length).toEqual(expectedRecipientCount);
         expect(recipients[3].mail).toEqual(filedropRecipients[2]);
         expect(recipients[2].mail).toEqual(filedropRecipients[1]);
         expect(recipients[1].mail).toEqual(filedropRecipients[0]);
@@ -333,27 +338,17 @@ describe("PrepareJsController", function() {
                 }) + "]");
         }
 
-        /*
-            Error: STOP addrecipient: [[
-                {"name":"f r d","mail":"f@h.x","mails":["f@h.x","d@h.y"],"uid":"fd"},
-                {"name":null,"mail":"a@b.c","mails":["a@b.c"],"uid":null},
-                {"name":null,"mail":"b@c.d","mails":["b@c.d"],"uid":null},
-                {"name":null,"mail":"c@d.e","mails":["c@d.e"],"uid":null},
-                {"name":null,"mail":"m@n.o","mails":["m@n.o"],"uid":"sy"}
-              ]]
-
-                $scope.recipients.push({
-                    name: person.cn,
-                    mail: person.mails[0],
-                    mails: person.mails,
-                    uid: person.uid
-                });
-         */
         expect(recipients[0]).toEqual({name: "f r d", mail: "f@h.x", mails: ["f@h.x", "d@h.y"], uid: "fd"});
         expect(recipients[1]).toEqual({name: undefined, mail: "a@b.c", mails: ["a@b.c"], uid: undefined});
-        expect(recipients[2]).toEqual({"name": undefined, "mail": "b@c.d", "mails": ["b@c.d"], "uid": undefined});
-        expect(recipients[3]).toEqual({"name": undefined, "mail": "c@d.e", "mails": ["c@d.e"], "uid": undefined});
-        expect(recipients[4]).toEqual({"name": undefined, "mail": "m@n.o", "mails": ["m@n.o"], "uid": "sy"});
+        expect(recipients[2]).toEqual({name: undefined, mail: "b@c.d", mails: ["b@c.d"], uid: undefined});
+        expect(recipients[3]).toEqual({name: undefined, mail: "c@d.e", mails: ["c@d.e"], uid: undefined});
+        expect(recipients[4]).toEqual({name: undefined, mail: "m@n.o", mails: ["m@n.o"], uid: "sy"});
+
+        expect(recipients[0].mail).toEqual("f@h.x");
+        expect(recipients[1].mail).toEqual("a@b.c");
+        expect(recipients[2].mail).toEqual("b@c.d");
+        expect(recipients[3].mail).toEqual("c@d.e");
+        expect(recipients[4].mail).toEqual("m@n.o");
 
         let a = {what: "hey"};
         let b = {what: "hey"};
@@ -361,7 +356,6 @@ describe("PrepareJsController", function() {
         expect(a).not.toBe(b);
         expect(a.what).toBe(b.what);
         expect(a).toEqual(b);
-
     });
 
 });
