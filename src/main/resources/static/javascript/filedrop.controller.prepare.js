@@ -155,12 +155,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
     $scope.loadRecipients = function() {
         const recipients = $scope.getFileDrop().recipients;
-
-        if ("off" === "") {
-            throw new Error("STOP addrecipient: ["
-                + JSON.stringify(recipients) + "]");
-        }
-
         if (recipients && recipients.length > 0) {
             for (let recipient of recipients) {
                 if ($scope.currentUser().mails.includes(recipient)) {
