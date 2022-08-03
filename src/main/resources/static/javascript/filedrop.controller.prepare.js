@@ -67,7 +67,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
     $scope.addRecipient = function(recipientToAdd) {
 
-        $scope.addStep.push("_add_start_");
+        $scope.addStep.push("_add_start_" + recipientToAdd);
 
         if ($scope.hasRecipient(recipientToAdd)) {
             $scope.error = {message: "Recipient is already added."};
@@ -86,19 +86,12 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     currentUser.mails[0],
                     currentUser.mails,
                     currentUser.uid)
-            );
+                );
             $scope.error = undefined;
             $scope.recipient = "";
             $scope.addStep.push("_add_current_user_" + recipientToAdd);
 
             return;
-        }
-
-        if ("off" === "") {
-            throw new Error("STOP addrecipient: ["
-                + JSON.stringify(recipientToAdd) + "] == ["
-                + JSON.stringify(currentUser) + "] == ["
-                + JSON.stringify(currentUser) + "]");
         }
 
         let successCallback = function(response) {
@@ -107,9 +100,9 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
             if ("off" === "") {
                 throw new Error("STOP addrecipient: ["
-                    + JSON.stringify(recipientToAdd) + "] == ["
-                    + JSON.stringify(person) + "] == ["
-                    + JSON.stringify(person) + "]");
+                + JSON.stringify(recipientToAdd) + "] == ["
+                + JSON.stringify(person) + "] == ["
+                + JSON.stringify(person) + "]");
             }
 
             if (!($scope.isEmptyPerson(person))) {
@@ -148,7 +141,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
             throw new Error("GGG addrecipient; recipientToAdd: " + recipientToAdd);
         }
 
-        $scope.addStep.push("_add_done_");
+        $scope.addStep.push("_add_done_" + recipientToAdd);
 
         $scope.recipient = "";
     }
