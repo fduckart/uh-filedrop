@@ -86,7 +86,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     currentUser.mails[0],
                     currentUser.mails,
                     currentUser.uid)
-                );
+            );
             $scope.error = undefined;
             $scope.recipient = "";
             $scope.addStep.push("_add_current_user_" + recipientToAdd);
@@ -97,13 +97,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         let successCallback = function(response) {
             const person = response.data;
             $log.debug("addRecipient;", currentUser.uid, "searched", recipientToAdd, "and found", person.cn);
-
-            if ("off" === "") {
-                throw new Error("STOP addrecipient: ["
-                + JSON.stringify(recipientToAdd) + "] == ["
-                + JSON.stringify(person) + "] == ["
-                + JSON.stringify(person) + "]");
-            }
 
             if (!($scope.isEmptyPerson(person))) {
                 $scope.recipients.push({
@@ -132,14 +125,10 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
             method: "POST",
             url: "/filedrop/prepare/recipient/add",
             params: {
-                recipient: recipientToAdd,
-                //authenticationRequired: $scope.authentication
+                authenticationRequired: $scope.authentication,
+                recipient: recipientToAdd
             }
         }).then(successCallback, errorCallback);
-
-        if ("ggg" === "") {
-            throw new Error("GGG addrecipient; recipientToAdd: " + recipientToAdd);
-        }
 
         $scope.addStep.push("_add_done_" + recipientToAdd);
 
@@ -148,6 +137,14 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
     $scope.loadRecipients = function() {
         const recipients = $scope.getFileDrop().recipients;
+
+        if ("" === "") {
+            throw new Error("STOP loadRecipients; "
+                + JSON.stringify(recipients, function(k, v) {
+                    return v === undefined ? undefined : v;
+                }) + "");
+        }
+
         if (recipients && recipients.length > 0) {
             for (let recipient of recipients) {
                 if ($scope.currentUser().mails.includes(recipient)) {
