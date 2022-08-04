@@ -228,25 +228,18 @@ describe("PrepareJsController", function() {
         expect(scope.isEmptyPerson(filedropRecipients[1])).toEqual(true);
         expect(scope.isEmptyPerson(filedropRecipients[2])).toEqual(true);
         expect(scope.isEmptyPerson(filedropRecipients[3])).toEqual(true);
+        expect(scope.getRecipients().length).toEqual(0);  // <--
 
-        // ------
-        recipients = scope.getRecipients();
-        expect(recipients.length).toEqual(0);
-        expect(scope.getRecipients().length).toEqual(0);
-        expect(filedropRecipients.length).toBe(4);
-        // ------
-
-        // let u = filedropRecipients[3].mail;
-        // const postUrlBase = "/filedrop/prepare/recipient/add";
-        // let url = postUrlBase + "?authenticationRequired=true&recipient=f@h.x";
-        // $httpBackend.whenPOST(url)
-        //     .respond(200, scope.makeRecipient(undefined, u, [u], undefined));
-        // $httpBackend.expectPOST(url);
+        const currentUser = scope.currentUser();
+        expect(currentUser.mail).toBe("f@h.x");
 
         const postUrlBase = "/filedrop/prepare/recipient/add";
 
+        // The controller init function will load recipients
+        // because we defined that in the mock above.
         // Only three will result in a http post because
-        // the fourth address is the current user.
+        // the fourth address is the current user and
+        // does not require a POST to add the recipient array.
         for (let i = 0; i < 3; i++) {
             let r = filedropRecipients[i];
             let url = postUrlBase + "?authenticationRequired=true" + "&recipient=" + r;
@@ -255,29 +248,32 @@ describe("PrepareJsController", function() {
             $httpBackend.expectPOST(url);
         }
 
-        scope.init(); // <-- Note. <--
+        scope.init(); // <-- Note.
 
         $httpBackend.flush();
 
-        if ("off" === "") {
-            // ------a
-            expect(scope.getRecipients().length).toEqual(1); /// HMMMM
-            // ------z
+        // See comments above.
+        expect(scope.getRecipients().length).toEqual(4); /// HMMMM
 
-            // The init loaded the mocked recipients we defined above.
-            expect(scope.addStep.length).toEqual(9);
-            expect(scope.addStep[0]).toEqual("_init_");
-            expect(scope.addStep[1]).toEqual("_add_start_a@b.c");
-            expect(scope.addStep[2]).toEqual("_add_done_a@b.c");
-            expect(scope.addStep[3]).toEqual("_add_start_b@c.d");
-            expect(scope.addStep[4]).toEqual("_add_done_b@c.d");
-            expect(scope.addStep[5]).toEqual("_add_start_c@d.e");
-            expect(scope.addStep[6]).toEqual("_add_done_c@d.e");
-            expect(scope.addStep[5]).toEqual("_add_start_c@d.e");
-            expect(scope.addStep[6]).toEqual("_add_done_c@d.e");
-            expect(scope.addStep[7]).toEqual("_add_start_f@h.x");
-            expect(scope.addStep[8]).toEqual("_add_current_user_f@h.x");
-            expect(scope.addStep.length).toEqual(9);
+        // The init loaded the mocked recipients we defined above.
+        expect(scope.addStep.length).toEqual(12);
+        expect(scope.addStep[0]).toEqual("_init_");
+        expect(scope.addStep[1]).toEqual("_add_start_" + filedropRecipients[0]);
+        expect(scope.addStep[2]).toEqual("_add_done_" + filedropRecipients[0]);
+        expect(scope.addStep[3]).toEqual("_add_start_" + filedropRecipients[1]);
+        expect(scope.addStep[4]).toEqual("_add_done_" + filedropRecipients[1]);
+        expect(scope.addStep[5]).toEqual("_add_start_" + filedropRecipients[2]);
+        expect(scope.addStep[6]).toEqual("_add_done_" + filedropRecipients[2]);
+        expect(scope.addStep[7]).toEqual("_add_start_" + filedropRecipients[3]);
+        expect(scope.addStep[8]).toEqual("_add_current_user_" + filedropRecipients[3]);
+
+        expect(filedropRecipients[0]).toEqual("a@b.c");
+        expect(scope.addStep[9]).toEqual("_add_person_a@b.c");
+
+        // expect(scope.addStep[9]).toEqual("_add_person_a@b.c");
+        // expect(scope.addStep[10]).toEqual("_add_current_user_b@c.d");
+
+        if ("off" === "") {
 
             // Current user is the recipient.
             expect(scope.getRecipients().length).toEqual(1);
@@ -337,7 +333,6 @@ describe("PrepareJsController", function() {
             expect(recipients[1].mail).toEqual("a@b.c");
             expect(recipients[0].mail).toEqual("f@h.x");
 
-            const currentUser = scope.currentUser();
             let user = {
                 name: currentUser.cn,
                 mail: currentUser.mail,
@@ -393,9 +388,9 @@ describe("PrepareJsController", function() {
 
             if ("off" === "") {
                 throw new Error("STOP addrecipient: ["
-                    + JSON.stringify(recipients, function(k, v) {
-                        return v === undefined ? undefined : v;
-                    }) + "]");
+                + JSON.stringify(recipients, function(k, v) {
+                    return v === undefined ? undefined : v;
+                }) + "]");
             }
 
             expect(recipients[0]).toEqual({name: "f r d", mail: "f@h.x", mails: ["f@h.x", "d@h.y"], uid: "fd"});

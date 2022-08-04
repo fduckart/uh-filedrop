@@ -86,7 +86,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     currentUser.mails[0],
                     currentUser.mails,
                     currentUser.uid)
-            );
+                );
             $scope.error = undefined;
             $scope.recipient = "";
             $scope.addStep.push("_add_current_user_" + recipientToAdd);
@@ -138,11 +138,11 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
     $scope.loadRecipients = function() {
         const recipients = $scope.getFileDrop().recipients;
 
-        if ("" === "") {
+        if ("off" === "") {
             throw new Error("STOP loadRecipients; "
-                + JSON.stringify(recipients, function(k, v) {
-                    return v === undefined ? undefined : v;
-                }) + "");
+            + JSON.stringify(recipients, function(k, v) {
+                return v === undefined ? undefined : v;
+            }) + "");
         }
 
         if (recipients && recipients.length > 0) {
