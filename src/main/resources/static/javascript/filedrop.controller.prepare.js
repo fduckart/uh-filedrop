@@ -86,7 +86,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     currentUser.mails[0],
                     currentUser.mails,
                     currentUser.uid)
-                );
+            );
             $scope.error = undefined;
             $scope.recipient = "";
             $scope.addStep.push("_add_current_user_" + recipientToAdd);
@@ -105,10 +105,10 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     mails: person.mails,
                     uid: person.uid
                 });
-                $scope.addStep.push("_add_person_" + recipientToAdd);
+                $scope.addStep.push("_sc_add_person_" + recipientToAdd);
             } else {
                 $scope.recipients.push({name: recipientToAdd, mail: recipientToAdd})
-                $scope.addStep.push("_add_emtpy_person_" + recipientToAdd);
+                $scope.addStep.push("_sc_add_emtpy_person_" + recipientToAdd);
             }
         };
 
@@ -118,7 +118,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
             if (response.status === 405) {
                 $scope.showPopup();
             }
-            $scope.addStep.push("_add_failure_");
+            $scope.addStep.push("_ec_add_failure_");
         };
 
         $http({
@@ -140,9 +140,9 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
         if ("off" === "") {
             throw new Error("STOP loadRecipients; "
-            + JSON.stringify(recipients, function(k, v) {
-                return v === undefined ? undefined : v;
-            }) + "");
+                + JSON.stringify(recipients, function(k, v) {
+                    return v === undefined ? undefined : v;
+                }) + "");
         }
 
         if (recipients && recipients.length > 0) {
