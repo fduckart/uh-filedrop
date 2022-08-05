@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.controller;
 
 import static java.util.stream.Collectors.toList;
-
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
@@ -331,10 +330,6 @@ public class PrepareController {
             logger.debug("prepare; defaultExpiration: " + defaultExpiration);
         }
 
-        if ("off".equals("")) {
-            throw new NullPointerException("Hey Now!");
-        }
-
         User user = currentUser();
         Task currentTask = workflowService.currentTask(user);
         if (logger.isDebugEnabled()) {
@@ -384,25 +379,26 @@ public class PrepareController {
 
     @PreAuthorize("isAuthenticated()")
     @PostMapping(value = { "/prepare/recipient/add" })
-    public ResponseEntity<?> addRecipient(@RequestParam("recipient") String user,
-                                          @RequestParam("authenticationRequired") Boolean authRequired) {
+    public ResponseEntity<?> addRecipient(@RequestParam("authenticationRequired") Boolean authRequired,
+                                          @RequestParam("recipient") String user) {
+
         LdapPerson person = ldapService.findByUhUuidOrUidOrMail(user);
         User currentUser = currentUser();
         logger.debug(currentUser.getUid() + " looked for " + user + " and found " + person);
 
         if (!person.isValid() && authRequired) {
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .body(Collections.singletonMap("message",
-                            "Could not add non-UH recipient when authentication is required."));
+            return ResponseEntity
+                    .status(HttpStatus.METHOD_NOT_ALLOWED)
+                    .body(MESSAGE_NOT_ALLOWED);
         }
 
         if (fileDropService.checkRecipient(currentUser, person, authRequired)) {
             return ResponseEntity.ok().body(person);
         }
 
-        return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(Collections.singletonMap("message",
-                        "Could not add recipient due to restrictions."));
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(MESSAGE_FORBIDDEN);
     }
 
     @GetMapping(value = "/helpdesk")
@@ -447,4 +443,12 @@ public class PrepareController {
             logger.debug("uploadFilesHelpdesk;    fileDrop: " + fileDrop);
         }
     }
+
+    private static Map<String, String> MESSAGE_FORBIDDEN =
+            Collections.singletonMap("message",
+                    "Could not add recipient due to restrictions.");
+
+    private static Map<String, String> MESSAGE_NOT_ALLOWED =
+            Collections.singletonMap("message",
+                    "Could not add non-UH recipient when authentication is required.");
 }

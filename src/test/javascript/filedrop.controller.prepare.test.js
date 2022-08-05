@@ -199,9 +199,8 @@ describe("PrepareJsController", function() {
         let recipients = scope.getRecipients();
         expect(typeof recipients).toEqual("object");
         expect(recipients.length).toEqual(0);
-        let recipientsStr = scope.getRecipientsString();
-        expect(typeof recipientsStr).toEqual("string");
-        expect(recipientsStr.length).toEqual(0);
+        expect(typeof scope.getRecipientsString()).toEqual("string");
+        expect(scope.getRecipientsString().length).toEqual(0);
         expect(scope.error).toBeUndefined();
         expect(scope.sendToSelf).toBeUndefined();
         expect(scope.addStep).toBeUndefined();
@@ -312,7 +311,7 @@ describe("PrepareJsController", function() {
         expect(scope.error).toBeUndefined();
 
         const person = {
-            name: "n",
+            cn: "n",
             mail: "m@n.o",
             mails: ["m@n.o"],
             uid: "sy"
@@ -321,12 +320,12 @@ describe("PrepareJsController", function() {
         expect(scope.isEmptyPerson(person)).toBeFalse();
 
         const recipientToAdd = person.uid;
+        expect(recipientToAdd).toEqual(person.uid);
+        scope.recipient = recipientToAdd; // To emulate the HTML page.
+        expect(scope.recipient).toEqual(person.uid);
         expect(scope.hasRecipient(person.uid)).toBeFalse();
         expect(scope.isCurrentUserUid(person.uid)).toBeFalse();
         expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
-
-        expect(recipientToAdd).toEqual("sy");
-        expect(recipientToAdd).toEqual(person.uid);
 
         let stepCount = scope.addStep.length;
         let url = postUrlBase + "?authenticationRequired=true" + "&recipient=" + recipientToAdd;
@@ -342,51 +341,21 @@ describe("PrepareJsController", function() {
         expect(scope.addStep[13]).toEqual("_add_done_" + recipientToAdd);
         expect(scope.addStep[14]).toEqual("_sc_add_person_" + recipientToAdd);
 
+        expect(scope.recipient).toEqual("");
+        expect(scope.getRecipientsString()).toEqual("fd,,,,sy"); // FIXME
+
+        if ("" === "") {
+            throw new Error("STOP loadRecipients; "
+            + JSON.stringify(scope.recipients, function(k, v) {
+                return v === undefined ? undefined : v;
+            }) + "");
+        }
+
         expect(scope.getRecipients().length).toEqual(5);
         expect(scope.getRecipients()[4].mail).toEqual(person.mail);
         expect(scope.getRecipients()[4].mails).toEqual(person.mails);
         expect(scope.getRecipients()[4].uid).toEqual(person.uid);
-        expect(scope.getRecipients()[4].name).toEqual(person.name);
-
-        expect(scope.getRecipients()[4].name).toEqual(undefined);
-
-        //     * Error: STOP person: [{"name":"n","mail":"m@n.o","mails":["m@n.o"],"uid":"sy"}]
-        //    * Error: STOP addrescope.getRecipients()[4]cipient: [{"mail":"m@n.o","mails":["m@n.o"],"uid":"sy"}]
-
-        // throw new Error("STOP addrecipient: ["
-        //     + JSON.stringify(scope.getRecipients()[4]) + "]");
-
-        expect(scope.recipient).toEqual(""); // ???
-        expect(scope.getRecipientsString()).toEqual("fd,,,,sy"); // FIXME
-
-        if ("off" === "") {
-
-            if ("off" === "") {
-                throw new Error("STOP addrecipient: ["
-                    + JSON.stringify(recipients, function(k, v) {
-                        return v === undefined ? undefined : v;
-                    }) + "]");
-            }
-
-            expect(recipients[0]).toEqual({name: "f r d", mail: "f@h.x", mails: ["f@h.x", "d@h.y"], uid: "fd"});
-            expect(recipients[1]).toEqual({name: undefined, mail: "a@b.c", mails: ["a@b.c"], uid: undefined});
-            expect(recipients[2]).toEqual({name: undefined, mail: "b@c.d", mails: ["b@c.d"], uid: undefined});
-            expect(recipients[3]).toEqual({name: undefined, mail: "c@d.e", mails: ["c@d.e"], uid: undefined});
-            expect(recipients[4]).toEqual({name: undefined, mail: "m@n.o", mails: ["m@n.o"], uid: "sy"});
-
-            expect(recipients[0].mail).toEqual("f@h.x");
-            expect(recipients[1].mail).toEqual("a@b.c");
-            expect(recipients[2].mail).toEqual("b@c.d");
-            expect(recipients[3].mail).toEqual("c@d.e");
-            expect(recipients[4].mail).toEqual("m@n.o");
-
-            let a = {what: "hey"};
-            let b = {what: "hey"};
-
-            expect(a).not.toBe(b);
-            expect(a.what).toBe(b.what);
-            expect(a).toEqual(b);
-        }
+        expect(scope.getRecipients()[4].name).toEqual("n");
     });
 
 });
