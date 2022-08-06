@@ -96,7 +96,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
         let successCallback = function(response) {
             const person = response.data;
-            $log.debug("addRecipient;", currentUser.uid, "searched", recipientToAdd, "and found", person.cn);
+            $log.debug("addRecipient;", currentUser, "searched", recipientToAdd, "and found", person);
 
             if (!($scope.isEmptyPerson(person))) {
                 $scope.recipients.push({
@@ -112,8 +112,17 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
             }
         };
 
+        $scope.pushRecipient = function(person) {
+            $scope.recipients.push({
+                name: person.cn,
+                mail: person.mail,
+                mails: person.mails,
+                uid: person.uid
+            });
+        };
+
         let errorCallback = function(response) {
-            $log.debug("addRecipient;", response.data.message);
+            $log.debug("addRecipient; response: ", response);
             $scope.error = {message: response.data.message};
             if (response.status === 405) {
                 $scope.showPopup();

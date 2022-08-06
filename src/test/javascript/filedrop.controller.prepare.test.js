@@ -319,7 +319,7 @@ describe("PrepareJsController", function() {
         expect(scope.isEmptyPerson(person)).toEqual(false);
         expect(scope.isEmptyPerson(person)).toBeFalse();
 
-        const recipientToAdd = person.uid;
+        let recipientToAdd = person.uid;
         expect(recipientToAdd).toEqual(person.uid);
         scope.recipient = recipientToAdd; // To emulate the HTML page.
         expect(scope.recipient).toEqual(person.uid);
@@ -340,15 +340,16 @@ describe("PrepareJsController", function() {
         expect(scope.addStep[12]).toEqual("_add_start_" + recipientToAdd);
         expect(scope.addStep[13]).toEqual("_add_done_" + recipientToAdd);
         expect(scope.addStep[14]).toEqual("_sc_add_person_" + recipientToAdd);
+        stepCount = scope.addStep.length
 
         expect(scope.recipient).toEqual("");
         expect(scope.getRecipientsString()).toEqual("fd,,,,sy"); // FIXME
 
-        if ("" === "") {
+        if ("off" === "") {
             throw new Error("STOP loadRecipients; "
-            + JSON.stringify(scope.recipients, function(k, v) {
-                return v === undefined ? undefined : v;
-            }) + "");
+                + JSON.stringify(scope.recipients, function(k, v) {
+                    return v === undefined ? undefined : v;
+                }) + "");
         }
 
         expect(scope.getRecipients().length).toEqual(5);
@@ -356,6 +357,25 @@ describe("PrepareJsController", function() {
         expect(scope.getRecipients()[4].mails).toEqual(person.mails);
         expect(scope.getRecipients()[4].uid).toEqual(person.uid);
         expect(scope.getRecipients()[4].name).toEqual("n");
+
+        // Empty person add recipient attempt.
+        recipientToAdd = "xy";
+        expect(recipientToAdd).toEqual("xy");
+        scope.recipient = recipientToAdd; // To emulate the HTML page.
+
+        url = postUrlBase + "?authenticationRequired=true" + "&recipient=" + recipientToAdd;
+        $httpBackend.whenPOST(url).respond(200, undefined);
+        $httpBackend.expectPOST(url);
+
+        scope.addRecipient(recipientToAdd);
+
+        $httpBackend.flush();
+
+        expect(scope.addStep.length).toEqual(stepCount + 3);
+        expect(scope.addStep[15]).toEqual("_add_start_" + recipientToAdd);
+        expect(scope.addStep[16]).toEqual("_add_done_" + recipientToAdd);
+        expect(scope.addStep[17]).toEqual("_sc_add_emtpy_person_" + recipientToAdd);
+
     });
 
 });

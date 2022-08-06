@@ -1,5 +1,7 @@
 package edu.hawaii.its.filedrop.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -7,9 +9,6 @@ import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.Optional;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
@@ -75,7 +74,8 @@ public class DownloadController {
         logger.debug("expire; " + currentUser().getUsername() + " expired: " + fileDrop);
 
         redirectAttributes.addFlashAttribute("message", "Drop expired");
-        return "redirect:/";
+//        return "redirect:/";
+        return "user/expired";
     }
 
     @GetMapping(value = "/dl/{downloadKey}")
@@ -127,8 +127,8 @@ public class DownloadController {
 
     @GetMapping(value = "/dl/{downloadKey}/{fileId}")
     public void downloadFile(@PathVariable String downloadKey, @PathVariable Integer fileId,
-            HttpServletRequest request,
-            HttpServletResponse response)
+                             HttpServletRequest request,
+                             HttpServletResponse response)
             throws IOException, GeneralSecurityException {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
 
@@ -148,7 +148,7 @@ public class DownloadController {
             if (foundFileSet.isPresent()) {
                 Resource resource = storageService.loadAsResource(
                         Paths.get(fileDrop.getDownloadKey(),
-                                foundFileSet.get().getId().toString()).toString() + ".enc");
+                                foundFileSet.get().getId().toString()) + ".enc");
                 ByteArrayOutputStream outputStream =
                         (ByteArrayOutputStream) cipherService.decrypt(resource.getInputStream(), foundFileSet.get());
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", fileSet: " + foundFileSet.get());

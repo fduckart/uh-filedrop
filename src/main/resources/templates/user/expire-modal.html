@@ -1,4 +1,4 @@
-<div class="modal fade" tabindex="-1" role="dialog" id="expireModal" th:fragment="copy">
+<div class="modal fade" id="expireModal" role="dialog" tabindex="-1" th:fragment="copy">
     <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -15,7 +15,12 @@
                                 <div class="col-sm-10">
                                     <p>
                                         <span>Are you sure you want to expire this FileDrop?</span>
-                                        <br/>
+                                    </p>
+                                    <p>
+                                        <strong>Important</strong>: Expiring a FileDrop will immediately delete its files.<br/>
+                                        This will permanently expire the link, including for other recipients with this link.
+                                    </p>
+                                    <p>
                                         This <strong>cannot</strong> be undone.
                                     </p>
                                 </div>
@@ -25,9 +30,13 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <a type="button" class="btn btn-danger"
-                   th:href="@{/expire/{downloadKey}(downloadKey = ${fileDrop.getDownloadKey()})}">Yes</a>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+                <a class="btn btn-danger btn-standard-width"
+                   th:href="@{/expire/{downloadKey}(downloadKey = ${fileDrop.getDownloadKey()})}"
+                   type="button">Yes</a>
+                <button class="btn btn-outline-dark btn-standard-width"
+                        data-dismiss="modal"
+                        type="button">No
+                </button>
             </div>
         </div>
     </div>
