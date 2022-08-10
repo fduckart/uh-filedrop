@@ -69,12 +69,13 @@ public class DownloadController {
             return "user/download-error";
         }
 
-        fileDropService.expire(fileDrop);
+        fileDrop = fileDropService.expire(fileDrop);
 
-        logger.debug("expire; " + currentUser().getUsername() + " expired: " + fileDrop);
+        logger.debug("expire; username: " + currentUser().getUsername() + ", filedrop: " + fileDrop);
 
+        model.addAttribute("expiration", fileDrop.getExpiration());
         redirectAttributes.addFlashAttribute("message", "Drop expired");
-//        return "redirect:/";
+
         return "user/expired";
     }
 

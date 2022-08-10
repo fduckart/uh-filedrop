@@ -9,7 +9,6 @@ import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecifica
 import static edu.hawaii.its.filedrop.repository.specification.FileDropSpecification.withUploader;
 import static java.util.stream.Collectors.toList;
 import static org.springframework.data.jpa.domain.Specification.where;
-
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.nio.file.Path;
@@ -98,13 +97,13 @@ public class FileDropService {
         allRestrictions.put("student", studentRestrictions);
     }
 
-    public void expire(FileDrop fileDrop) {
+    public FileDrop expire(FileDrop fileDrop) {
         Path directory = Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey());
         fileDrop.setValid(false);
         List<FileSet> fileSets = fileSetRepository.findAllByFileDrop(fileDrop);
         fileSets.forEach(fileSet -> fileSystemStorageService.delete(fileSet.getId().toString(), directory.toString()));
         fileSystemStorageService.delete(directory);
-        saveFileDrop(fileDrop);
+        return saveFileDrop(fileDrop);
     }
 
     public void startUploadProcess(User user) {

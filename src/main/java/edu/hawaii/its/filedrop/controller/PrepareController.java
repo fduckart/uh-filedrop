@@ -45,29 +45,27 @@ import edu.hawaii.its.filedrop.util.Strings;
 @Controller
 public class PrepareController {
 
+    private static final Map<String, String> MESSAGE_FORBIDDEN =
+            Collections.singletonMap("message",
+                    "Could not add recipient due to restrictions.");
+    private static final Map<String, String> MESSAGE_NOT_ALLOWED =
+            Collections.singletonMap("message",
+                    "Could not add non-UH recipient when authentication is required.");
     private final Log logger = LogFactory.getLog(PrepareController.class);
-
     @Autowired
     private UserContextService userContextService;
-
     @Autowired
     private FileDropService fileDropService;
-
     @Autowired
     private WorkflowService workflowService;
-
     @Autowired
     private LdapService ldapService;
-
     @Autowired
     private EmailService emailService;
-
     @Value("${app.mail.help}")
     private String helpName;
-
     @Value("${app.mail.to.help}")
     private String helpEmail;
-
     @Value("${app.max.size}")
     private String maxUploadSize;
 
@@ -75,7 +73,7 @@ public class PrepareController {
     public String addFileHelpDesk(Model model, @PathVariable String uploadKey) {
         model.addAttribute("maxUploadSize", maxUploadSize);
         model.addAttribute("uploadKey", uploadKey);
-        model.addAttribute("recipients", Arrays.asList(helpName));
+        model.addAttribute("recipients", Collections.singletonList(helpName));
 
         return "user/files-helpdesk";
     }
@@ -258,7 +256,7 @@ public class PrepareController {
         mail.setTo(sender);
         mail.setFrom(emailService.getFrom());
 
-        logger.debug("Sending email to uploader ... " + mail);
+        logger.debug("Sending email to uploader... " + mail);
         Map<String, Object> fileDropContext = emailService.getFileDropContext("uploader", fileDrop);
         emailService.send(mail, "uploader", fileDropContext);
 
@@ -443,12 +441,4 @@ public class PrepareController {
             logger.debug("uploadFilesHelpdesk;    fileDrop: " + fileDrop);
         }
     }
-
-    private static Map<String, String> MESSAGE_FORBIDDEN =
-            Collections.singletonMap("message",
-                    "Could not add recipient due to restrictions.");
-
-    private static Map<String, String> MESSAGE_NOT_ALLOWED =
-            Collections.singletonMap("message",
-                    "Could not add non-UH recipient when authentication is required.");
 }

@@ -21,7 +21,7 @@ import edu.hawaii.its.filedrop.util.Strings;
 @Controller
 public class ValidationController {
 
-    private Log logger = LogFactory.getLog(ValidationController.class);
+    private final Log logger = LogFactory.getLog(ValidationController.class);
 
     @Autowired
     private EmailService emailService;

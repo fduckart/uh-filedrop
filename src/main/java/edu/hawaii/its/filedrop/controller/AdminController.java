@@ -48,25 +48,25 @@ public class AdminController {
     private static final Log logger = LogFactory.getLog(AdminController.class);
 
     @Autowired
+    private AllowlistService allowlistService;
+
+    @Autowired
+    private ApplicationService applicationService;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private FileDropService fileDropService;
+
+    @Autowired
     private LdapService ldapService;
 
     @Autowired
     private MessageService messageService;
 
     @Autowired
-    private AllowlistService allowlistService;
-
-    @Autowired
-    private EmailService emailService;
-
-    @Autowired
     private UserContextService userContextService;
-
-    @Autowired
-    private FileDropService fileDropService;
-
-    @Autowired
-    private ApplicationService applicationService;
 
     @GetMapping("/admin")
     public String admin() {
