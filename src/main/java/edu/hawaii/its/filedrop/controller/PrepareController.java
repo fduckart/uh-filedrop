@@ -6,8 +6,10 @@ import java.security.GeneralSecurityException;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,22 +54,30 @@ public class PrepareController {
             Collections.singletonMap("message",
                     "Could not add non-UH recipient when authentication is required.");
     private final Log logger = LogFactory.getLog(PrepareController.class);
-    @Autowired
-    private UserContextService userContextService;
-    @Autowired
-    private FileDropService fileDropService;
-    @Autowired
-    private WorkflowService workflowService;
-    @Autowired
-    private LdapService ldapService;
-    @Autowired
-    private EmailService emailService;
+
     @Value("${app.mail.help}")
     private String helpName;
+
     @Value("${app.mail.to.help}")
     private String helpEmail;
+
     @Value("${app.max.size}")
     private String maxUploadSize;
+
+    @Autowired
+    private EmailService emailService;
+
+    @Autowired
+    private FileDropService fileDropService;
+
+    @Autowired
+    private LdapService ldapService;
+
+    @Autowired
+    private UserContextService userContextService;
+
+    @Autowired
+    private WorkflowService workflowService;
 
     @GetMapping(value = "/helpdesk/files/{uploadKey}")
     public String addFileHelpDesk(Model model, @PathVariable String uploadKey) {
@@ -235,6 +245,7 @@ public class PrepareController {
         ProcessVariableHolder processVariables =
                 new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
 
+        String sender = processVariables.getString("sender");
         Integer expiration = processVariables.getInteger("expirationLength");
         String[] recipients = processVariables.getStrings("recipients");
 
@@ -246,12 +257,13 @@ public class PrepareController {
 
         if (logger.isDebugEnabled()) {
             logger.debug("completeFileDrop; fileDrop: " + fileDrop);
+            logger.debug("completeFileDrop;     sender: " + sender);
             logger.debug("completeFileDrop; recipients: " + Arrays.asList(recipients));
         }
 
         fileDropService.addRecipients(fileDrop, recipients);
 
-        String sender = processVariables.getString("sender");
+        Set<String> addresses = new HashSet<>();
         Mail mail = new Mail();
         mail.setTo(sender);
         mail.setFrom(emailService.getFrom());
@@ -264,7 +276,28 @@ public class PrepareController {
 
         long size = totalFilesize(fileDrop);
 
-        for (Recipient recipient : fileDropService.findRecipients(fileDrop)) {
+        LdapPerson ldapSender = ldapService.findByUhUuidOrUidOrMail(sender);
+
+        List<Recipient> recipientList = fileDropService.findRecipients(fileDrop);
+        int recipientCount = recipientList.size();
+        if (recipientCount == 1) {
+            System.out.println(Strings.fill('v', 99));
+
+            System.out.println("   >>>>>  recipient: " + recipientList.get(0));
+            System.out.println("   >>>>>     sender: " + sender);
+            System.out.println("   >>>>> ldapSender: " + ldapSender);
+
+            if (ldapSender.isValid() && sender != null) {
+                if (recipientList.get(0).getName().equals(sender)) {
+                    System.out.println("   >>>>> IS SAME!!!");
+                }
+
+            }
+
+            System.out.println(Strings.fill('^', 99));
+        }
+
+        for (Recipient recipient : recipientList) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient.getName());
 
             if (ldapPerson.isValid()) {
@@ -272,12 +305,13 @@ public class PrepareController {
             } else {
                 mail.setTo(recipient.getName());
             }
+            mail.setTo("duckart@computer.org");
 
             fileDropContext = emailService.getFileDropContext("receiver", fileDrop);
             fileDropContext.put("comment", processVariables.getString("message"));
             fileDropContext.put("size", size);
             fileDropContext.put("sender", sender);
-            logger.debug("Sending email to receiver ... " + mail);
+            logger.debug("Sending email to receiver ... " + recipient);
             emailService.send(mail, "receiver", fileDropContext);
         }
 

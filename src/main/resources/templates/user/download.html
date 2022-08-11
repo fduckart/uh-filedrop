@@ -26,8 +26,8 @@
                     <tbody>
                     <tr th:each="fileSet : ${fileDrop.getFileSet()}">
                         <th scope="row"><a
-                            th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
-                            class="btn btn-outline-dark btn-sm">
+                                class="btn btn-outline-dark btn-sm"
+                                th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}">
                             <i class="fa fa-cloud-download"></i></a></th>
                         <td>
                             <a th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
@@ -40,7 +40,7 @@
                 </table>
             </div>
             <br>
-            <button class="btn btn-danger mt-3 float-right" data-toggle="modal" data-target="#expireModal">
+            <button class="btn btn-danger btn-sm mt-3 float-right" data-target="#expireModal" data-toggle="modal">
                 <i class="fa fa-trash"></i> Expire Now
             </button>
         </div>

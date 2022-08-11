@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -99,10 +100,11 @@ public class FileDropService {
 
     public FileDrop expire(FileDrop fileDrop) {
         Path directory = Paths.get(fileSystemStorageService.getRootLocation().toString(), fileDrop.getDownloadKey());
-        fileDrop.setValid(false);
         List<FileSet> fileSets = fileSetRepository.findAllByFileDrop(fileDrop);
-        fileSets.forEach(fileSet -> fileSystemStorageService.delete(fileSet.getId().toString(), directory.toString()));
+        fileSets.forEach(fs -> fileSystemStorageService.delete(fs.getId().toString(), directory.toString()));
         fileSystemStorageService.delete(directory);
+        fileDrop.setValid(false);
+        fileDrop.setExpiration(LocalDateTime.now());
         return saveFileDrop(fileDrop);
     }
 

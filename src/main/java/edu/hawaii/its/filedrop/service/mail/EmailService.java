@@ -82,7 +82,6 @@ public class EmailService {
     }
 
     public void send(Mail mail, String template, Context context) {
-        logger.info("Sending email from send(mail, template, context)");
         if (isEnabled() && mail.getFrom() != null && mail.getTo() != null) {
             String htmlContent = htmlTemplateEngine.process("mail/" + template, context);
             MailTemplate mailTemplate = mailComponentLocator.find(template);

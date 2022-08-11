@@ -61,6 +61,7 @@ public class ValidationController {
             model.addAttribute("email", valid);
             logger.debug("validation; spam: " + " name=" + name + " email=" + email + "valid=" + valid);
         }
+
         return "validation/validation-sent";
     }
 }
