@@ -36,7 +36,7 @@ public class FilesTest {
         // Create a temp file and mark 'delete on exit'.
         file = File.createTempFile("~tmp", ".tmp");
         file.deleteOnExit();
-
+file.getName()
         // Put some data in temp file.
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 
