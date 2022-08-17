@@ -300,19 +300,24 @@ public class PrepareController {
         for (Recipient recipient : recipientList) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient.getName());
 
+            String s = "";
             if (ldapPerson.isValid()) {
                 mail.setTo(ldapPerson.getMails().get(0));
+                s += "RECIPIENT[0]: " + ldapPerson.getMails().get(0);
             } else {
                 mail.setTo(recipient.getName());
+                s += "RECIPIENT[1]: " + recipient.getName();
             }
-            ///mail.setTo("duckart@computer.org");
+            mail.setTo("duckart@hawaii.edu");
 
             fileDropContext = emailService.getFileDropContext("receiver", fileDrop);
-            fileDropContext.put("comment", processVariables.getString("message"));
+            fileDropContext.put("comment", processVariables.getString("message") + "\n" + s);
             fileDropContext.put("size", size);
             fileDropContext.put("sender", sender);
             logger.debug("Sending email to receiver ... " + recipient);
             emailService.send(mail, "receiver", fileDropContext);
+
+            s += ", ";
         }
 
         fileDropService.completeFileDrop(currentUser(), fileDrop);

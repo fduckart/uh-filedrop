@@ -135,8 +135,8 @@ public class DownloadControllerTest {
                 .andExpect(status().is4xxClientError());
 
         mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/expired"));
     }
 
     @Test
@@ -279,8 +279,8 @@ public class DownloadControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/expired"));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
                 .andExpect(status().isOk())

@@ -26,9 +26,9 @@
                     <tbody>
                     <tr th:each="fileSet : ${fileDrop.getFileSet()}">
                         <th scope="row"><a
-                                class="btn btn-outline-dark btn-sm"
+                                class="btn btn-outline btn-sm"
                                 th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}">
-                            <i class="fa fa-cloud-download"></i></a></th>
+                            <i class="fa fa-cloud-download fa-blue fa-2x"></i></a></th>
                         <td>
                             <a th:href="@{/dl/{downloadKey}/{fileId}(downloadKey = ${fileDrop.getDownloadKey()}, fileId = ${fileSet.getId()})}"
                                th:text="${fileSet.getFileName()}"></a>

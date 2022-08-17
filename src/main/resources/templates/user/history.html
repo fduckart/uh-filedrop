@@ -62,7 +62,9 @@
                                 <ul class="list-group">
                                     <li class="list-group-item d-flex justify-content-between align-items-center" ng-repeat="fileSet in fileDrop.fileInfoList">
                                         {{ fileSet.fileName }}
-                                        <span class="badge badge-primary badge-pill" ng-if="fileDrop.valid"><i class="fa fa-cloud-download"></i>&nbsp;{{ fileSet.downloads }}</span>
+                                        <h4>
+                                            <span class="badge badge-primary badge-pill" ng-if="fileDrop.valid"><i class="fa fa-cloud-download"></i>&nbsp;{{ fileSet.downloads }}</span>
+                                        </h4>
                                     </li>
                                 </ul>
                             </div>
