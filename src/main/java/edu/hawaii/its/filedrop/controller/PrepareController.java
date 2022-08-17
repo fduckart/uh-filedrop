@@ -305,7 +305,7 @@ public class PrepareController {
             } else {
                 mail.setTo(recipient.getName());
             }
-            mail.setTo("duckart@computer.org");
+            ///mail.setTo("duckart@computer.org");
 
             fileDropContext = emailService.getFileDropContext("receiver", fileDrop);
             fileDropContext.put("comment", processVariables.getString("message"));

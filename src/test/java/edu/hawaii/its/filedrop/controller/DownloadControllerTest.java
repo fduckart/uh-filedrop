@@ -4,6 +4,7 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
@@ -12,8 +13,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -218,8 +220,8 @@ public class DownloadControllerTest {
                 .andExpect(status().isOk());
 
         mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/"));
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/expired"));
 
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey()))
                 .andExpect(status().isOk())
@@ -234,6 +236,14 @@ public class DownloadControllerTest {
         mockMvc.perform(get("/dl/" + fileDrop.getDownloadKey() + "/1")
                         .contentType(MediaType.APPLICATION_OCTET_STREAM))
                 .andExpect(status().is4xxClientError());
+
+        Set<String> set = new HashSet<>();
+        set.add("turn");
+        set.add("the");
+        set.add("corner");
+        assertThat(set, hasItem("corner"));
+        assertThat(set, hasItem("the"));
+        assertThat(set, hasItem("turn"));
     }
 
     @Test

@@ -71,7 +71,7 @@ public class DownloadController {
 
         fileDrop = fileDropService.expire(fileDrop);
 
-        logger.debug("expire; username: " + currentUser().getUsername() + ", filedrop: " + fileDrop);
+        logger.debug("expire; user: " + currentUser() + ", filedrop: " + fileDrop);
 
         model.addAttribute("expiration", fileDrop.getExpiration());
         redirectAttributes.addFlashAttribute("message", "Drop expired");

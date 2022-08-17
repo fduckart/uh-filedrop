@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -36,7 +35,7 @@ public class FilesTest {
         // Create a temp file and mark 'delete on exit'.
         file = File.createTempFile("~tmp", ".tmp");
         file.deleteOnExit();
-file.getName()
+
         // Put some data in temp file.
         BufferedWriter bw = new BufferedWriter(new FileWriter(file));
 
