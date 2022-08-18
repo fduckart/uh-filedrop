@@ -53,4 +53,9 @@ public class Aes256 implements Cipher {
         return "AES/CBC/PKCS5Padding";
     }
 
+    @Override
+    public String toString() {
+        return "Aes256 [algorithmName=" + getAlgorithmName() + "]";
+    }
+
 }

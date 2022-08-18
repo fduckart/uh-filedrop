@@ -7,7 +7,6 @@ import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import java.io.BufferedReader;
@@ -208,6 +207,42 @@ public class CipherServiceTest {
         bufferedReader.close();
 
         assertThat(builder.toString(), equalTo(content.toString()));
+    }
+
+    @Test
+    public void testVersionOneDecryption() throws Exception {
+        Path path = Paths.get("src/test/resources/files", "a-test.txt");
+        File file = path.toFile();
+        assertThat(file.exists(), equalTo(true));
+
+        // import org.springframework.util.ResourceUtils;
+
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setDownloadKey("lMmiP-nxgzG-fnyAz-kwrRa");
+        fileDrop.setEncryptionKey("rc2:rsRiB-TJDhV-EhcKB-PVRCv");
+        FileSet fileSet = new FileSet();
+        fileSet.setFileDrop(fileDrop);
+        fileSet.setId(666);
+
+        Resource resource = storageService.loadAsResource(file.getAbsolutePath());
+        ByteArrayOutputStream decrypted =
+                (ByteArrayOutputStream) cipherService.decrypt(resource.getInputStream(), fileSet);
+        ByteArrayInputStream byteArrayInputStream =
+                new ByteArrayInputStream(decrypted.toByteArray());
+        BufferedReader bufferedReader =
+                new BufferedReader(new InputStreamReader(byteArrayInputStream));
+
+        StringBuilder builder = new StringBuilder();
+        bufferedReader.lines().forEach(builder::append);
+        bufferedReader.close();
+
+        StringBuilder expected = new StringBuilder();
+        expected.append("This is a test");
+        expected.append("of the Emergency");
+        expected.append("Broadcast System.");
+        expected.append("2022 August 17");
+
+        assertThat(builder.toString(), equalTo(expected.toString()));
     }
 
 }

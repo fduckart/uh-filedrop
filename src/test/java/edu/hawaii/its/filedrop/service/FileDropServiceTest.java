@@ -15,7 +15,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Collections;
@@ -95,7 +94,8 @@ public class FileDropServiceTest {
 
         assertEquals("addRecipients", currentTask(user).getName());
 
-        fileDropService.uploadFile(user, null, null, null); // Doesn't work since on recipientsTask.
+        // Doesn't work since on recipientsTask.
+        fileDropService.uploadFile(user, null, null, null);
 
         fileDropService.addRecipients(user, recipients);
 
@@ -309,7 +309,7 @@ public class FileDropServiceTest {
 
         fileDropService.saveFileSet(fileSet);
 
-        assertEquals(3, fileSet.getId().intValue());
+        assertEquals(4, fileSet.getId().intValue());
 
         assertEquals(fileDrop.getId(), fileSet.getFileDrop().getId());
         assertEquals(2, fileDropService.findFileSets(fileDropService.findFileDrop((Integer) vars.get("fileDropId"))).size());

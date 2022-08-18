@@ -1,10 +1,10 @@
 package edu.hawaii.its.filedrop.crypto;
 
-import java.security.GeneralSecurityException;
 import javax.crypto.SecretKey;
 import javax.crypto.SecretKeyFactory;
 import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
+import java.security.GeneralSecurityException;
 
 public class Rc2 implements Cipher {
 
@@ -43,5 +43,10 @@ public class Rc2 implements Cipher {
     @Override
     public String getAlgorithmName() {
         return "PBEWithSHA1AndRC2_40";
+    }
+
+    @Override
+    public String toString() {
+        return "Rc2 [algorithmName=" + getAlgorithmName() + "]";
     }
 }

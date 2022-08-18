@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -163,6 +162,7 @@ public class FileSystemStorageServiceTest {
 
         expectedPath = Paths.get(storageService.getRootLocation().toString(), downloadKey, fileName);
         String expectedFilename = expectedPath.toString();
+
         // Now load that same file.
         Resource r = storageService.loadAsResource(expectedFilename);
         assertThat(r.contentLength(), equalTo(22L));
