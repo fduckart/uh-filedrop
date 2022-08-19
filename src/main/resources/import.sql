@@ -70,6 +70,7 @@ insert into recipient (id, filedrop_id, name) values (6, 2, 'lukemcd9');
 
 insert into fd_fileset (id, filedrop_id, file_name, type, comment, size) values (1, 2, 'test.txt',   'text/plain', '', 1000);
 insert into fd_fileset (id, filedrop_id, file_name, type, comment, size) values (2, 2, 'a-test.txt', 'text/plain', '', 66);
+insert into fd_fileset (id, filedrop_id, file_name, type, comment, size) values (3, 2, '1984.jpg',   'image/jpeg', '', 221090);
 
 insert into fd_download (id, filedrop_id, file_name, started, completed, ip_addr) values (1, 2, 'test.txt', '2019-11-14T08:30:18.023', '2019-11-14T08:31:18.023', '0.0.0.0');
 

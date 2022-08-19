@@ -1,9 +1,9 @@
-<div class="modal" tabindex="-1" role="dialog" id="faqModal" th:fragment="copy" ng-app="filedropApp">
+<div class="modal" id="faqModal" ng-app="filedropApp" role="dialog" tabindex="-1" th:fragment="copy">
     <div class="modal-dialog modal-xl" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">FAQ</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <button aria-label="Close" class="close" data-dismiss="modal" type="button">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -16,21 +16,21 @@
                     </tr>
                     </thead>
                     <tbody ng-cloak>
-                        <tr ng-repeat="faq in faqList | filter:filter">
-                            <td ng-bind-html="renderHtml(faq.question)"></td>
-                            <td ng-bind-html="renderHtml(faq.answer)"></td>
-                        </tr>
+                    <tr ng-repeat="faq in faqList | filter:filter">
+                        <td ng-bind-html="renderHtml(faq.question)"></td>
+                        <td ng-bind-html="renderHtml(faq.answer)"></td>
+                    </tr>
                     </tbody>
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button class="btn btn-secondary" data-dismiss="modal" type="button">Close</button>
             </div>
         </div>
     </div>
 </div>
 
-<script type="text/ng-template" id="faqDeleteModal.html" th:fragment="copy">
+<script id="faqDeleteModal.html" th:fragment="copy" type="text/ng-template">
     <div class="modal-header">
         <h5 class="modal-title">Delete FAQ</h5>
         <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">
@@ -61,7 +61,7 @@
     </div>
 </script>
 
-<script type="text/ng-template" id="faqAddModal.html" th:fragment="copy">
+<script id="faqAddModal.html" th:fragment="copy" type="text/ng-template">
     <div class="modal-header">
         <h5 class="modal-title">New FAQ</h5>
         <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">
@@ -72,16 +72,17 @@
     <form id="faqForm" ng-submit="ok()">
         <div class="modal-body">
             <div class="form-group">
-                <label for="question">Question</label>
+                <label for="question-1">Question</label>
                 <textarea class="form-control" aria-label="Question"
-                       aria-describedby="faq-question" id="question" ng-model="question" name="question" required>
+                          aria-describedby="faq-question" id="question-1"
+                          ng-model="question" name="question" required>
                 </textarea>
             </div>
             <div class="form-group">
-                <label for="answer">Answer</label>
+                <label for="answer-1">Answer</label>
                 <textarea rows="10" class="form-control" aria-label="Answer"
-                       aria-describedby="faq-answer" id="answer" ng-model="answer"
-                       name="answer" required>
+                          aria-describedby="faq-answer" id="answer-1" ng-model="answer-1"
+                          name="answer-1" required>
                 </textarea>
             </div>
         </div>
@@ -92,7 +93,7 @@
     </form>
 </script>
 
-<script type="text/ng-template" id="faqEditModal.html" th:fragment="copy">
+<script id="faqEditModal.html" th:fragment="copy" type="text/ng-template">
     <div class="modal-header">
         <h5 class="modal-title">Edit FAQ</h5>
         <button type="button" class="close" ng-click="$dismiss()" aria-label="Close">
@@ -104,15 +105,17 @@
         <div class="modal-body">
             <input type="hidden" ng-value="faq.id" name="id">
             <div class="form-group">
-                <label for="question">Question</label>
+                <label for="question-2">Question</label>
                 <textarea class="form-control" aria-label="Question"
-                          aria-describedby="faq-question" id="question" ng-value="faq.question" ng-model="newFaq.question" name="question">
+                          aria-describedby="faq-question" id="question-2"
+                          ng-value="faq.question" ng-model="newFaq.question" name="question">
                 </textarea>
             </div>
             <div class="form-group">
-                <label for="answer">Answer</label>
+                <label for="answer-2">Answer</label>
                 <textarea rows="10" class="form-control" aria-label="Answer"
-                          aria-describedby="faq-answer" id="answer" ng-value="faq.answer" ng-model="newFaq.answer"
+                          aria-describedby="faq-answer" id="answer-2"
+                          ng-value="faq.answer" ng-model="newFaq.answer"
                           name="answer">
                 </textarea>
             </div>

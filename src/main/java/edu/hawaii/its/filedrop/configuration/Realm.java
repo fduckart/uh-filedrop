@@ -1,9 +1,8 @@
 package edu.hawaii.its.filedrop.configuration;
 
+import javax.annotation.PostConstruct;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-
-import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -16,11 +15,10 @@ import org.springframework.util.Assert;
 public class Realm {
 
     private static final Log logger = LogFactory.getLog(Realm.class);
+    private final Map<String, Boolean> profileMap = new ConcurrentHashMap<>();
 
     @Autowired
     private Environment environment;
-
-    private Map<String, Boolean> profileMap = new ConcurrentHashMap<>();
 
     @PostConstruct
     public synchronized void init() {

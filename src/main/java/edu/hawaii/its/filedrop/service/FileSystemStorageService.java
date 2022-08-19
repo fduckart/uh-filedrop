@@ -31,19 +31,20 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public Resource loadAsResource(String fileName) {
+        Resource resource;
+
         try {
             Path file = rootLocation.resolve(fileName);
-            Resource resource = new UrlResource(file.toUri());
-
+            resource = new UrlResource(file.toUri());
             if (!resource.exists()) {
                 String msg = "Path does not exist: " + file;
                 throw new StorageFileNotFoundException(msg);
             }
-
-            return resource;
         } catch (Exception e) {
             throw new StorageFileNotFoundException("Error reading file: " + fileName, e);
         }
+
+        return resource;
     }
 
     public void createDirectories(String directory) {
@@ -65,7 +66,7 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public String store(Resource resource, Path parent) {
-        Path resolvedPath = null;
+        Path resolvedPath;
         try {
             if (resource.contentLength() == 0L) {
                 String msg = "Failed to store empty file " + resource.getFilename();

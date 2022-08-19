@@ -30,7 +30,7 @@ public class AppConfigLocal extends AppConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "app.ldap.context-source")
+    @ConfigurationProperties(prefix = "app.ldap.context.source")
     public LdapContextSource ldapContextSource() {
         return new LdapContextSource();
     }

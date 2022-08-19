@@ -15,10 +15,10 @@ import org.springframework.ldap.core.support.LdapContextSource;
 
 import edu.hawaii.its.filedrop.exception.PropertyNotSetException;
 
-@Profile(value = {"test", "prod"})
+@Profile(value = { "test", "prod" })
 @Configuration(value = "appConfig")
 @ComponentScan(basePackages = "edu.hawaii.its.filedrop")
-@EnableJpaRepositories(basePackages = {"edu.hawaii.its.filedrop.repository"})
+@EnableJpaRepositories(basePackages = { "edu.hawaii.its.filedrop.repository" })
 @PropertySources({
         @PropertySource("classpath:custom.properties"),
         @PropertySource(value = "file:${user.home}/.${user.name}-conf/filedrop-overrides.properties",
@@ -46,7 +46,7 @@ public class AppConfigTest extends AppConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix = "app.ldap.context-source")
+    @ConfigurationProperties(prefix = "app.ldap.context.source")
     public LdapContextSource ldapContextSource() {
         return new LdapContextSource();
     }

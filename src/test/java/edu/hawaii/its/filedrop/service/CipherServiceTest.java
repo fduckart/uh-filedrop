@@ -4,6 +4,8 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.lessThanOrEqualTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -215,8 +217,6 @@ public class CipherServiceTest {
         File file = path.toFile();
         assertThat(file.exists(), equalTo(true));
 
-        // import org.springframework.util.ResourceUtils;
-
         FileDrop fileDrop = new FileDrop();
         fileDrop.setDownloadKey("lMmiP-nxgzG-fnyAz-kwrRa");
         fileDrop.setEncryptionKey("rc2:rsRiB-TJDhV-EhcKB-PVRCv");
@@ -236,13 +236,67 @@ public class CipherServiceTest {
         bufferedReader.lines().forEach(builder::append);
         bufferedReader.close();
 
-        StringBuilder expected = new StringBuilder();
-        expected.append("This is a test");
-        expected.append("of the Emergency");
-        expected.append("Broadcast System.");
-        expected.append("2022 August 17");
+        String expected = "This is a test" +
+                "of the Emergency" +
+                "Broadcast System." +
+                "2022 August 17";
 
-        assertThat(builder.toString(), equalTo(expected.toString()));
+        assertThat(builder.toString(), equalTo(expected));
+    }
+
+    @Test
+    public void testVersionOneDecryptionAgain() throws Exception {
+        Path path = Paths.get("src/test/resources/files", "1984.jpg");
+        File file = path.toFile();
+        assertThat(file.exists(), equalTo(true));
+
+        Resource resource = storageService.loadAsResource(file.getAbsolutePath());
+        assertThat(resource.contentLength(), greaterThanOrEqualTo(221090L));
+        assertThat(resource.contentLength(), lessThanOrEqualTo(221100L));
+
+        /*
+        | 1310525 | duckart@hawaii.edu   | Frank R Duckart <frank.duckart@hawaii.edu>
+        | 2022-08-17 20:55:30 | nOcov-qbaeP-WDkgN-HmiRm | ltMpM-UHxwc-JUsUD-CgqKs
+        | rc2:netmD-LGjnU-zyixV-niqDP |
+         */
+
+        FileDrop fileDrop = new FileDrop();
+        fileDrop.setDownloadKey("nOcov-qbaeP-WDkgN-HmiRm");
+        fileDrop.setEncryptionKey("rc2:netmD-LGjnU-zyixV-niqDP");
+        FileSet fileSet = new FileSet();
+        fileSet.setFileDrop(fileDrop);
+        fileSet.setId(667);
+
+        /*
+        insert into fd_fileset (id, filedrop_id, file_name, type, comment, size)
+        values (3, 2, '1984.jpg',   'image/jpeg', '', 221090);
+         */
+
+        ByteArrayOutputStream decrypted =
+                (ByteArrayOutputStream) cipherService.decrypt(resource.getInputStream(), fileSet);
+        ByteArrayInputStream byteArrayInputStream =
+                new ByteArrayInputStream(decrypted.toByteArray());
+
+//        assertThat(decrypted.size(), equalTo(221090));
+//        long size = (int) resource.contentLength();
+//        assertThat(decrypted.size(), equalTo(size));
+
+        assertThat(decrypted.size(), greaterThanOrEqualTo(221090));
+        assertThat(decrypted.size(), lessThanOrEqualTo(221100));
+
+//        BufferedReader bufferedReader =
+//                new BufferedReader(new InputStreamReader(byteArrayInputStream));
+//
+//        StringBuilder builder = new StringBuilder();
+//        bufferedReader.lines().forEach(builder::append);
+//        bufferedReader.close();
+//
+//        String expected = "This is a test" +
+//                "of the Emergency" +
+//                "Broadcast System." +
+//                "2022 August 17";
+//
+//        assertThat(builder.toString(), equalTo(expected));
     }
 
 }

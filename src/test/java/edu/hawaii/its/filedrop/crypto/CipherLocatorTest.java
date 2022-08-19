@@ -6,7 +6,6 @@ import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -69,8 +68,6 @@ public class CipherLocatorTest {
         assertThat(original.length(), greaterThan(0L));
         assertThat(Files.size(original.toPath()), equalTo(original.length()));
 
-        //        cipher.encrypt("test", original, encrypted);
-
         BufferedReader bufferedReader = new BufferedReader(new FileReader(encrypted));
         StringBuilder builder = new StringBuilder();
 
@@ -78,8 +75,6 @@ public class CipherLocatorTest {
         bufferedReader.close();
 
         assertThat(builder.toString(), not(equalTo(content.toString())));
-
-        //        cipherService.decryptFile("test", encrypted, decrypted);
 
         bufferedReader = new BufferedReader(new FileReader(decrypted));
         builder = new StringBuilder();

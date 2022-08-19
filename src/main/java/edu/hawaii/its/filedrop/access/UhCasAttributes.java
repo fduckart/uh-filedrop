@@ -9,7 +9,7 @@ import java.util.Map;
 
 public class UhCasAttributes implements UhAttributes {
 
-    private Map<String, List<String>> attributes = new HashMap<>();
+    private final Map<String, List<String>> attributes = new HashMap<>();
     private final String username; // CAS login username.
     private final Map<?, ?> map; // Original CAS results.
 
@@ -34,7 +34,7 @@ public class UhCasAttributes implements UhAttributes {
                     Object v = map.get(key);
                     if (v != null) {
                         if (v instanceof String) {
-                            attributes.put(k, Arrays.asList((String) v));
+                            attributes.put(k, Collections.singletonList((String) v));
                         } else if (v instanceof List) {
                             List<String> lst = new ArrayList<String>();
                             for (Object o : (List<?>) v) {

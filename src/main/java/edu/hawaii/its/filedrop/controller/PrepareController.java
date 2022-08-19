@@ -148,7 +148,7 @@ public class PrepareController {
         logger.debug("Sender: " + sender);
         logger.debug("Recipient: " + fileDrop.getRecipients());
         logger.debug("Expiration: " + expiration);
-        logger.debug("Ticket Number: " + ticketNumber);
+        logger.debug("Ticket Number: " + ticketNumber); //
 
         logger.debug("Upload Key: " + fileDrop.getUploadKey());
 
@@ -440,7 +440,12 @@ public class PrepareController {
 
     @GetMapping(value = "/helpdesk")
     public String prepareHelpdesk(Model model) {
-        logger.debug("User at prepare-helpdesk");
+        if (logger.isDebugEnabled()) {
+            logger.debug("prepareHelpdesk;     model: " + model);
+            logger.debug("prepareHelpdesk;  helpName: " + helpName);
+            logger.debug("prepareHelpdesk; helpEmail: " + helpEmail);
+        }
+
         model.addAttribute("recipient", helpName);
         model.addAttribute("recipientEmail", helpEmail);
         return "user/prepare-helpdesk";

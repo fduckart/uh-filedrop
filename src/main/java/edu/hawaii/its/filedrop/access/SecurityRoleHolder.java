@@ -10,7 +10,7 @@ import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 
 public class SecurityRoleHolder {
 
-    private Set<GrantedAuthority> authorities = new LinkedHashSet<>();
+    private final Set<GrantedAuthority> authorities = new LinkedHashSet<>();
 
     // Constructor.
     public SecurityRoleHolder() {

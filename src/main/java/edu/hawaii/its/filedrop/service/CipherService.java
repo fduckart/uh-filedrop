@@ -10,7 +10,6 @@ import java.io.OutputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.GeneralSecurityException;
-import java.util.Arrays;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,16 +72,8 @@ public class CipherService {
     public OutputStream decrypt(InputStream inputStream, FileSet fileSet)
             throws GeneralSecurityException, IOException {
 
-        System.out.println(">>>  encryptionKey: " + fileSet.getFileDrop().getEncryptionKey());
-
         String[] encryptionKey = fileSet.getFileDrop().getEncryptionKey().split(":");
-
-        System.out.println(">>> encryptionKeys: " + Arrays.asList(encryptionKey));
-
         Cipher cipher = cipherLocator.find(encryptionKey[0]);
-
-        System.out.println(">>>  cipher       : " + cipher);
-
         javax.crypto.Cipher xcipher = cipher.decrypt(encryptionKey[1]);
 
         byte[] input = StreamUtils.copyToByteArray(inputStream);
@@ -95,6 +86,7 @@ public class CipherService {
 
         inputStream.close();
         outputStream.close();
+
         return outputStream;
     }
 
