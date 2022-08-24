@@ -21,6 +21,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,6 +49,11 @@ public class FileSystemStorageServiceTest {
 
     @Autowired
     private FileDropService fileDropService;
+
+    @BeforeAll
+    public static void beforeAll() {
+
+    }
 
     @Test
     public void construct() {
@@ -88,15 +94,12 @@ public class FileSystemStorageServiceTest {
 
     @Test
     public void createDirectories() throws Exception {
-        Integer applicationId = 19900000;
-        String dirname = applicationId + "/outsider";
+        String dirname = "abcd/outsider";
+        final Path dirPath = Paths.get(dirname);
+        final Path rootPath = storageService.getRootLocation();
+        final Path path = Paths.get(rootPath.toString(), dirname);
 
-        Path dirPath = Paths.get(dirname);
-        Path rootPath = storageService.getRootLocation();
-        Path path = Paths.get(rootPath.toString(), dirname);
-
-        System.out.println(" ###### path: " + path);
-
+        deleteDirectory(path.getParent());
         assertFalse(storageService.exists(dirname));
         assertFalse(Files.exists(path));
 

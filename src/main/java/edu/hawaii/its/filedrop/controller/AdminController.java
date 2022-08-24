@@ -91,11 +91,8 @@ public class AdminController {
     @GetMapping("/admin/gate-message")
     public String gateMessage(Model model) {
         int messageId = Message.GATE_MESSAGE;
-        System.out.println("  ### >>> messageId: " + messageId);
         Message message = messageService.findMessage(messageId);
-        System.out.println("  ### >>>   message: " + message);
         model.addAttribute("message", message);
-        System.out.println("  ### >>>     model: " + model);
         return "admin/gate-message";
     }
 

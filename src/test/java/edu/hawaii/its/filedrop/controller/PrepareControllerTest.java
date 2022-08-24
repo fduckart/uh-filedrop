@@ -13,6 +13,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -252,9 +253,6 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
 
-        System.out.println(">>>>> emailServer: " + emailServer);
-        System.out.println(">>>>> emailServer.isRunning : " + emailServer.isRunning());
-
         MimeMessage[] receivedMessages = emailServer.getReceivedMessages();
         assertThat(receivedMessages.length, equalTo(2));
         assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
@@ -326,7 +324,6 @@ public class PrepareControllerTest {
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
     }
 
-    //    @Disabled
     @Test
     @WithMockUhUser
     public void helpdeskTest() throws Exception {
@@ -336,24 +333,26 @@ public class PrepareControllerTest {
 
         System.out.println(" >>>> " + Strings.fill('a', 44));
 
+        mockMvc.perform(get("/helpdesk")
+                        .param("sender", "Test")
+                        .param("expiration", "30"))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/prepare-helpdesk"));
+
+        System.out.println(" >>>> " + Strings.fill('b', 44));
+
+        mockMvc.perform(get("/helpdesk")
+                        .param("sender", "Test")
+                        .param("expiration", "30")
+                        .param("ticketNumber", "123456"))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("ticketNumber"))
+                .andExpect(view().name("user/prepare-helpdesk"))
+                .andDo(print());
+
+        System.out.println(" >>>> " + Strings.fill('c', 44));
+
         if ("off".equals("")) {
-            mockMvc.perform(post("/helpdesk")
-                            .param("sender", "Test")
-                            .param("expiration", "30"))
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("user/prepare-helpdesk"));
-
-            System.out.println(" >>>> " + Strings.fill('b', 44));
-
-            mockMvc.perform(post("/helpdesk")
-                            .param("sender", "Test")
-                            .param("expiration", "30")
-                            .param("ticketNumber", "123456"))
-                    .andExpect(status().isOk())
-                    .andExpect(view().name("redirect:/helpdesk/files/{uploadKey}"));
-
-            System.out.println(" >>>> " + Strings.fill('c', 44));
-
             FileDrop fileDrop =
                     fileDropRepository.findAll().stream().filter(fd -> fd.getUploader().equals("Test"))
                             .findFirst().orElse(null);

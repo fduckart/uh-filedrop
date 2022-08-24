@@ -125,6 +125,19 @@ public class PrepareController {
         return "user/files";
     }
 
+    @GetMapping(value = "/helpdesk")
+    public String prepareHelpdesk(Model model) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("prepareHelpdesk;     model: " + model);
+            logger.debug("prepareHelpdesk;  helpName: " + helpName);
+            logger.debug("prepareHelpdesk; helpEmail: " + helpEmail);
+        }
+
+        model.addAttribute("recipient", helpName);
+        model.addAttribute("recipientEmail", helpEmail);
+        return "user/prepare-helpdesk";
+    }
+
     @PostMapping(value = "/helpdesk")
     public String addHelpdesk(@RequestParam String sender,
                               @RequestParam Integer expiration,
@@ -279,24 +292,6 @@ public class PrepareController {
         LdapPerson ldapSender = ldapService.findByUhUuidOrUidOrMail(sender);
 
         List<Recipient> recipientList = fileDropService.findRecipients(fileDrop);
-        int recipientCount = recipientList.size();
-        if (recipientCount == 1) {
-            System.out.println(Strings.fill('v', 99));
-
-            System.out.println("   >>>>>  recipient: " + recipientList.get(0));
-            System.out.println("   >>>>>     sender: " + sender);
-            System.out.println("   >>>>> ldapSender: " + ldapSender);
-
-            if (ldapSender.isValid() && sender != null) {
-                if (recipientList.get(0).getName().equals(sender)) {
-                    System.out.println("   >>>>> IS SAME!!!");
-                }
-
-            }
-
-            System.out.println(Strings.fill('^', 99));
-        }
-
         for (Recipient recipient : recipientList) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient.getName());
 
@@ -436,19 +431,6 @@ public class PrepareController {
         return ResponseEntity
                 .status(HttpStatus.FORBIDDEN)
                 .body(MESSAGE_FORBIDDEN);
-    }
-
-    @GetMapping(value = "/helpdesk")
-    public String prepareHelpdesk(Model model) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("prepareHelpdesk;     model: " + model);
-            logger.debug("prepareHelpdesk;  helpName: " + helpName);
-            logger.debug("prepareHelpdesk; helpEmail: " + helpEmail);
-        }
-
-        model.addAttribute("recipient", helpName);
-        model.addAttribute("recipientEmail", helpEmail);
-        return "user/prepare-helpdesk";
     }
 
     @PreAuthorize("hasRole('UH')")
