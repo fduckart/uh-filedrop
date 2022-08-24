@@ -47,13 +47,14 @@ import edu.hawaii.its.filedrop.util.Strings;
 @Controller
 public class PrepareController {
 
+    private static final Log logger = LogFactory.getLog(PrepareController.class);
+
     private static final Map<String, String> MESSAGE_FORBIDDEN =
             Collections.singletonMap("message",
                     "Could not add recipient due to restrictions.");
     private static final Map<String, String> MESSAGE_NOT_ALLOWED =
             Collections.singletonMap("message",
                     "Could not add non-UH recipient when authentication is required.");
-    private final Log logger = LogFactory.getLog(PrepareController.class);
 
     @Value("${app.mail.help}")
     private String helpName;
@@ -78,15 +79,6 @@ public class PrepareController {
 
     @Autowired
     private WorkflowService workflowService;
-
-    @GetMapping(value = "/helpdesk/files/{uploadKey}")
-    public String addFileHelpDesk(Model model, @PathVariable String uploadKey) {
-        model.addAttribute("maxUploadSize", maxUploadSize);
-        model.addAttribute("uploadKey", uploadKey);
-        model.addAttribute("recipients", Collections.singletonList(helpName));
-
-        return "user/files-helpdesk";
-    }
 
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = "/prepare/files/{uploadKey}")
@@ -125,7 +117,7 @@ public class PrepareController {
         return "user/files";
     }
 
-    @GetMapping(value = "/helpdesk")
+    @GetMapping("/helpdesk")
     public String prepareHelpdesk(Model model) {
         if (logger.isDebugEnabled()) {
             logger.debug("prepareHelpdesk;     model: " + model);
@@ -170,6 +162,15 @@ public class PrepareController {
                 .addFlashAttribute("ticketNumber", ticketNumber);
 
         return "redirect:/helpdesk/files/{uploadKey}";
+    }
+
+    @GetMapping(value = "/helpdesk/files/{uploadKey}")
+    public String addFileHelpDesk(Model model, @PathVariable String uploadKey) {
+        model.addAttribute("maxUploadSize", maxUploadSize);
+        model.addAttribute("uploadKey", uploadKey);
+        model.addAttribute("recipients", Collections.singletonList(helpName));
+
+        return "user/files-helpdesk";
     }
 
     @PreAuthorize("hasRole('UH')")

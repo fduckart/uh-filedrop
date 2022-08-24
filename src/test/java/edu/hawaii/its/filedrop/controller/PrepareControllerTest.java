@@ -3,6 +3,7 @@ package edu.hawaii.its.filedrop.controller;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
@@ -13,7 +14,7 @@ import static org.springframework.security.test.web.servlet.setup.SecurityMockMv
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.log;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.model;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -22,6 +23,8 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 import javax.mail.internet.MimeMessage;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -49,8 +52,10 @@ import edu.hawaii.its.filedrop.util.Strings;
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class PrepareControllerTest {
 
+    private static final Log logger = LogFactory.getLog(PrepareController.class);
+
     @RegisterExtension
-    static GreenMailExtension emailServer = new GreenMailExtension(ServerSetupTest.SMTP);
+    final GreenMailExtension emailServer = new GreenMailExtension(ServerSetupTest.SMTP);
 
     @Value("${app.mail.help}")
     private String helpName;
@@ -346,21 +351,26 @@ public class PrepareControllerTest {
                         .param("expiration", "30")
                         .param("ticketNumber", "123456"))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("ticketNumber"))
+                .andExpect(model().attributeExists("recipient", "recipientEmail"))
                 .andExpect(view().name("user/prepare-helpdesk"))
-                .andDo(print());
+                .andDo(log()); // Set logger to DEBUG to see results.
 
         System.out.println(" >>>> " + Strings.fill('c', 44));
 
+        FileDrop fileDrop =
+                fileDropRepository.findAll()
+                        .stream()
+                        .filter(fd -> fd.getUploader().equals("Test"))
+                        .findFirst()
+                        .orElse(null);
+        assertThat(fileDrop, notNullValue());
+        assertThat(fileDrop.getUploadKey(), equalTo("xxxx"));
+
+        mockMvc.perform(get("/helpdesk/files/" + fileDrop.getUploadKey()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("uploadKey", "maxUploadSize", "recipients"));
+
         if ("off".equals("")) {
-            FileDrop fileDrop =
-                    fileDropRepository.findAll().stream().filter(fd -> fd.getUploader().equals("Test"))
-                            .findFirst().orElse(null);
-
-            mockMvc.perform(get("/helpdesk/files/" + fileDrop.getUploadKey()))
-                    .andExpect(status().isOk())
-                    .andExpect(model().attributeExists("uploadKey", "maxUploadSize", "recipients"));
-
             MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
                     "text/plain", "test data".getBytes());
 
