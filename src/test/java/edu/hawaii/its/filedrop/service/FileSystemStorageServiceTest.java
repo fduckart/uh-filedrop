@@ -94,6 +94,9 @@ public class FileSystemStorageServiceTest {
         Path dirPath = Paths.get(dirname);
         Path rootPath = storageService.getRootLocation();
         Path path = Paths.get(rootPath.toString(), dirname);
+
+        System.out.println(" ###### path: " + path);
+
         assertFalse(storageService.exists(dirname));
         assertFalse(Files.exists(path));
 

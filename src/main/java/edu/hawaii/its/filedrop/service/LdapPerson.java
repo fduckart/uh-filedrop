@@ -8,6 +8,9 @@ import edu.hawaii.its.filedrop.type.PersonIdentifiable;
 
 public class LdapPerson implements PersonIdentifiable {
 
+    private final List<String> emails = new ArrayList<>();
+    private final List<String> affiliations = new ArrayList<>();
+    private final List<String> orgAffiliations = new ArrayList<>();
     private String cn;
     private String sn;
     private String givenName;
@@ -15,9 +18,6 @@ public class LdapPerson implements PersonIdentifiable {
     private String uhUuid;
     private String uid;
     private String title;
-    private List<String> emails = new ArrayList<>();
-    private List<String> affiliations = new ArrayList<>();
-    private List<String> orgAffiliations = new ArrayList<>();
 
     public void addMail(String mail) {
         emails.add(mail);

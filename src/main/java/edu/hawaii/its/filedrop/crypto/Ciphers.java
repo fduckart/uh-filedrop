@@ -11,10 +11,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class Ciphers {
 
-    private CipherFilterFactory defaultCipher;
-    private CipherFilterFactory nullCipher;
-    private Map<String, CipherFilterFactory> ciphers;
     private static final Logger logger = LoggerFactory.getLogger(Ciphers.class);
+    private final CipherFilterFactory defaultCipher;
+    private final Map<String, CipherFilterFactory> ciphers;
+    private CipherFilterFactory nullCipher;
 
     public Ciphers() {
 
@@ -55,6 +55,7 @@ public class Ciphers {
 
     /**
      * might be useful in testing
+     *
      * @param pw
      * @return
      * @throws GeneralSecurityException

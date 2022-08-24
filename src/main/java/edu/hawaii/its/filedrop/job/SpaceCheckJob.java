@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.job;
 
 import org.quartz.JobExecutionContext;
-import org.quartz.JobExecutionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -19,7 +18,7 @@ public class SpaceCheckJob extends SubmitJob {
     private SpaceCheckService spaceCheckService;
 
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+    public void execute(JobExecutionContext jobExecutionContext) {
         spaceCheckService.update();
     }
 

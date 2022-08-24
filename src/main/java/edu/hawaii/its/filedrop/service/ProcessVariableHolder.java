@@ -5,7 +5,7 @@ import java.util.Map;
 
 public class ProcessVariableHolder {
 
-    private Map<String, Object> processVariables = new HashMap<>();
+    private final Map<String, Object> processVariables = new HashMap<>();
 
     // Constructor
     public ProcessVariableHolder() {

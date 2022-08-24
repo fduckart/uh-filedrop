@@ -6,7 +6,6 @@ import javax.crypto.CipherOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.security.GeneralSecurityException;
 
 public class CipherFilter {
 
@@ -33,7 +32,7 @@ public class CipherFilter {
      * @param out
      * @throws IOException
      */
-    public void write(InputStream in, OutputStream out) throws IOException, GeneralSecurityException {
+    public void write(InputStream in, OutputStream out) throws IOException {
         try (OutputStream cipherOut = new CipherOutputStream(out, encrypt)) {
             copy(in, cipherOut);
         }
@@ -46,7 +45,7 @@ public class CipherFilter {
      * @param out
      * @throws IOException
      */
-    public void read(InputStream in, OutputStream out) throws IOException, GeneralSecurityException {
+    public void read(InputStream in, OutputStream out) throws IOException {
         copy(new CipherInputStream(in, decrypt), out);
     }
 

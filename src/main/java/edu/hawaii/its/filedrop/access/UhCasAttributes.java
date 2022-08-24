@@ -1,7 +1,6 @@
 package edu.hawaii.its.filedrop.access;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -122,7 +121,7 @@ public class UhCasAttributes implements UhAttributes {
     }
 
     private String toLowerCase(String s) {
-        return (s != null) ? s.toLowerCase() : s;
+        return s != null ? s.toLowerCase() : null;
     }
 
     @Override

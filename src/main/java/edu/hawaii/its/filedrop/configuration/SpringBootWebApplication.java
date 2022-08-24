@@ -11,17 +11,17 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @EnableScheduling
 public class SpringBootWebApplication extends SpringBootServletInitializer {
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(SpringBootWebApplication.class, args);
+    }
+
+    private static SpringApplicationBuilder configureApplication(SpringApplicationBuilder builder) {
+        return builder.sources(SpringBootWebApplication.class).bannerMode(Banner.Mode.OFF);
     }
 
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder builder) {
         return configureApplication(builder);
-    }
-
-    private static SpringApplicationBuilder configureApplication(SpringApplicationBuilder builder) {
-        return builder.sources(SpringBootWebApplication.class).bannerMode(Banner.Mode.OFF);
     }
 
 }

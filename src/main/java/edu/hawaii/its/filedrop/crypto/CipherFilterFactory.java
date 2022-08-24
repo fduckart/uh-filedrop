@@ -1,18 +1,18 @@
 package edu.hawaii.its.filedrop.crypto;
 
-import java.security.GeneralSecurityException;
 import javax.crypto.Cipher;
+import java.security.GeneralSecurityException;
 
 abstract class CipherFilterFactory {
 
-    private String type;
+    private final String type;
 
-    CipherFilterFactory(String t) {
-        this.type = t;
+    CipherFilterFactory(String type) {
+        this.type = type;
     }
 
     public String getType() {
-        return this.type;
+        return type;
     }
 
     public CipherFilter get(String pw) throws GeneralSecurityException {

@@ -8,7 +8,7 @@ import java.security.GeneralSecurityException;
 
 public class Rc2 implements Cipher {
 
-    private int iterationCount = 13;
+    private final int iterationCount = 13;
 
     @Override
     public javax.crypto.Cipher decrypt(String key) throws GeneralSecurityException {

@@ -1,19 +1,17 @@
 package edu.hawaii.its.filedrop.service;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.naming.NamingEnumeration;
-import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.ldap.core.AttributesMapper;
 
 public class LdapPersonAttributesMapper implements AttributesMapper<LdapPerson> {
 
     @Override
-    public LdapPerson mapFromAttributes(Attributes attrs) throws NamingException {
+    public LdapPerson mapFromAttributes(Attributes attrs) {
         LdapPerson person = new LdapPerson();
         person.setCn(get(attrs.get("cn")));
         person.setSn(get(attrs.get("sn")));

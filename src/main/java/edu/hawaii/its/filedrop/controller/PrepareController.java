@@ -229,7 +229,7 @@ public class PrepareController {
     }
 
     @GetMapping(value = "/complete/{uploadKey}")
-    public String completeFileDrop(@PathVariable String uploadKey) throws IOException, GeneralSecurityException {
+    public String completeFileDrop(@PathVariable String uploadKey) {
         logger.debug("completeFileDrop; start.");
         logger.info("completeFileDrop; uploadKey: " + uploadKey);
 
