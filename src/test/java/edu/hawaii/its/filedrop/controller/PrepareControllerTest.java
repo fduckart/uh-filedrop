@@ -2,11 +2,14 @@ package edu.hawaii.its.filedrop.controller;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.hasItem;
+import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,7 +49,6 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
-import edu.hawaii.its.filedrop.util.Strings;
 
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
@@ -62,6 +64,9 @@ public class PrepareControllerTest {
 
     @Value("${app.mail.to.help}")
     private String helpEmail;
+
+    @Value("${app.max.size}")
+    private String maxUploadSize;
 
     @Autowired
     private FileDropService fileDropService;
@@ -336,15 +341,11 @@ public class PrepareControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/prepare-helpdesk"));
 
-        System.out.println(" >>>> " + Strings.fill('a', 44));
-
         mockMvc.perform(get("/helpdesk")
                         .param("sender", "Test")
                         .param("expiration", "30"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/prepare-helpdesk"));
-
-        System.out.println(" >>>> " + Strings.fill('b', 44));
 
         mockMvc.perform(get("/helpdesk")
                         .param("sender", "Test")
@@ -355,44 +356,45 @@ public class PrepareControllerTest {
                 .andExpect(view().name("user/prepare-helpdesk"))
                 .andDo(log()); // Set logger to DEBUG to see results.
 
-        System.out.println(" >>>> " + Strings.fill('c', 44));
-
         FileDrop fileDrop =
                 fileDropRepository.findAll()
                         .stream()
-                        .filter(fd -> fd.getUploader().equals("Test"))
+                        .filter(fd -> fd.getUploader().equals("test"))
                         .findFirst()
                         .orElse(null);
         assertThat(fileDrop, notNullValue());
-        assertThat(fileDrop.getUploadKey(), equalTo("xxxx"));
+        assertThat(fileDrop.getUploadKey(), equalTo("uploadKey"));
+        assertThat(fileDrop.getDownloadKey(), equalTo("downloadKey"));
 
         mockMvc.perform(get("/helpdesk/files/" + fileDrop.getUploadKey()))
                 .andExpect(status().isOk())
-                .andExpect(model().attributeExists("uploadKey", "maxUploadSize", "recipients"));
+                .andExpect(model().attributeExists("uploadKey", "maxUploadSize", "recipients"))
+                .andExpect(model().attribute("uploadKey", is(equalTo("uploadKey"))))
+                .andExpect(model().attribute("maxUploadSize", is(equalTo(maxUploadSize))))
+                .andExpect(model().attribute("recipients", hasSize(1)))
+                .andExpect(model().attribute("recipients", hasItem("Frank R Duckart")));
 
-        if ("off".equals("")) {
-            MockMultipartFile mockMultipartFile = new MockMultipartFile("file", "test.txt",
-                    "text/plain", "test data".getBytes());
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file",
+                "test.txt", "text/plain", "test data".getBytes());
 
-            mockMvc.perform(multipart("/helpdesk/files/" + fileDrop.getUploadKey())
-                            .file(mockMultipartFile)
-                            .param("comment", "test")
-                            .param("expiration", "30"))
-                    .andExpect(status().isOk());
+        mockMvc.perform(multipart("/helpdesk/files/" + fileDrop.getUploadKey())
+                        .file(mockMultipartFile)
+                        .param("comment", "test")
+                        .param("expiration", "30"))
+                .andExpect(status().isOk());
 
-            List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
-            assertFalse(fileSets.isEmpty());
-            assertEquals(1, fileSets.size());
-            assertEquals("test.txt", fileSets.get(0).getFileName());
-            assertEquals("text/plain", fileSets.get(0).getType());
-            assertEquals("test", fileSets.get(0).getComment());
+        List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
+        assertFalse(fileSets.isEmpty());
+        assertEquals(1, fileSets.size());
+        assertEquals("test.txt", fileSets.get(0).getFileName());
+        assertEquals("text/plain", fileSets.get(0).getType());
+        assertEquals("test", fileSets.get(0).getComment());
 
-            mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey())
-                            .param("expiration", "30")
-                            .param("ticketNumber", "123456"))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(view().name("redirect:/"));
-        }
+        mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey())
+                        .param("expiration", "30")
+                        .param("ticketNumber", "123456"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
     }
 
     @Test

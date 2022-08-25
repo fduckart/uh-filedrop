@@ -130,12 +130,11 @@ public class PrepareController {
         return "user/prepare-helpdesk";
     }
 
-    @PostMapping(value = "/helpdesk")
+    @PostMapping("/helpdesk")
     public String addHelpdesk(@RequestParam String sender,
                               @RequestParam Integer expiration,
                               @RequestParam(required = false) Integer ticketNumber,
                               RedirectAttributes redirectAttributes) {
-
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(sender);
         fileDrop.setUploaderFullName(sender);
@@ -150,12 +149,13 @@ public class PrepareController {
 
         fileDropService.addRecipients(fileDrop, helpEmail);
 
-        logger.debug("Sender: " + sender);
-        logger.debug("Recipient: " + fileDrop.getRecipients());
-        logger.debug("Expiration: " + expiration);
-        logger.debug("Ticket Number: " + ticketNumber); //
-
-        logger.debug("Upload Key: " + fileDrop.getUploadKey());
+        if (logger.isDebugEnabled()) {
+            logger.debug("addHelpdesk;       sender: " + sender);
+            logger.debug("addHelpdesk;   recipients: " + fileDrop.getRecipients());
+            logger.debug("addHelpdesk;   expiration: " + expiration);
+            logger.debug("addHelpdesk; ticketNumber: " + ticketNumber);
+            logger.debug("addHelpdesk;    uploadKey: " + fileDrop.getUploadKey());
+        }
 
         redirectAttributes.addAttribute("uploadKey", fileDrop.getUploadKey())
                 .addFlashAttribute("expiration", expiration)
@@ -164,8 +164,12 @@ public class PrepareController {
         return "redirect:/helpdesk/files/{uploadKey}";
     }
 
-    @GetMapping(value = "/helpdesk/files/{uploadKey}")
+    @GetMapping("/helpdesk/files/{uploadKey}")
     public String addFileHelpDesk(Model model, @PathVariable String uploadKey) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("addFileHelpDesk;     uploadKey: " + uploadKey);
+        }
+
         model.addAttribute("maxUploadSize", maxUploadSize);
         model.addAttribute("uploadKey", uploadKey);
         model.addAttribute("recipients", Collections.singletonList(helpName));
@@ -351,13 +355,18 @@ public class PrepareController {
         mail.setFrom(fileDrop.getUploader());
         mail.setSubject("FileDrop Helpdesk Ticket: " + ticketNumber);
 
-        redirectAttributes.addFlashAttribute("message", "File(s) uploaded <strong>successfully</strong>");
+        redirectAttributes.addFlashAttribute("message",
+                "File(s) uploaded <strong>successfully</strong>");
+
+        logger.debug("helpdeskSuccessful; done.");
+
         return "redirect:/";
     }
 
     @PreAuthorize("hasRole('UH')")
     @GetMapping(value = { "/prepare", "/prepare/" })
-    public String prepare(Model model, @RequestParam(value = "expiration", required = false) Integer defaultExpiration) {
+    public String prepare(Model model,
+                          @RequestParam(value = "expiration", required = false) Integer defaultExpiration) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("prepare; defaultExpiration: " + defaultExpiration);
@@ -445,11 +454,17 @@ public class PrepareController {
         fileDropService.uploadFile(currentUser(), file, comment, fileDrop);
     }
 
-    @PostMapping(value = "/helpdesk/files/{uploadKey}")
+    @PostMapping("/helpdesk/files/{uploadKey}")
     @ResponseStatus(value = HttpStatus.OK)
     public void uploadFilesHelpdesk(@PathVariable String uploadKey,
                                     @RequestParam MultipartFile file,
                                     @RequestParam("comment") String comment) {
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("uploadFilesHelpdesk;   uploadKey: " + uploadKey);
+            logger.debug("uploadFilesHelpdesk;     comment: " + comment);
+        }
+
         FileSet fileSet = new FileSet();
         fileSet.setFileName(file.getOriginalFilename());
         fileSet.setType(file.getContentType());
@@ -462,10 +477,8 @@ public class PrepareController {
         fileDropService.saveFileSet(fileSet);
 
         if (logger.isDebugEnabled()) {
-            logger.debug("uploadFilesHelpdesk; uploadKey: " + uploadKey);
-            logger.debug("uploadFilesHelpdesk;    uploader: " + fileDrop.getUploader());
-            logger.debug("uploadFilesHelpdesk;     fileSet: " + fileSet);
             logger.debug("uploadFilesHelpdesk;    fileDrop: " + fileDrop);
+            logger.debug("uploadFilesHelpdesk;     fileSet: " + fileSet);
         }
     }
 }

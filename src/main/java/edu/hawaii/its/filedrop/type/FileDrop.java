@@ -1,9 +1,5 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -14,6 +10,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
@@ -61,7 +60,7 @@ public class FileDrop {
     @Convert(converter = BooleanToCharacterConverter.class)
     private Boolean authenticationRequired;
 
-    @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fileDrop", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<FileSet> fileSet;
 
