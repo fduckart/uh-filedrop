@@ -45,6 +45,7 @@ import com.icegreen.greenmail.util.ServerSetupTest;
 
 import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.repository.FileDropRepository;
+import edu.hawaii.its.filedrop.repository.FileSetRepository;
 import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.mail.EmailService;
 import edu.hawaii.its.filedrop.type.FileDrop;
@@ -73,6 +74,9 @@ public class PrepareControllerTest {
 
     @Autowired
     private FileDropRepository fileDropRepository;
+
+    @Autowired
+    private FileSetRepository fileSetRepository;
 
     @Autowired
     private WebApplicationContext context;
@@ -222,6 +226,9 @@ public class PrepareControllerTest {
     public void addFilesTest() throws Exception {
         emailService.setEnabled(true);
 
+        long fileDropCount0 = fileDropRepository.count();
+        long fileSetCount0 = fileSetRepository.count();
+
         mockMvc.perform(get("/prepare"))
                 .andExpect(status().isOk())
                 .andExpect(view().name("user/prepare"));
@@ -235,7 +242,12 @@ public class PrepareControllerTest {
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name(containsString("redirect:/prepare/files")));
 
-        Integer count = Long.valueOf(fileDropRepository.count()).intValue();
+        long fileDropCount1 = fileDropRepository.count();
+        assertThat(fileDropCount1, equalTo(fileDropCount0 + 1));
+        long fileSetCount1 = fileSetRepository.count();
+        assertThat(fileSetCount1, equalTo(fileSetCount0));
+
+        Integer count = Long.valueOf(fileDropCount1).intValue();
         FileDrop fileDrop = fileDropService.findFileDrop(count);
 
         mockMvc.perform(get("/prepare/files/" + fileDrop.getUploadKey()))
@@ -252,22 +264,38 @@ public class PrepareControllerTest {
                 .andExpect(status().isOk());
         assertNotNull(fileDrop);
 
-        List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
-        assertFalse(fileSets.isEmpty());
-        assertEquals(1, fileSets.size());
-        assertEquals("test.txt", fileSets.get(0).getFileName());
-        assertEquals("text/plain", fileSets.get(0).getType());
-        assertEquals("test comment", fileSets.get(0).getComment());
+        long fileDropCount2 = fileDropRepository.count();
+        assertThat(fileDropCount2, equalTo(fileDropCount1));
+        long fileSetCount2 = fileSetRepository.count();
+        assertThat(fileSetCount2, equalTo(fileSetCount1 + 1));
 
-        mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
+        mockMvc.perform(get("/expire/" + fileDrop.getDownloadKey()))
+                .andExpect(status().isOk())
+                .andExpect(view().name("user/expired"));
 
-        MimeMessage[] receivedMessages = emailServer.getReceivedMessages();
-        assertThat(receivedMessages.length, equalTo(2));
-        assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
-        assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
-        assertThat(receivedMessages[1].getContent().toString(), containsString("jwlennon@hawaii.edu"));
+        long fileDropCount3 = fileDropRepository.count();
+        assertThat(fileDropCount3, equalTo(fileDropCount2 - 1));
+        if ("off".equals("")) {
+            long fileSetCount3 = fileSetRepository.count();
+            assertThat(fileSetCount3, equalTo(fileSetCount2 - 1));
+
+            List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
+            assertFalse(fileSets.isEmpty());
+            assertEquals(1, fileSets.size());
+            assertEquals("test.txt", fileSets.get(0).getFileName());
+            assertEquals("text/plain", fileSets.get(0).getType());
+            assertEquals("test comment", fileSets.get(0).getComment());
+
+            mockMvc.perform(get("/complete/" + fileDrop.getUploadKey()))
+                    .andExpect(status().is3xxRedirection())
+                    .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
+
+            MimeMessage[] receivedMessages = emailServer.getReceivedMessages();
+            assertThat(receivedMessages.length, equalTo(2));
+            assertThat(receivedMessages[1].getAllRecipients()[0].toString(), equalTo("krichards@example.com"));
+            assertThat(receivedMessages[1].getFrom()[0].toString(), equalTo("jwlennon@hawaii.edu"));
+            assertThat(receivedMessages[1].getContent().toString(), containsString("jwlennon@hawaii.edu"));
+        }
     }
 
     @Test

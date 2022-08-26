@@ -60,7 +60,7 @@ public class FileDrop {
     @Convert(converter = BooleanToCharacterConverter.class)
     private Boolean authenticationRequired;
 
-    @OneToMany(mappedBy = "fileDrop", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "fileDrop", cascade = CascadeType.ALL)
     @JsonManagedReference
     private Set<FileSet> fileSet;
 

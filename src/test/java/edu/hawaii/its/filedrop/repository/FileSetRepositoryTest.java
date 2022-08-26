@@ -117,14 +117,12 @@ public class FileSetRepositoryTest {
         long countFileSet9 = fileSetRepository.count();
         assertThat(countFileSet9, equalTo(countFileSet8 - 1));
 
-        if ("off".equals("")) {
-            fileDrop = fileDropRepository.findById(fileDrop.getId()).get();
-            assertThat(fileDrop, not(equalTo(null)));
-            assertThat(fileDrop.getId(), not(equalTo(null)));
-            fileDropRepository.delete(fileDrop);
-            long countFileDrop9 = fileDropRepository.count();
-            assertThat(countFileDrop9, equalTo(countFileDrop0));
-        }
+        fileDrop = fileDropRepository.findById(fileDrop.getId()).get();
+        assertThat(fileDrop, not(equalTo(null)));
+        assertThat(fileDrop.getId(), not(equalTo(null)));
+        fileDropRepository.delete(fileDrop);
+        long countFileDrop9 = fileDropRepository.count();
+        assertThat(countFileDrop9, equalTo(countFileDrop0));
     }
 
     @Test
