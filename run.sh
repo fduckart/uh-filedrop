@@ -1,5 +1,5 @@
 #!/bin/bash
-mvn clean test jacoco:report -Djs-tests.skip=true -Dtest=PrepareControllerTest#addFilesTest > output.txt
+mvn clean test jacoco:report -Djs-tests.skip=true -Dtest=PrepareControllerTest#restrictionsFacultyTest > output.txt
 RC=$?
 git s
 if [ $RC -eq 0 ]
