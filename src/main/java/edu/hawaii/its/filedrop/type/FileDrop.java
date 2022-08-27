@@ -188,7 +188,7 @@ public class FileDrop {
                 + ", valid=" + valid
                 + ", authenticationRequired=" + authenticationRequired
                 + ", recipients=" + recipients
-                + ", files=" + fileSet
+                /* + ", files=" + fileSet */
                 + "]";
     }
 }

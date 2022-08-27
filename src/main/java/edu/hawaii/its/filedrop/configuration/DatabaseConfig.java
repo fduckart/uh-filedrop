@@ -1,9 +1,8 @@
 package edu.hawaii.its.filedrop.configuration;
 
-import java.util.Properties;
-
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.util.Properties;
 
 import org.apache.commons.dbcp2.BasicDataSource;
 import org.apache.commons.logging.Log;
