@@ -22,4 +22,4 @@ jobs:
                 with:
                     java-version: ${{ matrix.java }}
             -   name: Test code
-                run: mvn -B -q test -D'logging.level.edu.hawaii.its.filedrop=OFF' -D'logging.level.org.springframework=ERROR' -D'spring.main.banner-mode=off' -D'test=*Test'
+                run: mvn -B -q test -D'logging.level.edu.hawaii.its.filedrop=OFF' -D'logging.level.org.springframework=ERROR' -D'spring.main.banner-mode=off' -D'test=DatesTest'
