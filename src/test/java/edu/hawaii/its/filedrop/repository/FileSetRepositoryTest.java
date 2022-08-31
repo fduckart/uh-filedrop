@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -129,6 +130,7 @@ public class FileSetRepositoryTest {
         assertThat(countFileDrop9, equalTo(countFileDrop0));
     }
 
+    @Disabled
     @Test
     public void acomment() {
         final long countFileDrop0 = fileDropRepository.count();
