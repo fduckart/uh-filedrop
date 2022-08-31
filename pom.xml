@@ -402,7 +402,7 @@
                         <include>filedrop.controller.prepare.js</include>
                     </sourceIncludes>
                     <specIncludes>
-                        <include>**/*.prepare.test.js</include>
+                        <include>**/*.test.js</include>
                     </specIncludes>
                     <preloadSources>
                         <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>
