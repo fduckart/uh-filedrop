@@ -580,37 +580,37 @@ describe("PrepareJsController#getRecipients", function() {
         expect(scope.addStep.length).toEqual(9);
         expect(scope.addStep[7]).toEqual("_add_start_" + recipientToAdd);
         expect(scope.addStep[8]).toEqual("_already_added_");
+        expect(scope.recipient).toEqual("");
+        expect(scope.error).toBeDefined();
+        expect(scope.error.message).toEqual("Recipient is already added.");
+        recipientsStr = scope.getRecipientsString();
+        expect(recipientsStr.length).toEqual(3);
+        expect(recipientsStr).toEqual("d,c");
+        recipients = scope.getRecipients();
+        expect(recipients.length).toEqual(2);
+
+        expect(recipients[0]).toEqual(expectedRecipient0);
+        expect(recipients[0].name).toEqual(undefined); // Hmm.
+        expect(recipients[0].mail).toEqual(expectedRecipient0.mail);
+        expect(recipients[0].mails).toEqual(expectedRecipient0.mails);
+        expect(recipients[0].uid).toEqual(expectedRecipient0.uid);
+
+        // Try re-adding the second person using an email.
+        recipientToAdd = person1.mails[0];
+        expect(scope.hasRecipient(recipientToAdd)).toBeTrue();
+        expect(person1.uid).not.toEqual(currentUser.uid);
+        expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
+        expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
+
+        //
+        // Don't need a mocked post for this add attempt
+        // because it is handled before the POST happens.
+        //
+
+        scope.addRecipient(recipientToAdd);
+
+        expect(scope.addStep.length).toEqual(9);
         if ("off" == "") {
-            expect(scope.recipient).toEqual("");
-            expect(scope.error).toBeDefined();
-            expect(scope.error.message).toEqual("Recipient is already added.");
-            recipientsStr = scope.getRecipientsString();
-            expect(recipientsStr.length).toEqual(3);
-            expect(recipientsStr).toEqual("d,c");
-            recipients = scope.getRecipients();
-            expect(recipients.length).toEqual(2);
-
-            expect(recipients[0]).toBeDefined();
-            expect(recipients[0]).toEqual(expectedRecipient0);
-            expect(recipients[0].name).toEqual(undefined); // Hmm.
-            expect(recipients[0].mail).toEqual(expectedRecipient0.mail);
-            expect(recipients[0].mails).toEqual(expectedRecipient0.mails);
-            expect(recipients[0].uid).toEqual(expectedRecipient0.uid);
-
-            // Try re-adding the second person using an email.
-            recipientToAdd = person1.mails[0];
-            expect(scope.hasRecipient(recipientToAdd)).toBeTrue();
-            expect(person1.uid).not.toEqual(currentUser.uid);
-            expect(scope.isCurrentUserUid(recipientToAdd)).toBeFalse();
-            expect(scope.isCurrentUserMail(recipientToAdd)).toBeFalse();
-
-            //
-            // Don't need a mocked post for this add attempt
-            // because it is handled before the POST happens.
-            //
-
-            scope.addRecipient(recipientToAdd);
-
             expect(scope.addStep).toEqual("_already_added_");
             expect(scope.recipient).toEqual("");
             expect(scope.error).toBeDefined();
@@ -700,7 +700,6 @@ describe("PrepareJsController#getRecipients", function() {
             recipients = scope.getRecipients();
             expect(recipients.length).toEqual(3);
             expect(recipientsStr).toEqual("d,c,fd");
-
         }
     });
 });
