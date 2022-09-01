@@ -86,7 +86,7 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
                     currentUser.mails[0],
                     currentUser.mails,
                     currentUser.uid)
-                );
+            );
             $scope.error = undefined;
             $scope.recipient = "";
             $scope.addStep.push("_add_current_user_" + recipientToAdd);
@@ -97,7 +97,6 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
         let successCallback = function(response) {
             const person = response.data;
             $log.debug("addRecipient;", currentUser, "searched", recipientToAdd, "and found", person);
-            ///$scope.addStep.push("_sc_success_callback_");
 
             if (!($scope.isEmptyPerson(person))) {
                 $scope.recipients.push({
@@ -150,9 +149,9 @@ function PrepareJsController($scope, dataProvider, $http, $window, $log, $uibMod
 
         if ("off" === "") {
             throw new Error("STOP loadRecipients; "
-            + JSON.stringify(recipients, function(k, v) {
-                return v === undefined ? undefined : v;
-            }) + "");
+                + JSON.stringify(recipients, function(k, v) {
+                    return v === undefined ? undefined : v;
+                }) + "");
         }
 
         if (recipients && recipients.length > 0) {
