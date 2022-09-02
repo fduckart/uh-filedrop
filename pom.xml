@@ -26,6 +26,8 @@
     </developers>
     <scm>
         <url>https://github.com/fduckart/uh-filedrop</url>
+        <connection></connection>
+        <developerConnection></developerConnection>
     </scm>
 
     <parent>
@@ -188,6 +190,12 @@
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-pmd-plugin</artifactId>
             <version>${pmd.plugin.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <version>3.3.0</version>
         </dependency>
 
         <!-- LDAP Testing. -->
@@ -387,22 +395,17 @@
                 </executions>
                 <configuration>
                     <skipJasmineTests>${js-tests.skip}</skipJasmineTests>
-                    <!--
-                    <jsSrcDir>${project.build.outputDirectory}/static/javascript</jsSrcDir>
-                    <jsTestSrcDir>${project.build.testOutputDirectory}/javascript</jsTestSrcDir>
-                    -->
-
                     <jsSrcDir>src/main/resources/static/javascript</jsSrcDir>
-                    <jsTestSrcDir>src/test/javascript</jsTestSrcDir>
-
                     <sourceIncludes>
                         <include>app.js</include>
                         <include>app.service.js</include>
                         <include>filedrop.controller.campus.js</include>
                         <include>filedrop.controller.prepare.js</include>
+                        <include>filedrop.controller.role.js</include>
                     </sourceIncludes>
+                    <jsTestSrcDir>src/test/javascript</jsTestSrcDir>
                     <specIncludes>
-                        <include>**/*.test.js</include>
+                        <include>*.test.js</include>
                     </specIncludes>
                     <preloadSources>
                         <source>classpath/META-INF/resources/webjars/angularjs/${angularjs-version}/angular.js"></source>

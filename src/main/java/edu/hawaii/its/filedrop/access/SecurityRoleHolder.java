@@ -1,5 +1,6 @@
 package edu.hawaii.its.filedrop.access;
 
+import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
@@ -31,7 +32,7 @@ public class SecurityRoleHolder {
     }
 
     public Set<GrantedAuthority> getAuthorites() {
-        return authorities;
+        return Collections.unmodifiableSet(authorities);
     }
 
     public int size() {

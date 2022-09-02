@@ -12,7 +12,7 @@
                     <div class="form-row mb-3">
                         <div class="col-sm-12">
                             <label for="sender" class="filedrop-label">Sender</label>
-                            <input class="form-control" type="text" id="sender" name="sender" 
+                            <input class="form-control" type="text" id="sender" name="sender"
                                    placeholder="Name..."
                                    autocomplete="off"
                                    required>
@@ -23,9 +23,9 @@
                         <div class="col-sm-12">
                             <label for="ticketNumber" class="filedrop-label">Ticket Number</label>
                             <input class="form-control" type="text" id="ticketNumber" name="ticketNumber"
-                                placeholder="6 digit ticket number"
-                                autocomplete="off"
-                                required>
+                                   placeholder="Enter ticket number..."
+                                   autocomplete="off"
+                                   required>
                         </div>
                     </div>
 
@@ -36,7 +36,7 @@
                             <ul class="list-inline">
                                 <li class="list-inline-item">
                                     <span class="badge badge-light border-secondary border"
-                                                    style="font-size: .85em; color: #4d4d4d" th:text="${recipient}">
+                                          style="font-size: .85em; color: #4d4d4d" th:text="${recipient}">
                                     </span>
                                 </li>
                             </ul>
@@ -47,15 +47,15 @@
                             <label for="validationRequired" class="filedrop-label">Require Authentication</label>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation" id="validationRequired"
-                                    value="true" checked disabled>
+                                       value="true" checked disabled>
                                 <label class="form-check-label" for="validationRequired">
                                     Yes, require recipient to log in using the UH Login (recommended).
                                 </label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="validation"
-                                    id="validationNotRequired"
-                                    value="false" disabled>
+                                       id="validationNotRequired"
+                                       value="false" disabled>
                                 <label class="form-check-label" for="validationNotRequired">
                                     No login required (unsecure download available to anyone).
                                 </label>
