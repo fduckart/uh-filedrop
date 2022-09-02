@@ -710,8 +710,6 @@ describe("PrepareJsController#getRecipients", function() {
         recipients = scope.getRecipients();
         expect(recipients.length).toEqual(3);
         expect(recipientsStr).toEqual("d,c,fd");
-
-        expect(false).toEqual(true);
     });
 });
 
