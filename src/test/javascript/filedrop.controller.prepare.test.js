@@ -23,12 +23,13 @@ describe("PrepareJsController", function() {
     let controller;
     let window;
     let dataProvider;
+    let httpBackend;
 
     beforeEach(inject(function($rootScope, $controller, _$window_, _dataProvider_, _$httpBackend_) {
         scope = $rootScope.$new();
         window = _$window_;
         dataProvider = _dataProvider_;
-        $httpBackend = _$httpBackend_;
+        httpBackend = _$httpBackend_;
         controller = $controller('PrepareJsController', {
             $scope: scope,
             dataProvider: _dataProvider_,
@@ -37,8 +38,8 @@ describe("PrepareJsController", function() {
     }));
 
     afterEach(function() {
-        $httpBackend.verifyNoOutstandingExpectation();
-        $httpBackend.verifyNoOutstandingRequest();
+        httpBackend.verifyNoOutstandingExpectation();
+        httpBackend.verifyNoOutstandingRequest();
     });
 
     it("construction", function() {
@@ -96,11 +97,6 @@ describe("PrepareJsController", function() {
 
         // const mail = "a@b.c";
         const postUrlBase = "/filedrop/prepare/recipient/add";
-        // const url = postUrlBase + "?authenticationRequired=true" + "&recipient=" + mail;
-        // $httpBackend.whenPOST(url)
-        //     .respond(200, scope.makeRecipient(undefined, mail, [mail], undefined));
-        // $httpBackend.expectPOST(url);
-
         const filedropRecipients = scope.getFileDrop().recipients;
         expect(filedropRecipients.length).toEqual(4);
         expect(filedropRecipients[0]).toEqual("a@b.c");
@@ -116,15 +112,15 @@ describe("PrepareJsController", function() {
         for (let i = 0; i < 3; i++) {
             let r = filedropRecipients[i];
             let url = postUrlBase + "?authenticationRequired=true" + "&recipient=" + r;
-            $httpBackend.whenPOST(url)
+            httpBackend.whenPOST(url)
                 .respond(200, scope.makeRecipient(undefined, r, [r], undefined));
-            $httpBackend.expectPOST(url);
+            httpBackend.expectPOST(url);
         }
 
         // What we are testing:
         scope.init(); // FIXME
 
-        $httpBackend.flush();
+        httpBackend.flush();
 
         expect(scope.error).toBeUndefined();
 
@@ -273,14 +269,14 @@ describe("PrepareJsController", function() {
         for (let i = 0; i < 3; i++) {
             let r = filedropRecipients[i];
             let url = postUrlBase + "?authenticationRequired=true" + "&recipient=" + r;
-            $httpBackend.whenPOST(url)
+            httpBackend.whenPOST(url)
                 .respond(200, scope.makeRecipient(undefined, r, [r], undefined));
-            $httpBackend.expectPOST(url);
+            httpBackend.expectPOST(url);
         }
 
         scope.init(); // <-- Note.
 
-        $httpBackend.flush();
+        httpBackend.flush();
 
         expect(scope.error).toBeUndefined();
 
@@ -360,12 +356,12 @@ describe("PrepareJsController", function() {
 
         let stepCount = scope.addStep.length;
         let url = postUrlBase + "?authenticationRequired=true" + "&recipient=" + recipientToAdd;
-        $httpBackend.whenPOST(url).respond(200, person);
-        $httpBackend.expectPOST(url);
+        httpBackend.whenPOST(url).respond(200, person);
+        httpBackend.expectPOST(url);
 
         scope.addRecipient(recipientToAdd);
 
-        $httpBackend.flush();
+        httpBackend.flush();
 
         expect(scope.addStep.length).toEqual(stepCount + 3);
         expect(scope.addStep[12]).toEqual("_add_start_" + recipientToAdd);
@@ -388,12 +384,12 @@ describe("PrepareJsController", function() {
         scope.recipient = recipientToAdd; // To emulate the HTML page.
 
         url = postUrlBase + "?authenticationRequired=true" + "&recipient=" + recipientToAdd;
-        $httpBackend.whenPOST(url).respond(200, undefined);
-        $httpBackend.expectPOST(url);
+        httpBackend.whenPOST(url).respond(200, undefined);
+        httpBackend.expectPOST(url);
 
         scope.addRecipient(recipientToAdd);
 
-        $httpBackend.flush();
+        httpBackend.flush();
 
         expect(scope.addStep.length).toEqual(stepCount + 3);
         expect(scope.addStep[15]).toEqual("_add_start_" + recipientToAdd);
@@ -427,12 +423,13 @@ describe("PrepareJsController#getRecipients", function() {
     let controller;
     let window;
     let dataProvider;
+    let httpBackend;
 
     beforeEach(inject(function($rootScope, $controller, _$window_, _dataProvider_, _$httpBackend_) {
         scope = $rootScope.$new();
         window = _$window_;
         dataProvider = _dataProvider_;
-        $httpBackend = _$httpBackend_;
+        httpBackend = _$httpBackend_;
         controller = $controller('PrepareJsController', {
             $scope: scope,
             dataProvider: _dataProvider_,
@@ -440,10 +437,10 @@ describe("PrepareJsController#getRecipients", function() {
         });
     }));
 
-    // afterEach(function() {
-    //     $httpBackend.verifyNoOutstandingExpectation();
-    //     $httpBackend.verifyNoOutstandingRequest();
-    // });
+    afterEach(function() {
+        httpBackend.verifyNoOutstandingExpectation();
+        httpBackend.verifyNoOutstandingRequest();
+    });
 
     it("add-and-get-recipients", function() {
         expect(scope.error).toBeUndefined();
@@ -491,12 +488,12 @@ describe("PrepareJsController#getRecipients", function() {
 
         const postUrlBase = "/filedrop/prepare/recipient/add";
         let postUrl = postUrlBase + "?authenticationRequired=true&recipient=" + recipientToAdd;
-        $httpBackend.whenPOST(postUrl).respond(200, person0);
-        $httpBackend.expectPOST(postUrl);
+        httpBackend.whenPOST(postUrl).respond(200, person0);
+        httpBackend.expectPOST(postUrl);
 
         scope.addRecipient(recipientToAdd);
 
-        $httpBackend.flush();
+        httpBackend.flush();
 
         expect(scope.addStep.length).toEqual(4);
         expect(scope.addStep[0]).toEqual("_init_");
@@ -533,12 +530,12 @@ describe("PrepareJsController#getRecipients", function() {
         expect(scope.addStep.length).toEqual(4);
 
         postUrl = postUrlBase + "?authenticationRequired=true&recipient=" + recipientToAdd;
-        $httpBackend.whenPOST(postUrl).respond(200, person1);
-        $httpBackend.expectPOST(postUrl);
+        httpBackend.whenPOST(postUrl).respond(200, person1);
+        httpBackend.expectPOST(postUrl);
 
         scope.addRecipient(recipientToAdd);
 
-        $httpBackend.flush();
+        httpBackend.flush();
 
         expect(scope.addStep.length).toEqual(7);
         expect(scope.addStep[4]).toEqual("_add_start_" + recipientToAdd);
