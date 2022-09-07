@@ -68,14 +68,18 @@ public class HomeController {
 
         boolean spaceFull = !spaceCheckService.isFreeSpaceAvailable();
         logger.info("home; spaceFull: " + spaceFull);
+
         int messageId = spaceFull ? Message.UNAVAILABLE_MESSAGE : Message.GATE_MESSAGE;
         Message message = messageService.findMessage(messageId);
         model.addAttribute("gatemessage", message.getText());
+
         Setting disableLanding = applicationService.findSetting(1);
         if (Boolean.parseBoolean(disableLanding.getValue())) {
             model.addAttribute("gatemessage", "System is unavailable.");
         }
-        model.addAttribute("disableLanding", Boolean.parseBoolean(disableLanding.getValue()));
+        model.addAttribute("disableLanding",
+                Boolean.parseBoolean(disableLanding.getValue()));
+
         return "home";
     }
 

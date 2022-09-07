@@ -281,7 +281,7 @@ public class HomeControllerTest {
     public void faqTest() throws Exception {
         mockMvc.perform(get("/api/faq"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$", hasSize(8)));
+                .andExpect(jsonPath("$", hasSize(7)));
     }
 
 }
