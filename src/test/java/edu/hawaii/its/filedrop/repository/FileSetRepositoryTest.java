@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -24,7 +23,6 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.type.Recipient;
-import edu.hawaii.its.filedrop.util.Strings;
 
 @SpringBootTest(classes = { SpringBootWebApplication.class })
 public class FileSetRepositoryTest {
@@ -59,37 +57,38 @@ public class FileSetRepositoryTest {
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);
 
-        if ("off".equals("")) {
-            fileDrop = fileDropRepository.save(fileDrop);
+        fileDrop = fileDropRepository.save(fileDrop);
 
-            long countFileDrop1 = fileDropRepository.count();
-            assertThat(countFileDrop1, equalTo(countFileDrop0 + 1));
-            long countFileSet1 = fileSetRepository.count();
-            assertThat(countFileSet1, equalTo(countFileSet0));
+        long countFileDrop1 = fileDropRepository.count();
+        assertThat(countFileDrop1, equalTo(countFileDrop0 + 1));
+        long countFileSet1 = fileSetRepository.count();
+        assertThat(countFileSet1, equalTo(countFileSet0));
 
-            Recipient recipient = new Recipient();
-            recipient.setName("tester");
-            recipient.setFileDrop(fileDrop);
+        Recipient recipient = new Recipient();
+        recipient.setName("tester");
+        recipient.setFileDrop(fileDrop);
 
-            recipientRepository.save(recipient);
+        recipientRepository.save(recipient);
 
-            FileSet fs = fileSetRepository.findById(1).get();
-            assertThat(fs, not(equalTo(null)));
-            assertThat(fs.getId(), equalTo(1));
+        FileSet fs = fileSetRepository.findById(1).get();
+        assertThat(fs, not(equalTo(null)));
+        assertThat(fs.getId(), equalTo(1));
 
-            FileSet fileSet = new FileSet();
-            fileSet.setFileName("Test image.png");
-            fileSet.setFileDrop(fileDrop);
-            fileSet.setComment(null);  // Note, null.
-            fileSet.setType("image/png");
-            fileSet.setSize(0L);
+        FileSet fileSet = new FileSet();
+        fileSet.setFileName("Test image.png");
+        fileSet.setFileDrop(fileDrop);
+        fileSet.setComment(null);  // Note, null.
+        fileSet.setType("image/png");
+        fileSet.setSize(0L);
 
-            fileSet = fileSetRepository.save(fileSet);
+        fileSet = fileSetRepository.save(fileSet);
 
-            long countFileDrop2 = fileDropRepository.count();
-            assertThat(countFileDrop2, equalTo(countFileDrop1));
-            long countFileSet2 = fileSetRepository.count();
-            assertThat(countFileSet2, equalTo(countFileSet1 + 1));
+        long countFileDrop2 = fileDropRepository.count();
+        assertThat(countFileDrop2, equalTo(countFileDrop1));
+        long countFileSet2 = fileSetRepository.count();
+        assertThat(countFileSet2, equalTo(countFileSet1 + 1));
+
+        if ("".equals("")) {
 
             FileSet foundFileSet = fileSetRepository.findById(fileSet.getId()).get();
             assertNotNull(foundFileSet);
@@ -132,7 +131,6 @@ public class FileSetRepositoryTest {
         }
     }
 
-    @Disabled
     @Test
     public void acomment() {
         final long countFileDrop0 = fileDropRepository.count();
@@ -141,48 +139,32 @@ public class FileSetRepositoryTest {
         FileDrop fd0 = fileDropRepository.findById(1).get();
         assertThat(fd0, not(equalTo(null)));
 
-        ///System.out.println("  >>>>> fd0-a: " + fd0.toStringShort());
+        FileSet fs0 = new FileSet();
+        fs0.setFileName("test");
+        fs0.setComment("test comment");
+        fs0.setType("text/plain");
+        fs0.setSize(Long.MIN_VALUE);
+        fs0.setFileDrop(fd0);
 
-        fd0 = fileDropService.findFileDrop(1);
-        System.out.println("  >>>>> fd0-b: " + fd0.getFileSet());
+        fs0 = fileSetRepository.save(fs0);
 
-        if ("off".equals("")) {
+        assertThat(fs0.getId(), notNullValue());
+        assertThat(fs0.getId(), greaterThan(1));
+        assertThat(fs0.getComment(), equalTo("test comment"));
+        assertThat(fs0.getType(), equalTo("text/plain"));
+        assertThat(fs0.getSize(), equalTo(Long.MIN_VALUE));
 
-            FileSet fs0 = new FileSet();
-            fs0.setFileName("test");
-            fs0.setComment("test comment");
-            fs0.setType("text/plain");
-            fs0.setSize(Long.MIN_VALUE);
-            fs0.setFileDrop(fd0);
+        final long countFileDrop1 = fileDropRepository.count();
+        assertThat(countFileDrop1, equalTo(countFileDrop0));
+        final long countFileSet1 = fileSetRepository.count();
+        assertThat(countFileSet1, equalTo(countFileSet0 + 1));
 
-            fs0 = fileSetRepository.save(fs0);
+        fileSetRepository.delete(fs0);
 
-            assertThat(fs0.getId(), notNullValue());
-            assertThat(fs0.getId(), greaterThan(1));
-            assertThat(fs0.getComment(), notNullValue());
+        final long countFileDrop2 = fileDropRepository.count();
+        assertThat(countFileDrop2, equalTo(countFileDrop0));
 
-            final long countFileDrop1 = fileDropRepository.count();
-            assertThat(countFileDrop1, equalTo(countFileDrop0));
-            final long countFileSet1 = fileSetRepository.count();
-            assertThat(countFileSet1, equalTo(countFileSet0 + 1));
-
-            assertThat("First  fileSet count check", countFileSet1, equalTo(4L));
-
-            System.out.println(Strings.fill('v', 99));
-
-            fileSetRepository.delete(fs0);
-
-            System.out.println(Strings.fill('^', 99));
-
-            final long countFileDrop2 = fileDropRepository.count();
-            assertThat(countFileDrop2, equalTo(countFileDrop0));
-
-            final long countFileSet2 = fileSetRepository.count();
-            assertThat("Second fileSet count check", countFileSet2, equalTo(countFileSet1));
-            ///assertThat("Second fileSet count check", countFileSet2, equalTo(3L));
-
-//        assertThat(countFileSet2, equalTo(countFileSet1 - 1));
-//        assertThat(countFileSet2, equalTo(countFileSet0));
-        }
+        final long countFileSet2 = fileSetRepository.count();
+        assertThat(countFileSet2, equalTo(countFileSet0));
     }
 }

@@ -114,6 +114,7 @@ public class DatabaseConfig {
         properties.setProperty("hibernate.cache.provider_class", hibernateCacheProviderClass);
         properties.setProperty("hibernate.connection.shutdown", hibernateConnectionShutdown);
         properties.setProperty("hibernate.show_sql", hibernateShowSql);
+        properties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
 
         return properties;
     }
