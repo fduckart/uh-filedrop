@@ -61,7 +61,8 @@ public class FileDrop {
     private Boolean authenticationRequired;
 
     //    @OneToMany(mappedBy = "fileDrop", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @OneToMany(targetEntity = FileSet.class, cascade = CascadeType.ALL, mappedBy = "fileDrop", orphanRemoval = true)
+//    @OneToMany(targetEntity = FileSet.class, cascade = CascadeType.ALL, mappedBy = "fileDrop", orphanRemoval = true)
+    @OneToMany(targetEntity = FileSet.class, cascade = CascadeType.ALL, mappedBy = "fileDrop")
     @JsonManagedReference
     private Set<FileSet> fileSet;
 

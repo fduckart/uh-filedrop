@@ -9,7 +9,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashSet;
@@ -190,15 +189,23 @@ public class FileDropRepositoryTest {
 
         assertEquals(1, fileDrop.getFileSet().size());
 
-        assertTrue(fileDrop.getFileSet().stream().anyMatch(f -> f.getFileName().equalsIgnoreCase("Test image.png")));
+        assertTrue(fileDrop.getFileSet()
+                .stream()
+                .anyMatch(f -> f.getFileName().equalsIgnoreCase("Test image.png")));
 
         fileSet.setFileName("another image.png");
 
         fileSetRepository.save(fileSet);
 
-        assertFalse(fileDrop.getFileSet().stream().anyMatch(f -> f.getFileName().equalsIgnoreCase("Test image.png")));
+        assertFalse(fileDrop.getFileSet()
+                .stream()
+                .anyMatch(f -> f.getFileName().equalsIgnoreCase("Test image.png")));
+        assertTrue(fileDrop.getFileSet()
+                .stream()
+                .anyMatch(f -> f.getFileName().equalsIgnoreCase("another image.png")));
 
-        assertTrue(fileDrop.getFileSet().stream().anyMatch(f -> f.getFileName().equalsIgnoreCase("another image.png")));
+        FileDrop fileDrop1 = fileDropRepository.findById(fileDrop.getId()).get();
+
     }
 
     @Test

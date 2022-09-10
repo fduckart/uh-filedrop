@@ -6,6 +6,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.nullValue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -88,47 +89,81 @@ public class FileSetRepositoryTest {
         long countFileSet2 = fileSetRepository.count();
         assertThat(countFileSet2, equalTo(countFileSet1 + 1));
 
-        if ("".equals("")) {
+        FileSet foundFileSet = fileSetRepository.findById(fileSet.getId()).get();
+        assertNotNull(foundFileSet);
+        assertEquals(foundFileSet.getFileName(), "Test image.png");
 
-            FileSet foundFileSet = fileSetRepository.findById(fileSet.getId()).get();
-            assertNotNull(foundFileSet);
-            assertEquals(foundFileSet.getFileName(), "Test image.png");
+        List<FileSet> fileSets = fileSetRepository.findAllByFileDrop(fileDrop);
+        assertFalse(fileSets.isEmpty());
+        assertEquals(1, fileSets.size());
 
-            List<FileSet> fileSets = fileSetRepository.findAllByFileDrop(fileDrop);
-            assertFalse(fileSets.isEmpty());
-            assertEquals(1, fileSets.size());
+        assertThat(fileSet.toString(), containsString("fileName=Test image.png,"));
 
-            assertThat(fileSet.toString(), containsString("fileName=Test image.png,"));
+        fileSet.setFileName("test.txt");
 
-            fileSet.setFileName("test.txt");
+        assertNotEquals(fileSet.toString(), foundFileSet.toString());
 
-            assertNotEquals(fileSet.toString(), foundFileSet.toString());
+        long countFileSet7 = fileSetRepository.count();
 
-            long countFileSet7 = fileSetRepository.count();
+        fileSet = fileSetRepository.save(fileSet);
 
-            fileSet = fileSetRepository.save(fileSet);
+        final long countFileSet8 = fileSetRepository.count();
+        assertThat(countFileSet8, equalTo(countFileSet7));
 
-            final long countFileSet8 = fileSetRepository.count();
-            assertThat(countFileSet8, equalTo(countFileSet7));
+        assertNotEquals(fileSet.toString(), foundFileSet.toString());
 
-            assertNotEquals(fileSet.toString(), foundFileSet.toString());
+        FileSet foundFileSet2 = fileSetRepository.findById(fileSet.getId()).get();
+        assertThat(foundFileSet2.toString(), containsString("fileName=test.txt,"));
 
-            FileSet foundFileSet2 = fileSetRepository.findById(fileSet.getId()).get();
-            assertThat(foundFileSet2.toString(), containsString("fileName=test.txt,"));
+        assertThat(fileDrop.getFileSet(), nullValue());
+        assertThat(fileDrop.getRecipients(), nullValue());
 
-            // Clean up.
-            fileSetRepository.delete(fileSet);
+        FileDrop fileDrop1 = fileDropRepository.findById(fileDrop.getId()).get();
+        assertThat(fileDrop1.getId(), equalTo(fileDrop.getId()));
+        assertThat(fileDrop1.getCreated(), equalTo(fileDrop.getCreated()));
+        assertThat(fileDrop1.getExpiration(), equalTo(fileDrop.getExpiration()));
+        assertThat(fileDrop1.getUploader(), equalTo(fileDrop.getUploader()));
+        assertThat(fileDrop1.getUploaderFullName(), equalTo(fileDrop.getUploaderFullName()));
+        assertThat(fileDrop1.getDownloadKey(), equalTo(fileDrop.getDownloadKey()));
+        assertThat(fileDrop1.getUploadKey(), equalTo(fileDrop.getUploadKey()));
+        assertThat(fileDrop1.getEncryptionKey(), equalTo(fileDrop.getEncryptionKey()));
+        assertThat(fileDrop1.isAuthenticationRequired(), equalTo(fileDrop.isAuthenticationRequired()));
+        assertThat(fileDrop1.isValid(), equalTo(fileDrop.isValid()));
 
-            long countFileSet9 = fileSetRepository.count();
-            assertThat(countFileSet9, equalTo(countFileSet8 - 1));
+        assertThat(fileDrop1.getFileSet(), notNullValue());
+        assertThat(fileDrop1.getFileSet().size(), equalTo(1));
 
-            fileDrop = fileDropRepository.findById(fileDrop.getId()).get();
-            assertThat(fileDrop, not(equalTo(null)));
-            assertThat(fileDrop.getId(), not(equalTo(null)));
-            fileDropRepository.delete(fileDrop);
-            long countFileDrop9 = fileDropRepository.count();
-            assertThat(countFileDrop9, equalTo(countFileDrop0));
-        }
+        assertThat(fileDrop1.getRecipients(), notNullValue());
+        assertThat(fileDrop1.getRecipients().size(), equalTo(1));
+
+        // Clean up.
+        fileSetRepository.delete(fileSet);
+
+        long countFileSet9 = fileSetRepository.count();
+        assertThat(countFileSet9, equalTo(countFileSet8 - 1));
+
+        fileDrop1 = fileDropRepository.findById(fileDrop.getId()).get();
+        assertThat(fileDrop1, not(equalTo(null)));
+        assertThat(fileDrop1.getId(), equalTo(fileDrop.getId()));
+        assertThat(fileDrop1.getCreated(), equalTo(fileDrop.getCreated()));
+        assertThat(fileDrop1.getExpiration(), equalTo(fileDrop.getExpiration()));
+        assertThat(fileDrop1.getUploader(), equalTo(fileDrop.getUploader()));
+        assertThat(fileDrop1.getUploaderFullName(), equalTo(fileDrop.getUploaderFullName()));
+        assertThat(fileDrop1.getDownloadKey(), equalTo(fileDrop.getDownloadKey()));
+        assertThat(fileDrop1.getUploadKey(), equalTo(fileDrop.getUploadKey()));
+        assertThat(fileDrop1.getEncryptionKey(), equalTo(fileDrop.getEncryptionKey()));
+        assertThat(fileDrop1.isAuthenticationRequired(), equalTo(fileDrop.isAuthenticationRequired()));
+        assertThat(fileDrop1.isValid(), equalTo(fileDrop.isValid()));
+
+        assertThat(fileDrop1.getFileSet(), notNullValue());
+        assertThat(fileDrop1.getFileSet().size(), equalTo(0));
+
+        assertThat(fileDrop1.getRecipients(), notNullValue());
+        assertThat(fileDrop1.getRecipients().size(), equalTo(1));
+
+        fileDropRepository.delete(fileDrop1);
+        long countFileDrop9 = fileDropRepository.count();
+        assertThat(countFileDrop9, equalTo(countFileDrop0));
     }
 
     @Test
