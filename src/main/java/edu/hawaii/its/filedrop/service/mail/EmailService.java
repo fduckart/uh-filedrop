@@ -88,8 +88,9 @@ public class EmailService {
             MimeMessagePreparator msg = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom(mail.getFrom());
+                ///messageHelper.setFrom("duckart@hawaii.edu");
                 messageHelper.setTo(mail.getTo());
-                ///messageHelper.setTo("duckart@hawaii.edu"); /// UN-DO THIS
+                ///messageHelper.setFrom("duckart@hawaii.edu");
                 if (mail.getBcc() != null && mail.getBcc().length() > 0) {
                     messageHelper.setBcc(mail.getBcc());
                 }
@@ -107,7 +108,6 @@ public class EmailService {
         if (isEnabled() && mail.getTo() != null) {
             SimpleMailMessage msg = new SimpleMailMessage();
             msg.setTo(mail.getTo());
-            ///msg.setTo("duckart@hawaii.edu"); /// UN-DO
             msg.setFrom(mail.getFrom());
             msg.setText(mail.getContent());
             msg.setSubject(mail.getSubject());

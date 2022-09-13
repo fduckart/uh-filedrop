@@ -127,6 +127,7 @@ public class PrepareController {
 
         model.addAttribute("recipient", helpName);
         model.addAttribute("recipientEmail", helpEmail);
+
         return "user/prepare-helpdesk";
     }
 
@@ -300,24 +301,18 @@ public class PrepareController {
         for (Recipient recipient : recipientList) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient.getName());
 
-            String s = ""; // FIXME: remove this stuff
             if (ldapPerson.isValid()) {
                 mail.setTo(ldapPerson.getMails().get(0));
-                s += "RECIPIENT[0]: " + ldapPerson.getMails().get(0);
             } else {
                 mail.setTo(recipient.getName());
-                s += "RECIPIENT[1]: " + recipient.getName();
             }
-            ///mail.setTo("duckart@hawaii.edu");
 
             fileDropContext = emailService.getFileDropContext("receiver", fileDrop);
-            fileDropContext.put("comment", processVariables.getString("message") + "\n" + s);
+            fileDropContext.put("comment", processVariables.getString("message"));
             fileDropContext.put("size", size);
             fileDropContext.put("sender", sender);
             logger.debug("Sending email to receiver ... " + recipient);
             emailService.send(mail, "receiver", fileDropContext);
-
-            s += ", ";
         }
 
         fileDropService.completeFileDrop(currentUser(), fileDrop);

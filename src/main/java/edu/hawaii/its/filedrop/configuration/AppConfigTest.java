@@ -3,15 +3,12 @@ package edu.hawaii.its.filedrop.configuration;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import org.springframework.ldap.core.support.LdapContextSource;
 
 import edu.hawaii.its.filedrop.exception.PropertyNotSetException;
 
@@ -45,9 +42,9 @@ public class AppConfigTest extends AppConfig {
         }
     }
 
-    @Bean
-    @ConfigurationProperties(prefix = "app.ldap.context.source")
-    public LdapContextSource ldapContextSource() {
-        return new LdapContextSource();
-    }
+//    @Bean
+//    @ConfigurationProperties(prefix = "app.ldap.context-source")
+//    public LdapContextSource ldapContextSource() {
+//        return new LdapContextSource();
+//    }
 }
