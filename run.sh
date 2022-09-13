@@ -1,7 +1,6 @@
 #!/bin/bash
-mvn clean test jacoco:report -Djs-tests.skip=true -Dtest=FileSetRepositoryTest#acomment > output.txt
+mvn clean test jacoco:report -Djs-tests.skip=true -Dtest=FileSetRepositoryTest > output.txt
 RC=$?
-git s
 if [ $RC -eq 0 ]
 then
     say 'Tests passed, hooray!'

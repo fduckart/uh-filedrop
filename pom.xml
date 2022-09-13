@@ -33,7 +33,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.3.0.RELEASE</version>
+        <version>2.7.3</version>
         <relativePath/>
     </parent>
 
@@ -427,17 +427,19 @@
                         </goals>
                         <configuration>
                             <target>
-                                <echo>Now that you have a clean project,</echo>
-                                <echo>here are some common goals for this project:</echo>
-                                <echo>$ mvn clean test</echo>
-                                <echo>$ mvn clean test -Dtest=*Test</echo>
-                                <echo>$ mvn clean -Djs-tests.skip=true test -Dtest=*Test</echo>
-                                <echo>$ mvn clean package</echo>
-                                <echo>$ mvn -Djs-tests.skip=true -Dmaven.test.skip=true clean package</echo>
-                                <echo>$ mvn jasmine:test</echo>
-                                <echo>$ mvn clean test -Djs-tests.skip=true jacoco:report</echo>
-                                <echo>$ mvn clean compile site</echo>
-                                <echo>$ mvn clean spring-boot:run</echo>
+                                <echo level="info">.................................................</echo>
+                                <echo level="info">Now that you have a clean project,</echo>
+                                <echo level="info">here are some common goals for this project:</echo>
+                                <echo level="info">$ mvn clean test</echo>
+                                <echo level="info">$ mvn clean test -Dtest=*Test</echo>
+                                <echo level="info">$ mvn clean -Djs-tests.skip=true test -Dtest=*Test</echo>
+                                <echo level="info">$ mvn clean package</echo>
+                                <echo level="info">$ mvn -Djs-tests.skip=true -Dmaven.test.skip=true clean package</echo>
+                                <echo level="info">$ mvn jasmine:test</echo>
+                                <echo level="info">$ mvn clean test -Djs-tests.skip=true jacoco:report</echo>
+                                <echo level="info">$ mvn clean compile site</echo>
+                                <echo level="info">$ mvn clean spring-boot:run</echo>
+                                <echo level="info">.................................................</echo>
                             </target>
                         </configuration>
                     </execution>
