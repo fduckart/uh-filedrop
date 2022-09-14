@@ -234,13 +234,14 @@ public class FileDropService {
     }
 
     public synchronized void checkFileDrops() {
-        logger.debug("Starting expired FileDrops check");
+        logger.debug("checkFileDrops; Starting");
 
         List<FileDrop> expiredFileDrops = findAllExpiringFileDrops();
 
         expiredFileDrops.forEach(this::expire);
 
-        logger.debug("Finished expired FileDrops check. " + expiredFileDrops.size() + " FileDrop(s) expired.");
+        logger.debug("checkFileDrops; expiredFileDrops: " + expiredFileDrops);
+        logger.debug("checkFileDrops; Finished expired FileDrops check. " + expiredFileDrops.size() + " FileDrop(s) expired.");
     }
 
     public FileDropInfo getFileDropInfo(FileDrop fileDrop) {

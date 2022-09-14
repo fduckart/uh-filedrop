@@ -5,7 +5,9 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -13,6 +15,7 @@ import edu.hawaii.its.filedrop.configuration.SpringBootWebApplication;
 import edu.hawaii.its.filedrop.type.Message;
 
 @SpringBootTest(classes = { SpringBootWebApplication.class })
+@TestMethodOrder(MethodOrderer.Random.class)
 public class MessageRepositoryTest {
 
     @Autowired

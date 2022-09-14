@@ -16,7 +16,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -27,6 +29,7 @@ import edu.hawaii.its.filedrop.type.Recipient;
 import edu.hawaii.its.filedrop.util.Strings;
 
 @SpringBootTest(classes = { SpringBootWebApplication.class })
+@TestMethodOrder(MethodOrderer.Random.class)
 public class FileDropRepositoryTest {
 
     @Autowired

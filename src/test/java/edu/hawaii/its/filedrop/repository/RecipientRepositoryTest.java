@@ -5,11 +5,12 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
-
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -18,6 +19,7 @@ import edu.hawaii.its.filedrop.type.FileDrop;
 import edu.hawaii.its.filedrop.type.Recipient;
 
 @SpringBootTest(classes = { SpringBootWebApplication.class })
+@TestMethodOrder(MethodOrderer.Random.class)
 public class RecipientRepositoryTest {
 
     @Autowired

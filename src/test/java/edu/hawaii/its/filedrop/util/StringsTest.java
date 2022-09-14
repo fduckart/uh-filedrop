@@ -7,11 +7,10 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class StringsTest {
 
@@ -33,7 +32,7 @@ public class StringsTest {
         assertFalse(Strings.isBlank(" test "));
 
         assertTrue(Strings.isBlank(new StringBuilder()));
-        assertTrue(Strings.isBlank(new StringBuilder("")));
+        assertTrue(Strings.isBlank(new StringBuilder()));
         assertTrue(Strings.isBlank(new StringBuilder(" ")));
         assertTrue(Strings.isBlank(new StringBuilder("\t")));
         assertTrue(Strings.isBlank(new StringBuilder("\r")));
@@ -64,7 +63,7 @@ public class StringsTest {
         assertFalse(Strings.isEmpty(" test "));
 
         assertTrue(Strings.isEmpty(new StringBuilder()));
-        assertTrue(Strings.isEmpty(new StringBuilder("")));
+        assertTrue(Strings.isEmpty(new StringBuilder()));
         assertFalse(Strings.isEmpty(new StringBuilder(" ")));
         assertFalse(Strings.isEmpty(new StringBuilder("\t")));
         assertFalse(Strings.isEmpty(new StringBuilder("\r")));
@@ -100,14 +99,14 @@ public class StringsTest {
         assertTrue(Strings.isNotEmpty("test"));
         assertTrue(Strings.isNotEmpty(" test "));
 
-        assertFalse(Strings.isNotEmpty(new String()));
-        assertFalse(Strings.isNotEmpty(new String("")));
-        assertTrue(Strings.isNotEmpty(new String(" ")));
-        assertTrue(Strings.isNotEmpty(new String("\t")));
-        assertTrue(Strings.isNotEmpty(new String("\r")));
-        assertTrue(Strings.isNotEmpty(new String("t")));
-        assertTrue(Strings.isNotEmpty(new String("test")));
-        assertTrue(Strings.isNotEmpty(new String(" test ")));
+        assertFalse(Strings.isNotEmpty(""));
+        assertFalse(Strings.isNotEmpty(""));
+        assertTrue(Strings.isNotEmpty(" "));
+        assertTrue(Strings.isNotEmpty("\t"));
+        assertTrue(Strings.isNotEmpty("\r"));
+        assertTrue(Strings.isNotEmpty("t"));
+        assertTrue(Strings.isNotEmpty("test"));
+        assertTrue(Strings.isNotEmpty(" test "));
     }
 
     @Test

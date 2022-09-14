@@ -136,6 +136,9 @@ public class PrepareController {
                               @RequestParam Integer expiration,
                               @RequestParam(required = false) Integer ticketNumber,
                               RedirectAttributes redirectAttributes) {
+
+        System.out.println("   " + Strings.fill('a', 59));
+
         FileDrop fileDrop = new FileDrop();
         fileDrop.setUploader(sender);
         fileDrop.setUploaderFullName(sender);
@@ -145,10 +148,17 @@ public class PrepareController {
         fileDrop.setUploadKey(Strings.generateRandomString());
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(LocalDateTime.now());
+        fileDrop.setValid(false);
+
+        System.out.println("   " + Strings.fill('b', 59));
 
         fileDrop = fileDropService.saveFileDrop(fileDrop);
 
+        System.out.println("   " + Strings.fill('c', 59));
+
         fileDropService.addRecipients(fileDrop, helpEmail);
+
+        System.out.println("   " + Strings.fill('d', 59));
 
         if (logger.isDebugEnabled()) {
             logger.debug("addHelpdesk;       sender: " + sender);
@@ -193,6 +203,7 @@ public class PrepareController {
             logger.debug("addRecipients; user: " + user);
             logger.debug("addRecipients; hasFileDrop: " + hasFileDrop);
             logger.debug("addRecipients;  recipients: " + Arrays.toString(recipients));
+            logger.debug("addRecipients;     message: " + message);
         }
 
         FileDrop fileDrop;
@@ -344,6 +355,7 @@ public class PrepareController {
         fileDrop.setCreated(now);
         fileDrop.setExpiration(Dates.addMinutes(now, Integer.parseInt(expiration)));
         fileDrop.setValid(true);
+        fileDrop = fileDropService.saveFileDrop(fileDrop);
 
         Mail mail = new Mail();
         mail.setTo(helpEmail);
@@ -453,7 +465,7 @@ public class PrepareController {
     @ResponseStatus(value = HttpStatus.OK)
     public void uploadFilesHelpdesk(@PathVariable String uploadKey,
                                     @RequestParam MultipartFile file,
-                                    @RequestParam("comment") String comment) {
+                                    @RequestParam(required = false) String comment) {
 
         if (logger.isDebugEnabled()) {
             logger.debug("uploadFilesHelpdesk;   uploadKey: " + uploadKey);

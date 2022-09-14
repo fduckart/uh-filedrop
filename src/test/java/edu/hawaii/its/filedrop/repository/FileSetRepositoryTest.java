@@ -15,7 +15,9 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,6 +28,7 @@ import edu.hawaii.its.filedrop.type.FileSet;
 import edu.hawaii.its.filedrop.type.Recipient;
 
 @SpringBootTest(classes = { SpringBootWebApplication.class })
+@TestMethodOrder(MethodOrderer.Random.class)
 public class FileSetRepositoryTest {
 
     @Autowired

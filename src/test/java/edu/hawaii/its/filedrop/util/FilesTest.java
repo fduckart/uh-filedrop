@@ -57,6 +57,7 @@ public class FilesTest {
         bw.write(text.toString());
         bw.close();
 
+        assertFalse(Files.exists(null));
         assertFalse(Files.isFile(null));
         assertFalse(Files.isFile(""));
         assertFalse(Files.isDirectory(null));
