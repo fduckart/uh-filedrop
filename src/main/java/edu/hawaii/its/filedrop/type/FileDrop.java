@@ -62,7 +62,7 @@ public class FileDrop {
 
     //    @OneToMany(mappedBy = "fileDrop", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 //    @OneToMany(targetEntity = FileSet.class, cascade = CascadeType.ALL, mappedBy = "fileDrop", orphanRemoval = true)
-    @OneToMany(targetEntity = FileSet.class, cascade = CascadeType.ALL, mappedBy = "fileDrop")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "fileDrop")
     @JsonManagedReference
     private Set<FileSet> fileSet;
 

@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,7 +36,7 @@ public class UserBuilderTest {
         // Basics.
         assertEquals("duckart", user.getUsername());
         assertEquals("duckart", user.getUid());
-        assertEquals("89999999", user.getUhuuid());
+        assertEquals("89999999", user.getUhUuid());
 
         // Granted Authorities.
         assertTrue(user.getAuthorities().size() > 0);
@@ -52,7 +51,7 @@ public class UserBuilderTest {
 
         assertEquals("someuser", user.getUsername());
         assertEquals("someuser", user.getUid());
-        assertEquals("10000001", user.getUhuuid());
+        assertEquals("10000001", user.getUhUuid());
 
         assertTrue(user.getAuthorities().size() > 0);
         assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
@@ -85,7 +84,7 @@ public class UserBuilderTest {
         // Basics.
         assertEquals("jjcale", user.getUsername());
         assertEquals("jjcale", user.getUid());
-        assertEquals("10000004", user.getUhuuid());
+        assertEquals("10000004", user.getUhUuid());
 
         // Granted Authorities.
         assertEquals(2, user.getAuthorities().size());
@@ -118,7 +117,7 @@ public class UserBuilderTest {
         // Basics.
         assertEquals("aaaaaaa", user.getUsername());
         assertEquals("aaaaaaa", user.getUid());
-        assertEquals("10000003", user.getUhuuid());
+        assertEquals("10000003", user.getUhUuid());
 
         // Granted Authorities.
         assertEquals(2, user.getAuthorities().size());
@@ -148,7 +147,7 @@ public class UserBuilderTest {
         // Basics.
         assertEquals("nobody", user.getUsername());
         assertEquals("nobody", user.getUid());
-        assertEquals("10000009", user.getUhuuid());
+        assertEquals("10000009", user.getUhUuid());
 
         // Granted Authorities.
         assertEquals(1, user.getAuthorities().size());

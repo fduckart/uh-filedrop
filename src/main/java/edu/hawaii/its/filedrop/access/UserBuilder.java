@@ -31,11 +31,11 @@ public final class UserBuilder {
         }
 
         logger.debug("Lookup roles for user via service.");
-        String uhuuid = attributes.getUhUuid();
-        SecurityRoleHolder roleHolder = authorizationService.fetchRoles(uhuuid);
+        String uhUuid = attributes.getUhUuid();
+        SecurityRoleHolder roleHolder = authorizationService.fetchRoles(uhUuid);
 
         logger.info("Adding roles. uid: " + uid + "; roles: " + roleHolder.getAuthorites());
-        User user = new User(uid, uhuuid, roleHolder.getAuthorites());
+        User user = new User(uid, uhUuid, roleHolder.getAuthorites());
         logger.debug("Done adding roles; uid: " + uid);
 
         // Put all the attributes into the user

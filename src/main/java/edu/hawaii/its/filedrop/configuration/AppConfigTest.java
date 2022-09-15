@@ -42,9 +42,4 @@ public class AppConfigTest extends AppConfig {
         }
     }
 
-//    @Bean
-//    @ConfigurationProperties(prefix = "app.ldap.context-source")
-//    public LdapContextSource ldapContextSource() {
-//        return new LdapContextSource();
-//    }
 }

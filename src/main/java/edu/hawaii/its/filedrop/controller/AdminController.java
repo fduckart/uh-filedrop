@@ -42,7 +42,7 @@ import edu.hawaii.its.filedrop.type.Setting;
 import edu.hawaii.its.filedrop.util.Dates;
 
 @Controller
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasRole('ADMINISTRATOR')")
 public class AdminController {
 
     private static final Log logger = LogFactory.getLog(AdminController.class);
@@ -101,7 +101,7 @@ public class AdminController {
         message.setTypeId(1);
         messageService.update(message);
         messageService.evictCache();
-        model.addAttribute("success", true);
+        model.addAttribute("success", Boolean.TRUE);
         return "admin/gate-message";
     }
 

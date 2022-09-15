@@ -31,7 +31,7 @@ public class UserContextServiceTest {
 
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
-        assertThat(user.getUhuuid(), equalTo("12345678"));
+        assertThat(user.getUhUuid(), equalTo("12345678"));
         assertThat(user.getUsername(), equalTo("admin"));
         assertTrue(user.hasRole(SecurityRole.ADMINISTRATOR));
     }
@@ -41,7 +41,7 @@ public class UserContextServiceTest {
     public void anonymousUser() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
-        assertThat(user.getUhuuid(), equalTo(""));
+        assertThat(user.getUhUuid(), equalTo(""));
         assertThat(user.getUsername(), equalTo("anonymous"));
         assertTrue(user.hasRole(SecurityRole.ANONYMOUS));
         assertFalse(user.hasRole(SecurityRole.UH));
@@ -51,7 +51,7 @@ public class UserContextServiceTest {
     public void nonUser() {
         User user = userContextService.getCurrentUser();
         assertNotNull(user);
-        assertThat(user.getUhuuid(), equalTo(""));
+        assertThat(user.getUhUuid(), equalTo(""));
         assertThat(user.getUsername(), equalTo("anonymous"));
         assertThat(user.getAuthorities().size(), equalTo(1));
         assertTrue(user.hasRole(SecurityRole.ANONYMOUS));

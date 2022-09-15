@@ -56,7 +56,7 @@ public class FileSetRepositoryTest {
         fileDrop.setCreated(created);
         fileDrop.setExpiration(expiration);
         fileDrop.setDownloadKey("download-key");
-        fileDrop.setUploadKey("upload-key");
+        fileDrop.setUploadKey("upload-key" + 1);
         fileDrop.setEncryptionKey("enc-key");
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);

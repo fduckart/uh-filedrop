@@ -392,48 +392,45 @@ public class PrepareControllerTest {
                 .andExpect(view().name("redirect:/helpdesk/files/{uploadKey}"))
                 .andDo(log()); // Set logger to DEBUG to see results.
 
-        if ("off".equals("")) {
+        FileDrop fileDrop =
+                fileDropRepository.findAll()
+                        .stream()
+                        .filter(fd -> fd.getUploader().equals("test"))
+                        .findFirst()
+                        .orElse(null);
+        assertThat(fileDrop, notNullValue());
+        assertThat(fileDrop.getUploadKey(), equalTo("uploadKey"));
+        assertThat(fileDrop.getDownloadKey(), equalTo("downloadKey"));
 
-            FileDrop fileDrop =
-                    fileDropRepository.findAll()
-                            .stream()
-                            .filter(fd -> fd.getUploader().equals("test"))
-                            .findFirst()
-                            .orElse(null);
-            assertThat(fileDrop, notNullValue());
-            assertThat(fileDrop.getUploadKey(), equalTo("uploadKey"));
-            assertThat(fileDrop.getDownloadKey(), equalTo("downloadKey"));
+        mockMvc.perform(get("/helpdesk/files/" + fileDrop.getUploadKey()))
+                .andExpect(status().isOk())
+                .andExpect(model().attributeExists("uploadKey", "maxUploadSize", "recipients"))
+                .andExpect(model().attribute("uploadKey", is(equalTo("uploadKey"))))
+                .andExpect(model().attribute("maxUploadSize", is(equalTo(maxUploadSize))))
+                .andExpect(model().attribute("recipients", hasSize(1)))
+                .andExpect(model().attribute("recipients", hasItem("Frank R Duckart")));
 
-            mockMvc.perform(get("/helpdesk/files/" + fileDrop.getUploadKey()))
-                    .andExpect(status().isOk())
-                    .andExpect(model().attributeExists("uploadKey", "maxUploadSize", "recipients"))
-                    .andExpect(model().attribute("uploadKey", is(equalTo("uploadKey"))))
-                    .andExpect(model().attribute("maxUploadSize", is(equalTo(maxUploadSize))))
-                    .andExpect(model().attribute("recipients", hasSize(1)))
-                    .andExpect(model().attribute("recipients", hasItem("Frank R Duckart")));
+        MockMultipartFile mockMultipartFile = new MockMultipartFile("file",
+                "test.txt", "text/plain", "test data".getBytes());
 
-            MockMultipartFile mockMultipartFile = new MockMultipartFile("file",
-                    "test.txt", "text/plain", "test data".getBytes());
+        mockMvc.perform(multipart("/helpdesk/files/" + fileDrop.getUploadKey())
+                        .file(mockMultipartFile)
+                        .param("comment", "test")
+                        .param("expiration", "30"))
+                .andExpect(status().isOk());
 
-            mockMvc.perform(multipart("/helpdesk/files/" + fileDrop.getUploadKey())
-                            .file(mockMultipartFile)
-                            .param("comment", "test")
-                            .param("expiration", "30"))
-                    .andExpect(status().isOk());
+        List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
+        assertFalse(fileSets.isEmpty());
+        assertEquals(1, fileSets.size());
+        assertEquals("test.txt", fileSets.get(0).getFileName());
+        assertEquals("text/plain", fileSets.get(0).getType());
+        assertEquals("test", fileSets.get(0).getComment());
 
-            List<FileSet> fileSets = fileDropService.findFileSets(fileDrop);
-            assertFalse(fileSets.isEmpty());
-            assertEquals(1, fileSets.size());
-            assertEquals("test.txt", fileSets.get(0).getFileName());
-            assertEquals("text/plain", fileSets.get(0).getType());
-            assertEquals("test", fileSets.get(0).getComment());
-
-            mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey())
-                            .param("expiration", "30")
-                            .param("ticketNumber", "123456"))
-                    .andExpect(status().is3xxRedirection())
-                    .andExpect(view().name("redirect:/"));
-        }
+        mockMvc.perform(get("/helpdesk/successful/" + fileDrop.getUploadKey())
+                        .param("expiration", "30")
+                        .param("ticketNumber", "123456"))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(view().name("redirect:/"));
     }
 
     @Test

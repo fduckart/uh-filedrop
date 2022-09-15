@@ -10,13 +10,13 @@ import edu.hawaii.its.filedrop.type.Role.SecurityRole;
 public class User extends org.springframework.security.core.userdetails.User {
 
     private static final long serialVersionUID = 5L;
-    private String uhuuid;
+    private String uhUuid;
     private UhAttributes attributes;
 
     // Constructor.
-    public User(String username, String uhuuid, Collection<GrantedAuthority> authorities) {
+    public User(String username, String uhUuid, Collection<GrantedAuthority> authorities) {
         super(username, "", authorities);
-        setUhuuid(uhuuid);
+        setUhUuid(uhUuid);
     }
 
     // Constructor.
@@ -28,12 +28,12 @@ public class User extends org.springframework.security.core.userdetails.User {
         return getUsername();
     }
 
-    public String getUhuuid() {
-        return uhuuid;
+    public String getUhUuid() {
+        return uhUuid;
     }
 
-    private void setUhuuid(String uhuuid) {
-        this.uhuuid = uhuuid != null ? uhuuid : "";
+    private void setUhUuid(String uhUuid) {
+        this.uhUuid = uhUuid != null ? uhUuid : "";
     }
 
     public String getAttribute(String name) {
@@ -70,7 +70,7 @@ public class User extends org.springframework.security.core.userdetails.User {
     public int hashCode() {
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + uhuuid.hashCode();
+        result = prime * result + uhUuid.hashCode();
         return result;
     }
 
@@ -82,18 +82,17 @@ public class User extends org.springframework.security.core.userdetails.User {
             return false;
         if (getClass() != obj.getClass())
             return false;
-
         User other = (User) obj;
-        if (!uhuuid.equals(other.uhuuid))
+        if (!uhUuid.equals(other.uhUuid))
             return false;
-
         return true;
     }
 
     @Override
     public String toString() {
         return "User [uid=" + getUid()
-                + ", uhuuid=" + getUhuuid()
+                + ", uhUuid=" + uhUuid
                 + ", super-class: " + super.toString() + "]";
     }
+
 }

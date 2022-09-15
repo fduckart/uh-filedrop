@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -42,7 +41,7 @@ public class UserDetailsServiceTest {
         // Basics.
         assertEquals("duckart", user.getUsername());
         assertEquals("duckart", user.getUid());
-        assertEquals("89999999", user.getUhuuid());
+        assertEquals("89999999", user.getUhUuid());
 
         // Granted Authorities.
         assertThat(user.getAuthorities().size(), equalTo(2));
@@ -62,7 +61,7 @@ public class UserDetailsServiceTest {
 
         assertEquals("someuser", user.getUsername());
         assertEquals("someuser", user.getUid());
-        assertEquals("10000001", user.getUhuuid());
+        assertEquals("10000001", user.getUhUuid());
 
         assertTrue(user.getAuthorities().size() > 0);
         assertFalse(user.hasRole(SecurityRole.ANONYMOUS));
@@ -86,7 +85,7 @@ public class UserDetailsServiceTest {
         // Basics.
         assertEquals("jjcale", user.getUsername());
         assertEquals("jjcale", user.getUid());
-        assertEquals("10000004", user.getUhuuid());
+        assertEquals("10000004", user.getUhUuid());
 
         // Granted Authorities.
         assertEquals(2, user.getAuthorities().size());

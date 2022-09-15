@@ -7,4 +7,8 @@ public class FileDropNotFoundException extends RuntimeException {
     public FileDropNotFoundException(String message) {
         super(message);
     }
+
+    public FileDropNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

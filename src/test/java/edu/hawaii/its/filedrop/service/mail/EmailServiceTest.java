@@ -2,10 +2,10 @@ package edu.hawaii.its.filedrop.service.mail;
 
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.IOException;
@@ -185,5 +185,7 @@ public class EmailServiceTest {
         @SuppressWarnings("unchecked")
         Map<String, String> recipients = (Map<String, String>) context.getVariable("recipients");
         assertThat(recipients, equalTo(null));
+
+        assertThat(emailService.getJavaMailSender(), not(equalTo(null)));
     }
 }

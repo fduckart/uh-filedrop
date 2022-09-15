@@ -458,7 +458,7 @@
                     <excludes>
                         <exclude>edu/hawaii/its/filedrop/configuration/SpringBootWebApplication.class</exclude>
                         <exclude>edu/hawaii/its/filedrop/configuration/AppConfigTest.class</exclude>
-                        <exclude>edu/hawaii/its/filedrop/exception/FileDropNotFoundException.class</exclude>
+                        <exclude>edu/hawaii/its/filedrop/configuration/LdapConfig.class</exclude>
                         <exclude>edu/hawaii/its/filedrop/job/SubmitJob.class</exclude>
                         <exclude>edu/hawaii/its/filedrop/crypto/CipherFilter.class</exclude>
                         <exclude>edu/hawaii/its/filedrop/crypto/CipherFilterFactory.class</exclude>

@@ -52,7 +52,7 @@ public class FileDropRepositoryTest {
         fileDrop.setCreated(created);
         fileDrop.setExpiration(expiration);
         fileDrop.setDownloadKey("download-key");
-        fileDrop.setUploadKey("upload-key");
+        fileDrop.setUploadKey("upload-key-2");
         fileDrop.setEncryptionKey("enc-key");
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);
@@ -73,7 +73,7 @@ public class FileDropRepositoryTest {
         assertEquals("Test 123", foundFileDrop.get().getUploaderFullName());
         assertTrue(foundFileDrop.get().getRecipients().size() > 0);
         assertEquals("download-key", foundFileDrop.get().getDownloadKey());
-        assertEquals("upload-key", foundFileDrop.get().getUploadKey());
+        assertEquals("upload-key-2", foundFileDrop.get().getUploadKey());
         assertEquals("enc-key", foundFileDrop.get().getEncryptionKey());
         assertFalse(foundFileDrop.get().isAuthenticationRequired());
         assertFalse(foundFileDrop.get().isValid());
@@ -91,7 +91,7 @@ public class FileDropRepositoryTest {
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop.setDownloadKey(downloadKey);
-        fileDrop.setUploadKey("upload-key");
+        fileDrop.setUploadKey("upload-key" + 3);
         fileDrop.setEncryptionKey("encrypted");
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);
@@ -112,7 +112,7 @@ public class FileDropRepositoryTest {
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop.setDownloadKey("download-key");
-        fileDrop.setUploadKey("upload-key");
+        fileDrop.setUploadKey("upload-key-3");
         fileDrop.setEncryptionKey("encrypted");
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);
@@ -134,12 +134,10 @@ public class FileDropRepositoryTest {
         fileDropRepository.save(fileDrop2);
 
         Optional<FileDrop> foundFileDrop = fileDropRepository.findOne(withDownloadKey("download-key"));
-
         assertTrue(foundFileDrop.isPresent());
         assertEquals("test", fileDrop.getUploader());
 
-        foundFileDrop = fileDropRepository.findOne(withUploadKey("upload-key"));
-
+        foundFileDrop = fileDropRepository.findOne(withUploadKey("upload-key-3"));
         assertTrue(foundFileDrop.isPresent());
         assertEquals("test", fileDrop.getUploader());
 
@@ -162,7 +160,7 @@ public class FileDropRepositoryTest {
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop.setDownloadKey("download-key");
-        fileDrop.setUploadKey("upload-key");
+        fileDrop.setUploadKey("upload-key" + 4);
         fileDrop.setEncryptionKey("encrypted");
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);
@@ -220,7 +218,7 @@ public class FileDropRepositoryTest {
         fileDrop.setCreated(LocalDateTime.now());
         fileDrop.setExpiration(LocalDateTime.now().plus(10, ChronoUnit.DAYS));
         fileDrop.setDownloadKey("download-key");
-        fileDrop.setUploadKey("upload-key");
+        fileDrop.setUploadKey("upload-key" + 4);
         fileDrop.setEncryptionKey("encrypted");
         fileDrop.setAuthenticationRequired(false);
         fileDrop.setValid(false);

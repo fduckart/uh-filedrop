@@ -1,23 +1,20 @@
 package edu.hawaii.its.filedrop.type;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "message")
 public class Message implements Serializable {
 
-    private static final long serialVersionUID = 2L;
-
     public static final int JUMBOTRON_MESSAGE = 1;
     public static final int GATE_MESSAGE = 1;
     public static final int UNAVAILABLE_MESSAGE = 3;
-
+    private static final long serialVersionUID = 2L;
     @Id
     @Column(name = "msg_id")
     private Integer id;
@@ -30,7 +27,7 @@ public class Message implements Serializable {
 
     @Column(name = "msg_enabled", nullable = false)
     @Convert(converter = BooleanToCharacterConverter.class)
-    private Boolean enabled;
+    private Boolean enabled = Boolean.TRUE;
 
     // Constructor.
     public Message() {
@@ -57,12 +54,12 @@ public class Message implements Serializable {
         return enabled;
     }
 
-    public Boolean isEnabled() {
-        return enabled;
-    }
-
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public Boolean isEnabled() {
+        return enabled;
     }
 
     public Integer getTypeId() {

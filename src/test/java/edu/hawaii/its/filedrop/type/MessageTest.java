@@ -4,7 +4,6 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -30,8 +29,8 @@ public class MessageTest {
     public void accessors() {
         assertNotNull(message);
         assertNull(message.getId());
-        assertNull(message.isEnabled());
-        assertNull(message.getEnabled());
+        assertThat(message.isEnabled(), equalTo(true));
+        assertThat(message.getEnabled(), equalTo(true));
         assertThat(message.getText(), equalTo(""));
         assertNull(message.getTypeId());
 
@@ -41,7 +40,7 @@ public class MessageTest {
 
     @Test
     public void testToString() {
-        String expected = "Message [id=null, typeId=null, enabled=null, text=]";
+        String expected = "Message [id=null, typeId=null, enabled=true, text=]";
         assertThat(message.toString(), containsString(expected));
 
         message.setId(12345);
@@ -52,8 +51,9 @@ public class MessageTest {
     public void testEquals() {
         Message c0 = new Message();
         assertThat(c0, equalTo(c0));
-        assertThat(c0, not(equalTo(new String())));
-        assertFalse(c0.equals(null));
+        assertThat(c0, not(equalTo("")));
+        assertNotEquals(null, c0);
+        assertNotEquals(c0, null);
         Message c1 = new Message();
         assertThat(c0, equalTo(c1));
         assertThat(c1, equalTo(c0));

@@ -26,7 +26,7 @@ public class UserContextService {
     }
 
     public String getCurrentUhuuid() {
-        return getCurrentUser().getUhuuid();
+        return getCurrentUser().getUhUuid();
     }
 
     public String toString() {

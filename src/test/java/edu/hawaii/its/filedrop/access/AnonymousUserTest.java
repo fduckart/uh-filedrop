@@ -25,7 +25,7 @@ public class AnonymousUserTest {
         assertNotNull(user);
         assertEquals("anonymous", user.getUsername());
         assertEquals("anonymous", user.getUid());
-        assertThat(user.getUhuuid(), equalTo(""));
+        assertThat(user.getUhUuid(), equalTo(""));
         assertEquals("", user.getPassword());
         assertEquals(1, user.getAuthorities().size());
         assertTrue(user.hasRole(SecurityRole.ANONYMOUS));

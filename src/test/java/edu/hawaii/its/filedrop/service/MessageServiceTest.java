@@ -10,7 +10,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
-
 import org.junit.jupiter.api.Test;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +44,7 @@ public class MessageServiceTest {
         message = messageService.findMessage(-1);
         assertNotNull(message);
         assertThat(message.getId(), equalTo(null));
-        assertThat(message.isEnabled(), equalTo(null));
+        assertThat(message.isEnabled(), equalTo(true));
         assertThat(message.getTypeId(), equalTo(null));
         assertThat(message.getText(), equalTo(""));
 
@@ -79,7 +78,7 @@ public class MessageServiceTest {
         message = messageService.findMessage(Message.GATE_MESSAGE);
         assertTrue(message.isEnabled());
         assertEquals(Integer.valueOf(1), message.getTypeId());
-        assertTrue(message.getText().equals("Stemming the bleeding."));
+        assertEquals("Stemming the bleeding.", message.getText());
 
         // Put the original text back.
         message.setText(text);
