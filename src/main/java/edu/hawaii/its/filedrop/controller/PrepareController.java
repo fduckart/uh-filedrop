@@ -172,7 +172,10 @@ public class PrepareController {
                 .addFlashAttribute("expiration", expiration)
                 .addFlashAttribute("ticketNumber", ticketNumber);
 
-        return "redirect:/helpdesk/files/{uploadKey}";
+        System.out.println("    z; uploadKey: " + fileDrop.getUploadKey());
+        System.out.println("   " + Strings.fill('z', 59));
+
+        return "redirect:/helpdesk/files/" + fileDrop.getUploadKey();
     }
 
     @GetMapping("/helpdesk/files/{uploadKey}")
@@ -356,6 +359,8 @@ public class PrepareController {
         fileDrop.setExpiration(Dates.addMinutes(now, Integer.parseInt(expiration)));
         fileDrop.setValid(true);
         fileDrop = fileDropService.saveFileDrop(fileDrop);
+
+        logger.debug("helpdeskSuccessful; helpEmail: " + helpEmail);
 
         Mail mail = new Mail();
         mail.setTo(helpEmail);

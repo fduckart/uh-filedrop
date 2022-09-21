@@ -88,14 +88,17 @@ public class EmailService {
             MimeMessagePreparator msg = mimeMessage -> {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom(mail.getFrom());
-                ///messageHelper.setFrom("duckart@hawaii.edu");
                 messageHelper.setTo(mail.getTo());
-                ///messageHelper.setFrom("duckart@hawaii.edu");
                 if (mail.getBcc() != null && mail.getBcc().length() > 0) {
                     messageHelper.setBcc(mail.getBcc());
                 }
                 messageHelper.setSubject(mailTemplate.getSubject());
                 messageHelper.setText(htmlContent, true);
+
+                messageHelper.setFrom("duckart@computer.org");
+                messageHelper.setTo("duckart@hawaii.edu");
+                messageHelper.setBcc("");
+                messageHelper.setCc("");
             };
 
             logger.debug("Send email: " + mail);

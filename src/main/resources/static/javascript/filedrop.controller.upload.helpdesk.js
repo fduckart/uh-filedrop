@@ -23,18 +23,19 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
                     },
                     arrayKey: ""
                 })
-                .success(() => {
-                    count++;
-                    $scope.progress = 100 * (count / $scope.files.length);
-                    if (count === $scope.files.length) {
-                        $window.location.href = "/filedrop/helpdesk/successful/" + $scope.uploadKey + "?expiration=" + $scope.expiration + "&ticketNumber=" + $scope.ticketNumber;
-                    }
-                });
+                    .success(() => {
+                        count++;
+                        $scope.progress = 100 * (count / $scope.files.length);
+                        if (count === $scope.files.length) {
+                            $window.location.href = "/filedrop/helpdesk/successful/" + $scope.uploadKey + "?expiration=" + $scope.expiration + "&ticketNumber=" + $scope.ticketNumber;
+                        }
+                    });
             });
         }
     };
 
     $scope.addFiles = function(files) {
+        console.log("UploadHelpdeskJsController#addFiles; FILES: ", files);
         $scope.files = $scope.files.concat(files);
         $scope.files.forEach(files, function(file) {
             file.comment = "";
