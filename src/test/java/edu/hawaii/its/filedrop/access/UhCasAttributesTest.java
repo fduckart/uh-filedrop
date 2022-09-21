@@ -4,7 +4,7 @@ import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
+import static org.junit.jupiter.api.Assertions.fail;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapValid() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uhuuid", "666666");
         map.put("uid", "duckart");
         UhCasAttributes attributes = new UhCasAttributes(map);
@@ -39,7 +39,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapInvalidValueType() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uhuuid", "666666");
         map.put("uid", new Integer(666));
         UhCasAttributes attributes = new UhCasAttributes(map);
@@ -50,31 +50,8 @@ public class UhCasAttributesTest {
     }
 
     @Test
-    public void loadMapInvalidKeyType() {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("uhuuid", "666666");
-        map.put(new Integer(666), new Integer(666));
-        UhCasAttributes attributes = new UhCasAttributes(map);
-        assertEquals("", attributes.getUsername());
-        assertEquals("666666", attributes.getUhUuid());
-        assertEquals("", attributes.getUid());
-        assertEquals("", attributes.getValue("not-a-key"));
-    }
-
-    @Test
-    public void loadMapInvalidTypes() {
-        Map<Object, Object> map = new HashMap<>();
-        map.put(new Integer(666), new Integer(666));
-        UhCasAttributes attributes = new UhCasAttributes(map);
-        assertEquals("", attributes.getUsername());
-        assertEquals("", attributes.getUhUuid());
-        assertEquals("", attributes.getUid());
-        assertEquals("", attributes.getValue("not-a-key"));
-    }
-
-    @Test
     public void loadMapWithArrayList() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uHuuid", "17958670");
         List<Object> uids = new ArrayList<Object>();
         uids.add("fduckart");
@@ -89,7 +66,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapWithArrayListWithNullEntries() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uHuuid", "17958670");
         List<Object> uids = new ArrayList<Object>();
         uids.add(null);
@@ -103,7 +80,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapWithArrayListWithEmptyEntries() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uHuuid", "17958670");
         List<Object> uids = new ArrayList<Object>();
         uids.add("");
@@ -117,7 +94,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapWithArrayListWithManyEntries() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uHuuid", "17958670");
         List<Object> uids = new ArrayList<Object>();
         for (int i = 0; i < 50; i++) {
@@ -133,7 +110,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapWithNullMap() {
-        Map<Object, Object> map = null;
+        Map<String, Object> map = null;
         UhCasAttributes attributes = new UhCasAttributes(map);
         assertEquals("", attributes.getUsername());
         assertEquals("", attributes.getUhUuid());
@@ -142,7 +119,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapWithNullMapEntry() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uid", null);
         map.put("uHuuid", null);
         UhCasAttributes attributes = new UhCasAttributes(map);
@@ -153,7 +130,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapWithEmptyMapEntry() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uid", new ArrayList<Object>());
         map.put("uhuuid", new ArrayList<Object>(0));
         UhCasAttributes attributes = new UhCasAttributes(map);
@@ -164,7 +141,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapWithNullKey() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uhuuid", "17958670");
         map.put(null, "fduckart");
         UhCasAttributes attributes = new UhCasAttributes(map);
@@ -175,7 +152,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void loadMapWithUnexpectedType() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uhuuid", "666666");
 
         Map<Long, java.util.Date> uidMap = new HashMap<Long, java.util.Date>();
@@ -192,7 +169,7 @@ public class UhCasAttributesTest {
     @Test
     public void loadMapWithNullUsername() {
         String username = null;
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uid", "duckart");
         map.put("uhuuid", "6666666");
         UhCasAttributes attributes = new UhCasAttributes(username, map);
@@ -203,7 +180,7 @@ public class UhCasAttributesTest {
 
     @Test
     public void misc() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uid", "duckart");
         map.put("uhuuid", "666666");
         map.put("cn", "Frank");
@@ -219,6 +196,16 @@ public class UhCasAttributesTest {
         assertThat(attributes.getAffiliation().get(0), equalTo("aff"));
 
         assertThat(attributes.toString(), containsString("uid=duckart"));
+
+        try {
+            Map<String, String> mapx = (Map<String, String>) attributes.getMap();
+            mapx.put("What", "Now?");
+            fail("Should not reach here.");
+        } catch (UnsupportedOperationException e) {
+            // Expected exception.
+        } catch (Exception e) {
+            fail("Error: " + e);
+        }
     }
 
 }

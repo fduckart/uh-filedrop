@@ -10,39 +10,39 @@ public class UhCasAttributes implements UhAttributes {
 
     private final Map<String, List<String>> attributes = new HashMap<>();
     private final String username; // CAS login username.
-    private final Map<?, ?> map; // Original CAS results.
+    private final Map<String, ?> map; // Original CAS results.
 
     // Constructor.
     public UhCasAttributes() {
-        this(new HashMap<Object, Object>());
+        this(new HashMap<String, Object>());
     }
 
     // Constructor.
-    public UhCasAttributes(Map<?, ?> map) {
+    public UhCasAttributes(Map<String, ?> map) {
         this("", map);
     }
 
     // Constructor.
-    public UhCasAttributes(String username, Map<?, ?> map) {
+    public UhCasAttributes(String username, Map<String, ?> map) {
         this.username = username != null ? username : "";
-        this.map = map;
-        if (map != null) {
-            for (Object key : map.keySet()) {
-                if (key != null && key instanceof String) {
-                    String k = ((String) key).toLowerCase();
-                    Object v = map.get(key);
-                    if (v != null) {
-                        if (v instanceof String) {
-                            attributes.put(k, Collections.singletonList((String) v));
-                        } else if (v instanceof List) {
-                            List<String> lst = new ArrayList<String>();
-                            for (Object o : (List<?>) v) {
-                                if (o instanceof String) {
-                                    lst.add((String) o);
-                                }
+        this.map = map != null
+                ? Collections.unmodifiableMap(map)
+                : Collections.emptyMap();
+        for (Object key : this.map.keySet()) {
+            if (key instanceof String) {
+                String k = ((String) key).toLowerCase();
+                Object v = this.map.get(key);
+                if (v != null) {
+                    if (v instanceof String) {
+                        attributes.put(k, Collections.singletonList((String) v));
+                    } else if (v instanceof List) {
+                        List<String> lst = new ArrayList<String>();
+                        for (Object o : (List<?>) v) {
+                            if (o instanceof String) {
+                                lst.add((String) o);
                             }
-                            attributes.put(k, lst);
                         }
+                        attributes.put(k, lst);
                     }
                 }
             }

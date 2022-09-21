@@ -1,5 +1,5 @@
 #!/bin/bash
-#mvn clean test jacoco:report -Djs-tests.skip=true -D'test=PrepareControllerTest#helpdeskTest' > output.txt
+# mvn clean test jacoco:report -Djs-tests.skip=true -D'test=UhCasAttributesTest' > output.txt
 mvn clean test jacoco:report -Djs-tests.skip=true -D'test=*Test' > output.txt
 RC=$?
 if [ $RC -eq 0 ]

@@ -51,7 +51,7 @@ public class UserTest {
 
     @Test
     public void accessors() {
-        Map<Object, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>();
         map.put("uid", "duckart");
         map.put("uhuuid", "666666");
         map.put("cn", "Frank");
