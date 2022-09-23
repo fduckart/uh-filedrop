@@ -19,7 +19,7 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
                     url: "/filedrop/helpdesk/files/" + $scope.uploadKey,
                     data: {
                         comment: file.comment,
-                        file
+                        file: file
                     },
                     arrayKey: ""
                 })

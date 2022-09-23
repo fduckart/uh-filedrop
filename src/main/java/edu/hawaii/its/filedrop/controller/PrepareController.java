@@ -261,9 +261,13 @@ public class PrepareController {
         return "redirect:/prepare/files/" + fileDrop.getUploadKey();
     }
 
+    private ProcessVariableHolder processVariables(Task currentTask) {
+        return new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
+    }
+
     @GetMapping(value = "/complete/{uploadKey}")
     public String completeFileDrop(@PathVariable String uploadKey) {
-        logger.debug("completeFileDrop; start.");
+
         logger.info("completeFileDrop; uploadKey: " + uploadKey);
 
         Task currentTask = workflowService.currentTask(currentUser());
@@ -275,8 +279,8 @@ public class PrepareController {
             return "redirect:/dl/" + fileDrop.getDownloadKey();
         }
 
-        ProcessVariableHolder processVariables =
-                new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
+        ProcessVariableHolder processVariables = processVariables(currentTask);
+///                new ProcessVariableHolder(workflowService.getProcessVariables(currentTask));
 
         String sender = processVariables.getString("sender");
         Integer expiration = processVariables.getInteger("expirationLength");
