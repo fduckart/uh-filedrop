@@ -146,22 +146,27 @@ public class FileDropService {
     public void uploadFile(User user, MultipartFile file, String comment, FileDrop fileDrop)
             throws IOException, GeneralSecurityException {
         if (workflowService.atTask(user, "addFiles") && file != null) {
-            FileSet fileSet = new FileSet();
-            fileSet.setFileName(file.getOriginalFilename());
-            fileSet.setType(file.getContentType());
-            fileSet.setComment(comment);
-            fileSet.setFileDrop(fileDrop);
-            fileSet.setSize(file.getSize());
-            fileSet = saveFileSet(fileSet);
-
-            Path path = Paths.get(fileSystemStorageService.getRootLocation().toString(),
-                    fileSet.getFileDrop().getDownloadKey());
-            path.toFile().mkdir();
-
-            cipherService.encrypt(file.getInputStream(), fileSet);
-
-            logger.debug(user.getUsername() + " uploaded " + fileSet);
+            uploadFile(file, comment, fileDrop);
         }
+    }
+
+    public void uploadFile(MultipartFile file, String comment, FileDrop fileDrop)
+            throws IOException, GeneralSecurityException {
+        FileSet fileSet = new FileSet();
+        fileSet.setFileName(file.getOriginalFilename());
+        fileSet.setType(file.getContentType());
+        fileSet.setComment(comment);
+        fileSet.setFileDrop(fileDrop);
+        fileSet.setSize(file.getSize());
+        fileSet = saveFileSet(fileSet);
+
+        Path path = Paths.get(fileSystemStorageService.getRootLocation().toString(),
+                fileSet.getFileDrop().getDownloadKey());
+        path.toFile().mkdir();
+
+        cipherService.encrypt(file.getInputStream(), fileSet);
+
+        logger.debug("uploadFile; uploaded " + fileSet);
     }
 
     public void completeFileDrop(User user, FileDrop fileDrop) {

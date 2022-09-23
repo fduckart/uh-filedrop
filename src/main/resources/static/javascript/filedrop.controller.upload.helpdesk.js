@@ -27,7 +27,10 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
                         count++;
                         $scope.progress = 100 * (count / $scope.files.length);
                         if (count === $scope.files.length) {
-                            $window.location.href = "/filedrop/helpdesk/successful/" + $scope.uploadKey + "?expiration=" + $scope.expiration + "&ticketNumber=" + $scope.ticketNumber;
+                            $window.location.href = "/filedrop/helpdesk/successful/"
+                                + $scope.uploadKey
+                                + "?expiration=" + $scope.expiration
+                                + "&ticketNumber=" + $scope.ticketNumber;
                         }
                     });
             });
@@ -35,12 +38,14 @@ function UploadHelpdeskJsController($scope, Upload, $window) {
     };
 
     $scope.addFiles = function(files) {
+        console.log("UploadHelpdeskJsController#addFiles; TYPEX: " + (typeof files));
         console.log("UploadHelpdeskJsController#addFiles; FILES: ", files);
         $scope.files = $scope.files.concat(files);
-        $scope.files.forEach(files, function(file) {
+        $scope.files.forEach(function(file) {
             file.comment = "";
             $scope.uploadSize += file.size;
         });
+        console.log("UploadHelpdeskJsController#addFiles; FINISHED ");
     };
 
     $scope.removeFile = function(file) {

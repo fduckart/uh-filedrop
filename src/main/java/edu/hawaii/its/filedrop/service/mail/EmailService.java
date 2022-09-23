@@ -97,8 +97,8 @@ public class EmailService {
 
                 messageHelper.setFrom("duckart@computer.org");
                 messageHelper.setTo("duckart@hawaii.edu");
-                messageHelper.setBcc("");
-                messageHelper.setCc("");
+                messageHelper.setBcc(new String[] {});
+                messageHelper.setCc(new String[] {});
             };
 
             logger.debug("Send email: " + mail);

@@ -314,7 +314,6 @@ public class PrepareController {
         List<Recipient> recipientList = fileDropService.findRecipients(fileDrop);
         for (Recipient recipient : recipientList) {
             LdapPerson ldapPerson = ldapService.findByUhUuidOrUidOrMail(recipient.getName());
-
             if (ldapPerson.isValid()) {
                 mail.setTo(ldapPerson.getMails().get(0));
             } else {
@@ -366,6 +365,8 @@ public class PrepareController {
         mail.setTo(helpEmail);
         mail.setFrom(fileDrop.getUploader());
         mail.setSubject("FileDrop Helpdesk Ticket: " + ticketNumber);
+        Map<String, Object> fileDropContext = emailService.getFileDropContext("uploader", fileDrop);
+        emailService.send(mail, "uploader", fileDropContext);
 
         redirectAttributes.addFlashAttribute("message",
                 "File(s) uploaded <strong>successfully</strong>");
@@ -470,7 +471,8 @@ public class PrepareController {
     @ResponseStatus(value = HttpStatus.OK)
     public void uploadFilesHelpdesk(@PathVariable String uploadKey,
                                     @RequestParam MultipartFile file,
-                                    @RequestParam(required = false) String comment) {
+                                    @RequestParam(required = false) String comment)
+            throws GeneralSecurityException, IOException {
 
         if (logger.isDebugEnabled()) {
             logger.debug("uploadFilesHelpdesk;   uploadKey: " + uploadKey);
@@ -484,9 +486,10 @@ public class PrepareController {
         fileSet.setSize(file.getSize());
 
         FileDrop fileDrop = fileDropService.findFileDropUploadKey(uploadKey);
-
         fileSet.setFileDrop(fileDrop);
         fileDropService.saveFileSet(fileSet);
+
+        fileDropService.uploadFile(file, comment, fileDrop);
 
         if (logger.isDebugEnabled()) {
             logger.debug("uploadFilesHelpdesk;    fileDrop: " + fileDrop);
