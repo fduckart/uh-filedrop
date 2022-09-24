@@ -201,11 +201,18 @@ public class FileDropService {
         saveFileDrop(fileDrop);
     }
 
-    public boolean isAuthorized(FileDrop fileDrop, String user) {
-        return containsRecipient(fileDrop, user) || fileDrop.getUploader().equals(user);
+    public boolean isAuthorized(FileDrop fileDrop, User user) {
+        return isAuthorized(fileDrop, user.getUsername());
+    }
+
+    public boolean isAuthorized(FileDrop fileDrop, String username) {
+        return containsRecipient(fileDrop, username)
+                || fileDrop.getUploader().equals(username);
     }
 
     public boolean containsRecipient(FileDrop fileDrop, String recipient) {
+        System.out.println("  <><> containsRecipient;  recipient: " + recipient);
+        System.out.println("  <><> containsRecipient; recipients: " + findRecipients(fileDrop));
         return findRecipients(fileDrop)
                 .stream()
                 .anyMatch(r -> r.getName().equalsIgnoreCase(recipient));

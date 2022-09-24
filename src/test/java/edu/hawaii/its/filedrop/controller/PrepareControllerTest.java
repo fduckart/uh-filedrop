@@ -10,6 +10,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.empty;
 import static org.hamcrest.Matchers.hasSize;
+import static org.hamcrest.Matchers.matchesRegex;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -380,8 +381,14 @@ public class PrepareControllerTest {
                         .param("sender", "Test")
                         .param("expiration", "30"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/helpdesk/files/{uploadKey}"));
+                .andExpect(view().name(matchesRegex("redirect:/helpdesk/files/.*")))
+        ;
 
+        // [ERROR]   PrepareControllerTest.helpdeskTest:383
+        // View name expected:<redirect:/helpdesk/files/{uploadKey}>
+        // but was:<redirect:/helpdesk/files/CvQHx-fOyEd-LKKQV-gKtCZ>
+        //
+        // awmoK-OJqzu-ozsXR-kdaDN>
         System.out.println(Strings.fill('1', 59));
 
         mockMvc.perform(post("/helpdesk")
@@ -389,7 +396,7 @@ public class PrepareControllerTest {
                         .param("expiration", "30")
                         .param("ticketNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
-                .andExpect(view().name("redirect:/helpdesk/files/{uploadKey}"))
+                .andExpect(view().name(matchesRegex("redirect:/helpdesk/files/[A-Za-z]{5}-[A-Za-z]{5}-[A-Za-z]{5}-[A-Za-z]{5}")))
                 .andDo(log()); // Set logger to DEBUG to see results.
 
         FileDrop fileDrop =
@@ -431,6 +438,8 @@ public class PrepareControllerTest {
                         .param("ticketNumber", "123456"))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(view().name("redirect:/"));
+        if ("off".equals("")) {
+        }
     }
 
     @Test
@@ -491,7 +500,8 @@ public class PrepareControllerTest {
                         .param("authenticationRequired", "true"))
                 .andExpect(status().is4xxClientError())
                 .andExpect(jsonPath("$").exists())
-                .andExpect(jsonPath("$.message").value("Could not add non-UH recipient when authentication is required."));
+                .andExpect(jsonPath("$.message")
+                        .value("Could not add non-UH recipient when authentication is required."));
 
         mockMvc.perform(post("/prepare/recipient/add")
                         .param("recipient", "test@google.com")

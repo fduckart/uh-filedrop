@@ -105,19 +105,25 @@ public class DownloadController {
     @PreAuthorize("isAuthenticated()")
     public String downloadSecure(Model model, @PathVariable String downloadKey) {
         FileDrop fileDrop = fileDropService.findFileDropDownloadKey(downloadKey);
-        logger.debug("downloadSecure; fileDrop: " + fileDrop + " User: " + currentUser().getUsername());
+        if (logger.isDebugEnabled()) {
+            logger.debug("downloadSecure; fileDrop: " + fileDrop);
+            logger.debug("downloadSecure; username: " + currentUser().getUsername());
+        }
 
         if (fileDrop == null) {
+            logger.warn("downloadSecure; fileDrop is null.");
             model.addAttribute("error", "Download not found");
             return "user/download-error";
         }
 
         if (!fileDrop.isValid()) {
+            logger.warn("downloadSecure; fileDrop is expired.");
             model.addAttribute("expiration", fileDrop.getExpiration());
             return "user/expired";
         }
 
-        if (!fileDropService.isAuthorized(fileDrop, currentUser().getUsername())) {
+        if (!fileDropService.isAuthorized(fileDrop, currentUser())) {
+            logger.warn("downloadSecure; download user is not authorized.");
             model.addAttribute("error", "Download not found");
             return "user/download-error";
         }
@@ -172,7 +178,6 @@ public class DownloadController {
                 response.setStatus(200);
                 return;
             } else {
-
                 logger.debug("downloadFile; fileDrop: " + fileDrop + ", Could not find fileSet: " + fileId);
 
                 response.setStatus(404);
@@ -192,7 +197,7 @@ public class DownloadController {
             return true;
         }
 
-        return fileDropService.isAuthorized(fileDrop, currentUser().getUsername());
+        return fileDropService.isAuthorized(fileDrop, currentUser());
     }
 
     public User currentUser() {

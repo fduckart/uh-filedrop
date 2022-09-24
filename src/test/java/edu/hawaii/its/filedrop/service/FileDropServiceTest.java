@@ -580,7 +580,7 @@ public class FileDropServiceTest {
         assertThat(fileDropService.isAuthorized(fileDrop, "jwlennon@hawaii.edu"), equalTo(true));
 
         // Misc checks.
-        assertThat(fileDropService.isAuthorized(fileDrop, null), equalTo(false));
+        assertThat(fileDropService.isAuthorized(fileDrop, (String) null), equalTo(false));
         assertThat(fileDropService.isAuthorized(fileDrop, ""), equalTo(false));
         assertThat(fileDropService.isAuthorized(fileDrop, " "), equalTo(false));
     }

@@ -22,6 +22,7 @@ import edu.hawaii.its.filedrop.service.FileDropService;
 import edu.hawaii.its.filedrop.service.LdapPerson;
 import edu.hawaii.its.filedrop.service.LdapService;
 import edu.hawaii.its.filedrop.type.FileDrop;
+import edu.hawaii.its.filedrop.util.Strings;
 
 @Service
 public class EmailService {
@@ -39,6 +40,9 @@ public class EmailService {
 
     @Value("${url.base}")
     private String url;
+
+    @Value("${app.email.override:false}")
+    private boolean isOverride;
 
     @Autowired
     private FileDropService fileDropService;
@@ -89,16 +93,18 @@ public class EmailService {
                 MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage);
                 messageHelper.setFrom(mail.getFrom());
                 messageHelper.setTo(mail.getTo());
-                if (mail.getBcc() != null && mail.getBcc().length() > 0) {
+                if (Strings.isNotBlank(mail.getBcc())) {
                     messageHelper.setBcc(mail.getBcc());
                 }
                 messageHelper.setSubject(mailTemplate.getSubject());
                 messageHelper.setText(htmlContent, true);
 
-                messageHelper.setFrom("duckart@computer.org");
-                messageHelper.setTo("duckart@hawaii.edu");
-                messageHelper.setBcc(new String[] {});
-                messageHelper.setCc(new String[] {});
+                if (isOverride) {
+                    messageHelper.setFrom("duckart@computer.org");
+                    messageHelper.setTo("duckart@hawaii.edu");
+                    messageHelper.setBcc(new String[] {});
+                    messageHelper.setCc(new String[] {});
+                }
             };
 
             logger.debug("Send email: " + mail);
