@@ -1,11 +1,13 @@
 package edu.hawaii.its.filedrop.controller;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,6 +24,9 @@ import edu.hawaii.its.filedrop.util.Strings;
 public class ValidationController {
 
     private final Log logger = LogFactory.getLog(ValidationController.class);
+
+    @Value("${url.base}")
+    private String urlBase;
 
     @Autowired
     private EmailService emailService;
@@ -53,13 +58,23 @@ public class ValidationController {
             Context context = new Context();
             context.setVariable("email", email);
 
+            String validationUrl = urlBase + "/prepare/files/" + validation.getValidationKey();
+            context.setVariable("validationUrl", validationUrl);
+
             emailService.send(mail, "validation", context);
 
-            logger.debug("validation; " + validation);
             model.addAttribute("email", email);
+
+            if (logger.isDebugEnabled()) {
+                logger.debug("validation;  name: " + name);
+                logger.debug("validation; email: " + email);
+                logger.debug("validation; valid: " + valid);
+                logger.debug("validation; validation: " + validation);
+                logger.debug("validation; mail: " + mail);
+            }
         } else {
             model.addAttribute("email", valid);
-            logger.debug("validation; spam: " + " name=" + name + " email=" + email + "valid=" + valid);
+            logger.warn("validation; spam: " + " name=" + name + " email=" + email + "valid=" + valid);
         }
 
         return "validation/validation-sent";

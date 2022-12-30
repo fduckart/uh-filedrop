@@ -1,9 +1,10 @@
 package edu.hawaii.its.filedrop.service.mail;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import javax.annotation.PostConstruct;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -100,7 +101,8 @@ public class EmailService {
                 messageHelper.setText(htmlContent, true);
 
                 if (isOverride) {
-                    messageHelper.setFrom("duckart@computer.org");
+                    logger.info("send; override enabled; hijacking recipients");
+                    messageHelper.setFrom(from);
                     messageHelper.setTo("duckart@hawaii.edu");
                     messageHelper.setBcc(new String[] {});
                     messageHelper.setCc(new String[] {});

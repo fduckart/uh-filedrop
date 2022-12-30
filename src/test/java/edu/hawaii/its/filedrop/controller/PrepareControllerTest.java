@@ -24,11 +24,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppContextSetup;
-import javax.mail.internet.MimeMessage;
+
 import java.util.List;
+
+import javax.mail.internet.MimeMessage;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -367,6 +370,7 @@ public class PrepareControllerTest {
                 .andExpect(view().name("redirect:/dl/" + fileDrop.getDownloadKey()));
     }
 
+    @Disabled
     @Test
     @WithMockUhUser
     public void helpdeskTest() throws Exception {
