@@ -103,13 +103,13 @@ public class EmailService {
                 if (isOverride) {
                     logger.info("send; override enabled; hijacking recipients");
                     messageHelper.setFrom(from);
-                    messageHelper.setTo("duckart@hawaii.edu");
+                    ///messageHelper.setTo("duckart@hawaii.edu");
                     messageHelper.setBcc(new String[] {});
                     messageHelper.setCc(new String[] {});
                 }
             };
 
-            logger.debug("Send email: " + mail);
+            logger.debug("send; email: " + mail);
             javaMailSender.send(msg);
         }
     }

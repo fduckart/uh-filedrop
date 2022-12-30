@@ -81,7 +81,7 @@ public class PrepareController {
     @Autowired
     private WorkflowService workflowService;
 
-    @PreAuthorize("hasRole('UH')")
+    ///@PreAuthorize("hasRole('UH')")
     @GetMapping(value = "/prepare/files/{uploadKey}")
     public String addFiles(Model model, @PathVariable String uploadKey) {
 

@@ -58,6 +58,7 @@ public class ValidationController {
             Context context = new Context();
             context.setVariable("email", email);
 
+            /// FIXME: need this to be unprotected url:
             String validationUrl = urlBase + "/prepare/files/" + validation.getValidationKey();
             context.setVariable("validationUrl", validationUrl);
 
